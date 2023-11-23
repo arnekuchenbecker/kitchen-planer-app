@@ -57,7 +57,7 @@ jobs:
   androidTest:
     name: Run AndroidTests
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       checks: write
       contents: read
