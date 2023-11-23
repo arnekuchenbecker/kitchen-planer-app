@@ -24,7 +24,7 @@ jobs:
       - name: Allow execution of gradle
         run: chmod +x ./gradlew
       - name: Build all classes
-        run: ./gradlew build testClasses -x test
+        run: ./gradlew build testclasses -x test
       - name: Build Report
         uses: scacap/action-surefire-report@v1.7.2
         with: 
@@ -45,7 +45,7 @@ jobs:
           distribution: oracle
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.9.0
-      - name: Build all classes
+      - name: Run Unit Tests
         run: ./gradlew test
       - name: Build Report
         uses: scacap/action-surefire-report@v1.7.2
