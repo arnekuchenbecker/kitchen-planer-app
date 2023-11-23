@@ -46,10 +46,14 @@ jobs:
         run: chmod +x ./gradlew
       - name: Run Unit Tests
         run: ./gradlew test
-      - name: Build Report
+      - name: Build Report Debug Tests
         uses: scacap/action-surefire-report@v1.7.2
         with: 
-          report_paths: '**/build/output/reports/test/TEST-*.xml'
+          report_paths: '**/build/test-results/testDebugUnitTest/TEST-*.xml'
+      - name: Build Report Debug Tests
+        uses: scacap/action-surefire-report@v1.7.2
+        with: 
+          report_paths: '**/build/test-results/testReleaseUnitTest/TEST-*.xml'
   androidTest:
     name: Run AndroidTests
     needs: build
@@ -79,5 +83,5 @@ jobs:
       - name: Build Report
         uses: scacap/action-surefire-report@v1.7.2
         with: 
-          report_paths: '**/build/output/reports/androidTest/TEST-*.xml'
+          report_paths: '**/build/outputs/androidTest-results/connected/debug/TEST-*.xml'
       
