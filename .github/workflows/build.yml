@@ -23,6 +23,8 @@ jobs:
         uses: gradle/gradle-build-action@v2.9.0
       - name: Allow execution of gradle
         run: chmod +x ./gradlew
+      - name: Show gradle tasks
+        run: ./gradlew tasks
       - name: Build all classes
         run: ./gradlew build testclasses -x test
       - name: Build Report
