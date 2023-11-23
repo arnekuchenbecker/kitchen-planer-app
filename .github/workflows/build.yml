@@ -23,14 +23,8 @@ jobs:
         uses: gradle/gradle-build-action@v2.9.0
       - name: Allow execution of gradle
         run: chmod +x ./gradlew
-      - name: Show gradle tasks
-        run: ./gradlew tasks
       - name: Build all classes
         run: ./gradlew build compileDebugAndroidTestSources compileDebugUnitTestSources compileReleaseUnitTestSources -x test
-      - name: Build Report
-        uses: scacap/action-surefire-report@v1.7.2
-        with: 
-          report_paths: '**/build/test-results/test/TEST-*.xml'
   test:
     name: Run Unit Tests
     needs: build
@@ -45,18 +39,25 @@ jobs:
         uses: actions/setup-java@v3.13.0
         with:
           distribution: oracle
+          java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.9.0
+      - name: Allow execution of gradle
+        run: chmod +x ./gradlew
       - name: Run Unit Tests
         run: ./gradlew test
-      - name: Build Report
+      - name: Build Report Debug Tests
         uses: scacap/action-surefire-report@v1.7.2
         with: 
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/build/test-results/testDebugUnitTest/TEST-*.xml'
+      - name: Build Report Debug Tests
+        uses: scacap/action-surefire-report@v1.7.2
+        with: 
+          report_paths: '**/build/test-results/testReleaseUnitTest/TEST-*.xml'
   androidTest:
     name: Run AndroidTests
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     permissions:
       checks: write
       contents: read
@@ -67,8 +68,11 @@ jobs:
         uses: actions/setup-java@v3.13.0
         with:
           distribution: oracle
+          java-version: 17
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.9.0
+      - name: Allow execution of gradle
+        run: chmod +x ./gradlew
       - name: Run connected tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
@@ -79,5 +83,5 @@ jobs:
       - name: Build Report
         uses: scacap/action-surefire-report@v1.7.2
         with: 
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/build/outputs/androidTest-results/connected/debug/TEST-*.xml'
       
