@@ -45,13 +45,13 @@ jobs:
       - name: Allow execution of gradle
         run: chmod +x ./gradlew
       - name: Run Unit Tests
-        run: ./gradlew test
+        run: ./gradlew test --continue
       - name: Build Report Debug Tests
         if: success() || failure()
         uses: scacap/action-surefire-report@v1.7.2
         with: 
           report_paths: '**/build/test-results/testDebugUnitTest/TEST-*.xml'
-      - name: Build Report Debug Tests
+      - name: Build Report Release Tests
         if: success() || failure()
         uses: scacap/action-surefire-report@v1.7.2
         with: 
