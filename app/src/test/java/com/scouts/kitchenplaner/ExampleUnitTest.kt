@@ -13,9 +13,4 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2, "4 was evaluated to a different value than 2+2")
     }
-
-    @Test
-    fun broken() {
-        assertEquals(5, 3, "5 was not equal to 3")
-    }
 }
