@@ -15,3 +15,5 @@
             + Lösung für (2): State / MutableState --> Observable, d.h. wenn sich der dahinterliegende Wert ändert, wird Re-Composition getriggert
             + Übliches Pattern: ```var x by remember { mutableStateOf(3) }``` --> kann x wie normale variable behandeln, ist im Hintergrund aber State (--> (2))
               und remember (--> (1))
+            + https://dev.to/zachklipp/remember-mutablestateof-a-cheat-sheet-10ma
+        * https://developer.android.com/topic/architecture/ui-layer/stateholders
