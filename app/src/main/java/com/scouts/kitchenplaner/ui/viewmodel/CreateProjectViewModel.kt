@@ -22,8 +22,15 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class CreateProjectViewModel : ViewModel() {
     val nameText: MutableState<String> = mutableStateOf("")
@@ -33,6 +40,8 @@ class CreateProjectViewModel : ViewModel() {
     )
 
     val displayStartPicker: MutableState<Boolean> = mutableStateOf(false)
+
+    var inputState = mutableStateOf(CreateProjectInputState())
 
     fun onProjectCreate() {
         println("Creating Project with name ${nameText.value}")

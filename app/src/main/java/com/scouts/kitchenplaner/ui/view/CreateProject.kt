@@ -20,8 +20,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
@@ -36,15 +40,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
 import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,9 +57,9 @@ import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 fun CreateProject(createProjectViewModel: CreateProjectViewModel = viewModel()) {
     Scaffold (topBar = {
         TopAppBar(
-            colors = TopAppBarDefaults.smallTopAppBarColors(
+            colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.primary
             ),
             title = {
                 Text("Create a New Project")
@@ -66,35 +71,43 @@ fun CreateProject(createProjectViewModel: CreateProjectViewModel = viewModel()) 
             Icon(imageVector = Icons.Filled.Check, contentDescription = "Create project")
         }, text = { Text("Fertig") })
     }) {
-        CreateProjectInput(modifier = Modifier.padding(it))
+        CreateProjectInput(state = createProjectViewModel.inputState.value, modifier = Modifier.padding(it))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProjectInput(modifier: Modifier = Modifier, createProjectViewModel: CreateProjectViewModel = viewModel()) {
+fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modifier) {
+    var displayStarterPicker by remember { mutableStateOf(false) }
     Column(modifier = modifier
         .padding(5.dp)
         .fillMaxWidth()) {
-        TextField(value = createProjectViewModel.nameText.value, onValueChange = {
-            createProjectViewModel.nameText.value = it
+        TextField(value = state.name, onValueChange = {
+            state.name = it
         }, modifier = Modifier.fillMaxWidth(0.8f),
             label = { Text("Project Name") }
         )
-        Text("Display Calendar", modifier = Modifier.clickable {
-                createProjectViewModel.displayStartPicker.value = true
-            }.border(2.dp, MaterialTheme.colorScheme.primary))
+        Row (modifier = Modifier.fillMaxWidth(0.8f).height(50.dp)) {
+            Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxHeight().padding(5.dp, 0.dp)) {
+                Text("Start Datum:")
+            }
+            Text(state.startDateString, modifier = Modifier
+                .clickable {
+                    displayStarterPicker = true
+                }
+                .border(2.dp, MaterialTheme.colorScheme.primary))
+        }
 
-        if (createProjectViewModel.displayStartPicker.value) {
-            DatePickerDialog(onDismissRequest = {createProjectViewModel.displayStartPicker.value = false}, confirmButton = {
+        if (displayStarterPicker) {
+            DatePickerDialog(onDismissRequest = {displayStarterPicker = false}, confirmButton = {
                 Button(onClick = {
-                    println(createProjectViewModel.projectDates.value.selectedDateMillis)
-                    createProjectViewModel.displayStartPicker.value = false
+                    println(state.startDate.selectedDateMillis)
+                    displayStarterPicker = false
                 }) {
                     Icon(Icons.Filled.Check, "Choose Date Range")
                 }
             }) {
-                DatePicker(state = createProjectViewModel.projectDates.value)
+                DatePicker(state = state.startDate)
             }
         }
     }
