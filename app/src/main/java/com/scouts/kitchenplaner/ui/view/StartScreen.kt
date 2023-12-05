@@ -19,10 +19,11 @@ package com.scouts.kitchenplaner.ui.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 @Composable
-fun StartScreen(){
-    Column {
+fun StartScreen(modifier: Modifier = Modifier){
+    Column (modifier = modifier) {
         Text(text = "This is the start screen, where recipes etc are displayed")
         Text(text= "available Links to other sides are: ")
     }

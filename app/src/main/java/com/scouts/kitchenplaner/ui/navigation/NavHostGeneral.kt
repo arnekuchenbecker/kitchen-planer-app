@@ -31,8 +31,10 @@ fun NavHostGeneral(
     startDestination: String = "start"
 ) {
     NavHost(modifier= modifier, navController= navController, startDestination= startDestination){
-        composable("start") { StartScreen()}
+        composable("start") {StartScreen()}
         projectsNav(navController = navController)
         recipesNav(navController = navController)
     }
 }
+
+private fun backToStartScreen(navController: NavHostController){navController.popBackStack("start", false)}

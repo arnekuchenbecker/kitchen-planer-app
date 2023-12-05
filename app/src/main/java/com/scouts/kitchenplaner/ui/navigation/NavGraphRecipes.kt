@@ -20,10 +20,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.ProjectOverview
+import com.scouts.kitchenplaner.ui.view.RecipeOverview
 
 fun NavGraphBuilder.recipesNav(navController: NavHostController){
     navigation(startDestination = "recipeOverview", route="recipes"){
-        composable("recipes"){ ProjectOverview()}
+        composable("recipeOverview"){ RecipeOverview()}
     }
     }

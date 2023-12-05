@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.scouts.kitchenplaner.ui.navigation.NavHostTest
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
+import com.scouts.kitchenplaner.ui.view.KitchenPlannerLayout
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHostTest()
+                    KitchenPlannerLayout()
                 }
             }
         }
