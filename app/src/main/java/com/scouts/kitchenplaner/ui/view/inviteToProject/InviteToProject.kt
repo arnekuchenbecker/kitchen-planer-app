@@ -17,14 +17,23 @@
 package com.scouts.kitchenplaner.ui.view.inviteToProject
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
+
 @Composable
-fun InviteToProject(){
+fun InviteToProject(onNavigationToProject: ()-> Unit){
     Column {
         Text("After project creation people can be invited")
         Text(text= "available Links to other sides are: ")
 
+        Row {
+            Text("ProjectDetails")
+            Button(onClick = onNavigationToProject) {}
+
+        }
     }
+    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
 }

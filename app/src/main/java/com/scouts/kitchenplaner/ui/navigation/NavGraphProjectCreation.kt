@@ -18,23 +18,36 @@ package com.scouts.kitchenplaner.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.inviteToProject.InviteToProject
 import com.scouts.kitchenplaner.ui.view.createProject.ProjectCreation
+import com.scouts.kitchenplaner.ui.view.inviteToProject.InviteToProject
 
 private const val PROJECT_CREATION = "PROJECT_CREATION"
 private const val INVITE_SCREEN = "invite"
 fun NavGraphBuilder.projectCreationNav(navController: NavController) {
 
     navigation(
-        startDestination = PROJECT_CREATION,
-        route = Destinations.ProjectCreationGraph
+        startDestination = PROJECT_CREATION, route = Destinations.ProjectCreationGraph
     ) {
         composable(PROJECT_CREATION) {
-            ProjectCreation(onNavigateToInvitePeople = { navController.navigate(INVITE_SCREEN) })
+
+            ProjectCreation(onNavigateToInvitePeople = { projectId ->
+                print("after project creation: $projectId")
+                navController.navigate("$INVITE_SCREEN/$projectId")
+            })
         }
-        composable(INVITE_SCREEN) { InviteToProject() }
+        composable("$INVITE_SCREEN/{projectID}", arguments = listOf(navArgument("projectID") {
+            type =
+                NavType.IntType
+        })) {
+            InviteToProject {
+                navController.navigate("${Destinations.ProjectDetailsGraph}/${it.arguments?.getInt("projectID") ?: -1}")
+            }
+        }
     }
+
 }
 
