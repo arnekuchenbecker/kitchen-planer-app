@@ -23,18 +23,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.ProjectDetails
-import com.scouts.kitchenplaner.ui.view.ProjectOverview
 
-fun NavGraphBuilder.projectsNav(navController: NavHostController) {
-    navigation(startDestination = "projectOverview", route = "projects") {
-        composable("projectOverview") {
-            ProjectOverview(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(
-                    "projectDetails/$projectID"
-                )
-            })
-        }
-        projectsDetailsNav(navController = navController)
-
+fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
+    navigation(startDestination = "details/{id}", route = "projectDetails/{id}") {
+        composable(
+            "details/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { ProjectDetails(projectID = it.arguments?.getInt("id") ?: -1) }
     }
 }

@@ -30,11 +30,22 @@ fun NavHostGeneral(
     navController: NavHostController = rememberNavController(),
     startDestination: String = "start"
 ) {
-    NavHost(modifier= modifier, navController= navController, startDestination= startDestination){
-        composable("start") {StartScreen()}
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable("start") {
+            StartScreen(onNavigateToDetailedProject = { projectID ->
+                navController.navigate("projectDetails/$projectID")
+            })
+        }
         projectsNav(navController = navController)
         recipesNav(navController = navController)
+        projectsDetailsNav(navController = navController)
     }
 }
 
-private fun backToStartScreen(navController: NavHostController){navController.popBackStack("start", false)}
+private fun backToStartScreen(navController: NavHostController) {
+    navController.popBackStack("start", false)
+}

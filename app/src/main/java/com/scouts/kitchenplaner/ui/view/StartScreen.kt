@@ -17,14 +17,29 @@
 package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 @Composable
-fun StartScreen(modifier: Modifier = Modifier){
+fun StartScreen(modifier: Modifier = Modifier,onNavigateToDetailedProject:(Int) ->Unit){
+    var projectId by remember { mutableStateOf(0f) }
     Column (modifier = modifier) {
         Text(text = "This is the start screen, where recipes etc are displayed")
         Text(text= "available Links to other sides are: ")
+        Row {
+            Text("ProjectDetails")
+            Slider(modifier = Modifier.fillMaxWidth(0.3f),value = projectId, onValueChange = {projectId = it }, valueRange = 1f..10f, steps = 1 )
+            Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
+
+        }
     }
 }

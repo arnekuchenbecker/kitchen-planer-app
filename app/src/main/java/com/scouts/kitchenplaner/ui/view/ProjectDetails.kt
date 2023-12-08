@@ -19,11 +19,14 @@ package com.scouts.kitchenplaner.ui.view
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ProjectDetails(){
+fun ProjectDetails(projectID: Int){
     Column {
+
         Text(text = "This is the screen, where all information to one specific project are displayed displayed")
+        Text(text= "The projectID is $projectID", color = Color.Red)
         Text(text= "available Links to other sides are: ")
     }
 }
