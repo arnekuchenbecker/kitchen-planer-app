@@ -30,7 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 @Composable
-fun StartScreen(modifier: Modifier = Modifier,onNavigateToDetailedProject:(Int) ->Unit){
+fun StartScreen(modifier: Modifier = Modifier,onNavigateToDetailedProject:(Int) ->Unit, onNavigateToProjectCreation: () -> Unit){
     var projectId by remember { mutableStateOf(0f) }
     Column (modifier = modifier) {
         Text(text = "This is the start screen, where recipes etc are displayed")
@@ -40,6 +40,10 @@ fun StartScreen(modifier: Modifier = Modifier,onNavigateToDetailedProject:(Int) 
             Slider(modifier = Modifier.fillMaxWidth(0.3f),value = projectId, onValueChange = {projectId = it }, valueRange = 1f..10f, steps = 1 )
             Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
 
+        }
+        Row {
+            Text("ProjectCreation")
+            Button(onClick = onNavigateToProjectCreation){}
         }
     }
 }

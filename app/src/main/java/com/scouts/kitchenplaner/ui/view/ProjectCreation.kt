@@ -14,18 +14,26 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.navigation
+package com.scouts.kitchenplaner.ui.view
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.RecipeOverview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 
-private const val RECIPE_OVERVIEW = "recipeOverview"
+@Composable
+fun ProjectCreation(onNavigateToInvitePeople: () -> Unit){
+    Column {
+        Text("Here it is possible to create a new Project")
+        Text(text= "available Links to other sides are: ")
+        
+        Row {
+            Text(text = "inviteToProject")
+            Button(onClick =  onNavigateToInvitePeople) {
+                
+            }
+        }
 
-fun NavGraphBuilder.recipesNav(navController: NavHostController){
-    navigation(startDestination = RECIPE_OVERVIEW, route= Destinations.RecipesGraph){
-        composable(RECIPE_OVERVIEW){ RecipeOverview()}
     }
-    }
+}

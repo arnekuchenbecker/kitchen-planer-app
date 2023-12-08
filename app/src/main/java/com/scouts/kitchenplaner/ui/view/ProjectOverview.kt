@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun ProjectOverview(onNavigateToDetailedProject: (Int) -> Unit){
+fun ProjectOverview(onNavigateToDetailedProject: (Int) -> Unit, onNavigateToCreateProject:()-> Unit){
     var projectId by remember { mutableStateOf(0f) }
     Column {
         Text(text = "This is the project overview, where all own projects are displayed")
@@ -45,6 +45,10 @@ fun ProjectOverview(onNavigateToDetailedProject: (Int) -> Unit){
             Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
 
 
+        }
+        Row{
+            Text("ProjectCreation")
+            Button(onClick = onNavigateToCreateProject){}
         }
     }
 }
