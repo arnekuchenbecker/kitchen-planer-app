@@ -33,17 +33,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class CreateProjectViewModel : ViewModel() {
-    val nameText: MutableState<String> = mutableStateOf("")
-    @OptIn(ExperimentalMaterial3Api::class)
-    val projectDates: MutableState<DatePickerState> = mutableStateOf(
-        DatePickerState(null, null, IntRange(2000, 2100), DisplayMode.Picker)
-    )
-
-    val displayStartPicker: MutableState<Boolean> = mutableStateOf(false)
-
     var inputState = mutableStateOf(CreateProjectInputState())
 
     fun onProjectCreate() {
-        println("Creating Project with name ${nameText.value}")
+        println("Creating Project with name ${inputState.value.name}")
     }
 }
