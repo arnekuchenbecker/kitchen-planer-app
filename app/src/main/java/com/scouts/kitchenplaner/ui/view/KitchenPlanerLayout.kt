@@ -18,9 +18,12 @@ package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -37,6 +40,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.scouts.kitchenplaner.ui.navigation.NavHostGeneral
+import com.scouts.kitchenplaner.ui.navigation.home
+import com.scouts.kitchenplaner.ui.navigation.projects_graph
+import com.scouts.kitchenplaner.ui.navigation.recipes_graph
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,9 +53,9 @@ fun KitchenPlannerLayout(
     var selectedItem by remember { mutableStateOf(0) }
 
     val sites = listOf(
-        "start",
-        "projects",
-        "recipes"
+        Triple("Start",home.route,Icons.Filled.Home),
+        Triple("Projekte",projects_graph.route,Icons.Filled.Build),
+        Triple("Rezepte", recipes_graph.route, Icons.Filled.AccountBox)
     )
 
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -58,14 +64,14 @@ fun KitchenPlannerLayout(
         NavigationBar {
             sites.forEach { item ->
                 NavigationBarItem(
-                    selected = backStackEntry?.destination?.hierarchy?.any { it.route == item } ?: false,
+                    selected = backStackEntry?.destination?.hierarchy?.any { it.route == item.second } ?: false,
                     onClick = {
-                        navController.navigate(item) {
+                        navController.navigate(item.second) {
                             launchSingleTop = true
                         }
                               },
-                    label = {Text(item)},
-                    icon = { Icon(imageVector = Icons.Filled.Home, contentDescription = "Home") })
+                    label = {Text(item.first)},
+                    icon = { Icon(imageVector = item.third, contentDescription = item.first) })
             }
         }
     }) {

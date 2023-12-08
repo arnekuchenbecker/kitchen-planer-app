@@ -26,12 +26,12 @@ import com.scouts.kitchenplaner.ui.view.ProjectDetails
 
 fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
     navigation(
-        startDestination = "details/{id}",
-        route = "projectDetails/{id}",
+        startDestination = projectDetails.route+"/{id}",
+        route = projectDetails_graph.route+"/{id}",
         arguments = listOf(navArgument("id") { type = NavType.IntType })
     ) {
         composable(
-            "details/{id}",
+            projectDetails.route+"/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { ProjectDetails(projectID = it.arguments?.getInt("id") ?: -1) }
     }

@@ -28,17 +28,16 @@ import com.scouts.kitchenplaner.ui.view.StartScreen
 fun NavHostGeneral(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "start"
+    startDestination: String = home.route
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination
     ) {
-        composable("start") {
+        composable(home.route) {
             StartScreen(onNavigateToDetailedProject = { projectID ->
-                println("project id: $projectID")
-                navController.navigate("projectDetails/$projectID")
+                navController.navigate(projectDetails.route+"/$projectID")
             })
         }
         projectsNav(navController = navController)
@@ -48,5 +47,5 @@ fun NavHostGeneral(
 }
 
 private fun backToStartScreen(navController: NavHostController) {
-    navController.popBackStack("start", false)
+    navController.popBackStack(home.route, false)
 }

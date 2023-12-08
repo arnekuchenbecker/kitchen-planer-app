@@ -23,14 +23,14 @@ import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.ProjectOverview
 
 fun NavGraphBuilder.projectsNav(navController: NavHostController) {
-    navigation(startDestination = "projectOverview", route = "projects") {
+    navigation(startDestination = projectOverview.route, route = projects_graph.route) {
 
         projectsDetailsNav(navController = navController)
 
-        composable("projectOverview") {
+        composable(projectOverview.route) {
             ProjectOverview(onNavigateToDetailedProject = { projectID ->
                 navController.navigate(
-                    "projectDetails/$projectID"
+                    projectDetails_graph.route+"/$projectID"
                 )
             })
         }

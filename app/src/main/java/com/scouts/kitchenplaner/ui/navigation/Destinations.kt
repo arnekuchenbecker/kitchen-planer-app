@@ -16,14 +16,16 @@
 
 package com.scouts.kitchenplaner.ui.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.RecipeOverview
+sealed class Destinations(val route: String)
 
-fun NavGraphBuilder.recipesNav(navController: NavHostController){
-    navigation(startDestination = recipeOverview.route, route=recipes_graph.route){
-        composable(recipeOverview.route){ RecipeOverview()}
-    }
-    }
+
+object home :Destinations("start")
+
+object projectDetails_graph: Destinations("projectDetails")
+object projectDetails : Destinations("details")
+
+object projects_graph: Destinations("projects")
+object projectOverview: Destinations("projectOverview")
+
+object recipes_graph: Destinations("recipes")
+object recipeOverview: Destinations("recipeOverview")
