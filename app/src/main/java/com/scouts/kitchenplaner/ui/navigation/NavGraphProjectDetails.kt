@@ -22,7 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.scouts.kitchenplaner.ui.view.ProjectDetails
+import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
 
 private const val PROJECT_DETAILS = "details"
 

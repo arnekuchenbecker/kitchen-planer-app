@@ -20,8 +20,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.InviteToProject
-import com.scouts.kitchenplaner.ui.view.ProjectCreation
+import com.scouts.kitchenplaner.ui.view.inviteToProject.InviteToProject
+import com.scouts.kitchenplaner.ui.view.createProject.ProjectCreation
 
 private const val PROJECT_CREATION = "PROJECT_CREATION"
 private const val INVITE_SCREEN = "invite"
@@ -34,7 +34,7 @@ fun NavGraphBuilder.projectCreationNav(navController: NavController) {
         composable(PROJECT_CREATION) {
             ProjectCreation(onNavigateToInvitePeople = { navController.navigate(INVITE_SCREEN) })
         }
-        composable(INVITE_SCREEN) { InviteToProject()}
+        composable(INVITE_SCREEN) { InviteToProject() }
     }
 }
 

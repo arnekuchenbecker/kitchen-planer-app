@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view
+package com.scouts.kitchenplaner.ui.view.createProject
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

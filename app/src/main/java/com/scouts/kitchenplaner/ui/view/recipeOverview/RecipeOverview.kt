@@ -14,17 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view
+package com.scouts.kitchenplaner.ui.view.recipeOverview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun InviteToProject(){
+fun RecipeOverview(){
     Column {
-        Text("After project creation people can be invited")
+        Text(text = "This is the recipe overview, where all recipes are displayed")
         Text(text= "available Links to other sides are: ")
-
     }
 }

@@ -20,7 +20,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.ProjectOverview
+import com.scouts.kitchenplaner.ui.view.projectOverview.ProjectOverview
 
 private  const val PROJECT_OVERVIEW = "projectOverview"
 

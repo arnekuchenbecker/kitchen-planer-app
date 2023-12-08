@@ -20,12 +20,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.RecipeOverview
+import com.scouts.kitchenplaner.ui.view.recipeOverview.RecipeOverview
 
 private const val RECIPE_OVERVIEW = "recipeOverview"
 
 fun NavGraphBuilder.recipesNav(navController: NavHostController){
     navigation(startDestination = RECIPE_OVERVIEW, route= Destinations.RecipesGraph){
-        composable(RECIPE_OVERVIEW){ RecipeOverview()}
+        composable(RECIPE_OVERVIEW){ RecipeOverview() }
     }
     }

@@ -14,16 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view
+package com.scouts.kitchenplaner.ui.view.projectDetails
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ShoppingListOverview(){
+fun ProjectDetails(projectID: Int){
     Column {
-        Text(text = "This is the shopping list overview, where all own shopping lists within one project are displayed are displayed")
+
+        Text(text = "This is the screen, where all information to one specific project are displayed displayed")
+        Text(text= "The projectID is $projectID", color = Color.Red)
         Text(text= "available Links to other sides are: ")
     }
 }
