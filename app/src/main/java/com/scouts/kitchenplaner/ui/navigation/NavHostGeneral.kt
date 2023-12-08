@@ -37,6 +37,7 @@ fun NavHostGeneral(
     ) {
         composable("start") {
             StartScreen(onNavigateToDetailedProject = { projectID ->
+                println("project id: $projectID")
                 navController.navigate("projectDetails/$projectID")
             })
         }

@@ -18,15 +18,15 @@ package com.scouts.kitchenplaner.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.ProjectDetails
 import com.scouts.kitchenplaner.ui.view.ProjectOverview
 
 fun NavGraphBuilder.projectsNav(navController: NavHostController) {
     navigation(startDestination = "projectOverview", route = "projects") {
+
+        projectsDetailsNav(navController = navController)
+
         composable("projectOverview") {
             ProjectOverview(onNavigateToDetailedProject = { projectID ->
                 navController.navigate(
@@ -34,7 +34,6 @@ fun NavGraphBuilder.projectsNav(navController: NavHostController) {
                 )
             })
         }
-        projectsDetailsNav(navController = navController)
 
     }
 }

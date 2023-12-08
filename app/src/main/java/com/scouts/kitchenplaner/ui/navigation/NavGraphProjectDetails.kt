@@ -20,15 +20,19 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.ProjectDetails
 
 fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
-    navigation(startDestination = "details/{id}", route = "projectDetails/{id}") {
+    navigation(
+        startDestination = "details/{id}",
+        route = "projectDetails/{id}",
+        arguments = listOf(navArgument("id") { type = NavType.IntType })
+    ) {
         composable(
             "details/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { ProjectDetails(projectID = it.arguments?.getInt("id") ?: -1) }
     }
 }
