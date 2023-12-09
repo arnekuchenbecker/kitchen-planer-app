@@ -31,19 +31,18 @@ fun NavHostGeneral(
     startDestination: String = Destinations.home
 ) {
     NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = startDestination
+        modifier = modifier, navController = navController, startDestination = startDestination
     ) {
         composable(Destinations.home) {
             StartScreen(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(Destinations.ProjectDetailsGraph+"/$projectID")
-            }, onNavigateToProjectCreation = {navController.navigate(Destinations.ProjectCreationGraph)})
+                navController.navigate(Destinations.ProjectDetailsGraph + "/$projectID")
+            },
+                onNavigateToProjectCreation = { navController.navigate(Destinations.ProjectCreationGraph) },
+                onNavigateToCreateRecipe = { navController.navigate(Destinations.RecipeCreationGraph) },
+                onNavigateToRecipeDetail = { recipeID -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID") })
         }
         projectsNav(navController = navController)
         recipesNav(navController = navController)
-        projectsDetailsNav(navController = navController)
-        projectCreationNav(navController= navController)
     }
 }
 

@@ -79,7 +79,7 @@ fun KitchenPlannerLayout(
         NavHostGeneral(
             modifier = Modifier.padding(it),
             navController = navController,
-            startDestination = "start"
+            startDestination = Destinations.home
         )
     }
 }

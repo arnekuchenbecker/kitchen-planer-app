@@ -16,14 +16,23 @@
 
 package com.scouts.kitchenplaner.ui.view.recipeOverview
 
+import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun RecipeOverview(){
+fun RecipeOverview(onNavigationCreateRecipe: () -> Unit){
     Column {
         Text(text = "This is the recipe overview, where all recipes are displayed")
         Text(text= "available Links to other sides are: ")
+        Row {
+            Text("RecipeCreation")
+            Button(onClick = onNavigationCreateRecipe) {
+                
+            }
+        }
     }
 }

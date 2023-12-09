@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view
+package com.scouts.kitchenplaner.ui.view.createRecipe
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,48 +30,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 @Composable
-fun StartScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToDetailedProject: (Int) -> Unit,
-    onNavigateToProjectCreation: () -> Unit,
-    onNavigateToCreateRecipe: () -> Unit,
-    onNavigateToRecipeDetail: (Int) -> Unit
-) {
-    var projectId by remember { mutableStateOf(0f) }
+fun CreateRecipe(onNavigationToRecipeDetails: (Int) -> Unit) {
     var recipeID by remember { mutableStateOf(0f) }
-    Column(modifier = modifier) {
-        Text(text = "This is the start screen, where recipes etc are displayed")
+    Column {
+        Text("Here you can create a new recipe")
         Text(text = "available Links to other sides are: ")
         Row {
-            Text("ProjectDetails")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = projectId,
-                onValueChange = { projectId = it },
-                valueRange = 1f..10f,
-                steps = 1
-            )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
-
-        }
-        Row {
-            Text("ProjectCreation")
-            Button(onClick = onNavigateToProjectCreation) {}
-        }
-        Row {
-            Text("RecipeCreation")
-            Button(onClick = onNavigateToCreateRecipe) {}
-        }
-        Row {
-            Text("RecipeDetails")
+            Text(text = "recipeDetails")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
                 value = recipeID,
                 onValueChange = { recipeID = it },
                 valueRange = 1f..15f,
-                steps = 15
+                steps = 1
             )
-            Button(onClick = { onNavigateToRecipeDetail(recipeID.toInt()) }) {
+            Button(onClick = { onNavigationToRecipeDetails(recipeID.toInt()) }) {
 
             }
         }

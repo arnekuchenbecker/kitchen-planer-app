@@ -24,8 +24,16 @@ import com.scouts.kitchenplaner.ui.view.recipeOverview.RecipeOverview
 
 private const val RECIPE_OVERVIEW = "recipeOverview"
 
-fun NavGraphBuilder.recipesNav(navController: NavHostController){
-    navigation(startDestination = RECIPE_OVERVIEW, route= Destinations.RecipesGraph){
-        composable(RECIPE_OVERVIEW){ RecipeOverview() }
+fun NavGraphBuilder.recipesNav(navController: NavHostController) {
+    navigation(startDestination = RECIPE_OVERVIEW, route = Destinations.RecipesGraph) {
+        composable(RECIPE_OVERVIEW) {
+            RecipeOverview(onNavigationCreateRecipe = {
+                navController.navigate(
+                    Destinations.RecipeCreationGraph
+                )
+            })
+        }
+        recipeCreationNav(navController=navController)
+        recipeDetailsNav(navController=navController)
     }
-    }
+}

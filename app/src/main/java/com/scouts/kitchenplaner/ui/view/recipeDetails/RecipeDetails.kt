@@ -14,17 +14,23 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.navigation
+package com.scouts.kitchenplaner.ui.view.recipeDetails
 
-sealed class Destinations {
-    companion object {
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
-        const val home = "start"
-        const val ProjectDetailsGraph = "projectDetails"
-        const val ProjectsGraph = "projects"
-        const val RecipesGraph = "recipes"
-        const val ProjectCreationGraph = "projectCreation_Graph"
-        const val RecipeCreationGraph ="recipeCreation_Graph"
-        const val RecipeDetailsGraph = "recipeDetails"
+
+@Composable
+fun recipeDetails(recipeID: Int){
+
+    Column {
+        Text("On this screen you can see a detailed recipe")
+        Text(text= "The recipeID is $recipeID", color = Color.Red)
+
+        Text(text = "available Links to other sides are: ")
+
     }
+
 }

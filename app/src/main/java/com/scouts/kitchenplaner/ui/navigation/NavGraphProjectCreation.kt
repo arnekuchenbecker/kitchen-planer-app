@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -27,7 +28,7 @@ import com.scouts.kitchenplaner.ui.view.inviteToProject.InviteToProject
 
 private const val PROJECT_CREATION = "PROJECT_CREATION"
 private const val INVITE_SCREEN = "invite"
-fun NavGraphBuilder.projectCreationNav(navController: NavController) {
+fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
 
     navigation(
         startDestination = PROJECT_CREATION, route = Destinations.ProjectCreationGraph

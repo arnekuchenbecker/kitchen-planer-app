@@ -16,26 +16,21 @@
 
 package com.scouts.kitchenplaner.ui.navigation
 
+
+
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.projectOverview.ProjectOverview
+import com.scouts.kitchenplaner.ui.view.createRecipe.CreateRecipe
 
-private  const val PROJECT_OVERVIEW = "projectOverview"
+private const val RECIPE_CREATION = "createRecipe"
 
-fun NavGraphBuilder.projectsNav(navController: NavHostController) {
-    navigation(startDestination = PROJECT_OVERVIEW, route = Destinations.ProjectsGraph) {
-        composable(PROJECT_OVERVIEW) {
-            ProjectOverview(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(
-                    Destinations.ProjectDetailsGraph+"/$projectID"
-                )
-            }, onNavigateToCreateProject = {navController.navigate(Destinations.ProjectCreationGraph)})
-        }
-
-        projectsDetailsNav(navController = navController)
-        projectCreationNav(navController=navController)
-
+fun NavGraphBuilder.recipeCreationNav(navController: NavHostController) {
+    navigation(startDestination = RECIPE_CREATION, route = Destinations.RecipeCreationGraph) {
+        composable(RECIPE_CREATION) { CreateRecipe(onNavigationToRecipeDetails = {recipeID -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID")}) }
     }
 }
+
+
+
