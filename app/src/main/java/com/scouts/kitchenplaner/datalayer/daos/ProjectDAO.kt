@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.datalayer.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
@@ -29,7 +30,7 @@ interface ProjectDAO {
     suspend fun createProject(
         project: ProjectEntity,
         meals: List<MealEntity>,
-        allergens: List<AllergenPersonEntity>
+        allergens: List<Pair<AllergenPersonEntity, List<AllergenEntity>>>
     ) : Long {
         val projectId = insertProject(project)
 
@@ -39,8 +40,13 @@ interface ProjectDAO {
         }
 
         allergens.forEach {
-            it.projectId = projectId
-            insertAllergenPerson(it)
+            it.first.projectId = projectId
+            insertAllergenPerson(it.first)
+
+            it.second.forEach { allergen ->
+                allergen.projectId = projectId
+                insertAllergen(allergen)
+            }
         }
 
         return projectId
@@ -54,4 +60,7 @@ interface ProjectDAO {
 
     @Insert
     suspend fun insertMealEntity(entity: MealEntity) : Long
+
+    @Insert
+    suspend fun insertAllergen(entity: AllergenEntity) : Long
 }

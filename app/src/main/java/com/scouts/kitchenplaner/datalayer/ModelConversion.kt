@@ -20,6 +20,7 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
@@ -35,15 +36,15 @@ fun Project.toDataLayerEntity() : ProjectEntity {
     )
 }
 
-fun AllergenPerson.toDataLayerEntity() : AllergenPersonEntity {
-    return AllergenPersonEntity(
+fun AllergenPerson.toDataLayerEntity() : Pair<AllergenPersonEntity, List<AllergenEntity>> {
+    return Pair(AllergenPersonEntity(
         name = name,
         projectId = project.id ?: 0,
-        allergen = allergen,
-        traces = traces,
         arrivalDate = arrivalDate,
         arrivalMeal = arrivalMeal,
         departureDate = departureDate,
         departureMeal = departureMeal
-    )
+    ),allergens.map {
+        AllergenEntity(project.id ?: 0, name, it.allergen, it.traces)
+    })
 }
