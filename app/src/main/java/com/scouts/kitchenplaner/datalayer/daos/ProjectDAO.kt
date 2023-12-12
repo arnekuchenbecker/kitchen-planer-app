@@ -30,7 +30,7 @@ interface ProjectDAO {
         project: ProjectEntity,
         meals: List<MealEntity>,
         allergens: List<AllergenPersonEntity>
-    ) {
+    ) : Long {
         val projectId = insertProject(project)
 
         meals.forEach {
@@ -42,6 +42,8 @@ interface ProjectDAO {
             it.projectId = projectId
             insertAllergenPerson(it)
         }
+
+        return projectId
     }
 
     @Insert

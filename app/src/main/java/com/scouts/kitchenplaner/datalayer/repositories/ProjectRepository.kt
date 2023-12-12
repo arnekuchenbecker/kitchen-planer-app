@@ -25,8 +25,8 @@ import javax.inject.Inject
 class ProjectRepository @Inject constructor(
     private val projectDAO: ProjectDAO
 ) {
-    suspend fun insertProject(project: Project) {
-        projectDAO.createProject(
+    suspend fun insertProject(project: Project) : Long {
+        return projectDAO.createProject(
             project = project.toDataLayerEntity(),
             meals = project.meals.map { MealEntity(it, 0) },
             allergens = project.allergenPersons.map { it.toDataLayerEntity() })
