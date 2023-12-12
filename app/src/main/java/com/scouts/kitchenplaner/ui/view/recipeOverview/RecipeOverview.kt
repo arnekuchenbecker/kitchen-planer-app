@@ -16,23 +16,45 @@
 
 package com.scouts.kitchenplaner.ui.view.recipeOverview
 
-import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 
 @Composable
-fun RecipeOverview(onNavigationCreateRecipe: () -> Unit){
+fun RecipeOverview(
+    onNavigationCreateRecipe: () -> Unit,
+    onNavigateToDetailedRecipe: (Int) -> Unit
+) {
+    var recipeID by remember { mutableStateOf(0f) }
     Column {
         Text(text = "This is the recipe overview, where all recipes are displayed")
-        Text(text= "available Links to other sides are: ")
+        Text(text = "available Links to other sides are: ")
         Row {
             Text("RecipeCreation")
             Button(onClick = onNavigationCreateRecipe) {
-                
+
             }
         }
+        Row {
+            Text("ProjectDetails")
+            Slider(
+                modifier = Modifier.fillMaxWidth(0.3f),
+                value = recipeID,
+                onValueChange = { recipeID = it },
+                valueRange = 1f..5f,
+                steps = 5
+            )
+            Button(onClick = { onNavigateToDetailedRecipe(recipeID.toInt()) }) {}
+        }
+
     }
 }

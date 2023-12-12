@@ -27,13 +27,15 @@ private const val RECIPE_OVERVIEW = "recipeOverview"
 fun NavGraphBuilder.recipesNav(navController: NavHostController) {
     navigation(startDestination = RECIPE_OVERVIEW, route = Destinations.RecipesGraph) {
         composable(RECIPE_OVERVIEW) {
-            RecipeOverview(onNavigationCreateRecipe = {
-                navController.navigate(
-                    Destinations.RecipeCreationGraph
-                )
-            })
+            RecipeOverview(
+                onNavigationCreateRecipe = {
+                    navController.navigate(
+                        Destinations.RecipeCreationGraph
+                    )
+                },
+                onNavigateToDetailedRecipe = { recipeId -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeId") })
         }
-        recipeCreationNav(navController=navController)
-        recipeDetailsNav(navController=navController)
+        recipeCreationNav(navController = navController)
+        recipeDetailsNav(navController = navController)
     }
 }
