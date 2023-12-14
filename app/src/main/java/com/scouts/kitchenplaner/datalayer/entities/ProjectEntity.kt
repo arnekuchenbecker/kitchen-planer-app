@@ -20,7 +20,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity
+@Entity(tableName = "projects")
 data class ProjectEntity (
     @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String,
