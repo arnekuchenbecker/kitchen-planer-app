@@ -37,6 +37,11 @@ class ProjectRepository @Inject constructor(
             allergens = project.allergenPersons.map { it.toDataLayerEntity() })
     }
 
+    suspend fun getProject(projectName: String) : Project {
+        val entity = projectDAO.getProject(projectName)
+        return Project(entity.id, entity.name, entity.startDate, entity.endDate, listOf(), listOf(), Uri.parse(entity.imageUri))
+    }
+
     fun getProjectOverview(user: User) : Flow<List<ProjectStub>> {
         return projectDAO.getProjects(user.username).map {
             it.map {
