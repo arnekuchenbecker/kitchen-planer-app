@@ -16,26 +16,71 @@
 
 package com.scouts.kitchenplaner.ui.viewmodel
 
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DateRangePickerState
-import androidx.compose.material3.DisplayMode
+import android.net.Uri
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberDateRangePickerState
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.scouts.kitchenplaner.model.entities.Allergen
+import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.usecases.CreateProject
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import java.util.Date
 
-class CreateProjectViewModel : ViewModel() {
-    var inputState = mutableStateOf(CreateProjectInputState())
+@HiltViewModel
+class CreateProjectViewModel(
+    private val createProject: CreateProject
+) : ViewModel() {
+    var inputState by mutableStateOf(CreateProjectInputState())
 
-    fun onProjectCreate() {
-        println("Creating Project with name ${inputState.value.name}")
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun onProjectCreate() : Deferred<Long?> {
+        return viewModelScope.async {
+            val startDate = inputState.startDate.selectedDateMillis?.let { Date(it) }
+            val endDate = inputState.endDate.selectedDateMillis?.let { Date(it) }
+
+            if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isNotEmpty()) {
+                return@async null
+            }
+
+            if (inputState.allergens.any {
+                    it.arrivalDateMillis == null || it.departureDateMillis == null
+                            || it.departureMeal == "" || it.arrivalMeal == ""
+                }) {
+                return@async null
+            }
+
+            val project = Project(
+                name = inputState.name,
+                startDate = startDate,
+                endDate = endDate,
+                meals = mutableListOf<String>().apply {
+                    addAll(inputState.meals)
+                },
+                allergenPersons = mutableListOf<AllergenPerson>().apply {
+                    addAll(inputState.allergens.map { person ->
+                        AllergenPerson(
+                            name = person.name,
+                            allergens = person.allergenList.map { (allergen, traces) ->
+                                Allergen(allergen, traces)
+                            },
+                            arrivalDate = Date(person.arrivalDateMillis!!),
+                            departureDate = Date(person.departureDateMillis!!),
+                            arrivalMeal = person.arrivalMeal,
+                            departureMeal = person.departureMeal
+                        )
+                    })
+                },
+                projectImage = inputState.image ?: Uri.EMPTY
+            )
+
+            createProject.createProject(project)
+        }
     }
 }
