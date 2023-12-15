@@ -22,12 +22,14 @@ import java.util.Date
 /**
  * NOT FINAL --> Adjust when stuff actually happens to projects
  */
-class Project {
-    val id: Long? = null
-    val name: String = ""
-    val startDate: Date = Date(0)
-    val endDate: Date = Date(0)
-    val meals: List<String> = listOf()
-    val allergenPersons: List<AllergenPerson> = listOf()
+class Project(
+    val id: Long? = null,
+    val name: String = "",
+    val startDate: Date = Date(0),
+    val endDate: Date = Date(0),
+    val meals: List<String> = listOf(),
+    val allergenPersons: List<AllergenPerson> = listOf(),
     val projectImage: Uri = Uri.EMPTY
+){
+
 }

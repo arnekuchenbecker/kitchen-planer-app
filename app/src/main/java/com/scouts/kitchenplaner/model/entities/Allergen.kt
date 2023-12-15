@@ -16,7 +16,9 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class Allergen {
-    val allergen: String = ""
+class Allergen(
+    val allergen: String = "",
     val traces: Boolean = true
+) {
+
 }

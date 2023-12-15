@@ -21,12 +21,12 @@ import java.util.Date
 /**
  * NOT FINAL --> Adjust when actually used
  */
-class AllergenPerson {
-    val project: Project = Project()
-    val name: String = ""
-    val allergens: List<Allergen> = listOf()
-    val arrivalDate: Date = Date(0)
-    val arrivalMeal: String = ""
-    val departureDate: Date = Date(0)
+class AllergenPerson(
+    val name: String = "",
+    val allergens: List<Allergen> = listOf(),
+    val arrivalDate: Date = Date(0),
+    val arrivalMeal: String = "",
+    val departureDate: Date = Date(0),
     val departureMeal: String = ""
+) {
 }
