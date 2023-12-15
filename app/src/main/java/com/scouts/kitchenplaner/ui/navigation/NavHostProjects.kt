@@ -19,37 +19,28 @@ package com.scouts.kitchenplaner.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.scouts.kitchenplaner.ui.view.StartScreen
+import androidx.navigation.navArgument
+import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
 
 @Composable
-fun NavHostGeneral(
+fun NavHostProjects(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
     projectNavController: NavHostController = rememberNavController(),
-    startDestination: String = Destinations.home
+    startDestination: String = "Screen/{id}"
 ) {
     NavHost(
-        modifier = modifier, navController = navController, startDestination = startDestination
+        modifier = modifier,
+        navController = projectNavController,
+        startDestination = startDestination
     ) {
-        composable(Destinations.home) {
-            StartScreen(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(Destinations.ProjectDetailsGraph + "/$projectID")
-            },
-                onNavigateToProjectCreation = {
-                    navController.navigate(Destinations.ProjectCreationGraph)
-                },
-                onNavigateToCreateRecipe = { navController.navigate(Destinations.RecipeCreationGraph) },
-                onNavigateToRecipeDetail = { recipeID -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID") })
-        }
-        projectsNav(navController = navController)
-        recipesNav(navController = navController)
-
+        shoppinListGraph(navController = projectNavController)
+        composable(
+            "Screen/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { argu -> ProjectDetails(projectID = argu.arguments?.getInt("id") ?: -1) }
     }
-}
-
-private fun backToStartScreen(navController: NavHostController) {
-    navController.popBackStack(Destinations.home, false)
 }

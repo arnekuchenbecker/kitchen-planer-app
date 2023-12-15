@@ -30,7 +30,7 @@ fun NavGraphBuilder.recipeDetailsNav(navController: NavHostController) {
     navigation(startDestination = "$RECIPE_DETAILS/{id}",
         route = "${Destinations.RecipeDetailsGraph}/{id}",
         arguments = listOf(
-           navArgument("id") { type = NavType.IntType }
+            navArgument("id") { type = NavType.IntType }
         )) {
         composable(
             "$RECIPE_DETAILS/{id}",

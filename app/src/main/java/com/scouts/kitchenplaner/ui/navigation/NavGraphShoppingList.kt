@@ -16,26 +16,19 @@
 
 package com.scouts.kitchenplaner.ui.navigation
 
-
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.createRecipe.CreateRecipe
+import com.scouts.kitchenplaner.ui.view.shoppingListOverview.ShoppingListOverview
 
-private const val RECIPE_CREATION = "createRecipe"
-
-fun NavGraphBuilder.recipeCreationNav(navController: NavHostController) {
-    navigation(startDestination = RECIPE_CREATION, route = Destinations.RecipeCreationGraph) {
-        composable(RECIPE_CREATION) {
-            CreateRecipe(onNavigationToRecipeDetails = { recipeID ->
-                navController.navigate(
-                    "${Destinations.RecipeDetailsGraph}/$recipeID"
-                )
-            })
+fun NavGraphBuilder.shoppinListGraph(navController: NavController) {
+    navigation(
+        startDestination = "OverviewShopping/{id}",
+        route = "${Destinations.ShoppingListGraph}/{id}"
+    ) {
+        composable("OverviewShopping/{id}") {
+            ShoppingListOverview()
         }
     }
 }
-
-
-

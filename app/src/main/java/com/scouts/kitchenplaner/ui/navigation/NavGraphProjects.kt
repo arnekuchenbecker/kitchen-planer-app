@@ -22,20 +22,24 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.projectOverview.ProjectOverview
 
-private  const val PROJECT_OVERVIEW = "projectOverview"
+private const val PROJECT_OVERVIEW = "projectOverview"
 
-fun NavGraphBuilder.projectsNav(navController: NavHostController) {
+fun NavGraphBuilder.projectsNav(
+    navController: NavHostController,
+) {
     navigation(startDestination = PROJECT_OVERVIEW, route = Destinations.ProjectsGraph) {
         composable(PROJECT_OVERVIEW) {
-            ProjectOverview(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(
-                    Destinations.ProjectDetailsGraph+"/$projectID"
-                )
-            }, onNavigateToCreateProject = {navController.navigate(Destinations.ProjectCreationGraph)})
+            ProjectOverview(
+                onNavigateToDetailedProject = { projectID ->
+                    navController.navigate(
+                        Destinations.ProjectDetailsGraph + "/$projectID"
+                    )
+                },
+                onNavigateToCreateProject = { navController.navigate(Destinations.ProjectCreationGraph) })
         }
 
         projectsDetailsNav(navController = navController)
-        projectCreationNav(navController=navController)
+        projectCreationNav(navController = navController)
 
     }
 }

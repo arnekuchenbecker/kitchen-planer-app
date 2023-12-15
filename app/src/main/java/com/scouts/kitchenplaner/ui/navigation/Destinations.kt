@@ -19,12 +19,13 @@ package com.scouts.kitchenplaner.ui.navigation
 sealed class Destinations {
     companion object {
 
+        const val ShoppingListGraph = "shoppingList_Graph"
         const val home = "start"
         const val ProjectDetailsGraph = "projectDetails"
         const val ProjectsGraph = "projects"
         const val RecipesGraph = "recipes"
         const val ProjectCreationGraph = "projectCreation_Graph"
-        const val RecipeCreationGraph ="recipeCreation_Graph"
+        const val RecipeCreationGraph = "recipeCreation_Graph"
         const val RecipeDetailsGraph = "recipeDetails"
     }
 }

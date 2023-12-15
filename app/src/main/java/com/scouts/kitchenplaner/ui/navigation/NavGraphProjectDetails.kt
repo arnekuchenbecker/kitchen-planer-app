@@ -22,7 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
+import com.scouts.kitchenplaner.ui.view.ProjectLayout
 
 private const val PROJECT_DETAILS = "details"
 
@@ -32,9 +32,10 @@ fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
         route = "${Destinations.ProjectDetailsGraph}/{id}",
         arguments = listOf(navArgument("id") { type = NavType.IntType })
     ) {
-        composable(
-            "$PROJECT_DETAILS/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
-        ) { ProjectDetails(projectID = it.arguments?.getInt("id") ?: -1) }
+        composable("$PROJECT_DETAILS/{id}") {
+            ProjectLayout(1)
+        }
     }
+
 }
+
