@@ -1,0 +1,41 @@
+/*
+ * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
+ * to cooperatively plan a meal plan for a campout.
+ * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+package com.scouts.kitchenplaner.ui.viewmodel
+
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DateRangePickerState
+import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDateRangePickerState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class CreateProjectViewModel : ViewModel() {
+    var inputState = mutableStateOf(CreateProjectInputState())
+
+    fun onProjectCreate() {
+        println("Creating Project with name ${inputState.value.name}")
+    }
+}

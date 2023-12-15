@@ -12,37 +12,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import com.scouts.kitchenplaner.ui.view.createproject.CreateProject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            KitchenPlanerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+            KitchenPlanerTheme(dynamicColor = false) {
+                CreateProject()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    KitchenPlanerTheme {
-        Greeting("Android")
+    KitchenPlanerTheme (darkTheme = true) {
+        Surface(modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background) {
+            Text("Test")
+        }
     }
 }
