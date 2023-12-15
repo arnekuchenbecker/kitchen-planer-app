@@ -22,36 +22,40 @@ import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.scouts.kitchenplaner.toDateString
+import java.util.Locale
 
 class CreateProjectInputState {
     var name by mutableStateOf("")
     var image by mutableStateOf<Uri?>(null)
 
     @OptIn(ExperimentalMaterial3Api::class)
-    var startDate: DatePickerState = DatePickerState(null, null, IntRange(2000, 2100), DisplayMode.Picker)
+    var startDate: DatePickerState = DatePickerState(Locale.GERMAN)
     @OptIn(ExperimentalMaterial3Api::class)
     val startDateString: String
         get() = (startDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
     @OptIn(ExperimentalMaterial3Api::class)
-    var endDate: DatePickerState = DatePickerState(null, null, IntRange(2000, 2100), DisplayMode.Picker)
+    var endDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
     @OptIn(ExperimentalMaterial3Api::class)
     val endDateString: String
         get() = (endDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
     private val mealList: SnapshotStateList<String> = mutableStateListOf()
-    private val allergenList: SnapshotStateMap<String, SnapshotStateList<Pair<String, Boolean>>> = mutableStateMapOf()
+    private val allergenList: SnapshotStateList<AllergenPersonState> = mutableStateListOf()
+
+    private var mutableAllergenAdderState by mutableStateOf(AllergenPersonAdderState())
+
+    val allergenAdderState: AllergenPersonAdderState
+        get() = mutableAllergenAdderState
 
     val meals: List<String>
         get() = mealList
 
-    val allergens: Map<String, List<Pair<String, Boolean>>>
+    val allergens: List<AllergenPersonState>
         get() = allergenList
 
     fun addMeal(mealName: String) {
@@ -62,25 +66,33 @@ class CreateProjectInputState {
         mealList.removeAt(index)
     }
 
-    fun addIntolerantPerson(name: String, allergen: String, traces: Boolean) {
-        if (allergenList.containsKey(name)) {
-            allergenList[name]?.add(Pair(allergen, traces))
-        } else {
-            allergenList[name] = mutableStateListOf(Pair(allergen, traces))
+    @OptIn(ExperimentalMaterial3Api::class)
+    fun addIntolerantPerson() {
+        if (!allergenList.any { it.name == allergenAdderState.name }) {
+            val newPerson = AllergenPersonState()
+            newPerson.name = allergenAdderState.name
+            newPerson.arrivalDateMillis = allergenAdderState.arrivalDate.selectedDateMillis
+            newPerson.departureDateMillis = allergenAdderState.departureDate.selectedDateMillis
+            allergenAdderState.allergens.forEach { (allergen, traces) ->
+                newPerson.allergenList.add(Pair(allergen, traces))
+            }
+            allergenList.add(newPerson)
         }
     }
 
     fun removeIntolerantPerson(name: String) {
-        allergenList.remove(name)
+        allergenList.removeAll { it.name == name }
     }
 
     fun removeIntolerancy(name: String, toRemove: String, tracesRemove: Boolean) {
-        allergenList[name]?.removeAll {(allergen, traces) ->
+        val person = allergenList.find { it.name == name }
+
+        person?.allergenList?.removeAll { (allergen, traces) ->
             allergen == toRemove && traces == tracesRemove
         }
 
-        if (allergenList[name]?.isEmpty() == true) {
-            allergenList.remove(name)
+        if (person?.allergenList?.isEmpty() == true) {
+            allergenList.remove(person)
         }
     }
 }
