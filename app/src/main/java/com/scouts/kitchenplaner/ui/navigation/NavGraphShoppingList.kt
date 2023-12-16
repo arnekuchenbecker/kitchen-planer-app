@@ -18,17 +18,20 @@ package com.scouts.kitchenplaner.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.shoppingListOverview.ShoppingListOverview
 
-fun NavGraphBuilder.shoppinListGraph(navController: NavController) {
+fun NavGraphBuilder.shoppingListGraph(navController: NavController) {
     navigation(
-        startDestination = "OverviewShopping/{id}",
-        route = "${Destinations.ShoppingListGraph}/{id}"
+        startDestination = "OverviewShopping",
+        route = "${Destinations.ShoppingListGraph}/{id}",
+        arguments = listOf(navArgument("id") { type = NavType.IntType })
     ) {
-        composable("OverviewShopping/{id}") {
-            ShoppingListOverview()
+        composable("OverviewShopping") {
+            ShoppingListOverview(it.arguments?.getInt("id") ?: -1)
         }
     }
 }

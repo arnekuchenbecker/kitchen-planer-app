@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,24 +29,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun ProjectOverview(onNavigateToDetailedProject: (Int) -> Unit, onNavigateToCreateProject:()-> Unit){
+fun ProjectOverview(
+    onNavigateToDetailedProject: (Int) -> Unit,
+    onNavigateToCreateProject: () -> Unit
+) {
     var projectId by remember { mutableStateOf(0f) }
     Column {
         Text(text = "This is the project overview, where all own projects are displayed")
-        Text(text= "available Links to other sides are: ")
+        Text(text = "available Links to other sides are: ")
         Row {
             Text("ProjectDetails")
-            Slider(modifier = Modifier.fillMaxWidth(0.3f),value = projectId, onValueChange = {projectId = it }, valueRange = 1f..5f, steps = 1 )
+            Slider(
+                modifier = Modifier.fillMaxWidth(0.3f),
+                value = projectId,
+                onValueChange = { projectId = it },
+                valueRange = 1f..5f,
+                steps = 5
+            )
             Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
 
 
         }
-        Row{
+        Row {
             Text("ProjectCreation")
-            Button(onClick = onNavigateToCreateProject){}
+            Button(onClick = onNavigateToCreateProject) {}
         }
     }
 }

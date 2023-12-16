@@ -28,7 +28,6 @@ import com.scouts.kitchenplaner.ui.view.StartScreen
 fun NavHostGeneral(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    projectNavController: NavHostController = rememberNavController(),
     startDestination: String = Destinations.home
 ) {
     NavHost(

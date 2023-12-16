@@ -32,8 +32,11 @@ fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
         route = "${Destinations.ProjectDetailsGraph}/{id}",
         arguments = listOf(navArgument("id") { type = NavType.IntType })
     ) {
-        composable("$PROJECT_DETAILS/{id}") {
-            ProjectLayout(1)
+        composable(
+            "$PROJECT_DETAILS/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) {
+            ProjectLayout(it.arguments?.getInt("id") ?: -1)
         }
     }
 

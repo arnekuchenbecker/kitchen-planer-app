@@ -49,29 +49,23 @@ fun ProjectLayout(id: Int) {
         Triple("Einkaufsliste", Destinations.ShoppingListGraph, Icons.Filled.AccountBox)
     )
     val backStackEntry by projectNavController.currentBackStackEntryAsState()
-
+    println(id)
     Scaffold(topBar = {
         SecondaryTabRow(selectedTabIndex = selectedItem) {
             sites.forEachIndexed { index, site ->
-                backStackEntry?.destination?.hierarchy?.forEach {
-                    println(it.route)
-                }
                 if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{id}" } == true) {
                     selectedItem = index;
                 }
-                Tab(
-                    selected = selectedItem == index,
-                    onClick = {
-                        projectNavController.navigate("${site.second}/$id") {
-                            launchSingleTop = true
-                        }
-                    },
-                    text = { Text(site.first) }
-                )
+                Tab(selected = selectedItem == index, onClick = {
+                    projectNavController.navigate("${site.second}/$id") {
+                        launchSingleTop = true
+                    }
+                    println("Layout: " + backStackEntry?.destination?.hierarchy?.first())
+                }, text = { Text(site.first) })
 
             }
         }
     }) {
-        NavHostProjects(Modifier.padding(it), projectNavController = projectNavController)
+        NavHostProjects(Modifier.padding(it), projectNavController = projectNavController, id = id)
     }
 }

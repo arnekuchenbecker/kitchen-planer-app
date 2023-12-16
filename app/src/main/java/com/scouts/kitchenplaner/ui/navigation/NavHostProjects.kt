@@ -22,25 +22,31 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
 
 @Composable
 fun NavHostProjects(
     modifier: Modifier = Modifier,
-    projectNavController: NavHostController = rememberNavController(),
-    startDestination: String = "Screen/{id}"
+    projectNavController: NavHostController,
+    id: Int = 0
 ) {
     NavHost(
         modifier = modifier,
         navController = projectNavController,
-        startDestination = startDestination
+        startDestination = "Screen/$id",
     ) {
-        shoppinListGraph(navController = projectNavController)
+        println("Project: $id")
+        shoppingListGraph(navController = projectNavController)
         composable(
             "Screen/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })
-        ) { argu -> ProjectDetails(projectID = argu.arguments?.getInt("id") ?: -1) }
+        ) { projectId ->
+            if (projectId.arguments?.getInt("id") == 0) {
+                ProjectDetails(projectID = id)
+            } else {
+                ProjectDetails(projectID = projectId.arguments?.getInt("id") ?: -1)
+            }
+        }
     }
 }
