@@ -40,7 +40,7 @@ import com.scouts.kitchenplaner.ui.navigation.NavHostProjects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectLayout(id: Int, navController: NavHostController) {
+fun ProjectLayout(id: Long, navController: NavHostController) {
     var selectedItem by remember { mutableStateOf(0) }
     val projectNavController: NavHostController = rememberNavController()
 

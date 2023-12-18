@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ProjectDetails(
-    projectID: Int,
+    projectID: Long,
     onNavigateToRecipeToCook: (Long) -> Unit,
     onNavigateToRecipeCreation: () -> Unit
 ) {

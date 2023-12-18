@@ -24,10 +24,10 @@ import androidx.compose.runtime.Composable
 
 
 @Composable
-fun InviteToProject(onNavigationToProject: ()-> Unit){
+fun InviteToProject(onNavigationToProject: () -> Unit) {
     Column {
         Text("After project creation people can be invited")
-        Text(text= "available Links to other sides are: ")
+        Text(text = "available Links to other sides are: ")
 
         Row {
             Text("ProjectDetails")

@@ -30,13 +30,13 @@ fun NavGraphBuilder.recipeDetailsNav(navController: NavHostController) {
     navigation(startDestination = "$RECIPE_DETAILS/{id}",
         route = "${Destinations.RecipeDetailsGraph}/{id}",
         arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
+            navArgument("id") { type = NavType.LongType }
         )) {
         composable(
             "$RECIPE_DETAILS/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) {
-            recipeDetails(recipeID = it.arguments?.getInt("id") ?: -1)
+            recipeDetails(recipeID = it.arguments?.getLong("id") ?: -1)
         }
     }
 }

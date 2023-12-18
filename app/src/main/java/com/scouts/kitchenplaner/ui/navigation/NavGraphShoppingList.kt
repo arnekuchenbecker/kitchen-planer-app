@@ -32,11 +32,11 @@ fun NavGraphBuilder.shoppingListGraph(navController: NavController) {
         startDestination = SHOPPING_OVERVIEW,
         route = "${Destinations.ShoppingListGraph}/{id}",
         arguments = listOf(
-            navArgument("id") { type = NavType.IntType })
+            navArgument("id") { type = NavType.LongType })
     ) {
         composable(SHOPPING_OVERVIEW) {
             ShoppingListOverview(
-                it.arguments?.getInt("id") ?: -1,
+                it.arguments?.getLong("id") ?: -1,
                 onNavigateToShoppingList = { listID ->
                     navController.navigate("${SHOPPING_LIST_DETAIL}/$listID")
                 }
@@ -44,10 +44,10 @@ fun NavGraphBuilder.shoppingListGraph(navController: NavController) {
         }
         composable(
             "${SHOPPING_LIST_DETAIL}/{shoppingListId}",
-            arguments = listOf(navArgument("shoppingListId") { NavType.IntType })
+            arguments = listOf(navArgument("shoppingListId") { type = NavType.LongType })
         ) {
             ShoppingList(
-                listID = (it.arguments?.getString("shoppingListId", "42") ?: "-1").toLong()
+                listID = (it.arguments?.getLong("shoppingListId", 42) ?: -1)
 
             )
         }

@@ -32,10 +32,10 @@ import androidx.compose.ui.Modifier
 @Composable
 fun StartScreen(
     modifier: Modifier = Modifier,
-    onNavigateToDetailedProject: (Int) -> Unit,
+    onNavigateToDetailedProject: (Long) -> Unit,
     onNavigateToProjectCreation: () -> Unit,
     onNavigateToCreateRecipe: () -> Unit,
-    onNavigateToRecipeDetail: (Int) -> Unit
+    onNavigateToRecipeDetail: (Long) -> Unit
 ) {
     var projectId by remember { mutableStateOf(0f) }
     var recipeID by remember { mutableStateOf(0f) }
@@ -51,7 +51,7 @@ fun StartScreen(
                 valueRange = 1f..10f,
                 steps = 1
             )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
+            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
 
         }
         Row {
@@ -71,7 +71,7 @@ fun StartScreen(
                 valueRange = 1f..15f,
                 steps = 15
             )
-            Button(onClick = { onNavigateToRecipeDetail(recipeID.toInt()) }) {
+            Button(onClick = { onNavigateToRecipeDetail(recipeID.toLong()) }) {
 
             }
         }

@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ShoppingListOverview(projectID: Int, onNavigateToShoppingList: (Long) -> Unit) {
+fun ShoppingListOverview(projectID: Long, onNavigateToShoppingList: (Long) -> Unit) {
     Column {
         Text(text = "This is the shopping list overview, where all own shopping lists within one project are displayed are displayed")
         Text(text = "Shoppinglist for project $projectID", color = Color.Red)

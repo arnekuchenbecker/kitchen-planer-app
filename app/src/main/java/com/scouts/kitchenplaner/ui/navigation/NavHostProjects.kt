@@ -32,7 +32,7 @@ private const val RECIPE_TO_COOK = "recipeToCook"
 fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
-    id: Int = 0,
+    id: Long = 0L,
     onNavigateToRecipe: () -> Unit
 ) {
     NavHost(
@@ -43,11 +43,11 @@ fun NavHostProjects(
         shoppingListGraph(navController = projectNavController)
         composable(
             "${Destinations.ProjectsStart}/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
         ) { projectId ->
-            var project = projectId.arguments?.getInt("id")
+            var project = projectId.arguments?.getLong("id")
             println("in project details Overview with $project")
-            if (project == 0) {
+            if (project == 0L) {
                 project = id
             }
             ProjectDetails(
@@ -67,8 +67,4 @@ fun NavHostProjects(
             )
         }
     }
-}
-
-private fun backToProjectScreen(navController: NavHostController) {
-    navController.popBackStack(Destinations.ProjectsStart, false)
 }

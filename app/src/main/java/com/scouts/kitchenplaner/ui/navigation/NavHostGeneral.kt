@@ -49,7 +49,3 @@ fun NavHostGeneral(
 
     }
 }
-
-private fun backToStartScreen(navController: NavHostController) {
-    navController.popBackStack(Destinations.home, false)
-}

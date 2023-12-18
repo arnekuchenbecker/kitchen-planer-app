@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun RecipeOverview(
     onNavigationCreateRecipe: () -> Unit,
-    onNavigateToDetailedRecipe: (Int) -> Unit
+    onNavigateToDetailedRecipe: (Long) -> Unit
 ) {
     var recipeID by remember { mutableStateOf(0f) }
     Column {
@@ -53,7 +53,7 @@ fun RecipeOverview(
                 valueRange = 1f..5f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToDetailedRecipe(recipeID.toInt()) }) {}
+            Button(onClick = { onNavigateToDetailedRecipe(recipeID.toLong()) }) {}
         }
 
     }

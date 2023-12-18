@@ -30,7 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 @Composable
-fun CreateRecipe(onNavigationToRecipeDetails: (Int) -> Unit) {
+fun CreateRecipe(onNavigationToRecipeDetails: (Long) -> Unit) {
     var recipeID by remember { mutableStateOf(0f) }
     Column {
         Text("Here you can create a new recipe")
@@ -44,7 +44,7 @@ fun CreateRecipe(onNavigationToRecipeDetails: (Int) -> Unit) {
                 valueRange = 1f..15f,
                 steps = 1
             )
-            Button(onClick = { onNavigationToRecipeDetails(recipeID.toInt()) }) {
+            Button(onClick = { onNavigationToRecipeDetails(recipeID.toLong()) }) {
 
             }
         }

@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 @Composable
 
 fun ProjectOverview(
-    onNavigateToDetailedProject: (Int) -> Unit,
+    onNavigateToDetailedProject: (Long) -> Unit,
     onNavigateToCreateProject: () -> Unit
 ) {
     var projectId by remember { mutableStateOf(0f) }
@@ -48,7 +48,7 @@ fun ProjectOverview(
                 valueRange = 1f..5f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toInt()) }) {}
+            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
 
 
         }
