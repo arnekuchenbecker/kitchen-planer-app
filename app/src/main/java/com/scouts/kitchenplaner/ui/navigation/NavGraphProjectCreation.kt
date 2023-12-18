@@ -35,7 +35,6 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
         composable(PROJECT_CREATION) {
 
             ProjectCreation(onNavigateToInvitePeople = { projectId ->
-                print("after project creation: $projectId")
                 navController.navigate("$INVITE_SCREEN/$projectId")
             })
         }

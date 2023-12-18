@@ -17,15 +17,40 @@
 package com.scouts.kitchenplaner.ui.view.shoppingListOverview
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ShoppingListOverview(projectID: Int){
+fun ShoppingListOverview(projectID: Int, onNavigateToShoppingList: (Long) -> Unit) {
     Column {
         Text(text = "This is the shopping list overview, where all own shopping lists within one project are displayed are displayed")
-        Text(text= "Shoppinglist for project $projectID",color= Color.Red)
-        Text(text= "available Links to other sides are: ")
+        Text(text = "Shoppinglist for project $projectID", color = Color.Red)
+        Text(text = "available Links to other sides are: ")
+        var listID by remember { mutableStateOf(42f) }
+        Row {
+            Text(text = "Detailed Shopping List")
+            Slider(
+                modifier = Modifier.fillMaxWidth(0.3f),
+                value = listID,
+                onValueChange = { listID = it },
+                valueRange = 1f..20f,
+                steps = 5
+            )
+            Button(onClick = { onNavigateToShoppingList(listID.toLong()) }) {
+
+            }
+
+        }
+
     }
 }

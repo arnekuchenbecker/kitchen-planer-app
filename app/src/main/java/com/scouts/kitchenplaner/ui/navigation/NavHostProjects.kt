@@ -24,29 +24,51 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
+import com.scouts.kitchenplaner.ui.view.recipeForProject.RecipeForProjectScreen
+
+private const val RECIPE_TO_COOK = "recipeToCook"
 
 @Composable
 fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
-    id: Int = 0
+    id: Int = 0,
+    onNavigateToRecipe: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
         navController = projectNavController,
-        startDestination = "Screen/$id",
+        startDestination = "${Destinations.ProjectsStart}/$id",
     ) {
-        println("Project: $id")
         shoppingListGraph(navController = projectNavController)
         composable(
-            "Screen/{id}",
+            "${Destinations.ProjectsStart}/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { projectId ->
-            if (projectId.arguments?.getInt("id") == 0) {
-                ProjectDetails(projectID = id)
-            } else {
-                ProjectDetails(projectID = projectId.arguments?.getInt("id") ?: -1)
+            var project = projectId.arguments?.getInt("id")
+            println("in project details Overview with $project")
+            if (project == 0) {
+                project = id
             }
+            ProjectDetails(
+                projectID = project!!,
+                onNavigateToRecipeToCook = { recipeID -> projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID") },
+                onNavigateToRecipeCreation = onNavigateToRecipe
+            )
+
+
+        }
+        composable(
+            "${RECIPE_TO_COOK}/{recipeID}",
+            arguments = listOf(navArgument("recipeID") { type = NavType.LongType })
+        ) {
+            RecipeForProjectScreen(
+                projectNavController.currentBackStackEntry?.arguments?.getLong("recipeID") ?: -1
+            )
         }
     }
+}
+
+private fun backToProjectScreen(navController: NavHostController) {
+    navController.popBackStack(Destinations.ProjectsStart, false)
 }

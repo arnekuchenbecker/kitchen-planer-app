@@ -42,6 +42,7 @@ fun NavHostGeneral(
                 },
                 onNavigateToCreateRecipe = { navController.navigate(Destinations.RecipeCreationGraph) },
                 onNavigateToRecipeDetail = { recipeID -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID") })
+
         }
         projectsNav(navController = navController)
         recipesNav(navController = navController)

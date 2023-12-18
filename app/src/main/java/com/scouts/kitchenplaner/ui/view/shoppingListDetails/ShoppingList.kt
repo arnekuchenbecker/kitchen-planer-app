@@ -14,23 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.recipeDetails
+package com.scouts.kitchenplaner.ui.view.shoppingListDetails
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-
 
 @Composable
-fun recipeDetails(recipeID: Int) {
-
-    Column {
-        Text("On this screen you can see a detailed recipe")
-        Text(text = "The recipeID is $recipeID", color = Color.Red)
-
-        Text(text = "available Links to other sides are: ")
-
-    }
+fun ShoppingList(listID: Long) {
+    Text("Shopping List $listID")
 
 }

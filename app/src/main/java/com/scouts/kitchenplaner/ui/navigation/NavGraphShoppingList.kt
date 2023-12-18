@@ -22,16 +22,34 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.scouts.kitchenplaner.ui.view.shoppingListDetails.ShoppingList
 import com.scouts.kitchenplaner.ui.view.shoppingListOverview.ShoppingListOverview
 
+private const val SHOPPING_OVERVIEW: String = "OverviewShopping"
+private const val SHOPPING_LIST_DETAIL: String = "ShoppingList"
 fun NavGraphBuilder.shoppingListGraph(navController: NavController) {
     navigation(
-        startDestination = "OverviewShopping",
+        startDestination = SHOPPING_OVERVIEW,
         route = "${Destinations.ShoppingListGraph}/{id}",
-        arguments = listOf(navArgument("id") { type = NavType.IntType })
+        arguments = listOf(
+            navArgument("id") { type = NavType.IntType })
     ) {
-        composable("OverviewShopping") {
-            ShoppingListOverview(it.arguments?.getInt("id") ?: -1)
+        composable(SHOPPING_OVERVIEW) {
+            ShoppingListOverview(
+                it.arguments?.getInt("id") ?: -1,
+                onNavigateToShoppingList = { listID ->
+                    navController.navigate("${SHOPPING_LIST_DETAIL}/$listID")
+                }
+            )
+        }
+        composable(
+            "${SHOPPING_LIST_DETAIL}/{shoppingListId}",
+            arguments = listOf(navArgument("shoppingListId") { NavType.IntType })
+        ) {
+            ShoppingList(
+                listID = (it.arguments?.getString("shoppingListId", "42") ?: "-1").toLong()
+
+            )
         }
     }
 }

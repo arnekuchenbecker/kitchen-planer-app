@@ -27,5 +27,6 @@ sealed class Destinations {
         const val ProjectCreationGraph = "projectCreation_Graph"
         const val RecipeCreationGraph = "recipeCreation_Graph"
         const val RecipeDetailsGraph = "recipeDetails"
+        const val ProjectsStart = "projectStart"
     }
 }

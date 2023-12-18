@@ -40,12 +40,12 @@ import com.scouts.kitchenplaner.ui.navigation.NavHostProjects
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectLayout(id: Int) {
+fun ProjectLayout(id: Int, navController: NavHostController) {
     var selectedItem by remember { mutableStateOf(0) }
     val projectNavController: NavHostController = rememberNavController()
 
     val sites = listOf(
-        Triple("Übersicht", "Screen", Icons.Filled.Build),
+        Triple("Übersicht", Destinations.ProjectsStart, Icons.Filled.Build),
         Triple("Einkaufsliste", Destinations.ShoppingListGraph, Icons.Filled.AccountBox)
     )
     val backStackEntry by projectNavController.currentBackStackEntryAsState()
@@ -60,12 +60,15 @@ fun ProjectLayout(id: Int) {
                     projectNavController.navigate("${site.second}/$id") {
                         launchSingleTop = true
                     }
-                    println("Layout: " + backStackEntry?.destination?.hierarchy?.first())
                 }, text = { Text(site.first) })
 
             }
         }
     }) {
-        NavHostProjects(Modifier.padding(it), projectNavController = projectNavController, id = id)
+        NavHostProjects(
+            Modifier.padding(it),
+            projectNavController = projectNavController,
+            id = id,
+            onNavigateToRecipe = { navController.navigate(Destinations.RecipeCreationGraph) })
     }
 }
