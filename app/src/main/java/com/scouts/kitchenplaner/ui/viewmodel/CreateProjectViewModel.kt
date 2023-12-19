@@ -29,31 +29,37 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.usecases.CreateProject
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import java.util.Date
+import javax.inject.Inject
 
 @HiltViewModel
-class CreateProjectViewModel(
+class CreateProjectViewModel @Inject constructor(
     private val createProject: CreateProject
 ) : ViewModel() {
     var inputState by mutableStateOf(CreateProjectInputState())
 
+    private var navigateFlow = MutableStateFlow<Long?>(null)
+    val navigateTo: StateFlow<Long?>
+        get() = navigateFlow
+
     @OptIn(ExperimentalMaterial3Api::class)
-    fun onProjectCreate() : Deferred<Long?> {
-        return viewModelScope.async {
+    fun onProjectCreate() {
+        viewModelScope.launch {
             val startDate = inputState.startDate.selectedDateMillis?.let { Date(it) }
             val endDate = inputState.endDate.selectedDateMillis?.let { Date(it) }
 
-            if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isNotEmpty()) {
-                return@async null
+            if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isEmpty()) {
+                return@launch
             }
 
             if (inputState.allergens.any {
                     it.arrivalDateMillis == null || it.departureDateMillis == null
                             || it.departureMeal == "" || it.arrivalMeal == ""
                 }) {
-                return@async null
+                return@launch
             }
 
             val project = Project(
@@ -67,7 +73,7 @@ class CreateProjectViewModel(
                     addAll(inputState.allergens.map { person ->
                         AllergenPerson(
                             name = person.name,
-                            allergens = person.allergenList.map { (allergen, traces) ->
+                            allergens = person.allergens.map { (allergen, traces) ->
                                 Allergen(allergen, traces)
                             },
                             arrivalDate = Date(person.arrivalDateMillis!!),
@@ -80,7 +86,9 @@ class CreateProjectViewModel(
                 projectImage = inputState.image ?: Uri.EMPTY
             )
 
-            createProject.createProject(project)
+            val projectId = createProject.createProject(project)
+
+            navigateFlow.emit(projectId)
         }
     }
 }
