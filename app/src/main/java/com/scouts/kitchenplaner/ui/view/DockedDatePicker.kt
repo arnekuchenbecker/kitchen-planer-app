@@ -46,7 +46,12 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DockedDatePicker(modifier: Modifier = Modifier, dateState: DatePickerState, displayText: String, label: String) {
+fun DockedDatePicker(
+    modifier: Modifier = Modifier,
+    dateState: DatePickerState,
+    displayText: String,
+    label: String
+) {
     var displayDialog by remember { mutableStateOf(false) }
 
     DatePickerDisplay(
