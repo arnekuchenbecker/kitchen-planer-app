@@ -49,7 +49,7 @@ class CreateProjectInputState {
 
     private var mutableAllergenAdderState by mutableStateOf(AllergenPersonAdderState())
 
-    val allergenAdderState: AllergenPersonAdderState
+    private val allergenAdderState: AllergenPersonAdderState
         get() = mutableAllergenAdderState
 
     val meals: List<String>
