@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 
 
 @Composable
-fun recipeDetails(recipeID: Long) {
+fun RecipeDetails(recipeID: Long) {
 
     Column {
         Text("On this screen you can see a detailed recipe")

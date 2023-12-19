@@ -14,26 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.inviteToProject
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import java.util.Date
 
-
-@Composable
-fun InviteToProject(onNavigateToProject: () -> Unit) {
-    Column {
-        Text("After project creation people can be invited")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text("ProjectDetails")
-            Button(onClick = onNavigateToProject) {}
-
-        }
-    }
-    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
+/**
+ * NOT FINAL --> Adjust when actually used
+ */
+class AllergenPerson(
+    val name: String = "",
+    val allergens: List<Allergen> = listOf(),
+    val arrivalDate: Date = Date(0),
+    val arrivalMeal: String = "",
+    val departureDate: Date = Date(0),
+    val departureMeal: String = ""
+) {
 }

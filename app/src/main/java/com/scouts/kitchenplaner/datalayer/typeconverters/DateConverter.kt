@@ -14,26 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.inviteToProject
+package com.scouts.kitchenplaner.datalayer.typeconverters
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.room.TypeConverter
+import java.util.Date
 
-
-@Composable
-fun InviteToProject(onNavigateToProject: () -> Unit) {
-    Column {
-        Text("After project creation people can be invited")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text("ProjectDetails")
-            Button(onClick = onNavigateToProject) {}
-
-        }
+class DateConverter {
+    @TypeConverter
+    fun dateToLong(date: Date): Long {
+        return date.time
     }
-    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
+
+    @TypeConverter
+    fun entityToDate(millis: Long): Date {
+        return Date(millis)
+    }
 }

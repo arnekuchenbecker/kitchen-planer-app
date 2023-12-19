@@ -14,42 +14,40 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.createProject
+package com.scouts.kitchenplaner.ui.view
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProjectCreation(onNavigateToInvitePeople: (Long) -> Unit) {
-    var projectId by remember { mutableStateOf(0f) }
-
-    Column {
-        Text("Here it is possible to create a new Project")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text(text = "inviteToProject")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = projectId,
-                onValueChange = { projectId = it },
-                valueRange = 1f..10f,
-                steps = 1
-            )
-            Button(onClick = { onNavigateToInvitePeople(projectId.toLong()) }) {
-
+fun ListEditHeader(
+    onClick: () -> Unit,
+    title: String
+) {
+    Row (modifier = Modifier
+        .fillMaxWidth()
+        .height(70.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+        Box(contentAlignment = Alignment.CenterStart, modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.4f)
+            .padding(0.dp, 0.dp, 5.dp, 0.dp)) {
+            Text(title)
+        }
+        Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxHeight()) {
+            Button(onClick = onClick) {
+                Text("Bearbeiten")
             }
         }
-
     }
 }

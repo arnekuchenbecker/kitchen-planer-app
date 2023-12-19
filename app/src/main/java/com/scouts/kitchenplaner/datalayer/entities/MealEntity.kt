@@ -14,26 +14,21 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.inviteToProject
+package com.scouts.kitchenplaner.datalayer.entities
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.room.Entity
+import androidx.room.ForeignKey
 
-
-@Composable
-fun InviteToProject(onNavigateToProject: () -> Unit) {
-    Column {
-        Text("After project creation people can be invited")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text("ProjectDetails")
-            Button(onClick = onNavigateToProject) {}
-
-        }
-    }
-    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
-}
+@Entity(
+    primaryKeys = ["name", "projectId"],
+    foreignKeys = [ForeignKey(
+        entity = ProjectEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["projectId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
+data class MealEntity(
+    val name: String,
+    var projectId: Long
+)

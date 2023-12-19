@@ -14,26 +14,11 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.inviteToProject
+package com.scouts.kitchenplaner.ui.view
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
-
-@Composable
-fun InviteToProject(onNavigateToProject: () -> Unit) {
-    Column {
-        Text("After project creation people can be invited")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text("ProjectDetails")
-            Button(onClick = onNavigateToProject) {}
-
-        }
-    }
-    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
-}
+data class CardState(val title: String,
+                     val onDelete: () -> Unit,
+                     val toBeDeleted: Boolean,
+                     val content: @Composable () -> Unit)

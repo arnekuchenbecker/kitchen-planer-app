@@ -14,26 +14,28 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.inviteToProject
+package com.scouts.kitchenplaner.ui.view
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-
+import androidx.compose.ui.Modifier
 
 @Composable
-fun InviteToProject(onNavigateToProject: () -> Unit) {
-    Column {
-        Text("After project creation people can be invited")
-        Text(text = "available Links to other sides are: ")
-
-        Row {
-            Text("ProjectDetails")
-            Button(onClick = onNavigateToProject) {}
-
+fun <T> LazyColumnWrapper(
+    modifier: Modifier = Modifier,
+    content: List<T>,
+    DisplayContent: @Composable (T, Int) -> Unit,
+    DisplayLast: @Composable (T, Int) -> Unit = DisplayContent,
+    DisplayEmpty: @Composable () -> Unit
+) {
+    LazyColumn (modifier = modifier) {
+        if (content.isNotEmpty()) {
+            items(content.size - 1) {
+                DisplayContent(content[it], it)
+            }
+            item { DisplayLast(content[content.lastIndex], content.lastIndex) }
+        } else {
+            item { DisplayEmpty() }
         }
     }
-    /*TODO Deeplink for inviting people, which ends on the correct projectDetails Screen*/
 }

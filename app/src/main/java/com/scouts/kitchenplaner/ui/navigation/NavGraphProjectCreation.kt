@@ -22,7 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.createProject.ProjectCreation
+import com.scouts.kitchenplaner.ui.view.createproject.CreateProject
 import com.scouts.kitchenplaner.ui.view.inviteToProject.InviteToProject
 
 private const val PROJECT_CREATION = "PROJECT_CREATION"
@@ -33,15 +33,14 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
         startDestination = PROJECT_CREATION, route = Destinations.ProjectCreationGraph
     ) {
         composable(PROJECT_CREATION) {
-            ProjectCreation(onNavigateToInvitePeople = { projectId ->
+            CreateProject(onNavigateToInvitePeople = { projectId ->
                 navController.navigate("$INVITE_SCREEN/$projectId")
             })
         }
         composable(
             "$INVITE_SCREEN/{${Destinations.ProjectId}}",
             arguments = listOf(navArgument(Destinations.ProjectId) {
-                type =
-                    NavType.LongType
+                type = NavType.LongType
             })
         ) {
             InviteToProject {

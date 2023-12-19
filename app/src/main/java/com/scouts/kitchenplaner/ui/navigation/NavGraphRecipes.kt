@@ -36,6 +36,6 @@ fun NavGraphBuilder.recipesNav(navController: NavHostController) {
                 onNavigateToDetailedRecipe = { recipeId -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeId") })
         }
         recipeCreationNav(navController = navController)
-        recipeDetailsNav(navController = navController)
+        recipeDetailsNav()
     }
 }
