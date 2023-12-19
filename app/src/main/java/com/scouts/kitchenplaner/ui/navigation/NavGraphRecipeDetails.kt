@@ -26,17 +26,18 @@ import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.recipeDetails.recipeDetails
 
 private const val RECIPE_DETAILS = "details"
+private const val RECIPE_ID = "id"
 fun NavGraphBuilder.recipeDetailsNav(navController: NavHostController) {
-    navigation(startDestination = "$RECIPE_DETAILS/{id}",
-        route = "${Destinations.RecipeDetailsGraph}/{id}",
+    navigation(startDestination = "$RECIPE_DETAILS/{$RECIPE_ID}",
+        route = "${Destinations.RecipeDetailsGraph}/{$RECIPE_ID}",
         arguments = listOf(
-            navArgument("id") { type = NavType.LongType }
+            navArgument(RECIPE_ID) { type = NavType.LongType }
         )) {
         composable(
-            "$RECIPE_DETAILS/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            "$RECIPE_DETAILS/{$RECIPE_ID}",
+            arguments = listOf(navArgument(RECIPE_ID) { type = NavType.LongType })
         ) {
-            recipeDetails(recipeID = it.arguments?.getLong("id") ?: -1)
+            recipeDetails(recipeID = it.arguments?.getLong(RECIPE_ID) ?: -1)
         }
     }
 }

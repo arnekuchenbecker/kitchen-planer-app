@@ -27,27 +27,28 @@ import com.scouts.kitchenplaner.ui.view.shoppingListOverview.ShoppingListOvervie
 
 private const val SHOPPING_OVERVIEW: String = "OverviewShopping"
 private const val SHOPPING_LIST_DETAIL: String = "ShoppingList"
+private const val SHOPPING_LIST_ID = "shoppingListId"
 fun NavGraphBuilder.shoppingListGraph(navController: NavController) {
     navigation(
         startDestination = SHOPPING_OVERVIEW,
-        route = "${Destinations.ShoppingListGraph}/{id}",
+        route = "${Destinations.ShoppingListGraph}/{${Destinations.ProjectId}}",
         arguments = listOf(
-            navArgument("id") { type = NavType.LongType })
+            navArgument(Destinations.ProjectId) { type = NavType.LongType })
     ) {
         composable(SHOPPING_OVERVIEW) {
             ShoppingListOverview(
-                it.arguments?.getLong("id") ?: -1,
+                it.arguments?.getLong(Destinations.ProjectId) ?: -1,
                 onNavigateToShoppingList = { listID ->
                     navController.navigate("${SHOPPING_LIST_DETAIL}/$listID")
                 }
             )
         }
         composable(
-            "${SHOPPING_LIST_DETAIL}/{shoppingListId}",
-            arguments = listOf(navArgument("shoppingListId") { type = NavType.LongType })
+            "${SHOPPING_LIST_DETAIL}/{$SHOPPING_LIST_ID}",
+            arguments = listOf(navArgument(SHOPPING_LIST_ID) { type = NavType.LongType })
         ) {
             ShoppingList(
-                listID = (it.arguments?.getLong("shoppingListId", 42) ?: -1)
+                listID = (it.arguments?.getLong(SHOPPING_LIST_ID, 42) ?: -1)
 
             )
         }

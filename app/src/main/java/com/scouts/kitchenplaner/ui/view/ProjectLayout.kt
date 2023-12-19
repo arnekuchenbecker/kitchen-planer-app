@@ -17,9 +17,6 @@
 package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
@@ -45,15 +42,15 @@ fun ProjectLayout(id: Long, navController: NavHostController) {
     val projectNavController: NavHostController = rememberNavController()
 
     val sites = listOf(
-        Triple("Übersicht", Destinations.ProjectsStart, Icons.Filled.Build),
-        Triple("Einkaufsliste", Destinations.ShoppingListGraph, Icons.Filled.AccountBox)
+        Pair("Übersicht", Destinations.ProjectsStart),
+        Pair("Einkaufsliste", Destinations.ShoppingListGraph)
     )
     val backStackEntry by projectNavController.currentBackStackEntryAsState()
     println(id)
     Scaffold(topBar = {
         SecondaryTabRow(selectedTabIndex = selectedItem) {
             sites.forEachIndexed { index, site ->
-                if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{id}" } == true) {
+                if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
                     selectedItem = index;
                 }
                 Tab(selected = selectedItem == index, onClick = {

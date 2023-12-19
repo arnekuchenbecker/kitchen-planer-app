@@ -28,16 +28,16 @@ private const val PROJECT_DETAILS = "details"
 
 fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
     navigation(
-        startDestination = "${PROJECT_DETAILS}/{id}",
-        route = "${Destinations.ProjectDetailsGraph}/{id}",
-        arguments = listOf(navArgument("id") { type = NavType.LongType })
+        startDestination = "${PROJECT_DETAILS}/{${Destinations.ProjectId}}",
+        route = "${Destinations.ProjectDetailsGraph}/{${Destinations.ProjectId}}",
+        arguments = listOf(navArgument(Destinations.ProjectId) { type = NavType.LongType })
     ) {
         composable(
-            "${PROJECT_DETAILS}/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            "${PROJECT_DETAILS}/{${Destinations.ProjectId}}",
+            arguments = listOf(navArgument(Destinations.ProjectId) { type = NavType.LongType })
         ) {
             ProjectLayout(
-                it.arguments?.getLong("id") ?: -1, navController
+                it.arguments?.getLong(Destinations.ProjectId) ?: -1, navController
             )
         }
     }

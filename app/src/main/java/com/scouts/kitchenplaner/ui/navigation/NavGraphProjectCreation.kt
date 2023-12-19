@@ -38,12 +38,21 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
                 navController.navigate("$INVITE_SCREEN/$projectId")
             })
         }
-        composable("$INVITE_SCREEN/{projectID}", arguments = listOf(navArgument("projectID") {
-            type =
-                NavType.LongType
-        })) {
+        composable(
+            "$INVITE_SCREEN/{${Destinations.ProjectId}}",
+            arguments = listOf(navArgument(Destinations.ProjectId) {
+                type =
+                    NavType.LongType
+            })
+        ) {
             InviteToProject {
-                navController.navigate("${Destinations.ProjectDetailsGraph}/${it.arguments?.getLong("projectID") ?: -1}")
+                navController.navigate(
+                    "${Destinations.ProjectDetailsGraph}/${
+                        it.arguments?.getLong(
+                            Destinations.ProjectId
+                        ) ?: -1
+                    }"
+                )
             }
         }
     }
