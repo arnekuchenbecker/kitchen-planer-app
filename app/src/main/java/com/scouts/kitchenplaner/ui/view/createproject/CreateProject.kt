@@ -42,6 +42,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +58,12 @@ import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProject(createProjectViewModel: CreateProjectViewModel = viewModel()) {
+    val navigateID by createProjectViewModel.navigateTo.collectAsState()
+
+    if (navigateID != null) {
+        println("Should now navigate to $navigateID")
+    }
+
     Scaffold (topBar = {
         TopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
@@ -75,7 +83,7 @@ fun CreateProject(createProjectViewModel: CreateProjectViewModel = viewModel()) 
         Box(modifier = Modifier
             .fillMaxWidth()
             .padding(it)) {
-            CreateProjectInput(state = createProjectViewModel.inputState.value, modifier = Modifier.align(Alignment.TopCenter))
+            CreateProjectInput(state = createProjectViewModel.inputState, modifier = Modifier.align(Alignment.TopCenter))
         }
     }
 }

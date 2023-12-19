@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,30 +34,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
+import com.scouts.kitchenplaner.ui.state.AllergenPersonState
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
 
 @Composable
-fun EditAllergensDialog(onDismissRequest: () -> Unit, onAdd: (String, String, Boolean) -> Unit, onRemove: (String) -> Unit, onRemoveItem: (String, String, Boolean) -> Unit ,allergens: Map<String, List<Pair<String, Boolean>>>) {
+fun EditAllergensDialog(
+    onDismissRequest: () -> Unit,
+    onAdd: () -> Unit,
+    onRemove: (String) -> Unit,
+    onRemoveItem: (String, String, Boolean) -> Unit,
+    allergens: List<AllergenPersonState>,
+    adderState: AllergenPersonAdderState
+) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(20.dp)) {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(20.dp)
+            ) {
                 var removingIndex by remember { mutableIntStateOf(-1) }
 
-                AllergenAdder(onAdd = onAdd)
+                AllergenAdder(state = adderState, onAdd = onAdd)
 
-                Divider(thickness = 2.dp, modifier = Modifier.padding(vertical = 5.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 5.dp), thickness = 2.dp)
 
                 LazyColumnWrapper(
-                    content = allergens.toList(),
-                    DisplayContent = { (name, allergens), index ->
+                    content = allergens,
+                    DisplayContent = { person, index ->
                         AllergenCard(
-                            name = name,
-                            allergens = allergens,
+                            name = person.name,
+                            allergens = person.allergens,
                             onTitleClick = {
                                 removingIndex = if (removingIndex == index) {
                                     -1
@@ -65,9 +77,9 @@ fun EditAllergensDialog(onDismissRequest: () -> Unit, onAdd: (String, String, Bo
                                     index
                                 }
                             },
-                            onDelete = { onRemove(name) },
+                            onDelete = { onRemove(person.name) },
                             onItemDelete = {(allergen, traces) ->
-                                onRemoveItem(name, allergen, traces)
+                                onRemoveItem(person.name, allergen, traces)
                             },
                             toBeDeleted = removingIndex == index
                         )

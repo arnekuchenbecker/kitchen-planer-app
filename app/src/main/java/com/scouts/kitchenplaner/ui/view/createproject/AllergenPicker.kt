@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,14 +31,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
+import com.scouts.kitchenplaner.ui.state.AllergenPersonState
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.view.ListEditHeader
 import kotlin.math.min
 
 
 @Composable
-fun AllergenPicker(modifier: Modifier = Modifier, onAdd: (String, String, Boolean) -> Unit, onRemove: (String) -> Unit, onRemoveItem: (String, String, Boolean) -> Unit, allergens: Map<String, List<Pair<String, Boolean>>>) {
+fun AllergenPicker(
+    modifier: Modifier = Modifier,
+    onAdd: () -> Unit,
+    onRemove: (String) -> Unit,
+    onRemoveItem: (String, String, Boolean) -> Unit,
+    allergens: List<AllergenPersonState>
+) {
     var displayDialog by remember { mutableStateOf(false) }
+    val dialogState by remember { mutableStateOf(AllergenPersonAdderState()) }
     Column (
         modifier = modifier.height((90 + 20 * (1 + min(allergens.size, 4))).dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -49,12 +58,12 @@ fun AllergenPicker(modifier: Modifier = Modifier, onAdd: (String, String, Boolea
         )
 
         LazyColumnWrapper(
-            content = allergens.toList(),
-            DisplayContent = { (name, _), _ ->
-                AllergenListElement(name = name, displayDivider = true)
+            content = allergens,
+            DisplayContent = { person, _ ->
+                AllergenListElement(name = person.name, displayDivider = true)
             },
-            DisplayLast = { (name, _), _ ->
-                AllergenListElement(name = name, displayDivider = false)
+            DisplayLast = { person, _ ->
+                AllergenListElement(name = person.name, displayDivider = false)
             },
             DisplayEmpty = {
                 Box(
@@ -77,7 +86,8 @@ fun AllergenPicker(modifier: Modifier = Modifier, onAdd: (String, String, Boolea
             onAdd = onAdd,
             onRemove = onRemove,
             onRemoveItem = onRemoveItem,
-            allergens = allergens
+            allergens = allergens,
+            adderState = dialogState
         )
     }
 }
@@ -95,7 +105,7 @@ fun AllergenListElement(name: String, displayDivider: Boolean) {
         )
 
         if (displayDivider) {
-            Divider(thickness = 1.dp)
+            HorizontalDivider(thickness = 1.dp)
         }
     }
 }

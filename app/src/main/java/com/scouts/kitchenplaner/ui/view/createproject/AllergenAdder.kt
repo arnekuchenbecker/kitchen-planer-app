@@ -18,15 +18,19 @@ package com.scouts.kitchenplaner.ui.view.createproject
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -37,76 +41,138 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
+import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 
 @Composable
-fun AllergenAdder(onAdd: (String, String, Boolean) -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit) {
+    val columnItemModifier = Modifier
+        .padding(5.dp)
+        .height(70.dp)
+    Column (
+        modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
-        var name by remember { mutableStateOf("") }
-        var allergen by remember { mutableStateOf("") }
-        var traces by remember { mutableStateOf(false) }
+        AllergenInputs(state, columnItemModifier)
 
-        AllergenInputs(
-            onNameChange = { name = it },
-            onAllergenChange = { allergen = it },
-            onTracesChange = { traces = it },
-            name = name,
-            allergen = allergen,
-            traces = traces
+        HorizontalDivider()
+
+        AllergenAddInputs(
+            onAdd = { allergen, traces -> state.addAllergen(allergen, traces) },
+            modifier = Modifier.padding(10.dp)
         )
 
-        Button(
+        if (state.allergens.isNotEmpty()) {
+            HorizontalDivider()
+
+            Column {
+                state.allergens.forEach { (allergen, traces) ->
+                    val text = if (traces) {" (Spuren)"} else ""
+                    Text(modifier = Modifier.padding(10.dp), text = "$allergen$text")
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        IconButton(
             onClick = {
-                if (name != "" && allergen != "") {
-                    onAdd(name, allergen, traces)
-                    name = ""
-                    allergen = ""
-                    traces = false
+                if (state.name != "" && state.allergens.isNotEmpty()) {
+                    onAdd()
                 }
             },
-            modifier = Modifier.padding(start = 10.dp),
-            contentPadding = PaddingValues(5.dp)
+            modifier = Modifier
+                .padding(start = 10.dp)
+                .align(Alignment.CenterHorizontally)
         ) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add allergen for person")
+            Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "Add allergen for person")
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllergenInputs (
-    onNameChange: (String) -> Unit,
-    onAllergenChange: (String) -> Unit,
-    onTracesChange: (Boolean) -> Unit,
-    name: String,
-    allergen: String,
-    traces: Boolean) {
-    Column {
+fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifier) {
+    Column (horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
-            modifier = Modifier.fillMaxWidth(0.8f),
+            modifier = Modifier.padding(10.dp),
             label = { Text("Name") },
-            value = name,
-            onValueChange = onNameChange,
+            value = state.name,
+            onValueChange = { state.name = it },
             singleLine = true
+        )
+
+        DockedDatePicker(
+            modifier = modifier
+                .fillMaxWidth(),
+            dateState = state.arrivalDate,
+            displayText = state.arrivalDateString,
+            label = "Ankunfts-Datum"
         )
 
         TextField(
-            modifier = Modifier.fillMaxWidth(0.8f),
-            label = { Text("Allergen") },
-            value = allergen,
-            onValueChange = onAllergenChange,
-            singleLine = true
+            modifier = Modifier.padding(10.dp),
+            label = { Text("Anwesend ab Mahlzeit...") },
+            value = state.arrivalMeal,
+            onValueChange = { state.arrivalMeal = it }
         )
 
-        Row(
-            modifier = Modifier.fillMaxWidth(0.8f),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Spuren")
+        DockedDatePicker(
+            modifier = modifier
+                .fillMaxWidth(),
+            dateState = state.departureDate,
+            displayText = state.departureDateString,
+            label = "Abreise-Datum"
+        )
 
-            Checkbox(checked = traces, onCheckedChange = onTracesChange)
+        TextField(
+            modifier = Modifier.padding(10.dp),
+            label = { Text("Anwesend bis Mahlzeit...") },
+            value = state.departureMeal,
+            onValueChange = { state.departureMeal = it }
+        )
+    }
+}
+
+@Composable
+fun AllergenAddInputs(onAdd: (String, Boolean) -> Unit, modifier: Modifier = Modifier) {
+    var allergen by remember { mutableStateOf("") }
+    var traces by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+            TextField(
+                singleLine = true,
+                label = { Text("Allergen") },
+                value = allergen,
+                onValueChange = { allergen = it }
+            )
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Spuren")
+
+                Checkbox(
+                    checked = traces,
+                    onCheckedChange = { traces = it }
+                )
+            }
+        }
+
+        IconButton(
+            onClick = {
+                onAdd(allergen, traces)
+                allergen = ""
+                traces = false
+            }
+        ) {
+            Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "Add allergen")
         }
     }
 }
