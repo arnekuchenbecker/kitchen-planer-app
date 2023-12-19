@@ -36,7 +36,7 @@ fun CreateRecipe(onNavigationToRecipeDetails: (Long) -> Unit) {
         Text("Here you can create a new recipe")
         Text(text = "available Links to other sides are: ")
         Row {
-            Text(text = "recipeDetails")
+            Text(text = "recipe Details")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
                 value = recipeID,
