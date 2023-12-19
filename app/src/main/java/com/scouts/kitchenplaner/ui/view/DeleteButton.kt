@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 @Composable
 fun DeleteButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
+        modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             contentColor = Color.White,
