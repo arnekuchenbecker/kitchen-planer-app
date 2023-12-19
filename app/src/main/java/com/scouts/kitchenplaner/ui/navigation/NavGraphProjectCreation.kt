@@ -33,7 +33,6 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
         startDestination = PROJECT_CREATION, route = Destinations.ProjectCreationGraph
     ) {
         composable(PROJECT_CREATION) {
-
             ProjectCreation(onNavigateToInvitePeople = { projectId ->
                 navController.navigate("$INVITE_SCREEN/$projectId")
             })

@@ -41,7 +41,7 @@ fun ProjectDetails(
         Text(text = "This is the screen, where all information to one specific project are displayed displayed")
         Text(text = "The projectID is $projectID", color = Color.Red)
         Text(text = "available Links to other sides are: ")
-        var listID by remember { mutableStateOf(42f) }
+        var listID by remember { mutableStateOf(1f) }
 
         Row {
             Text(text = "Recipe To Cook")

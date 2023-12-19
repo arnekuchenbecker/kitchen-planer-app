@@ -28,15 +28,10 @@ import com.scouts.kitchenplaner.ui.view.recipeDetails.recipeDetails
 private const val RECIPE_DETAILS = "details"
 private const val RECIPE_ID = "id"
 fun NavGraphBuilder.recipeDetailsNav(navController: NavHostController) {
-    navigation(startDestination = "$RECIPE_DETAILS/{$RECIPE_ID}",
+    navigation(startDestination = RECIPE_DETAILS,
         route = "${Destinations.RecipeDetailsGraph}/{$RECIPE_ID}",
-        arguments = listOf(
-            navArgument(RECIPE_ID) { type = NavType.LongType }
-        )) {
-        composable(
-            "$RECIPE_DETAILS/{$RECIPE_ID}",
-            arguments = listOf(navArgument(RECIPE_ID) { type = NavType.LongType })
-        ) {
+        arguments = listOf(navArgument(RECIPE_ID) { type = NavType.LongType })) {
+        composable(RECIPE_DETAILS) {
             recipeDetails(recipeID = it.arguments?.getLong(RECIPE_ID) ?: -1)
         }
     }
