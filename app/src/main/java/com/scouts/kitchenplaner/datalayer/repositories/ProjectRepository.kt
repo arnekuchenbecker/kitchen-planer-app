@@ -52,7 +52,6 @@ class ProjectRepository @Inject constructor(
 
     fun getAllProjectsOverview() : Flow<List<ProjectStub>> {
         return projectDAO.getAllProjects().map {
-            println("Found ${it.size} projects")
             it.map { project ->
                 ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
             }
