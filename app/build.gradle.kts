@@ -67,7 +67,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("com.google.dagger:hilt-android:2.44")
+    implementation("com.google.dagger:hilt-android:2.49")
     implementation("com.google.devtools.ksp:symbol-processing-api:1.9.21-1.0.15")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
@@ -84,7 +84,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     ksp("androidx.room:room-compiler:2.6.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.49")
 }
 
 kapt {
