@@ -14,11 +14,20 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.navigation
 
-class Allergen(
-    val allergen: String = "",
-    val traces: Boolean = true
-) {
+sealed class Destinations {
+    companion object {
 
+        const val ShoppingListGraph = "shoppingList_Graph"
+        const val home = "start"
+        const val ProjectDetailsGraph = "projectDetails"
+        const val ProjectsGraph = "projects"
+        const val RecipesGraph = "recipes"
+        const val ProjectCreationGraph = "projectCreation_Graph"
+        const val RecipeCreationGraph = "recipeCreation_Graph"
+        const val RecipeDetailsGraph = "recipeDetails"
+        const val ProjectsStart = "projectStart"
+        const val ProjectId = "projectID"
+    }
 }

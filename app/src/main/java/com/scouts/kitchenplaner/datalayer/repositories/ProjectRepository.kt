@@ -34,7 +34,7 @@ class ProjectRepository @Inject constructor(
         return projectDAO.createProject(
             project = project.toDataLayerEntity(),
             meals = project.meals.map { MealEntity(it, 0) },
-            allergens = project.allergenPersons.map { it.toDataLayerEntity() })
+            allergens = project.allergenPersons.map { it.toDataLayerEntity(project.id) })
     }
 
     suspend fun getProject(projectName: String) : Project {

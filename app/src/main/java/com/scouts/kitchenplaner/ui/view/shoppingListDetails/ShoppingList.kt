@@ -14,11 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.view.shoppingListDetails
 
-class Allergen(
-    val allergen: String = "",
-    val traces: Boolean = true
-) {
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
+@Composable
+fun ShoppingList(listID: Long) {
+    Text("Shopping List $listID")
 
 }

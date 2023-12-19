@@ -30,6 +30,6 @@ class Project(
     val meals: List<String> = listOf(),
     val allergenPersons: List<AllergenPerson> = listOf(),
     val projectImage: Uri = Uri.EMPTY
-) {
+){
 
 }

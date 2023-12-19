@@ -14,11 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner
 
-class Allergen(
-    val allergen: String = "",
-    val traces: Boolean = true
-) {
+import java.text.SimpleDateFormat
+import java.util.Locale
 
+fun Long.toDateString() : String {
+    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
+    return dateFormat.format(this)
 }

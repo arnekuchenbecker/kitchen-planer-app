@@ -14,11 +14,11 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.view
 
-class Allergen(
-    val allergen: String = "",
-    val traces: Boolean = true
-) {
+import androidx.compose.runtime.Composable
 
-}
+data class CardState(val title: String,
+                     val onDelete: () -> Unit,
+                     val toBeDeleted: Boolean,
+                     val content: @Composable () -> Unit)
