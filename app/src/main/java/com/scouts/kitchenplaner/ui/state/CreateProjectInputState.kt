@@ -74,7 +74,7 @@ class CreateProjectInputState {
             newPerson.arrivalDateMillis = allergenAdderState.arrivalDate.selectedDateMillis
             newPerson.departureDateMillis = allergenAdderState.departureDate.selectedDateMillis
             allergenAdderState.allergens.forEach { (allergen, traces) ->
-                newPerson.allergenList.add(Pair(allergen, traces))
+                newPerson.addAllergen(allergen, traces)
             }
             allergenList.add(newPerson)
         }
@@ -87,11 +87,9 @@ class CreateProjectInputState {
     fun removeIntolerancy(name: String, toRemove: String, tracesRemove: Boolean) {
         val person = allergenList.find { it.name == name }
 
-        person?.allergenList?.removeAll { (allergen, traces) ->
-            allergen == toRemove && traces == tracesRemove
-        }
+        person?.removeAllergens(toRemove, tracesRemove)
 
-        if (person?.allergenList?.isEmpty() == true) {
+        if (person?.allergens?.isEmpty() == true) {
             allergenList.remove(person)
         }
     }

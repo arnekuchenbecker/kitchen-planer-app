@@ -29,6 +29,8 @@ import java.util.Locale
 
 class AllergenPersonAdderState {
     var name by mutableStateOf("")
+    var arrivalMeal by mutableStateOf("")
+    var departureMeal by mutableStateOf("")
     @OptIn(ExperimentalMaterial3Api::class)
     var arrivalDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
     @OptIn(ExperimentalMaterial3Api::class)
@@ -44,4 +46,8 @@ class AllergenPersonAdderState {
     private val allergenList: SnapshotStateList<Pair<String, Boolean>> = mutableStateListOf()
     val allergens: List<Pair<String, Boolean>>
         get() = allergenList
+
+    fun addAllergen(allergen: String, traces: Boolean) {
+        allergenList.add(Pair(allergen, traces))
+    }
 }

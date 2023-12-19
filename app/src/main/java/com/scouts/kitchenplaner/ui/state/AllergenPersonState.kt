@@ -27,5 +27,17 @@ class AllergenPersonState {
     var arrivalMeal by mutableStateOf("")
     var departureDateMillis by mutableStateOf<Long?>(null)
     var departureMeal by mutableStateOf("")
-    val allergenList = mutableStateListOf<Pair<String, Boolean>>()
+    private val allergenList = mutableStateListOf<Pair<String, Boolean>>()
+    val allergens: List<Pair<String, Boolean>>
+        get() = allergenList
+
+    fun addAllergen(allergen: String, traces: Boolean) {
+        allergenList.add(Pair(allergen, traces))
+    }
+
+    fun removeAllergens(toRemove: String, tracesRemove: Boolean) {
+        allergenList.removeAll { (allergen, traces) ->
+            allergen == toRemove && traces == tracesRemove
+        }
+    }
 }
