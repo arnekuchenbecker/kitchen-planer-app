@@ -149,7 +149,8 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             onAdd = state::addIntolerantPerson,
             onRemove = state::removeIntolerantPerson,
             onRemoveItem = state::removeIntolerancy,
-            allergens = state.allergens
+            allergens = state.allergens,
+            dialogState = state.allergenAdderState
         )
 
         //To allow scrolling stuff from behind the FAB

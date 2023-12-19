@@ -44,10 +44,10 @@ fun AllergenPicker(
     onAdd: () -> Unit,
     onRemove: (String) -> Unit,
     onRemoveItem: (String, String, Boolean) -> Unit,
-    allergens: List<AllergenPersonState>
+    allergens: List<AllergenPersonState>,
+    dialogState: AllergenPersonAdderState
 ) {
     var displayDialog by remember { mutableStateOf(false) }
-    val dialogState by remember { mutableStateOf(AllergenPersonAdderState()) }
     Column (
         modifier = modifier.height((90 + 20 * (1 + min(allergens.size, 4))).dp),
         horizontalAlignment = Alignment.CenterHorizontally
