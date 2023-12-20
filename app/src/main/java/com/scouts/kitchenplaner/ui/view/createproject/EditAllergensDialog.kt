@@ -21,13 +21,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ fun EditAllergensDialog(
     adderState: AllergenPersonAdderState
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
+        var displayDialog by remember { mutableStateOf(false) }
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
             shape = RoundedCornerShape(16.dp),
@@ -56,13 +58,22 @@ fun EditAllergensDialog(
         ) {
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxHeight()
             ) {
                 var removingIndex by remember { mutableIntStateOf(-1) }
 
-                AllergenAdder(state = adderState, onAdd = onAdd)
+                Button(onClick = { displayDialog = true }) {
+                    Text(text = "Neue Person hinzufügen")
+                }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 5.dp), thickness = 2.dp)
+                if (displayDialog) {
+                    AllergenAdder(
+                        state = adderState,
+                        onAdd = onAdd,
+                        onDismiss = { displayDialog = false })
+                }
 
                 LazyColumnWrapper(
                     content = allergens,
