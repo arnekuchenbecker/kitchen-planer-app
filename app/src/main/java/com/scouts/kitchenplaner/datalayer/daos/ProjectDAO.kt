@@ -70,12 +70,12 @@ interface ProjectDAO {
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
             "FROM projects INNER JOIN userprojects ON projects.id = userprojects.projectId " +
             "WHERE userprojects.username = :username")
-    fun getProjects(username: String) : Flow<List<ProjectStubDTO>>
+    fun getProjectsForUser(username: String) : Flow<List<ProjectStubDTO>>
 
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
             "FROM projects")
     fun getAllProjects() : Flow<List<ProjectStubDTO>>
 
     @Query("SELECT * FROM projects WHERE name = :projectName")
-    suspend fun getProject(projectName: String) : ProjectEntity
+    suspend fun getProjectByProjectName(projectName: String) : ProjectEntity
 }

@@ -65,7 +65,7 @@ class ProjectDatabaseTest {
     fun testInsertProject(): Unit = runBlocking {
         val project = Project(name = "Test")
         repo.insertProject(project)
-        val retValue = repo.getProject("Test")
+        val retValue = repo.getProjectByProjectName("Test")
         assertEquals("Test", retValue.name)
         assertNotEquals(null, retValue.id)
     }

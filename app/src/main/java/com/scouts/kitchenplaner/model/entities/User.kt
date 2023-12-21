@@ -18,5 +18,4 @@ package com.scouts.kitchenplaner.model.entities
 
 class User {
     val username: String = ""
-    val password: String = ""
 }
