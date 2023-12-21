@@ -18,11 +18,13 @@ package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProjectDAO {
@@ -63,4 +65,16 @@ interface ProjectDAO {
 
     @Insert
     suspend fun insertAllergen(entity: AllergenEntity) : Long
+
+    @Query("SELECT * FROM projects WHERE projects.id = :id")
+    fun getProjectById(id: Long) : Flow<ProjectEntity>
+
+    @Query("SELECT * FROM meals WHERE meals.projectId = :id")
+    fun getMealsByProjectID(id: Long) : Flow<List<MealEntity>>
+
+    @Query("SELECT * FROM allergenPersons WHERE allergenPersons.projectId = :id")
+    fun getAllergenPersonsByProjectID(id: Long) : Flow<List<AllergenPersonEntity>>
+
+    @Query("SELECT * FROM allergens WHERE allergens.projectId = :id")
+    fun getAllergensByProjectID(id: Long) : Flow<List<AllergenEntity>>
 }
