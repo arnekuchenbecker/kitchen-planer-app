@@ -20,6 +20,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
+    tableName = "meals",
     primaryKeys = ["name", "projectId"],
     foreignKeys = [ForeignKey(
         entity = ProjectEntity::class,
