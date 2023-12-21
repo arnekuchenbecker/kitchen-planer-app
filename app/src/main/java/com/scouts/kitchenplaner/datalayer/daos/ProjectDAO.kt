@@ -18,10 +18,9 @@ package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
-import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import kotlinx.coroutines.flow.Flow
@@ -31,40 +30,24 @@ interface ProjectDAO {
     @Transaction
     suspend fun createProject(
         project: ProjectEntity,
-        meals: List<MealEntity>,
-        allergens: List<Pair<AllergenPersonEntity, List<AllergenEntity>>>
+        meals: List<MealEntity>
     ) : Long {
-        val projectId = insertProject(project)
+        val rowId = insertProject(project)
+        val projectId = getProjectIdByRowId(rowId)
 
         meals.forEach {
             it.projectId = projectId
             insertMealEntity(it)
         }
 
-        allergens.forEach {
-            it.first.projectId = projectId
-            insertAllergenPerson(it.first)
-
-            it.second.forEach { allergen ->
-                allergen.projectId = projectId
-                insertAllergen(allergen)
-            }
-        }
-
         return projectId
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertProject(entity: ProjectEntity) : Long
 
-    @Insert
-    suspend fun insertAllergenPerson(entity: AllergenPersonEntity) : Long
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMealEntity(entity: MealEntity) : Long
-
-    @Insert
-    suspend fun insertAllergen(entity: AllergenEntity) : Long
 
     @Query("SELECT * FROM projects WHERE projects.id = :id")
     fun getProjectById(id: Long) : Flow<ProjectEntity>
@@ -72,9 +55,6 @@ interface ProjectDAO {
     @Query("SELECT * FROM meals WHERE meals.projectId = :id")
     fun getMealsByProjectID(id: Long) : Flow<List<MealEntity>>
 
-    @Query("SELECT * FROM allergenPersons WHERE allergenPersons.projectId = :id")
-    fun getAllergenPersonsByProjectID(id: Long) : Flow<List<AllergenPersonEntity>>
-
-    @Query("SELECT * FROM allergens WHERE allergens.projectId = :id")
-    fun getAllergensByProjectID(id: Long) : Flow<List<AllergenEntity>>
+    @Query("SELECT id FROM projects WHERE rowId = :rowId")
+    suspend fun getProjectIdByRowId(rowId: Long) : Long
 }
