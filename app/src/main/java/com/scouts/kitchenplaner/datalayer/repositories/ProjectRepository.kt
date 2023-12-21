@@ -19,7 +19,10 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.Project
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class ProjectRepository @Inject constructor(
@@ -30,5 +33,16 @@ class ProjectRepository @Inject constructor(
             project = project.toDataLayerEntity(),
             meals = project.meals.map { MealEntity(it, 0) },
             allergens = project.allergenPersons.map { it.toDataLayerEntity(project.id) })
+    }
+
+    fun getProjectByID(id: Long) : Flow<Project> {
+        val projectFlow = projectDAO.getProjectById(id)
+        val mealFlow = projectDAO.getMealsByProjectID(id)
+        val allergenPersonFlow = projectDAO.getAllergenPersonsByProjectID(id)
+        val allergensFlow = projectDAO.getAllergensByProjectID(id)
+
+        return combine(projectFlow, mealFlow, allergenPersonFlow, allergensFlow) { project, meals, allergenPersons, allergens ->
+            project.toModelEntity(meals, allergenPersons, allergens)
+        }
     }
 }
