@@ -24,10 +24,19 @@ import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
 
 @Database(
-    entities = [ProjectEntity::class, AllergenPersonEntity::class, MealEntity::class, AllergenEntity::class],
+    entities = [
+        ProjectEntity::class,
+        AllergenPersonEntity::class,
+        MealEntity::class,
+        AllergenEntity::class,
+        UserEntity::class,
+        UserProjectEntity::class
+    ],
     version = 1
 )
 @TypeConverters(DateConverter::class)

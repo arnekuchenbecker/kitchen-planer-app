@@ -17,14 +17,25 @@
 package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+import androidx.room.ForeignKey
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String
+@Entity(
+    tableName = "userprojects",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["username"],
+            childColumns = ["username"]
+        ),
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"]
+        )
+    ],
+    primaryKeys = ["projectId", "username"]
+)
+data class UserProjectEntity(
+    val projectId: Long,
+    val username: String
 )

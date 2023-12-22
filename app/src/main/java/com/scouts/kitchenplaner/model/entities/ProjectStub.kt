@@ -14,17 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+import android.net.Uri
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
+class ProjectStub(
     val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String
-)
+    val id: Long,
+    val imageUri: Uri
+) {
+}
