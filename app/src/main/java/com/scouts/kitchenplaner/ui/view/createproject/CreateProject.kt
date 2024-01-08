@@ -152,6 +152,7 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             onAdd = state::addIntolerantPerson,
             onRemove = state::removeIntolerantPerson,
             onRemoveItem = state::removeIntolerancy,
+            onResetAdderState = state::resetAllergenPersonAdderState,
             allergens = state.allergens,
             dialogState = state.allergenAdderState
         )
