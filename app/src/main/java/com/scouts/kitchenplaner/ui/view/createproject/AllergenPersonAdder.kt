@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -88,7 +90,7 @@ fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss:
 
                 HorizontalDivider()
 
-                IconButton(
+                Button(
                     onClick = {
                         if (state.name != "" && state.allergens.isNotEmpty()) {
                             onAdd()
@@ -100,9 +102,11 @@ fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss:
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.AddCircle,
-                        contentDescription = "Add allergen for person"
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Add allergic person"
                     )
+
+                    Text("Person hinzufügen")
                 }
             }
         }
