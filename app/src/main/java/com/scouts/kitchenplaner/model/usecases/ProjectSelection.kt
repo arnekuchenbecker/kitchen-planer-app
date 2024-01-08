@@ -14,17 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.usecases
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.entities.User
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String
-)
+class ProjectSelection @Inject constructor(
+    private val projectRepository: ProjectRepository
+) {
+    fun getProjectsForCurrentUser() : Flow<List<ProjectStub>> {
+        val currentUser = User("Arne") //TODO retrieve user from storage
+        return projectRepository.getProjectOverview(currentUser)
+    }
+}
