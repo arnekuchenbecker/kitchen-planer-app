@@ -14,17 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity
-data class RecipeEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val title: String,
-    val imageURI: String,
-    val description: String,
-    val numberOfPeople: Int
-
-)
+class Ingredient(val name: String, val amount: Float, val unit: String) {
+}

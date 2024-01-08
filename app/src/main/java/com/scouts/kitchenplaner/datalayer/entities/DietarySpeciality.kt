@@ -18,25 +18,18 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
 @Entity(
-    primaryKeys = ["ingredientGroup", "recipe"],
     foreignKeys = [ForeignKey(
         entity = RecipeEntity::class,
         parentColumns = ["id"],
         childColumns = ["recipe"],
         onDelete = ForeignKey.CASCADE
-    ), ForeignKey(
-        entity = IngredientGroupEntity::class,
-        parentColumns = ["name"],
-        childColumns = ["ingredientGroup"],
-        onDelete = ForeignKey.CASCADE
     )]
 )
-data class IngredientEntity(
-    val recipe: Long,
-    val ingredientGroup: String,
-    val name: String,
-    val amount: Float,
-    val unit: String //TODO maybe change for calculation
+data class DietarySpeciality(
+    @PrimaryKey val recipe: Long,
+    val type: String, //TRACE, ALLERGEN, FREE_OF
+    val speciality: String
 )

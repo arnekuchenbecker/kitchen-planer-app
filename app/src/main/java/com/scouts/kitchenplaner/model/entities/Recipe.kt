@@ -14,17 +14,18 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity
-data class RecipeEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val title: String,
-    val imageURI: String,
-    val description: String,
-    val numberOfPeople: Int
-
-)
+class Recipe(
+    val id: Long = 0,
+    val name: String = "",
+    val imageURI: String?,
+    val description: String?,
+    val numberOfPeople: Int = -1,
+    val traces: List<String> = listOf(),
+    val allergen: List<String> = listOf(),
+    val freeOfAllergen: List<String> = listOf(),
+    val instructions: List<String> = listOf(),
+    val ingredients: List<IngredientGroups> = listOf()
+) {
+}

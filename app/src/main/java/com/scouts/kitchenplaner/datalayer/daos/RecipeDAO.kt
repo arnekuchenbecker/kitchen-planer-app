@@ -14,17 +14,21 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.datalayer.daos
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 
-@Entity
-data class RecipeEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val title: String,
-    val imageURI: String,
-    val description: String,
-    val numberOfPeople: Int
+@Dao
+interface RecipeDAO {
 
-)
+    @Transaction
+    suspend fun createRecipe(recipe: RecipeEntity, ) {
+
+    }
+
+    @Insert
+    suspend fun insertRecipe(entity: RecipeEntity): Long
+}
