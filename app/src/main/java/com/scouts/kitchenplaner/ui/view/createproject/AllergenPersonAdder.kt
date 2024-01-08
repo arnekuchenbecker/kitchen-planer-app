@@ -52,7 +52,7 @@ import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
 import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 
 @Composable
-fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss: () -> Unit) {
+fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
@@ -66,12 +66,16 @@ fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss:
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
-                AllergenInputs(state, columnItemModifier)
+                AllergenPersonInputs(state, columnItemModifier)
 
                 HorizontalDivider()
 
                 AllergenAddInputs(
-                    onAdd = { allergen, traces -> state.addAllergen(allergen, traces) },
+                    onAdd = { allergen, traces ->
+                        if (allergen != "") {
+                            state.addAllergen(allergen, traces)
+                        }
+                    },
                     modifier = Modifier.padding(10.dp)
                 )
 
@@ -115,7 +119,10 @@ fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifier) {
+fun AllergenPersonInputs (
+    state: AllergenPersonAdderState,
+    modifier: Modifier = Modifier
+) {
     Column (horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
             modifier = Modifier.padding(10.dp),
@@ -138,7 +145,8 @@ fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifi
             modifier = Modifier.padding(10.dp),
             label = { Text("Anwesend ab Mahlzeit...") },
             value = state.arrivalMeal,
-            onValueChange = { state.arrivalMeal = it }
+            onValueChange = { state.arrivalMeal = it },
+            singleLine = true
         )
 
         DockedDatePicker(
@@ -154,7 +162,8 @@ fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifi
             modifier = Modifier.padding(10.dp),
             label = { Text("Anwesend bis Mahlzeit...") },
             value = state.departureMeal,
-            onValueChange = { state.departureMeal = it }
+            onValueChange = { state.departureMeal = it },
+            singleLine = true
         )
     }
 }

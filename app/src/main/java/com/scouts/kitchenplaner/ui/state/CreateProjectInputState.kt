@@ -77,9 +77,11 @@ class CreateProjectInputState {
                 newPerson.addAllergen(allergen, traces)
             }
             allergenList.add(newPerson)
-
-            mutableAllergenAdderState = AllergenPersonAdderState()
         }
+    }
+
+    fun resetAllergenPersonAdderState() {
+        mutableAllergenAdderState = AllergenPersonAdderState()
     }
 
     fun removeIntolerantPerson(name: String) {

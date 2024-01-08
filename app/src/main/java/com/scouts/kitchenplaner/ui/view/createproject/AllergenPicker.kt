@@ -44,6 +44,7 @@ fun AllergenPicker(
     onAdd: () -> Unit,
     onRemove: (String) -> Unit,
     onRemoveItem: (String, String, Boolean) -> Unit,
+    onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
     dialogState: AllergenPersonAdderState
 ) {
@@ -82,7 +83,10 @@ fun AllergenPicker(
 
     if (displayDialog) {
         EditAllergensDialog(
-            onDismissRequest = { displayDialog = false },
+            onDismissRequest = {
+                displayDialog = false
+                onResetAdderState()
+            },
             onAdd = onAdd,
             onRemove = onRemove,
             onRemoveItem = onRemoveItem,

@@ -69,7 +69,7 @@ fun EditAllergensDialog(
                 }
 
                 if (displayDialog) {
-                    AllergenAdder(
+                    AllergenPersonAdder(
                         state = adderState,
                         onAdd = onAdd,
                         onDismiss = { displayDialog = false })
