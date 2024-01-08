@@ -25,9 +25,9 @@ import java.util.Date
     primaryKeys = ["projectId", "meal"],
     foreignKeys = [
         ForeignKey(
-            entity = MealEntity::class,
-            parentColumns = ["projectId", "name"],
-            childColumns = ["projectId", "meal"]
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"]
         )/*,
         ForeignKey(
             entity = <RecipeEntityClass>,
@@ -40,5 +40,6 @@ data class RecipeProjectMealEntity(
     val projectId: Long,
     val meal: String,
     val date: Date,
-    val recipeId: Long
+    val recipeId: Long,
+    val isAlternative: Boolean
 )
