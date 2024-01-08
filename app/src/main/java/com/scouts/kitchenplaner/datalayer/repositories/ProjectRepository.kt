@@ -16,6 +16,7 @@
 
 package com.scouts.kitchenplaner.datalayer.repositories
 
+import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
@@ -25,8 +26,11 @@ import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.exceptions.DuplicatePrimaryKeyException
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
 
@@ -67,9 +71,37 @@ class ProjectRepository @Inject constructor(
         }
     }
 
+    /**
+     * Selects the main recipe for a meal
+     */
     suspend fun selectRecipeForProject(projectId: Long, recipeId: Long, meal: String, date: Date) {
         recipeManagementDAO.addRecipeToProjectMeal(
-            RecipeProjectMealEntity(projectId, meal, date, recipeId)
+            RecipeProjectMealEntity(projectId, meal, date, recipeId, false)
         )
+    }
+
+    /**
+     * Testing purposes only, should be deleted once more robust methods of interacting with the
+     * database have been established
+     */
+    suspend fun getProjectByProjectName(projectName: String) : Project {
+        val entity = projectDAO.getProjectByProjectName(projectName)
+        return Project(entity.id, entity.name, entity.startDate, entity.endDate, listOf(), listOf(), Uri.parse(entity.imageUri))
+    }
+
+    fun getProjectOverview(user: User) : Flow<List<ProjectStub>> {
+        return projectDAO.getProjectsForUser(user.username).map {
+            it.map { project ->
+                ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
+            }
+        }
+    }
+
+    fun getAllProjectsOverview() : Flow<List<ProjectStub>> {
+        return projectDAO.getAllProjectStubs().map {
+            it.map { project ->
+                ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
+            }
+        }
     }
 }
