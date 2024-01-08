@@ -20,24 +20,26 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import java.util.Date
 
-@Entity(foreignKeys = [
-    ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    ),
-    ForeignKey(
-        entity = MealEntity::class,
-        parentColumns = ["name", "projectId"],
-        childColumns = ["arrivalMeal", "projectId"],
-    ),
-    ForeignKey(
-        entity = MealEntity::class,
-        parentColumns = ["name", "projectId"],
-        childColumns = ["departureMeal", "projectId"]
-    )
-],
+@Entity(
+    tableName = "allergenPersons",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = MealEntity::class,
+            parentColumns = ["name", "projectId"],
+            childColumns = ["arrivalMeal", "projectId"],
+        ),
+        ForeignKey(
+            entity = MealEntity::class,
+            parentColumns = ["name", "projectId"],
+            childColumns = ["departureMeal", "projectId"]
+        )
+    ],
     primaryKeys = ["name", "projectId"])
 data class AllergenPersonEntity(
     val name: String,

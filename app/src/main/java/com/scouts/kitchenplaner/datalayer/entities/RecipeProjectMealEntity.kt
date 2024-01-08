@@ -18,18 +18,28 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import java.util.Date
 
 @Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
+    tableName = "recipeProjectMeal",
+    primaryKeys = ["projectId", "meal"],
+    foreignKeys = [
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"]
+        )/*,
+        ForeignKey(
+            entity = <RecipeEntityClass>,
+            parentColumns = ["id"],
+            childColumns = ["recipeId"]
+        )*/
+    ]
 )
-data class MealEntity(
-    val name: String,
-    var projectId: Long
+data class RecipeProjectMealEntity(
+    val projectId: Long,
+    val meal: String,
+    val date: Date,
+    val recipeId: Long,
+    val isAlternative: Boolean
 )

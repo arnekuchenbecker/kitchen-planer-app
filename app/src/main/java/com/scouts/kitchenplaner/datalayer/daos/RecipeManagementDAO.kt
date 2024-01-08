@@ -14,22 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.datalayer.daos
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import com.scouts.kitchenplaner.datalayer.entities.RecipeProjectMealEntity
 
-@Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+@Dao
+interface RecipeManagementDAO {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addRecipeToProjectMeal(entity: RecipeProjectMealEntity)
+}

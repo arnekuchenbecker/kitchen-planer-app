@@ -20,6 +20,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
+    tableName = "allergens",
     foreignKeys = [
         ForeignKey(
             entity = AllergenPersonEntity::class,
