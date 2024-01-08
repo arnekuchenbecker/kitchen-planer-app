@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.datalayer
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
@@ -50,7 +51,8 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEnti
 fun ProjectEntity.toModelEntity(
     meals: List<MealEntity>,
     allergenPersons: List<AllergenPersonEntity>,
-    allergens: List<AllergenEntity>
+    allergens: List<AllergenEntity>,
+    personNumbers: List<PersonNumberChangeEntity>
 ) : Project {
     return Project(
         id = id,

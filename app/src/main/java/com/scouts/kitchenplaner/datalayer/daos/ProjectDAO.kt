@@ -22,6 +22,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -54,6 +55,9 @@ interface ProjectDAO {
 
     @Query("SELECT * FROM meals WHERE meals.projectId = :id")
     fun getMealsByProjectID(id: Long) : Flow<List<MealEntity>>
+
+    @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
+    fun getPersonNumberChangesByProjectID(id: Long) : Flow<List<PersonNumberChangeEntity>>
 
     @Query("SELECT id FROM projects WHERE rowId = :rowId")
     suspend fun getProjectIdByRowId(rowId: Long) : Long

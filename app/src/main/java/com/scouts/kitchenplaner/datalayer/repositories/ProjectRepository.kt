@@ -52,9 +52,10 @@ class ProjectRepository @Inject constructor(
         val mealFlow = projectDAO.getMealsByProjectID(id)
         val allergenPersonFlow = allergenDAO.getAllergenPersonsByProjectID(id)
         val allergensFlow = allergenDAO.getAllergensByProjectID(id)
+        val personNumberFlow = projectDAO.getPersonNumberChangesByProjectID(id)
 
-        return combine(projectFlow, mealFlow, allergenPersonFlow, allergensFlow) { project, meals, allergenPersons, allergens ->
-            project.toModelEntity(meals, allergenPersons, allergens)
+        return combine(projectFlow, mealFlow, allergenPersonFlow, allergensFlow, personNumberFlow) { project, meals, allergenPersons, allergens, personNumbers ->
+            project.toModelEntity(meals, allergenPersons, allergens, personNumbers)
         }
     }
 
