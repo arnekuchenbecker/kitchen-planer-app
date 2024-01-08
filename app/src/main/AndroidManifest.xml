@@ -26,6 +26,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".JoinActivity"
+            android:exported="true"
+            android:label="Join a Project"
+            android:theme="@style/Theme.KitchenPlaner">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="hordentopf"
+                    android:host="joinproject" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
