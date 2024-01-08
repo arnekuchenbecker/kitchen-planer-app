@@ -19,13 +19,28 @@ package com.scouts.kitchenplaner.datalayer.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
+import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
+import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.model.entities.IngredientGroups
 
 @Dao
 interface RecipeDAO {
 
     @Transaction
-    suspend fun createRecipe(recipe: RecipeEntity, ) {
+    suspend fun createRecipe(
+        recipe: RecipeEntity,
+        allergens: List<DietarySpeciality>,
+        traces: List<DietarySpeciality>,
+        freeOf: List<DietarySpeciality>,
+        ingredientGroups: List<IngredientGroupEntity>,
+        ingredients: List<IngredientEntity>,
+        instructions: List<InstructionEntity>
+
+    ) {
 
     }
 

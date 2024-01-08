@@ -19,10 +19,12 @@ package com.scouts.kitchenplaner.datalayer
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.Recipe
 
-fun Project.toDataLayerEntity() : ProjectEntity {
+fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
         id = (id ?: 0),
         name = name,
@@ -32,7 +34,7 @@ fun Project.toDataLayerEntity() : ProjectEntity {
     )
 }
 
-fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEntity, List<AllergenEntity>> {
+fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntity, List<AllergenEntity>> {
     return Pair(AllergenPersonEntity(
         name = name,
         projectId = projectId ?: 0,
@@ -43,4 +45,14 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEnti
     ), allergens.map {
         AllergenEntity(projectId ?: 0, name, it.allergen, it.traces)
     })
+}
+
+fun Recipe.toDataLayerEntity(): RecipeEntity {
+    return RecipeEntity(
+        id = id ?: 0,
+        title = name,
+        imageURI = imageURI ?: "",
+        description = description ?: "",
+        numberOfPeople = numberOfPeople
+    )
 }

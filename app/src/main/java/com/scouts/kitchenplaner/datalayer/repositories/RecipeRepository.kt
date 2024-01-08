@@ -17,13 +17,38 @@
 package com.scouts.kitchenplaner.datalayer.repositories
 
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
+import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
+import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.model.entities.Recipe
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
     private val recipeDAO: RecipeDAO
 ) {
 
-    suspend fun createRecipe() {
+    suspend fun createRecipe(recipe: Recipe) {
+
+        var ingredientGroup = listOf<IngredientGroupEntity>()
+
+        var ingredient = listOf<IngredientEntity>()
+        recipeDAO.createRecipe(
+            recipe = recipe.toDataLayerEntity(),
+            allergens = recipe.allergen.map { DietarySpeciality(0, "ALLERGEN", it) },
+            traces = recipe.allergen.map { DietarySpeciality(0, "TRACES", it) },
+            freeOf = recipe.allergen.map { DietarySpeciality(0, "FREE_OF", it) },
+            ingredientGroups = ingredientGroup,
+            ingredients = ingredient,
+            instructions = recipe.instructions.mapIndexed { index, instruction ->
+                InstructionEntity(
+                    order = index,
+                    recipe = 0,
+                    instruction = instruction
+                )
+            }
+        )
 
     }
 }
