@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.shoppingListDetails
+package com.scouts.kitchenplaner.ui.view.shoppinglistdetails
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
