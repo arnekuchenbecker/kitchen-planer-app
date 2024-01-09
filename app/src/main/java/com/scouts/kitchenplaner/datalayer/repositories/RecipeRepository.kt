@@ -31,11 +31,28 @@ class RecipeRepository @Inject constructor(
 
     suspend fun createRecipe(recipe: Recipe) {
 
-        var ingredientGroup = listOf<IngredientGroupEntity>()
-
-        var ingredient = listOf<IngredientEntity>()
-        recipeDAO.createRecipe(
-            recipe = recipe.toDataLayerEntity(),
+        var ingredientGroup: MutableList<IngredientGroupEntity> =
+            mutableListOf()
+        var ingredient: MutableList<IngredientEntity> = mutableListOf()
+        recipe.ingredients.forEach {
+            ingredientGroup.add(
+                IngredientGroupEntity(
+                    name = it.name, 0
+                )
+            )
+            it.ingredients.forEach { ing ->
+                ingredient.add(
+                    IngredientEntity(
+                        0,
+                        ingredientGroup = it.name,
+                        name = ing.name,
+                        amount = ing.amount,
+                        unit = ing.unit
+                    )
+                )
+            }
+        }
+        recipeDAO.createRecipe(recipe = recipe.toDataLayerEntity(),
             allergens = recipe.allergen.map { DietarySpeciality(0, "ALLERGEN", it) },
             traces = recipe.allergen.map { DietarySpeciality(0, "TRACES", it) },
             freeOf = recipe.allergen.map { DietarySpeciality(0, "FREE_OF", it) },
@@ -43,12 +60,9 @@ class RecipeRepository @Inject constructor(
             ingredients = ingredient,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
                 InstructionEntity(
-                    order = index,
-                    recipe = 0,
-                    instruction = instruction
+                    order = index, recipe = 0, instruction = instruction
                 )
-            }
-        )
+            })
 
     }
 }
