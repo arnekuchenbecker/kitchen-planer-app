@@ -14,10 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.dtos
+package com.scouts.kitchenplaner.ui.view.shoppinglistdetails
 
-data class ProjectStubDTO (
-    val name: String,
-    val id: Long,
-    val imageUri: String
-)
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
+@Composable
+fun ShoppingList(listID: Long) {
+    Text("Shopping List $listID")
+
+}

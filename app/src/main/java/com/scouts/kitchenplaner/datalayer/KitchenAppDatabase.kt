@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import androidx.room.TypeConverters
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
@@ -30,6 +31,8 @@ import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
@@ -46,7 +49,9 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
         RecipeEntity::class,
         IngredientEntity::class,
         IngredientGroupEntity::class,
-        InstructionEntity::class
+        InstructionEntity::class,
+        ShoppingListEntity::class,
+        ShoppingListEntryEntity::class
     ],
     version = 1
 )
@@ -54,4 +59,5 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
 abstract class KitchenAppDatabase : RoomDatabase() {
     abstract fun projectDao(): ProjectDAO
     abstract fun recipeDao(): RecipeDAO
+    abstract fun shoppingListDao() : ShoppingListDAO
 }

@@ -14,10 +14,24 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.dtos
+package com.scouts.kitchenplaner.datalayer.entities
 
-data class ProjectStubDTO (
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "shoppingLists",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"]
+        )
+    ]
+)
+data class ShoppingListEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String,
-    val id: Long,
-    val imageUri: String
+    val projectId: Long
 )

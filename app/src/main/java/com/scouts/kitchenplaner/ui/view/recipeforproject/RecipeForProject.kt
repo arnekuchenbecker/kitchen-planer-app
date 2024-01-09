@@ -14,10 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.dtos
+package com.scouts.kitchenplaner.ui.view.recipeforproject
 
-data class ProjectStubDTO (
-    val name: String,
-    val id: Long,
-    val imageUri: String
-)
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+
+@Composable
+fun RecipeForProjectScreen(recipeID: Long) {
+    Column {
+        Text("On this screen you can see a recipe for cooking while you are in a project")
+        Text("Recipe $recipeID is shown", color = Color.Red)
+        Text(text = "available Links to other sides are: ")
+    }
+
+}

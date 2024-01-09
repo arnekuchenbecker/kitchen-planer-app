@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,10 +46,12 @@ fun EditAllergensDialog(
     onAdd: () -> Unit,
     onRemove: (String) -> Unit,
     onRemoveItem: (String, String, Boolean) -> Unit,
+    onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
     adderState: AllergenPersonAdderState
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
+        var displayDialog by remember { mutableStateOf(false) }
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
             shape = RoundedCornerShape(16.dp),
@@ -56,13 +59,26 @@ fun EditAllergensDialog(
         ) {
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxHeight()
             ) {
                 var removingIndex by remember { mutableIntStateOf(-1) }
 
-                AllergenAdder(state = adderState, onAdd = onAdd)
+                Button(onClick = { displayDialog = true }) {
+                    Text(text = "Neue Person hinzufügen")
+                }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 5.dp), thickness = 2.dp)
+                if (displayDialog) {
+                    AllergenPersonAdder(
+                        state = adderState,
+                        onAdd = onAdd,
+                        onDismiss = {
+                            displayDialog = false
+                            onResetAdderState()
+                        }
+                    )
+                }
 
                 LazyColumnWrapper(
                     content = allergens,
@@ -89,7 +105,7 @@ fun EditAllergensDialog(
                             modifier = Modifier.padding(0.dp, 10.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            Text("Keine Intoleranten Personen")
+                            Text("Keine intoleranten Personen")
                         }
                     }
                 )

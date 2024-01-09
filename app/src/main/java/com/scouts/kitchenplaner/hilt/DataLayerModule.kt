@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ import androidx.room.Room
 import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +36,11 @@ class DataLayerModule {
     @Provides
     fun projectDao(database: KitchenAppDatabase): ProjectDAO {
         return database.projectDao()
+    }
+
+    @Provides
+    fun shoppingListDao(database: KitchenAppDatabase) : ShoppingListDAO {
+        return database.shoppingListDao()
     }
 
     @Provides
