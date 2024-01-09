@@ -19,7 +19,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "recipeEntity")
 data class RecipeEntity (
     @PrimaryKey(autoGenerate = true) val id: Long,
     val title: String,

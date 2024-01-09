@@ -21,15 +21,10 @@ import androidx.room.ForeignKey
 
 @Entity(
     primaryKeys = ["ingredientGroup", "recipe"],
-    foreignKeys = [ForeignKey(
-        entity = RecipeEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["recipe"],
-        onDelete = ForeignKey.CASCADE
-    ), ForeignKey(
+    foreignKeys = [ ForeignKey(
         entity = IngredientGroupEntity::class,
-        parentColumns = ["name"],
-        childColumns = ["ingredientGroup"],
+        parentColumns = ["name", "recipe"],
+        childColumns = ["ingredientGroup", "recipe"],
         onDelete = ForeignKey.CASCADE
     )]
 )

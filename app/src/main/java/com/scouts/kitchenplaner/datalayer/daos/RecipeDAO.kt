@@ -76,6 +76,6 @@ interface RecipeDAO {
     @Insert
     suspend fun insertDietarySpeciality(entity: DietarySpeciality): Long
 
-    @Query("SELECT id FROM RecipeEntity WHERE rowid = :rowId")
+    @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
 }
