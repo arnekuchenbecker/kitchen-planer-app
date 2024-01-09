@@ -19,8 +19,11 @@ package com.scouts.kitchenplaner.datalayer
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ShoppingList
 
 fun Project.toDataLayerEntity() : ProjectEntity {
     return ProjectEntity(
@@ -43,4 +46,17 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEnti
     ), allergens.map {
         AllergenEntity(projectId ?: 0, name, it.allergen, it.traces)
     })
+}
+
+fun ShoppingList.toDataLayerEntity(projectId: Long) : Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
+    return Pair(
+        ShoppingListEntity(
+            id = id ?: 0,
+            name = name,
+            projectId = projectId
+        ),
+        items.map {
+            ShoppingListEntryEntity(id ?: 0, projectId, it.name, it.amount, it.unit)
+        }
+    )
 }
