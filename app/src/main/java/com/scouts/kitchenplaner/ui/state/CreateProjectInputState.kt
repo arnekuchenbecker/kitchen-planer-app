@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,10 @@ class CreateProjectInputState {
             }
             allergenList.add(newPerson)
         }
+    }
+
+    fun resetAllergenPersonAdderState() {
+        mutableAllergenAdderState = AllergenPersonAdderState()
     }
 
     fun removeIntolerantPerson(name: String) {

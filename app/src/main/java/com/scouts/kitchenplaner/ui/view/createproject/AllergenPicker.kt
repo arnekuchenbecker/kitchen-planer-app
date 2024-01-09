@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ fun AllergenPicker(
     onAdd: () -> Unit,
     onRemove: (String) -> Unit,
     onRemoveItem: (String, String, Boolean) -> Unit,
+    onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
     dialogState: AllergenPersonAdderState
 ) {
@@ -82,10 +83,14 @@ fun AllergenPicker(
 
     if (displayDialog) {
         EditAllergensDialog(
-            onDismissRequest = { displayDialog = false },
+            onDismissRequest = {
+                displayDialog = false
+                onResetAdderState()
+            },
             onAdd = onAdd,
             onRemove = onRemove,
             onRemoveItem = onRemoveItem,
+            onResetAdderState = onResetAdderState,
             allergens = allergens,
             adderState = dialogState
         )

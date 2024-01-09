@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.recipeOverview
+package com.scouts.kitchenplaner.ui.view.projectdetails
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,32 +28,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
-fun RecipeOverview(
-    onNavigationCreateRecipe: () -> Unit,
-    onNavigateToDetailedRecipe: (Long) -> Unit
+fun ProjectDetails(
+    projectID: Long,
+    onNavigateToRecipeToCook: (Long) -> Unit,
+    onNavigateToRecipeCreation: () -> Unit
 ) {
-    var recipeID by remember { mutableStateOf(0f) }
     Column {
-        Text(text = "This is the recipe overview, where all recipes are displayed")
-        Text(text = "available Links to other sides are: ")
-        Row {
-            Text("RecipeCreation")
-            Button(onClick = onNavigationCreateRecipe) {
 
-            }
-        }
+        Text(text = "This is the screen, where all information to one specific project are displayed displayed")
+        Text(text = "The projectID is $projectID", color = Color.Red)
+        Text(text = "available Links to other sides are: ")
+        var listID by remember { mutableStateOf(1f) }
+
         Row {
-            Text("ProjectDetails")
+            Text(text = "Recipe To Cook")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
-                value = recipeID,
-                onValueChange = { recipeID = it },
-                valueRange = 1f..5f,
+                value = listID,
+                onValueChange = { listID = it },
+                valueRange = 1f..20f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToDetailedRecipe(recipeID.toLong()) }) {}
+            Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
+        }
+        Row {
+            Text(text = "Create recipe screen")
+            Button(onClick = onNavigateToRecipeCreation) {}
         }
 
     }

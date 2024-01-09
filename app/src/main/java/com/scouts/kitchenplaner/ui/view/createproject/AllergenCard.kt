@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ fun AllergenCard(name: String, allergens: List<Pair<String, Boolean>>, onTitleCl
         expanded = expand,
         onCardArrowClick = { expand = !expand },
         onTitleClick = onTitleClick,
-        cardState = CardState(name, onDelete, toBeDeleted) {
+        cardState = CardState("$name (${allergens.size} EBs)", onDelete, toBeDeleted) {
             LazyColumn {
                 items(allergens) { (allergen, traces) ->
                     var itemToBeDeleted by remember { mutableStateOf(false) }
