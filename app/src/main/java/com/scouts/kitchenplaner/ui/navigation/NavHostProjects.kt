@@ -23,7 +23,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
+import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetails
 import com.scouts.kitchenplaner.ui.view.recipeForProject.RecipeForProjectScreen
 
 private const val RECIPE_ID = "recipeID"
