@@ -31,12 +31,14 @@
             android:exported="true"
             android:label="Join a Project"
             android:theme="@style/Theme.KitchenPlaner">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="hordentopf"
-                    android:host="joinproject" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http"
+                    android:host="joinproject.app" />
             </intent-filter>
+
         </activity>
     </application>
 
