@@ -98,6 +98,9 @@ class ProjectRepository @Inject constructor(
         }
     }
 
+    /**
+     * Testing purposes only
+     */
     fun getAllProjectsOverview() : Flow<List<ProjectStub>> {
         return projectDAO.getAllProjectStubs().distinctUntilChanged { old, new ->
             old.size == new.size && new.containsAll(old)
