@@ -21,9 +21,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.scouts.kitchenplaner.ui.view.createRecipe.CreateRecipe
+import com.scouts.kitchenplaner.ui.view.createrecipe.CreateRecipe
 
-private const val RECIPE_CREATION = "createRecipe"
+private const val RECIPE_CREATION = "createrecipe"
 
 fun NavGraphBuilder.recipeCreationNav(navController: NavHostController) {
     navigation(startDestination = RECIPE_CREATION, route = Destinations.RecipeCreationGraph) {
