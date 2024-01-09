@@ -30,6 +30,7 @@ import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
@@ -98,7 +99,9 @@ class ProjectRepository @Inject constructor(
     }
 
     fun getAllProjectsOverview() : Flow<List<ProjectStub>> {
-        return projectDAO.getAllProjectStubs().map {
+        return projectDAO.getAllProjectStubs().distinctUntilChanged { old, new ->
+            old.size == new.size && new.containsAll(old)
+        }.map {
             it.map { project ->
                 ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
             }
