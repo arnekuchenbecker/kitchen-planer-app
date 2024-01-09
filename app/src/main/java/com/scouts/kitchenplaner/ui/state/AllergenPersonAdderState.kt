@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.scouts.kitchenplaner.toDateString
 import java.util.Locale
 
@@ -43,11 +43,17 @@ class AllergenPersonAdderState {
     val departureDateString: String
         get() = (departureDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
-    private val allergenList: SnapshotStateList<Pair<String, Boolean>> = mutableStateListOf()
+    private val allergenCollection: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
     val allergens: List<Pair<String, Boolean>>
-        get() = allergenList
+        get() = allergenCollection.toList()
 
     fun addAllergen(allergen: String, traces: Boolean) {
-        allergenList.add(Pair(allergen, traces))
+        if(allergenCollection.containsKey(allergen)) {
+            if (traces) {
+                allergenCollection[allergen] = true
+            }
+        } else {
+            allergenCollection[allergen] = traces
+        }
     }
 }

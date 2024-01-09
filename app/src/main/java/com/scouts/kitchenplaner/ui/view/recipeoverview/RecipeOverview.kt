@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.projectOverview
+package com.scouts.kitchenplaner.ui.view.recipeoverview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,32 +30,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 
 @Composable
-
-fun ProjectOverview(
-    onNavigateToDetailedProject: (Long) -> Unit,
-    onNavigateToCreateProject: () -> Unit
+fun RecipeOverview(
+    onNavigationCreateRecipe: () -> Unit,
+    onNavigateToDetailedRecipe: (Long) -> Unit
 ) {
-    var projectId by remember { mutableStateOf(0f) }
+    var recipeID by remember { mutableStateOf(0f) }
     Column {
-        Text(text = "This is the project overview, where all own projects are displayed")
+        Text(text = "This is the recipe overview, where all recipes are displayed")
         Text(text = "available Links to other sides are: ")
+        Row {
+            Text("RecipeCreation")
+            Button(onClick = onNavigationCreateRecipe) {
+
+            }
+        }
         Row {
             Text("ProjectDetails")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
-                value = projectId,
-                onValueChange = { projectId = it },
+                value = recipeID,
+                onValueChange = { recipeID = it },
                 valueRange = 1f..5f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
-
-
+            Button(onClick = { onNavigateToDetailedRecipe(recipeID.toLong()) }) {}
         }
-        Row {
-            Text("ProjectCreation")
-            Button(onClick = onNavigateToCreateProject) {}
-        }
+
     }
 }
-

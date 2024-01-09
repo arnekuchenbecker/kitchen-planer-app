@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.projectDetails
+package com.scouts.kitchenplaner.ui.view.shoppinglistoverview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,20 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ProjectDetails(
-    projectID: Long,
-    onNavigateToRecipeToCook: (Long) -> Unit,
-    onNavigateToRecipeCreation: () -> Unit
-) {
+fun ShoppingListOverview(projectID: Long, onNavigateToShoppingList: (Long) -> Unit) {
     Column {
-
-        Text(text = "This is the screen, where all information to one specific project are displayed displayed")
-        Text(text = "The projectID is $projectID", color = Color.Red)
+        Text(text = "This is the shopping list overview, where all own shopping lists within one project are displayed are displayed")
+        Text(text = "Shoppinglist for project $projectID", color = Color.Red)
         Text(text = "available Links to other sides are: ")
-        var listID by remember { mutableStateOf(1f) }
-
+        var listID by remember { mutableStateOf(42f) }
         Row {
-            Text(text = "Recipe To Cook")
+            Text(text = "Detailed Shopping List")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
                 value = listID,
@@ -52,11 +46,10 @@ fun ProjectDetails(
                 valueRange = 1f..20f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
-        }
-        Row {
-            Text(text = "Create recipe screen")
-            Button(onClick = onNavigateToRecipeCreation) {}
+            Button(onClick = { onNavigateToShoppingList(listID.toLong()) }) {
+
+            }
+
         }
 
     }

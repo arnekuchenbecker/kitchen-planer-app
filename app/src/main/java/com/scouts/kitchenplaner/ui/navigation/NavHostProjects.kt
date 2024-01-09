@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.scouts.kitchenplaner.ui.view.projectDetails.ProjectDetails
-import com.scouts.kitchenplaner.ui.view.recipeForProject.RecipeForProjectScreen
+import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetails
+import com.scouts.kitchenplaner.ui.view.recipeforproject.RecipeForProjectScreen
 
 private const val RECIPE_ID = "recipeID"
 private const val RECIPE_TO_COOK = "recipeToCook"
