@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
     )]
 )
 data class DietarySpeciality(
-    @PrimaryKey val recipe: Long,
+    @PrimaryKey var recipe: Long,
     val type: String, //TRACE, ALLERGEN, FREE_OF
     val speciality: String
 )

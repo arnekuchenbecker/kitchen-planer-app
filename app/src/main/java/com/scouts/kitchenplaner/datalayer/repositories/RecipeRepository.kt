@@ -52,10 +52,15 @@ class RecipeRepository @Inject constructor(
                 )
             }
         }
-        recipeDAO.createRecipe(recipe = recipe.toDataLayerEntity(),
-            allergens = recipe.allergen.map { DietarySpeciality(0, "ALLERGEN", it) },
-            traces = recipe.allergen.map { DietarySpeciality(0, "TRACES", it) },
-            freeOf = recipe.allergen.map { DietarySpeciality(0, "FREE_OF", it) },
+        var speciality: MutableList<DietarySpeciality> = mutableListOf()
+        speciality.addAll(recipe.allergen.map {
+            DietarySpeciality(0, "ALLERGEN", it)
+        })
+        speciality.addAll(recipe.allergen.map { DietarySpeciality(0, "TRACES", it) })
+        speciality.addAll(recipe.allergen.map { DietarySpeciality(0, "FREE_OF", it) })
+        recipeDAO.createRecipe(
+            recipe = recipe.toDataLayerEntity(),
+            speciality = speciality,
             ingredientGroups = ingredientGroup,
             ingredients = ingredient,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
