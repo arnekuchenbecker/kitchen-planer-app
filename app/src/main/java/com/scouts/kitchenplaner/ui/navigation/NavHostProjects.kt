@@ -24,7 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetails
-import com.scouts.kitchenplaner.ui.view.recipeForProject.RecipeForProjectScreen
+import com.scouts.kitchenplaner.ui.view.recipeforproject.RecipeForProjectScreen
 
 private const val RECIPE_ID = "recipeID"
 private const val RECIPE_TO_COOK = "recipeToCook"
