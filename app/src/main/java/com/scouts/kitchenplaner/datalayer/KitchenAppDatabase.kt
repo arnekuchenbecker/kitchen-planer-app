@@ -20,10 +20,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
+import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
-import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
@@ -35,11 +38,14 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
         MealEntity::class,
         AllergenEntity::class,
         UserEntity::class,
-        UserProjectEntity::class
+        UserProjectEntity::class,
+        ShoppingListEntity::class,
+        ShoppingListEntryEntity::class
     ],
     version = 1
 )
 @TypeConverters(DateConverter::class)
 abstract class KitchenAppDatabase : RoomDatabase() {
     abstract fun projectDao() : ProjectDAO
+    abstract fun shoppingListDao() : ShoppingListDAO
 }
