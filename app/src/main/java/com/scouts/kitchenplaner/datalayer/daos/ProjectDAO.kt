@@ -21,6 +21,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
@@ -74,4 +76,10 @@ interface ProjectDAO {
 
     @Query("SELECT * FROM projects WHERE name = :projectName")
     suspend fun getProjectByProjectName(projectName: String) : ProjectEntity
+
+    @Update(entity = ProjectEntity::class)
+    suspend fun updateImage(image: ProjectImageDTO)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPersonNumberChange(personNumberChangeEntity: PersonNumberChangeEntity)
 }

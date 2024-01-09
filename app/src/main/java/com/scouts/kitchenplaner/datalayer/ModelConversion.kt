@@ -74,3 +74,7 @@ fun ProjectEntity.toModelEntity(
         }
     )
 }
+
+fun Allergen.toDataLayerEntity(projectId: Long, name: String) : AllergenEntity {
+    return AllergenEntity(projectId, name, allergen, traces)
+}

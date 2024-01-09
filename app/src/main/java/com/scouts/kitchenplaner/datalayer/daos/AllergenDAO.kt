@@ -17,9 +17,12 @@
 package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.AllergenIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.AllergenPersonIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import kotlinx.coroutines.flow.Flow
@@ -42,15 +45,36 @@ interface AllergenDAO {
         }
     }
 
+    @Transaction
+    suspend fun insertAllergenPersonWithAllergens(
+        person: AllergenPersonEntity,
+        allergens: List<AllergenEntity>
+    ) {
+        insertAllergenPerson(person)
+        insertAllergen(*(allergens.toTypedArray()))
+    }
+
     @Insert
     suspend fun insertAllergenPerson(entity: AllergenPersonEntity) : Long
 
+    @Delete
+    suspend fun deleteAllergenPerson(entity: AllergenPersonIdentifierDTO)
+
     @Insert
-    suspend fun insertAllergen(entity: AllergenEntity) : Long
+    suspend fun insertAllergen(vararg entity: AllergenEntity) : Long
+
+    @Delete
+    suspend fun deleteAllergen(entity: AllergenIdentifierDTO)
 
     @Query("SELECT * FROM allergenPersons WHERE allergenPersons.projectId = :id")
     fun getAllergenPersonsByProjectID(id: Long) : Flow<List<AllergenPersonEntity>>
 
     @Query("SELECT * FROM allergens WHERE allergens.projectId = :id")
     fun getAllergensByProjectID(id: Long) : Flow<List<AllergenEntity>>
+
+    @Query("SELECT count(allergen) " +
+            "FROM allergens " +
+            "WHERE allergens.name = :name " +
+            "AND allergens.projectId = :projectId")
+    suspend fun getAllergenCountByNameAndProjectId(name: String, projectId: Long) : Int
 }
