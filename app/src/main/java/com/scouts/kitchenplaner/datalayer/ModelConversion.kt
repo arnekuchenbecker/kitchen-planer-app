@@ -18,6 +18,8 @@ package com.scouts.kitchenplaner.datalayer
 
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
@@ -47,12 +49,21 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntit
     })
 }
 
-fun Recipe.toDataLayerEntity(): RecipeEntity {
-    return RecipeEntity(
-        id = id ?: 0,
-        title = name,
-        imageURI = imageURI ?: "",
-        description = description ?: "",
-        numberOfPeople = numberOfPeople
+fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
+
+    val speciality: MutableList<DietarySpeciality> = mutableListOf()
+    speciality.addAll(allergen.map {
+        DietarySpeciality(0, DietaryTypes.ALLERGEN.name, it)
+    })
+    speciality.addAll(traces.map { DietarySpeciality(0, DietaryTypes.TRACE.name, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpeciality(0, DietaryTypes.FREE_OF.name, it) })
+    return Pair(
+        RecipeEntity(
+            id = id ?: 0,
+            title = name,
+            imageURI = imageURI ?: "",
+            description = description ?: "",
+            numberOfPeople = numberOfPeople
+        ), speciality
     )
 }

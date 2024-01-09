@@ -40,27 +40,18 @@ class RecipeRepository @Inject constructor(
                     name = it.name, 0
                 )
             )
-            it.ingredients.forEach { ing ->
-                ingredient.add(
-                    IngredientEntity(
-                        0,
-                        ingredientGroup = it.name,
-                        name = ing.name,
-                        amount = ing.amount,
-                        unit = ing.unit
-                    )
-                )
-            }
+            ingredient.addAll(it.ingredients.map { ing -> IngredientEntity(
+                0,
+                ingredientGroup = it.name,
+                name = ing.name,
+                amount = ing.amount,
+                unit = ing.unit
+            )})
         }
-        var speciality: MutableList<DietarySpeciality> = mutableListOf()
-        speciality.addAll(recipe.allergen.map {
-            DietarySpeciality(0, "ALLERGEN", it)
-        })
-        speciality.addAll(recipe.allergen.map { DietarySpeciality(0, "TRACES", it) })
-        speciality.addAll(recipe.allergen.map { DietarySpeciality(0, "FREE_OF", it) })
+
         recipeDAO.createRecipe(
-            recipe = recipe.toDataLayerEntity(),
-            speciality = speciality,
+            recipe = recipe.toDataLayerEntity().first,
+            speciality = recipe.toDataLayerEntity().second,
             ingredientGroups = ingredientGroup,
             ingredients = ingredient,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
