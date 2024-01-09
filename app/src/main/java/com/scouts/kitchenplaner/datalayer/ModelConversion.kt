@@ -52,7 +52,7 @@ fun ProjectEntity.toModelEntity(
     meals: List<MealEntity>,
     allergenPersons: List<AllergenPersonEntity>,
     allergens: List<AllergenEntity>,
-    personNumbers: List<PersonNumberChangeEntity>
+    personNumbers: List<PersonNumberChangeEntity> //TODO when available in DomainLayer
 ) : Project {
     return Project(
         id = id,
