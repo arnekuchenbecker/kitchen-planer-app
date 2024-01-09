@@ -22,6 +22,7 @@ import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +37,11 @@ class DataLayerModule {
     @Provides
     fun provideProjectDao(database: KitchenAppDatabase) : ProjectDAO {
         return database.projectDao()
+    }
+
+    @Provides
+    fun provideShoppingListDao(database: KitchenAppDatabase) : ShoppingListDAO {
+        return database.shoppingListDao()
     }
 
     @Provides
