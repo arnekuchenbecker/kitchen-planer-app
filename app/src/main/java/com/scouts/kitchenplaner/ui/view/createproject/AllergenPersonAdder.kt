@@ -19,18 +19,24 @@ package com.scouts.kitchenplaner.ui.view.createproject
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,57 +47,82 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
 import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 
 @Composable
-fun AllergenAdder(state: AllergenPersonAdderState, onAdd: () -> Unit) {
-    val columnItemModifier = Modifier
-        .padding(5.dp)
-        .height(70.dp)
-    Column (
-        modifier = Modifier.verticalScroll(rememberScrollState())
-    ) {
-        AllergenInputs(state, columnItemModifier)
+fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            modifier = Modifier.fillMaxHeight(0.5f),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            val columnItemModifier = Modifier
+                .padding(5.dp)
+                .height(70.dp)
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+            ) {
+                AllergenPersonInputs(state, columnItemModifier)
 
-        HorizontalDivider()
+                HorizontalDivider()
 
-        AllergenAddInputs(
-            onAdd = { allergen, traces -> state.addAllergen(allergen, traces) },
-            modifier = Modifier.padding(10.dp)
-        )
+                AllergenAddInputs(
+                    onAdd = { allergen, traces ->
+                        if (allergen != "") {
+                            state.addAllergen(allergen, traces)
+                        }
+                    },
+                    modifier = Modifier.padding(10.dp)
+                )
 
-        if (state.allergens.isNotEmpty()) {
-            HorizontalDivider()
+                if (state.allergens.isNotEmpty()) {
+                    HorizontalDivider()
 
-            Column {
-                state.allergens.forEach { (allergen, traces) ->
-                    val text = if (traces) {" (Spuren)"} else ""
-                    Text(modifier = Modifier.padding(10.dp), text = "$allergen$text")
+                    Column {
+                        state.allergens.forEach { (allergen, traces) ->
+                            val text = if (traces) {
+                                " (Spuren)"
+                            } else ""
+                            Text(modifier = Modifier.padding(10.dp), text = "$allergen$text")
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+
+                Button(
+                    onClick = {
+                        if (state.name != "" && state.allergens.isNotEmpty()) {
+                            onAdd()
+                            onDismiss()
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Add allergic person"
+                    )
+
+                    Text("Person hinzufügen")
                 }
             }
-        }
-
-        HorizontalDivider()
-
-        IconButton(
-            onClick = {
-                if (state.name != "" && state.allergens.isNotEmpty()) {
-                    onAdd()
-                }
-            },
-            modifier = Modifier
-                .padding(start = 10.dp)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Icon(imageVector = Icons.Filled.AddCircle, contentDescription = "Add allergen for person")
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifier) {
+fun AllergenPersonInputs (
+    state: AllergenPersonAdderState,
+    modifier: Modifier = Modifier
+) {
     Column (horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
             modifier = Modifier.padding(10.dp),
@@ -103,6 +134,7 @@ fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifi
 
         DockedDatePicker(
             modifier = modifier
+                .padding(10.dp)
                 .fillMaxWidth(),
             dateState = state.arrivalDate,
             displayText = state.arrivalDateString,
@@ -113,11 +145,13 @@ fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifi
             modifier = Modifier.padding(10.dp),
             label = { Text("Anwesend ab Mahlzeit...") },
             value = state.arrivalMeal,
-            onValueChange = { state.arrivalMeal = it }
+            onValueChange = { state.arrivalMeal = it },
+            singleLine = true
         )
 
         DockedDatePicker(
             modifier = modifier
+                .padding(10.dp)
                 .fillMaxWidth(),
             dateState = state.departureDate,
             displayText = state.departureDateString,
@@ -128,7 +162,8 @@ fun AllergenInputs (state: AllergenPersonAdderState, modifier: Modifier = Modifi
             modifier = Modifier.padding(10.dp),
             label = { Text("Anwesend bis Mahlzeit...") },
             value = state.departureMeal,
-            onValueChange = { state.departureMeal = it }
+            onValueChange = { state.departureMeal = it },
+            singleLine = true
         )
     }
 }
@@ -139,7 +174,7 @@ fun AllergenAddInputs(onAdd: (String, Boolean) -> Unit, modifier: Modifier = Mod
     var traces by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

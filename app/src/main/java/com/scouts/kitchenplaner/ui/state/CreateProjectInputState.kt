@@ -80,6 +80,10 @@ class CreateProjectInputState {
         }
     }
 
+    fun resetAllergenPersonAdderState() {
+        mutableAllergenAdderState = AllergenPersonAdderState()
+    }
+
     fun removeIntolerantPerson(name: String) {
         allergenList.removeAll { it.name == name }
     }
