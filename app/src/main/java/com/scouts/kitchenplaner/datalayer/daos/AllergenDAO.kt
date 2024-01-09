@@ -51,19 +51,21 @@ interface AllergenDAO {
         allergens: List<AllergenEntity>
     ) {
         insertAllergenPerson(person)
-        insertAllergen(*(allergens.toTypedArray()))
+        allergens.forEach { allergen ->
+            insertAllergen(allergen)
+        }
     }
 
     @Insert
     suspend fun insertAllergenPerson(entity: AllergenPersonEntity) : Long
 
-    @Delete
+    @Delete(entity = AllergenPersonEntity::class)
     suspend fun deleteAllergenPerson(entity: AllergenPersonIdentifierDTO)
 
     @Insert
-    suspend fun insertAllergen(vararg entity: AllergenEntity) : Long
+    suspend fun insertAllergen(entity: AllergenEntity) : Long
 
-    @Delete
+    @Delete(entity = AllergenEntity::class)
     suspend fun deleteAllergen(entity: AllergenIdentifierDTO)
 
     @Query("SELECT * FROM allergenPersons WHERE allergenPersons.projectId = :id")
