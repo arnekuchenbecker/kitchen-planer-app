@@ -43,17 +43,17 @@ class AllergenPersonAdderState {
     val departureDateString: String
         get() = (departureDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
-    private val allergenList: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+    private val allergenCollection: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
     val allergens: List<Pair<String, Boolean>>
-        get() = allergenList.toList()
+        get() = allergenCollection.toList()
 
     fun addAllergen(allergen: String, traces: Boolean) {
-        if(allergenList.containsKey(allergen)) {
+        if(allergenCollection.containsKey(allergen)) {
             if (traces) {
-                allergenList[allergen] = true
+                allergenCollection[allergen] = true
             }
         } else {
-            allergenList[allergen] = traces
+            allergenCollection[allergen] = traces
         }
     }
 }

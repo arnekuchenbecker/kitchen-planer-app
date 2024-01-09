@@ -105,7 +105,7 @@ fun EditAllergensDialog(
                             modifier = Modifier.padding(0.dp, 10.dp),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            Text("Keine Intoleranten Personen")
+                            Text("Keine intoleranten Personen")
                         }
                     }
                 )
