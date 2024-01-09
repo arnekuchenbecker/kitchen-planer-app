@@ -22,7 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.scouts.kitchenplaner.ui.view.recipeDetails.RecipeDetails
+import com.scouts.kitchenplaner.ui.view.recipedetails.RecipeDetails
 
 private const val RECIPE_DETAILS = "details"
 private const val RECIPE_ID = "id"
