@@ -23,7 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.scouts.kitchenplaner.ui.view.shoppinglistdetails.ShoppingList
-import com.scouts.kitchenplaner.ui.view.shoppingListOverview.ShoppingListOverview
+import com.scouts.kitchenplaner.ui.view.shoppinglistoverview.ShoppingListOverview
 
 private const val SHOPPING_OVERVIEW: String = "OverviewShopping"
 private const val SHOPPING_LIST_DETAIL: String = "ShoppingList"
