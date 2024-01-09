@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.recipeForProject
+package com.scouts.kitchenplaner.ui.viewmodel
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import com.scouts.kitchenplaner.model.usecases.ProjectSelection
+import javax.inject.Inject
 
-@Composable
-fun RecipeForProjectScreen(recipeID: Long) {
-    Column {
-        Text("On this screen you can see a recipe for cooking while you are in a project")
-        Text("Recipe $recipeID is shown", color = Color.Red)
-        Text(text = "available Links to other sides are: ")
-    }
-
+class ProjectSelectionViewModel @Inject constructor(
+    private val projectSelection: ProjectSelection
+) {
+    val projects = projectSelection.getProjectsForCurrentUser()
 }

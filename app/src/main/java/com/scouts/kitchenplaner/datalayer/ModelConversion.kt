@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,11 @@ package com.scouts.kitchenplaner.datalayer
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ShoppingList
 
 fun Project.toDataLayerEntity() : ProjectEntity {
     return ProjectEntity(
@@ -43,4 +46,17 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEnti
     ), allergens.map {
         AllergenEntity(projectId ?: 0, name, it.allergen, it.traces)
     })
+}
+
+fun ShoppingList.toDataLayerEntity(projectId: Long) : Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
+    return Pair(
+        ShoppingListEntity(
+            id = id ?: 0,
+            name = name,
+            projectId = projectId
+        ),
+        items.map {
+            ShoppingListEntryEntity(id ?: 0, projectId, it.name, it.amount, it.unit)
+        }
+    )
 }

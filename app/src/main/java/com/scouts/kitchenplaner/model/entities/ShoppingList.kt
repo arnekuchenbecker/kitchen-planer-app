@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,23 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.recipeDetails
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+class ShoppingList (
+    val id: Long? = null,
+    val name: String,
+    private val shoppingItems: MutableList<ShoppingListItem>
+) {
+    val items: List<ShoppingListItem>
+        get() = shoppingItems
 
-
-@Composable
-fun RecipeDetails(recipeID: Long) {
-
-    Column {
-        Text("On this screen you can see a detailed recipe")
-        Text(text = "The recipeID is $recipeID", color = Color.Red)
-
-        Text(text = "available Links to other sides are: ")
-
-    }
-
+    fun addItem(item: ShoppingListItem) = shoppingItems.add(item)
 }

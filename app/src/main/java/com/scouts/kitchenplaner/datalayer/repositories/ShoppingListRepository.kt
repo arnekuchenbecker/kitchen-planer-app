@@ -14,10 +14,18 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.dtos
+package com.scouts.kitchenplaner.datalayer.repositories
 
-data class ProjectStubDTO (
-    val name: String,
-    val id: Long,
-    val imageUri: String
-)
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
+import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.model.entities.ShoppingList
+import javax.inject.Inject
+
+class ShoppingListRepository @Inject constructor(
+    private val shoppingListDAO: ShoppingListDAO
+) {
+    suspend fun createShoppingList(list: ShoppingList, projectId: Long) {
+        val entities = list.toDataLayerEntity(projectId)
+        shoppingListDAO.createShoppingList(entities.first, entities.second)
+    }
+}

@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.shoppingListOverview
+package com.scouts.kitchenplaner.ui.view.projectoverview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,29 +28,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 
 @Composable
-fun ShoppingListOverview(projectID: Long, onNavigateToShoppingList: (Long) -> Unit) {
+
+fun ProjectOverview(
+    onNavigateToDetailedProject: (Long) -> Unit,
+    onNavigateToCreateProject: () -> Unit
+) {
+    var projectId by remember { mutableStateOf(0f) }
     Column {
-        Text(text = "This is the shopping list overview, where all own shopping lists within one project are displayed are displayed")
-        Text(text = "Shoppinglist for project $projectID", color = Color.Red)
+        Text(text = "This is the project overview, where all own projects are displayed")
         Text(text = "available Links to other sides are: ")
-        var listID by remember { mutableStateOf(42f) }
         Row {
-            Text(text = "Detailed Shopping List")
+            Text("ProjectDetails")
             Slider(
                 modifier = Modifier.fillMaxWidth(0.3f),
-                value = listID,
-                onValueChange = { listID = it },
-                valueRange = 1f..20f,
+                value = projectId,
+                onValueChange = { projectId = it },
+                valueRange = 1f..5f,
                 steps = 5
             )
-            Button(onClick = { onNavigateToShoppingList(listID.toLong()) }) {
+            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
 
-            }
 
         }
-
+        Row {
+            Text("ProjectCreation")
+            Button(onClick = onNavigateToCreateProject) {}
+        }
     }
 }
+
