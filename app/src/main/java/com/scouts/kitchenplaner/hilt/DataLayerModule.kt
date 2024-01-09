@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.room.Room
 import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,8 +33,13 @@ import javax.inject.Singleton
 @Module
 class DataLayerModule {
     @Provides
-    fun projectDao(database: KitchenAppDatabase) : ProjectDAO {
+    fun projectDao(database: KitchenAppDatabase): ProjectDAO {
         return database.projectDao()
+    }
+
+    @Provides
+    fun recipeDao(database: KitchenAppDatabase): RecipeDAO {
+        return database.recipeDao()
     }
 
     @Provides

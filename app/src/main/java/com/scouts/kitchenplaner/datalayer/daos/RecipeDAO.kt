@@ -39,15 +39,39 @@ interface RecipeDAO {
     ): Long {
         val rowIdRecipe = insertRecipe(recipe)
         val recipeId = rowIdToRecipeID(rowIdRecipe)
+
         speciality.forEach { special ->
             special.recipe = recipeId
             insertDietarySpeciality(special)
         }
+        ingredients.forEach { ingredient ->
+            ingredient.recipe = recipeId
+            insertIngredient(ingredient)
+        }
+        ingredientGroups.forEach { group ->
+            group.recipe = recipeId
+            insertIngredientGroups(group)
+        }
+
+        instructions.forEach { step ->
+            step.recipe = recipeId
+            insertInstructionStep(step)
+        }
         return recipeId
     }
 
+
+    @Insert
+    suspend fun insertInstructionStep(entity: InstructionEntity): Long
+
+    @Insert
+    suspend fun insertIngredientGroups(entity: IngredientGroupEntity): Long
+
     @Insert
     suspend fun insertRecipe(entity: RecipeEntity): Long
+
+    @Insert
+    suspend fun insertIngredient(entity: IngredientEntity): Long
 
     @Insert
     suspend fun insertDietarySpeciality(entity: DietarySpeciality): Long

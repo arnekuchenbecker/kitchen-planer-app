@@ -28,4 +28,4 @@ import androidx.room.ForeignKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class InstructionEntity(val order: Int, val recipe: Long, val instruction: String) {}
+data class InstructionEntity(val order: Int, var recipe: Long, val instruction: String) {}

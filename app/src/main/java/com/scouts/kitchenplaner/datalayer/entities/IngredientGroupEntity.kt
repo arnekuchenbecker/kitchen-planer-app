@@ -30,5 +30,5 @@ import androidx.room.ForeignKey
 )
 data class IngredientGroupEntity(
     val name: String,
-    val recipe: Long
+    var recipe: Long
 )
