@@ -90,6 +90,7 @@ fun AllergenPicker(
             onAdd = onAdd,
             onRemove = onRemove,
             onRemoveItem = onRemoveItem,
+            onResetAdderState = onResetAdderState,
             allergens = allergens,
             adderState = dialogState
         )

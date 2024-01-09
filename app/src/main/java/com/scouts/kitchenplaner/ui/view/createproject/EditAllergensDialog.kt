@@ -46,6 +46,7 @@ fun EditAllergensDialog(
     onAdd: () -> Unit,
     onRemove: (String) -> Unit,
     onRemoveItem: (String, String, Boolean) -> Unit,
+    onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
     adderState: AllergenPersonAdderState
 ) {
@@ -72,7 +73,11 @@ fun EditAllergensDialog(
                     AllergenPersonAdder(
                         state = adderState,
                         onAdd = onAdd,
-                        onDismiss = { displayDialog = false })
+                        onDismiss = {
+                            displayDialog = false
+                            onResetAdderState()
+                        }
+                    )
                 }
 
                 LazyColumnWrapper(
