@@ -42,7 +42,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
         ShoppingListEntity::class,
         ShoppingListEntryEntity::class
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(DateConverter::class)
 abstract class KitchenAppDatabase : RoomDatabase() {
