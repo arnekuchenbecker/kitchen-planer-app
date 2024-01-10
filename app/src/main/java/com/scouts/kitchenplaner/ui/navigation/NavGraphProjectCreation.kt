@@ -43,15 +43,21 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
                 type = NavType.LongType
             })
         ) {
-            InviteToProject {
-                navController.navigate(
-                    "${Destinations.ProjectDetailsGraph}/${
-                        it.arguments?.getLong(
-                            Destinations.ProjectId
-                        ) ?: -1
-                    }"
-                )
-            }
+            println(it.destination.route)
+            val projectId = it.arguments?.getLong(Destinations.ProjectId) ?: -1
+            InviteToProject (
+                projectId = projectId,
+                onNavigateToProject = {
+                    navController.navigate(
+                        route = "${Destinations.ProjectDetailsGraph}/$projectId",
+                        builder = {
+                            popUpTo(PROJECT_CREATION) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
+            )
         }
     }
 
