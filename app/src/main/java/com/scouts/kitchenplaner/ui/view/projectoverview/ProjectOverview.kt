@@ -16,13 +16,15 @@
 
 package com.scouts.kitchenplaner.ui.view.projectoverview
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -73,28 +75,33 @@ fun ProjectOverview(
             modifier = Modifier.padding(it),
             content = projects,
             DisplayContent = { project, _ ->
-                Button(
-                    onClick = {
-                        onNavigateToDetailedProject(
-                            project.id
-                        )
-                    },
+                Box(
+                    modifier = Modifier
+                        .clickable {
+                            onNavigateToDetailedProject(
+                                project.id
+                            )
+                        }.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer),
 
-                ) { Row {
-                    if(project.imageUri.path.isNullOrEmpty()){
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = "Projektplatzhalter"
-                        )
-                    }else{
-                    AsyncImage(
-                        model = project.imageUri.path,
-                        contentDescription = "Project Image",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Crop
-                    )}
-                    project.name
-                }}
+
+                ) {
+                    Row {
+                        if (project.imageUri.path.isNullOrEmpty()) {
+                            Icon(
+                                imageVector = Icons.Filled.Info,
+                                contentDescription = "Projektplatzhalter"
+                            )
+                        } else {
+                            AsyncImage(
+                                model = project.imageUri.path,
+                                contentDescription = "Project Image",
+                                modifier = Modifier.fillMaxWidth(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Text(text = project.name,  color= MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                }
             }, DisplayEmpty = {
                 Text("${projects.size}")
                 Text(
