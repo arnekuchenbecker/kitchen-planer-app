@@ -16,11 +16,14 @@
 
 package com.scouts.kitchenplaner.ui.viewmodel
 
+import androidx.lifecycle.ViewModel
 import com.scouts.kitchenplaner.model.usecases.ProjectSelection
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class ProjectSelectionViewModel @Inject constructor(
     private val projectSelection: ProjectSelection
-) {
+) : ViewModel() {
     val projects = projectSelection.getProjectsForCurrentUser()
 }

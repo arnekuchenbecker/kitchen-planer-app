@@ -30,7 +30,7 @@ fun NavGraphBuilder.projectsNav(
     navigation(startDestination = PROJECT_OVERVIEW, route = Destinations.ProjectsGraph) {
         composable(PROJECT_OVERVIEW) {
             ProjectOverview(
-                onNavigateToDetailedProject = { projectID ->
+                onNavigateToDetailedProject = { projectID:Long ->
                     navController.navigate(
                         Destinations.ProjectDetailsGraph + "/$projectID"
                     )
