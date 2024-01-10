@@ -36,6 +36,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
@@ -45,13 +49,15 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.ContextCompat
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
+    var invitePeople by remember { mutableStateOf(false) }
+
     val link = "http://joinproject.app?id=$projectId"
     val context = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
@@ -69,56 +75,83 @@ fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
             )
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onNavigateToProject,
-                text = { Text("Fertig") },
-                icon = { Icon(imageVector = Icons.Filled.Check, contentDescription = "Fertig") }
-            )
+            if (invitePeople) {
+                ExtendedFloatingActionButton(
+                    onClick = onNavigateToProject,
+                    text = { Text("Fertig") },
+                    icon = { Icon(imageVector = Icons.Filled.Check, contentDescription = "Fertig") }
+                )
+            }
         }
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(it)
         ) {
-            Text(
-                modifier = Modifier.padding(10.dp),
-                fontSize = 20.sp,
-                text = "Share this link with other people you want to invite to the project:")
-
-            Box (
-                modifier = Modifier
-                    .padding(10.dp)
-                    .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(5.dp))
-                    .clickable {
-                        clipboardManager.setText(AnnotatedString(link))
-                    }
-            ) {
+            if (invitePeople) {
                 Text(
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 20.sp,
+                    text = "Share this link with other people you want to invite to the project:")
+
+                Box (
                     modifier = Modifier
-                        .padding(8.dp),
-                    text = link
-                )
-            }
-
-            Button(onClick = {
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, link)
+                        .padding(10.dp)
+                        .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(5.dp))
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(link))
+                        }
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(8.dp),
+                        text = link
+                    )
                 }
-                startActivity(context, Intent.createChooser(intent, "Share link"), null)
+
+                Button(onClick = {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, link)
+                    }
+                    ContextCompat.startActivity(context, Intent.createChooser(intent, "Share link"), null)
 
 
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Share,
-                    contentDescription = "Invite other people",
-                    modifier = Modifier.padding(end = 10.dp)
-                )
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = "Invite other people",
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
 
-                Text("Projekt teilen")
+                    Text("Projekt teilen")
+                }
+            } else {
+                Text(
+                    modifier = Modifier.padding(5.dp),
+                    text = "Möchtest du andere Personen zu dem Projekt einladen?")
+
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = {
+                        invitePeople = true
+                        //TODO make project available online
+                    }
+                ) {
+                    Text("Ja")
+                }
+
+                Button(
+                    modifier = Modifier.padding(5.dp),
+                    onClick = onNavigateToProject
+                ) {
+                    Text("Nein")
+                }
             }
         }
     }
+
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
