@@ -18,12 +18,14 @@ package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
-import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
-import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -32,40 +34,36 @@ interface ProjectDAO {
     @Transaction
     suspend fun createProject(
         project: ProjectEntity,
-        meals: List<MealEntity>,
-        allergens: List<Pair<AllergenPersonEntity, List<AllergenEntity>>>
+        meals: List<MealEntity>
     ) : Long {
-        val projectId = insertProject(project)
+        val rowId = insertProject(project)
+        val projectId = getProjectIdByRowId(rowId)
 
         meals.forEach {
             it.projectId = projectId
             insertMealEntity(it)
         }
 
-        allergens.forEach {
-            it.first.projectId = projectId
-            insertAllergenPerson(it.first)
-
-            it.second.forEach { allergen ->
-                allergen.projectId = projectId
-                insertAllergen(allergen)
-            }
-        }
-
         return projectId
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertProject(entity: ProjectEntity) : Long
 
-    @Insert
-    suspend fun insertAllergenPerson(entity: AllergenPersonEntity) : Long
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMealEntity(entity: MealEntity) : Long
 
-    @Insert
-    suspend fun insertAllergen(entity: AllergenEntity) : Long
+    @Query("SELECT * FROM projects WHERE projects.id = :id")
+    fun getProjectById(id: Long) : Flow<ProjectEntity>
+
+    @Query("SELECT * FROM meals WHERE meals.projectId = :id")
+    fun getMealsByProjectID(id: Long) : Flow<List<MealEntity>>
+
+    @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
+    fun getPersonNumberChangesByProjectID(id: Long) : Flow<List<PersonNumberChangeEntity>>
+
+    @Query("SELECT id FROM projects WHERE rowId = :rowId")
+    suspend fun getProjectIdByRowId(rowId: Long) : Long
 
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
             "FROM projects INNER JOIN userprojects ON projects.id = userprojects.projectId " +
@@ -74,8 +72,14 @@ interface ProjectDAO {
 
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
             "FROM projects")
-    fun getAllProjects() : Flow<List<ProjectStubDTO>>
+    fun getAllProjectStubs() : Flow<List<ProjectStubDTO>>
 
     @Query("SELECT * FROM projects WHERE name = :projectName")
     suspend fun getProjectByProjectName(projectName: String) : ProjectEntity
+
+    @Update(entity = ProjectEntity::class)
+    suspend fun updateImage(image: ProjectImageDTO)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPersonNumberChange(personNumberChangeEntity: PersonNumberChangeEntity)
 }
