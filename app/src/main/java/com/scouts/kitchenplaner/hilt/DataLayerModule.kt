@@ -47,6 +47,7 @@ class DataLayerModule {
     fun myDatabase(@ApplicationContext application: Context): KitchenAppDatabase {
         return Room
             .databaseBuilder(application, KitchenAppDatabase::class.java, "hordentopf.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 }
