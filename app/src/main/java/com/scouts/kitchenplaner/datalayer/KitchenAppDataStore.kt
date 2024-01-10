@@ -22,7 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class KitchenAppDataStore (private val context: Context) {
@@ -37,9 +37,9 @@ class KitchenAppDataStore (private val context: Context) {
         }
     }
 
-    fun getCurrentUser() : Flow<String> {
+    suspend fun getCurrentUser() : String {
         return context.dataStore.data.map {
             it[USERNAME] ?: ""
-        }
+        }.first()
     }
 }
