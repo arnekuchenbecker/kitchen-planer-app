@@ -44,7 +44,7 @@ class DataLayerModule {
     }
 
     @Provides
-    fun recipeDao(database: KitchenAppDatabase): RecipeDAO {
+    fun provideRecipeDao(database: KitchenAppDatabase): RecipeDAO {
         return database.recipeDao()
     }
 

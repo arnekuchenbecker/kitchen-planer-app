@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.datalayer.repositories
 
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
-import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
@@ -31,16 +30,16 @@ class RecipeRepository @Inject constructor(
 
     suspend fun createRecipe(recipe: Recipe) {
 
-        var ingredientGroup: MutableList<IngredientGroupEntity> =
+        val ingredientGroup: MutableList<IngredientGroupEntity> =
             mutableListOf()
-        var ingredient: MutableList<IngredientEntity> = mutableListOf()
-        recipe.ingredients.forEach {
+        val ingredients: MutableList<IngredientEntity> = mutableListOf()
+        recipe.ingredientGroups.forEach {
             ingredientGroup.add(
                 IngredientGroupEntity(
                     name = it.name, 0
                 )
             )
-            ingredient.addAll(it.ingredients.map { ing -> IngredientEntity(
+            ingredients.addAll(it.ingredients.map { ing -> IngredientEntity(
                 0,
                 ingredientGroup = it.name,
                 name = ing.name,
@@ -54,7 +53,7 @@ class RecipeRepository @Inject constructor(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
             ingredientGroups = ingredientGroup,
-            ingredients = ingredient,
+            ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
                 InstructionEntity(
                     order = index, recipe = 0, instruction = instruction

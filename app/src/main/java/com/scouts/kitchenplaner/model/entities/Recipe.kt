@@ -26,6 +26,6 @@ class Recipe(
     val allergen: List<String> = listOf(),
     val freeOfAllergen: List<String> = listOf(),
     val instructions: List<String> = listOf(),
-    val ingredients: List<IngredientGroups> = listOf()
+    val ingredientGroups: List<IngredientGroups> = listOf()
 ) {
 }
