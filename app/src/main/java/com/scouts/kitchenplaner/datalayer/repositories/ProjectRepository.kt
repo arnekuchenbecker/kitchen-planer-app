@@ -43,7 +43,7 @@ class ProjectRepository @Inject constructor(
     suspend fun insertProject(project: Project) : Long {
         val projectId = projectDAO.createProject(
             project = project.toDataLayerEntity(),
-            meals = project.meals.map { MealEntity(it, 0) }
+            meals = project.meals.mapIndexed { index, it -> MealEntity(it, index, 0) }
         )
         allergenDAO.createAllergensForProject(
             projectId = projectId,
@@ -65,11 +65,18 @@ class ProjectRepository @Inject constructor(
     }
 
     @Throws(DuplicatePrimaryKeyException::class)
-    suspend fun addMealToProject(id: Long, meal: String) {
-        val rowId = projectDAO.insertMealEntity(MealEntity(meal, id))
+    suspend fun addMealToProject(meal: String, index: Int, projectId: Long) {
+        projectDAO.increaseMealOrder(projectId, index)
+        val rowId = projectDAO.insertMealEntity(MealEntity(meal, index, projectId))
         if (rowId == -1L) {
             throw DuplicatePrimaryKeyException("meal")
         }
+    }
+
+    suspend fun deleteMealFromProject(meal: String, projectId: Long) {
+        val order = projectDAO.getMealOrder(projectId, meal)
+        projectDAO.deleteMeal(projectId, meal)
+        projectDAO.decreaseMealOrder(projectId, order)
     }
 
     /**

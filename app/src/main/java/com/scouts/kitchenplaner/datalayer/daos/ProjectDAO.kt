@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -52,6 +53,24 @@ interface ProjectDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMealEntity(entity: MealEntity) : Long
+
+    @Query("UPDATE meals " +
+            "SET `order` = `order` + 1 " +
+            "WHERE projectId = :projectId " +
+            "AND `order` >= :index")
+    suspend fun increaseMealOrder(projectId: Long, index: Int)
+
+    @Query("UPDATE meals " +
+            "SET `order` = `order` - 1 " +
+            "WHERE projectId = :projectId " +
+            "AND `order` >= :index")
+    suspend fun decreaseMealOrder(projectId: Long, index: Int)
+
+    @Delete
+    suspend fun deleteMeal(projectId: Long, meal: String)
+
+    @Query("SELECT `order` FROM meals WHERE projectId = :projectId AND name = :name")
+    suspend fun getMealOrder(projectId: Long, name: String) : Int
 
     @Query("SELECT * FROM projects WHERE projects.id = :id")
     fun getProjectById(id: Long) : Flow<ProjectEntity>

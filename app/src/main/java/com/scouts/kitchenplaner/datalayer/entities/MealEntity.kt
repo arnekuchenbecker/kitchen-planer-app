@@ -31,5 +31,6 @@ import androidx.room.ForeignKey
 )
 data class MealEntity(
     val name: String,
+    val order: Int,
     var projectId: Long
 )

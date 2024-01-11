@@ -16,21 +16,23 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.model.DomainLayerRestricted
+import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import javax.inject.Inject
 
 class EditMealPlan @Inject constructor(
     //TODO recipeManagementRepo - missing DataLayer support
+    private val projectRepository: ProjectRepository
 ) {
     //TODO selectRecipeForMeal(projectId, date, meal)
     //TODO removeRecipeFromMeal(projectId, date, meal)
     //TODO swapMeals(projectId, firstMealSlot, secondMealSlot)
 
-    @OptIn(DomainLayerRestricted::class)
-    fun addMeal(project: Project, meal: String, index: Int = -1) {
-
+    suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size + 1) {
+        projectRepository.addMealToProject(meal, index, project.id ?: -1)
     }
 
-    //TODO removeMeal
+    suspend fun removeMeal(project: Project, meal: String) {
+        projectRepository.deleteMealFromProject(meal, project.id ?: -1)
+    }
 }
