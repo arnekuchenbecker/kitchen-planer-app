@@ -50,7 +50,7 @@ interface RecipeDAO {
         }
         ingredientGroups.forEach { group ->
             group.recipe = recipeId
-            insertIngredientGroups(group)
+            insertIngredientGroup(group)
         }
 
         instructions.forEach { step ->
@@ -65,7 +65,7 @@ interface RecipeDAO {
     suspend fun insertInstructionStep(entity: InstructionEntity): Long
 
     @Insert
-    suspend fun insertIngredientGroups(entity: IngredientGroupEntity): Long
+    suspend fun insertIngredientGroup(entity: IngredientGroupEntity): Long
 
     @Insert
     suspend fun insertRecipe(entity: RecipeEntity): Long
