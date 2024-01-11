@@ -26,7 +26,7 @@ import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectBuilder
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -69,7 +69,7 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testInsertProject(): Unit = runBlocking {
-        val project = Project(name = "Test")
+        val project = ProjectBuilder().name("Test").build()
         repo.insertProject(project)
         val retValue = repo.getProjectByProjectName("Test")
         assertEquals("Test", retValue.name)
@@ -80,8 +80,8 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testGetAllProjects(): Unit = runTest {
-        val project = Project(name = "Test")
-        val project2 = Project(name = "Test2")
+        val project = ProjectBuilder().name("Test").build()
+        val project2 = ProjectBuilder().name("Test2").build()
 
         repo.getAllProjectsOverview().test {
             val projectId = repo.insertProject(project)

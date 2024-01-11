@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
-import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectBuilder
 import com.scouts.kitchenplaner.model.usecases.CreateProject
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,29 +62,27 @@ class CreateProjectViewModel @Inject constructor(
                 return@launch
             }
 
-            val project = Project(
-                name = inputState.name,
-                startDate = startDate,
-                endDate = endDate,
-                meals = mutableListOf<String>().apply {
-                    addAll(inputState.meals)
-                },
-                allergenPersons = mutableListOf<AllergenPerson>().apply {
-                    addAll(inputState.allergens.map { person ->
-                        AllergenPerson(
-                            name = person.name,
-                            allergens = person.allergens.map { (allergen, traces) ->
-                                Allergen(allergen, traces)
-                            },
-                            arrivalDate = Date(person.arrivalDateMillis!!),
-                            departureDate = Date(person.departureDateMillis!!),
-                            arrivalMeal = person.arrivalMeal,
-                            departureMeal = person.departureMeal
-                        )
-                    })
-                },
-                projectImage = inputState.image ?: Uri.EMPTY
-            )
+            val allergenPersons = inputState.allergens.map { person ->
+                AllergenPerson(
+                    name = person.name,
+                    allergens = person.allergens.map { (allergen, traces) ->
+                        Allergen(allergen, traces)
+                    },
+                    arrivalDate = Date(person.arrivalDateMillis!!),
+                    departureDate = Date(person.departureDateMillis!!),
+                    arrivalMeal = person.arrivalMeal,
+                    departureMeal = person.departureMeal
+                )
+            }
+
+            val project = ProjectBuilder()
+                .name(inputState.name)
+                .startDate(startDate)
+                .endDate(endDate)
+                .meals(inputState.meals)
+                .allergenPersons(allergenPersons)
+                .projectImage(inputState.image ?: Uri.EMPTY)
+                .build()
 
             val projectId = createProject.createProject(project)
 

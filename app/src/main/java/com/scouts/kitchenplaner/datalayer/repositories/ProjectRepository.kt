@@ -87,7 +87,7 @@ class ProjectRepository @Inject constructor(
      */
     suspend fun getProjectByProjectName(projectName: String) : Project {
         val entity = projectDAO.getProjectByProjectName(projectName)
-        return Project(entity.id, entity.name, entity.startDate, entity.endDate, listOf(), listOf(), Uri.parse(entity.imageUri))
+        return entity.toModelEntity(listOf(), listOf(), listOf(), listOf())
     }
 
     fun getProjectOverview(user: User) : Flow<List<ProjectStub>> {
