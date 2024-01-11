@@ -40,6 +40,7 @@ import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
+import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
 
 @Database(
     entities = [
@@ -61,7 +62,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
     ],
     version = 1
 )
-@TypeConverters(DateConverter::class)
+@TypeConverters(DateConverter::class,DietaryTypeConverter::class)
 abstract class KitchenAppDatabase : RoomDatabase() {
     abstract fun projectDao(): ProjectDAO
     abstract fun recipeDao(): RecipeDAO

@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023  Arne Kuchenbecker, Antonia Heiming
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@ class RecipeRepository @Inject constructor(
 
     suspend fun createRecipe(recipe: Recipe) {
 
-        val ingredientGroup: MutableList<IngredientGroupEntity> =
+        val ingredientGroups: MutableList<IngredientGroupEntity> =
             mutableListOf()
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
             val entity = it.toDataLayerEntity(recipe.id ?: 0)
-            ingredientGroup.add(entity.first)
+            ingredientGroups.add(entity.first)
             ingredients.addAll(entity.second)
         }
 
@@ -43,7 +43,7 @@ class RecipeRepository @Inject constructor(
         recipeDAO.createRecipe(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
-            ingredientGroups = ingredientGroup,
+            ingredientGroups = ingredientGroups,
             ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
                 InstructionEntity(
