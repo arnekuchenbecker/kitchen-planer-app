@@ -16,33 +16,50 @@
 
 package com.scouts.kitchenplaner.ui.view.projectoverview
 
-import androidx.compose.foundation.background
+import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HideImage
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
 fun ProjectOverview(
@@ -50,20 +67,63 @@ fun ProjectOverview(
     onNavigateToCreateProject: () -> Unit,
     viewModel: ProjectSelectionViewModel = hiltViewModel()
 ) {
-    var projectId by remember { mutableStateOf(0f) }
+    var archive by remember { mutableStateOf(false) }
 
-    Scaffold(floatingActionButton = {
 
+    Scaffold(topBar = {
+        TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            title = {
+                Text("Meine Projekte")
+            },
+            actions = {
+                Button(
+                    onClick = {
+                        archive = !archive
+                    }
+                ) {
+                    if (archive) {
+                        Icon(imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen")
+                    } else {
+                        Icon(imageVector = Icons.Filled.Archive, contentDescription = "archivieren")
+                    }
+                }
+            }
+        )
+    }, floatingActionButton = {
         ExtendedFloatingActionButton(
-            onClick = onNavigateToCreateProject,
+            onClick = {
+                if (archive) {
+                    archive = !archive;
+                    //TODO delete projects from database
+
+                } else {
+                    onNavigateToCreateProject()
+                }
+            },
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            text = { Text("Neues Projekt") },
+            text = {
+                if (!archive) {
+                    Text("Neues Projekt")
+                }
+            },
             icon = {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "neues Projekt hinzufügen"
-                )
+                if (archive) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "projekte archivieren"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "neues Projekt hinzufügen"
+                    )
+                }
+
             }
         )
 
@@ -71,63 +131,72 @@ fun ProjectOverview(
         val projects by viewModel.projects.collectAsState(initial = listOf())
 
         println(projects.size)
-        LazyColumnWrapper(
-            modifier = Modifier.padding(it),
-            content = projects,
-            DisplayContent = { project, _ ->
-                Box(
-                    modifier = Modifier
-                        .clickable {
-                            onNavigateToDetailedProject(
-                                project.id
+        Box(modifier = Modifier.padding(it)) {
+            LazyColumnWrapper(
+                modifier = Modifier.padding(10.dp),
+                content = projects,
+                DisplayContent = { project, _ ->
+                    Box(
+                        modifier = Modifier
+                            .clickable {
+                                onNavigateToDetailedProject(
+                                    project.id
+                                )
+                            }
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                            .border(
+                                width = 2.dp,
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(6.dp)
                             )
-                        }.fillMaxWidth().background(color = MaterialTheme.colorScheme.secondaryContainer),
+                            .height(75.dp)
 
-
-                ) {
-                    Row {
-                        if (project.imageUri.path.isNullOrEmpty()) {
-                            Icon(
-                                imageVector = Icons.Filled.Info,
-                                contentDescription = "Projektplatzhalter"
-                            )
-                        } else {
-                            AsyncImage(
-                                model = project.imageUri.path,
-                                contentDescription = "Project Image",
-                                modifier = Modifier.fillMaxWidth(),
-                                contentScale = ContentScale.Crop
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(start = 5.dp)
+                        ) {
+                            if (project.imageUri == Uri.EMPTY) {
+                                Icon(
+                                    modifier = Modifier
+                                        .fillMaxHeight(0.9f)
+                                        .aspectRatio(1.0f)
+                                        .padding(start = 5.dp),
+                                    imageVector = Icons.Filled.HideImage,
+                                    contentDescription = "Projektplatzhalter"
+                                )
+                            } else {
+                                println("ProjectURI ${project.imageUri} for ${project.name}")
+                                AsyncImage(
+                                    model = project.imageUri,
+                                    contentDescription = "Project Image",
+                                    modifier = Modifier
+                                        .fillMaxHeight(0.85f)
+                                        .aspectRatio(1.0f)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
+                            Text(
+                                modifier = Modifier.padding(10.dp),
+                                text = project.name,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
                         }
-                        Text(text = project.name,  color= MaterialTheme.colorScheme.onSecondaryContainer)
+
                     }
-                }
-            }, DisplayEmpty = {
-                Text("${projects.size}")
-                Text(
-                    text = "Keine Projekte"
-                )
-            })
-        /*Column(modifier = Modifier.padding(it)) {
-            Text(text = "This is the project overview, where all own projects are displayed")
-            Text(text = "available Links to other sides are: ")
-            Row {
-                Text("ProjectDetails")
-                Slider(
-                    modifier = Modifier.fillMaxWidth(0.3f),
-                    value = projectId,
-                    onValueChange = { projectId = it },
-                    valueRange = 1f..5f,
-                    steps = 5
-                )
-                Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
+                }, DisplayEmpty = {
+                    Text("${projects.size}")
+                    Text(
+                        text = "Keine Projekte"
+                    )
+                })
 
+        }
 
-            }
-            Row {
-                Text("ProjectCreation")
-                Button(onClick = onNavigateToCreateProject) {}
-            } */
     }
 }
 
