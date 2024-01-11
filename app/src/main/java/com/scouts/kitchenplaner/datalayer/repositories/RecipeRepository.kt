@@ -49,9 +49,10 @@ class RecipeRepository @Inject constructor(
             )})
         }
 
+        val dataLayerEntity = recipe.toDataLayerEntity()
         recipeDAO.createRecipe(
-            recipe = recipe.toDataLayerEntity().first,
-            speciality = recipe.toDataLayerEntity().second,
+            recipe = dataLayerEntity.first,
+            speciality = dataLayerEntity.second,
             ingredientGroups = ingredientGroup,
             ingredients = ingredient,
             instructions = recipe.instructions.mapIndexed { index, instruction ->

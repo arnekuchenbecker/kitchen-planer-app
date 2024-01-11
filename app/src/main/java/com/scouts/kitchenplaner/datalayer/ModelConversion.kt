@@ -56,10 +56,10 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
 
     val speciality: MutableList<DietarySpeciality> = mutableListOf()
     speciality.addAll(allergen.map {
-        DietarySpeciality(0, DietaryTypes.ALLERGEN.name, it)
+        DietarySpeciality(id ?: 0, DietaryTypes.ALLERGEN, it)
     })
-    speciality.addAll(traces.map { DietarySpeciality(0, DietaryTypes.TRACE.name, it) })
-    speciality.addAll(freeOfAllergen.map { DietarySpeciality(0, DietaryTypes.FREE_OF.name, it) })
+    speciality.addAll(traces.map { DietarySpeciality(id ?: 0, DietaryTypes.TRACE, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id ?: 0, DietaryTypes.FREE_OF, it) })
     return Pair(
         RecipeEntity(
             id = id ?: 0,
@@ -71,7 +71,7 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
     )
 }
 
-fun ShoppingList.toDataLayerEntity(projectId: Long) : Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
+fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
     return Pair(
         ShoppingListEntity(
             id = id ?: 0,

@@ -14,18 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.datalayer.typeconverters
 
-class Recipe(
-    val id: Long? = 0,
-    val name: String = "",
-    val imageURI: String?,
-    val description: String?,
-    val numberOfPeople: Int = -1,
-    val traces: List<String> = listOf(),
-    val allergen: List<String> = listOf(),
-    val freeOfAllergen: List<String> = listOf(),
-    val instructions: List<String> = listOf(),
-    val ingredients: List<IngredientGroups> = listOf()
-) {
+import androidx.room.TypeConverter
+import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
+
+class DietaryTypeConverter {
+    @TypeConverter
+    fun enumToString(speciality: DietaryTypes): String {
+        return speciality.name
+    }
+
+    @TypeConverter
+    fun stringToDietaryType(speciality: String): DietaryTypes {
+        return DietaryTypes.valueOf(speciality)
+    }
 }
