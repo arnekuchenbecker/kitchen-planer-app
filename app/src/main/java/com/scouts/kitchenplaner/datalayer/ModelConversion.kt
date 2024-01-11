@@ -22,8 +22,11 @@ import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
 import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
+import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
@@ -53,6 +56,37 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntit
     ), allergens.map {
         AllergenEntity(projectId ?: 0, name, it.allergen, it.traces)
     })
+}
+
+fun ProjectEntity.toModelEntity(
+    meals: List<MealEntity>,
+    allergenPersons: List<AllergenPersonEntity>,
+    allergens: List<AllergenEntity>,
+    personNumbers: List<PersonNumberChangeEntity> //TODO when available in DomainLayer
+) : Project {
+    return Project(
+        id = id,
+        name = name,
+        startDate = startDate,
+        endDate = endDate,
+        meals = meals.map { it.name },
+        allergenPersons = allergenPersons.map { person ->
+            AllergenPerson(
+                name = person.name,
+                arrivalDate = person.arrivalDate,
+                arrivalMeal = person.arrivalMeal,
+                departureDate = person.departureDate,
+                departureMeal = person.departureMeal,
+                allergens = allergens
+                    .filter { it.name == person.name }
+                    .map { Allergen(it.allergen, it.traces) }
+            )
+        }
+    )
+}
+
+fun Allergen.toDataLayerEntity(projectId: Long, name: String) : AllergenEntity {
+    return AllergenEntity(projectId, name, allergen, traces)
 }
 
 fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {

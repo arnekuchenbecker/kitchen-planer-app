@@ -19,8 +19,10 @@ package com.scouts.kitchenplaner.datalayer
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
@@ -29,8 +31,10 @@ import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.datalayer.entities.RecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
@@ -50,6 +54,8 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
         IngredientEntity::class,
         IngredientGroupEntity::class,
         InstructionEntity::class,
+        RecipeProjectMealEntity::class,
+        PersonNumberChangeEntity::class,
         ShoppingListEntity::class,
         ShoppingListEntryEntity::class
     ],
@@ -59,5 +65,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
 abstract class KitchenAppDatabase : RoomDatabase() {
     abstract fun projectDao(): ProjectDAO
     abstract fun recipeDao(): RecipeDAO
+    abstract fun allergenDao() : AllergenDAO
+    abstract fun recipeManagementDao() : RecipeManagementDAO
     abstract fun shoppingListDao() : ShoppingListDAO
 }
