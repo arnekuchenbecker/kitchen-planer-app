@@ -22,12 +22,12 @@ import java.util.Date
 
 @Entity(
     tableName = "recipeProjectMeal",
-    primaryKeys = ["projectId", "meal"],
+    primaryKeys = ["projectId", "meal", "date"],
     foreignKeys = [
         ForeignKey(
-            entity = ProjectEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["projectId"]
+            entity = MealEntity::class,
+            parentColumns = ["projectId", "name"],
+            childColumns = ["projectId", "meal"]
         ),
         ForeignKey(
             entity = RecipeEntity::class,
