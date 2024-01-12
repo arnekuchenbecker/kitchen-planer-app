@@ -28,18 +28,17 @@ import java.util.Date
             entity = ProjectEntity::class,
             parentColumns = ["id"],
             childColumns = ["projectId"]
-        )/*, TODO
+        ),
         ForeignKey(
-            entity = <RecipeEntityClass>,
+            entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"]
-        )*/
+        )
     ]
 )
-data class RecipeProjectMealEntity(
+data class MainRecipeProjectMealEntity(
     val projectId: Long,
     val meal: String,
     val date: Date,
-    val recipeId: Long,
-    val isAlternative: Boolean
+    val recipeId: Long
 )

@@ -19,10 +19,10 @@ package com.scouts.kitchenplaner.datalayer.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import com.scouts.kitchenplaner.datalayer.entities.RecipeProjectMealEntity
+import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 
 @Dao
 interface RecipeManagementDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addRecipeToProjectMeal(entity: RecipeProjectMealEntity)
+    suspend fun addRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
 }

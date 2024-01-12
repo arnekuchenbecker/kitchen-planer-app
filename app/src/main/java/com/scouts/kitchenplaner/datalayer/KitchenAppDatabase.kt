@@ -34,7 +34,7 @@ import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
-import com.scouts.kitchenplaner.datalayer.entities.RecipeProjectMealEntity
+import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
@@ -55,7 +55,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         IngredientEntity::class,
         IngredientGroupEntity::class,
         InstructionEntity::class,
-        RecipeProjectMealEntity::class,
+        MainRecipeProjectMealEntity::class,
         PersonNumberChangeEntity::class,
         ShoppingListEntity::class,
         ShoppingListEntryEntity::class

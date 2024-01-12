@@ -21,7 +21,7 @@ import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
-import com.scouts.kitchenplaner.datalayer.entities.RecipeProjectMealEntity
+import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.exceptions.DuplicatePrimaryKeyException
@@ -84,7 +84,7 @@ class ProjectRepository @Inject constructor(
      */
     suspend fun selectRecipeForProject(projectId: Long, recipeId: Long, meal: String, date: Date) {
         recipeManagementDAO.addRecipeToProjectMeal(
-            RecipeProjectMealEntity(projectId, meal, date, recipeId, false)
+            MainRecipeProjectMealEntity(projectId, meal, date, recipeId, false)
         )
     }
 
