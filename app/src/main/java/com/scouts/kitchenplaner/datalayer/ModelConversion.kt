@@ -18,17 +18,24 @@ package com.scouts.kitchenplaner.datalayer
 
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
+import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
+import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.ShoppingList
 
-fun Project.toDataLayerEntity() : ProjectEntity {
+fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
         id = (id ?: 0),
         name = name,
@@ -38,7 +45,7 @@ fun Project.toDataLayerEntity() : ProjectEntity {
     )
 }
 
-fun AllergenPerson.toDataLayerEntity(projectId: Long?) : Pair<AllergenPersonEntity, List<AllergenEntity>> {
+fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntity, List<AllergenEntity>> {
     return Pair(AllergenPersonEntity(
         name = name,
         projectId = projectId ?: 0,
@@ -82,7 +89,41 @@ fun Allergen.toDataLayerEntity(projectId: Long, name: String) : AllergenEntity {
     return AllergenEntity(projectId, name, allergen, traces)
 }
 
-fun ShoppingList.toDataLayerEntity(projectId: Long) : Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
+fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
+
+    val speciality: MutableList<DietarySpeciality> = mutableListOf()
+    speciality.addAll(allergen.map {
+        DietarySpeciality(id ?: 0, DietaryTypes.ALLERGEN, it)
+    })
+    speciality.addAll(traces.map { DietarySpeciality(id ?: 0, DietaryTypes.TRACE, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id ?: 0, DietaryTypes.FREE_OF, it) })
+    return Pair(
+        RecipeEntity(
+            id = id ?: 0,
+            title = name,
+            imageURI = imageURI ?: "",
+            description = description ?: "",
+            numberOfPeople = numberOfPeople
+        ), speciality
+    )
+}
+
+fun IngredientGroup.toDataLayerEntity(recipeID: Long): Pair<IngredientGroupEntity, List<IngredientEntity>> {
+    return Pair(
+        IngredientGroupEntity(name = name, recipeID),
+        ingredients.map {
+            IngredientEntity(
+                recipe = recipeID,
+                ingredientGroup = name,
+                name = it.name,
+                unit = it.unit,
+                amount = it.amount
+            )
+        }
+    )
+}
+
+fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
     return Pair(
         ShoppingListEntity(
             id = id ?: 0,
