@@ -84,6 +84,7 @@ class ProjectDatabaseTest {
         val project2 = Project(name = "Test2")
 
         repo.getAllProjectsOverview().test {
+            awaitItem()
             val projectId = repo.insertProject(project)
             val flowContent = awaitItem()
 

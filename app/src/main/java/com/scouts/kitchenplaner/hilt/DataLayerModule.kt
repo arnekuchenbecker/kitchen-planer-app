@@ -18,9 +18,11 @@ package com.scouts.kitchenplaner.hilt
 
 import android.content.Context
 import androidx.room.Room
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import dagger.Module
@@ -45,6 +47,11 @@ class DataLayerModule {
     }
 
     @Provides
+    fun provideRecipeDao(database: KitchenAppDatabase): RecipeDAO {
+        return database.recipeDao()
+    }
+
+    @Provides
     fun provideAllergenDao(database: KitchenAppDatabase) : AllergenDAO {
         return database.allergenDao()
     }
@@ -60,5 +67,11 @@ class DataLayerModule {
         return Room
             .databaseBuilder(application, KitchenAppDatabase::class.java, "hordentopf.db")
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext application: Context) : KitchenAppDataStore {
+        return KitchenAppDataStore(application)
     }
 }
