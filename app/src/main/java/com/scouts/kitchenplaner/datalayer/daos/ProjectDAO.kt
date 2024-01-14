@@ -23,6 +23,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
@@ -66,8 +67,8 @@ interface ProjectDAO {
             "AND `order` >= :index")
     suspend fun decreaseMealOrder(projectId: Long, index: Int)
 
-    @Delete
-    suspend fun deleteMeal(projectId: Long, meal: String)
+    @Delete(MealEntity::class)
+    suspend fun deleteMeal(meal: MealIdentifierDTO)
 
     @Query("SELECT `order` FROM meals WHERE projectId = :projectId AND name = :name")
     suspend fun getMealOrder(projectId: Long, name: String) : Int
