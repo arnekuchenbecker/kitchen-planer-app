@@ -21,7 +21,6 @@ import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
-import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
@@ -33,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import java.util.Date
 import javax.inject.Inject
 
 class ProjectRepository @Inject constructor(
@@ -78,15 +76,6 @@ class ProjectRepository @Inject constructor(
         val order = projectDAO.getMealOrder(projectId, meal)
         projectDAO.deleteMeal(MealIdentifierDTO(projectId, meal))
         projectDAO.decreaseMealOrder(projectId, order)
-    }
-
-    /**
-     * Selects the main recipe for a meal
-     */
-    suspend fun selectRecipeForProject(projectId: Long, recipeId: Long, meal: String, date: Date) {
-        recipeManagementDAO.addRecipeToProjectMeal(
-            MainRecipeProjectMealEntity(projectId, meal, date, recipeId)
-        )
     }
 
     /**
