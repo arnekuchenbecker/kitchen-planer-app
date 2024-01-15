@@ -37,6 +37,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
 class ProjectDatabaseTest {
@@ -69,19 +70,19 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testInsertProject(): Unit = runBlocking {
-        val project = Project(name = "Test")
+        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
         repo.insertProject(project)
         val retValue = repo.getProjectByProjectName("Test")
-        assertEquals("Test", retValue.name)
-        assertNotEquals(null, retValue.id)
+        assertEquals("Test", retValue.stub.name)
+        assertNotEquals(null, retValue.stub.id)
     }
 
 
     @Test
     @Throws(Exception::class)
     fun testGetAllProjects(): Unit = runTest {
-        val project = Project(name = "Test")
-        val project2 = Project(name = "Test2")
+        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
+        val project2 = Project(_name = "Test2", initialStartDate = Date(0), initialEndDate = Date(1))
 
         repo.getAllProjectsOverview().test {
             awaitItem()
