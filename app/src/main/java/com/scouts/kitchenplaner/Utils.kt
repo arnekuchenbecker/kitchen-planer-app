@@ -17,9 +17,22 @@
 package com.scouts.kitchenplaner
 
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 fun Long.toDateString() : String {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
     return dateFormat.format(this)
+}
+
+/**
+ * Checks if this Date is between start and end (both inclusive)
+ */
+@Throws(IllegalArgumentException::class)
+fun Date.between(start: Date, end: Date) : Boolean {
+    if (end.before(start)) {
+        throw IllegalArgumentException("End date must not be before start date!")
+    } else {
+        return this == start || (this.after(start) && this.before(end)) || this == end
+    }
 }
