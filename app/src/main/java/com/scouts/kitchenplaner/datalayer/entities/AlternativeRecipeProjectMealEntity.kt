@@ -22,7 +22,7 @@ import java.util.Date
 
 @Entity(
     tableName = "alternativeRecipeProjectMeal",
-    primaryKeys = ["projectId", "meal", "date", "recipe"],
+    primaryKeys = ["projectId", "meal", "date", "recipeId"],
     foreignKeys = [
         ForeignKey(
             entity = MealEntity::class,
