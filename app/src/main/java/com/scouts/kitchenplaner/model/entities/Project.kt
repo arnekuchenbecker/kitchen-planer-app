@@ -28,6 +28,7 @@ class Project(
     val startDate: Date = Date(0),
     val endDate: Date = Date(0),
     val meals: List<String> = listOf(),
+    val mealPlan: Map<MealSlot, Recipe>,
     val allergenPersons: List<AllergenPerson> = listOf(),
     val projectImage: Uri = Uri.EMPTY
 ){
