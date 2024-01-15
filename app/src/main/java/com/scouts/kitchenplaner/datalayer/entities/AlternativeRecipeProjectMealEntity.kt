@@ -21,7 +21,7 @@ import androidx.room.ForeignKey
 import java.util.Date
 
 @Entity(
-    tableName = "recipeProjectMeal",
+    tableName = "alternativeRecipeProjectMeal",
     primaryKeys = ["projectId", "meal", "date", "recipe"],
     foreignKeys = [
         ForeignKey(
