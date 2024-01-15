@@ -17,16 +17,32 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.Recipe
 import javax.inject.Inject
 
 class EditMealPlan @Inject constructor(
-    //TODO recipeManagementRepo - missing DataLayer support
+    private val recipeManagementRepository: RecipeManagementRepository,
     private val projectRepository: ProjectRepository
 ) {
-    //TODO selectRecipeForMeal(projectId, date, meal, recipe)
-    //TODO removeRecipeFromMeal(projectId, date, meal, recipe)
-    //TODO swapMeals(projectId, firstMealSlot, secondMealSlot)
+    suspend fun selectRecipeForMeal(project: Project, mealSlot: MealSlot, recipe: Recipe) {
+        recipeManagementRepository.selectMainRecipeForProject(
+            project.id ?: -1,
+            recipe.id ?: -1,
+            mealSlot
+        )
+    }
+
+
+    suspend fun removeRecipesFromMeal(project: Project, mealSlot: MealSlot) {
+        recipeManagementRepository.removeRecipesFromMeal(project.id ?: -1, mealSlot)
+    }
+
+    suspend fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
+        recipeManagementRepository.swapRecipes(project.id ?: -1, first, second)
+    }
 
     suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size + 1) {
         projectRepository.addMealToProject(meal, index, project.id ?: -1)
