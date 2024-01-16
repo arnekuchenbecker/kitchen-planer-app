@@ -94,7 +94,7 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpecialityEntity>
         RecipeEntity(
             id = id ?: 0,
             title = name,
-            imageURI = imageURI ?: "",
+            imageURI = imageURI.toString(),
             description = description ?: "",
             numberOfPeople = numberOfPeople
         ), speciality

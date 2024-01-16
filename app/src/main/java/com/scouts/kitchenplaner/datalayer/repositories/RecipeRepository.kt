@@ -24,9 +24,14 @@ import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
+import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -38,6 +43,38 @@ class RecipeRepository @Inject constructor(
             it.map { recipe ->
                 RecipeStub(recipe.id, recipe.title, Uri.parse(recipe.imageURI))
             }
+        }
+    }
+
+    fun getRecipeById(id: Long) : Flow<Recipe> {
+        val recipeFlow = recipeDAO.getRecipeById(id)
+        val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
+        val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
+        val dietaryFlow = recipeDAO.getAllergensByRecipeId(id)
+
+        return combine(recipeFlow, ingredientFlow, instructionsFlow, dietaryFlow) { recipe, ingredients, instructions, dietaries ->
+            val groups = ingredients.groupBy { it.ingredientGroup }.map { (name, ingredients) ->
+                IngredientGroup(name, ingredients.map { ingredient ->
+                    Ingredient(ingredient.name, ingredient.amount, ingredient.unit)
+                })
+            }
+
+            val dietaryInformation = dietaries.groupBy { it.type }.map { (type, it) ->
+                type to it.map { dietary -> dietary.speciality }
+            }.toMap()
+
+            Recipe(
+                id = recipe.id,
+                name = recipe.title,
+                imageURI = Uri.parse(recipe.imageURI),
+                description = recipe.description,
+                numberOfPeople = recipe.numberOfPeople,
+                ingredientGroups = groups,
+                instructions = instructions.map { it.instruction },
+                traces = dietaryInformation[DietaryTypes.TRACE] ?: listOf(),
+                allergen = dietaryInformation[DietaryTypes.ALLERGEN] ?: listOf(),
+                freeOfAllergen = dietaryInformation[DietaryTypes.FREE_OF] ?: listOf()
+            )
         }
     }
 
@@ -67,7 +104,7 @@ class RecipeRepository @Inject constructor(
     }
 
     suspend fun getAllergensForRecipe(id: Long) : List<DietarySpeciality> {
-        return recipeDAO.getAllergensByRecipeId(id).map {
+        return recipeDAO.getAllergensByRecipeId(id).first().map {
             it.toModelEntity()
         }
     }

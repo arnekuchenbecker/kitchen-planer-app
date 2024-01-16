@@ -78,7 +78,13 @@ interface RecipeDAO {
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
-    suspend fun getRecipeById(id: Long) : RecipeEntity
+    fun getRecipeById(id: Long) : Flow<RecipeEntity>
+
+    @Query("SELECT * FROM ingrediententity WHERE recipe = :id")
+    fun getIngredientsByRecipeId(id: Long) : Flow<List<IngredientEntity>>
+
+    @Query("SELECT * FROM instructionentity WHERE recipe = :id ORDER BY `order`")
+    fun getInstructionsByRecipeId(id: Long) : Flow<List<InstructionEntity>>
 
     @Query("SELECT recipeEntity.id AS id, " +
             "recipeEntity.title AS title, " +
@@ -96,8 +102,8 @@ interface RecipeDAO {
             "WHERE projectId = :projectId")
     fun getRecipesByProjectId(projectId: Long) : Flow<List<RecipeEntity>>
 
-    @Query("SELECT * FROM dietaryspeciality WHERE recipe = :id")
-    suspend fun getAllergensByRecipeId(id: Long) : List<DietarySpecialityEntity>
+    @Query("SELECT * FROM dietaryspecialityentity WHERE recipe = :id")
+    fun getAllergensByRecipeId(id: Long) : Flow<List<DietarySpecialityEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long

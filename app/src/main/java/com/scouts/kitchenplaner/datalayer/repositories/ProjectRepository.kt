@@ -25,6 +25,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
@@ -67,6 +68,10 @@ class ProjectRepository @Inject constructor(
 
     fun getMealsByProjectID(id: Long) : Flow<List<String>> {
         return projectDAO.getMealsByProjectID(id)
+    }
+
+    suspend fun changeProjectPicture(id: Long, imageUri: Uri) {
+        projectDAO.updateImage(ProjectImageDTO(id, imageUri.toString()))
     }
 
     fun getPersonNumberChangesByProjectID(id: Long) : Flow<Map<MealSlot, Int>> {

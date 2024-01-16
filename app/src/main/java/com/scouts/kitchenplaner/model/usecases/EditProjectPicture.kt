@@ -14,13 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.model.usecases
 
-class Ingredient(val name: String, private var _amount: Float, val unit: String) {
-    val amount: Float
-        get() = _amount
+import android.net.Uri
+import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.model.entities.Project
 
-    fun setAmount(newAmount: Float) {
-        _amount = newAmount
+class EditProjectPicture (
+    private val projectRepository: ProjectRepository
+) {
+    suspend fun setProjectPicture(project: Project, image: Uri) {
+        projectRepository.changeProjectPicture(project.id, image)
     }
 }
