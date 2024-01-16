@@ -17,9 +17,12 @@
 package com.scouts.kitchenplaner.ui.view.projectoverview
 
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,9 +33,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,20 +43,24 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
@@ -68,40 +75,43 @@ fun ProjectOverview(
     viewModel: ProjectSelectionViewModel = hiltViewModel()
 ) {
     var archive by remember { mutableStateOf(false) }
+    var showArchiveDialog by remember {
+        mutableStateOf(false)
+    }
+    val projects by viewModel.projects.collectAsState(initial = listOf())
+    val projectsSelected = remember { mutableStateMapOf<Long, Boolean>() }
 
 
     Scaffold(topBar = {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            title = {
-                Text("Meine Projekte")
-            },
-            actions = {
-                Button(
-                    onClick = {
-                        archive = !archive
-                    }
-                ) {
-                    if (archive) {
-                        Icon(imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen")
-                    } else {
-                        Icon(imageVector = Icons.Filled.Archive, contentDescription = "archivieren")
-                    }
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ), title = {
+            Text("Meine Projekte")
+        }, actions = {
+            Button(onClick = {
+                archive = !archive
+                projectsSelected.clear()
+            }) {
+                if (archive) {
+                    Icon(
+                        imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "projekte löschen"
+                    )
                 }
             }
-        )
+        })
     }, floatingActionButton = {
         ExtendedFloatingActionButton(
             onClick = {
-                if (archive) {
-                    archive = !archive;
-                    //TODO delete projects from database
-
-                } else {
+                if (!archive) {
                     onNavigateToCreateProject()
+                } else {
+                    showArchiveDialog = true
                 }
             },
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -109,48 +119,61 @@ fun ProjectOverview(
             text = {
                 if (!archive) {
                     Text("Neues Projekt")
+                } else {
+                    Text("Projekte löschen")
                 }
             },
             icon = {
-                if (archive) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = "projekte archivieren"
-                    )
-                } else {
+                if (!archive) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "neues Projekt hinzufügen"
                     )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Check, contentDescription = "projekte löschen"
+                    )
                 }
 
-            }
-        )
+            })
 
     }) {
-        val projects by viewModel.projects.collectAsState(initial = listOf())
-
-        println(projects.size)
+        fun closeDialog(){
+            showArchiveDialog = false
+            archive = false
+            projectsSelected.clear()
+        }
         Box(modifier = Modifier.padding(it)) {
-            LazyColumnWrapper(
-                modifier = Modifier.padding(10.dp),
+            LazyColumnWrapper(modifier = Modifier.padding(10.dp),
                 content = projects,
                 DisplayContent = { project, _ ->
-                    Box(
-                        modifier = Modifier
-                            .clickable {
+                    Box(modifier = Modifier
+                        .clickable {
+                            if (!archive) {
                                 onNavigateToDetailedProject(
                                     project.id
                                 )
+                            } else {
+                                projectsSelected[project.id] =
+                                    !(projectsSelected[project.id] ?: false)
                             }
-                            .fillMaxWidth()
-                            .padding(5.dp)
-                            .border(
-                                width = 2.dp,
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(6.dp)
-                            )
-                            .height(75.dp)
+                        }
+                        .fillMaxWidth()
+                        .padding(5.dp)
+                        .border(
+                            width = 2.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .height(75.dp)
+                        .background(
+                            color =
+                            if (projectsSelected[project.id] == true && archive) {
+                                MaterialTheme.colorScheme.secondary
+                            } else {
+                                Color.White
+                            }, shape = RoundedCornerShape(6.dp)
+                        )
 
                     ) {
                         Row(
@@ -169,7 +192,6 @@ fun ProjectOverview(
                                     contentDescription = "Projektplatzhalter"
                                 )
                             } else {
-                                println("ProjectURI ${project.imageUri} for ${project.name}")
                                 AsyncImage(
                                     model = project.imageUri,
                                     contentDescription = "Project Image",
@@ -188,7 +210,8 @@ fun ProjectOverview(
                         }
 
                     }
-                }, DisplayEmpty = {
+                },
+                DisplayEmpty = {
                     Text("${projects.size}")
                     Text(
                         text = "Keine Projekte"
@@ -197,6 +220,35 @@ fun ProjectOverview(
 
         }
 
+        if (showArchiveDialog) {
+            Dialog(onDismissRequest = { showArchiveDialog = false }
+
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        Text("geteilte Projekte werden so vom Gerät entfernt. \nEs ist möglich diese wieder zu laden. \nNicht geteilte Projekte werden gelöscht und können nicht wieder hergestellt werden.")
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Button(onClick = { /*TODO delete selected projects*/
+                                projectsSelected.forEach { p ->
+                                    if (p.value) {
+                                        println("${projects.find { stub -> stub.id == p.key }?.name} ,")
+                                    }
+                                }
+                                closeDialog()
+                            }) { Text("OK") }
+                            Button(onClick = {closeDialog()}
+                            ) { Text("Abbrechen") }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
