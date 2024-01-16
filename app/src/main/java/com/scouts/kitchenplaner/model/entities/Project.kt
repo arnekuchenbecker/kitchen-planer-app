@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.model.entities
 
 import android.net.Uri
+import com.scouts.kitchenplaner.listDatesUntil
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import java.util.Date
 
@@ -55,6 +56,11 @@ class Project(
 
     val projectImage: Uri
         get() = _projectImage
+
+    val mealSlots: List<MealSlot>
+        get() = startDate.listDatesUntil(endDate).map { date ->
+            meals.map { MealSlot(date, it) }
+        }.flatten()
 
     @DomainLayerRestricted
     fun setID(id: Long) {
