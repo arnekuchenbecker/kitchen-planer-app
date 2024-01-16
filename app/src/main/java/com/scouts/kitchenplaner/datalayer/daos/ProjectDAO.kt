@@ -76,8 +76,8 @@ interface ProjectDAO {
     @Query("SELECT * FROM projects WHERE projects.id = :id")
     fun getProjectById(id: Long) : Flow<ProjectEntity>
 
-    @Query("SELECT * FROM meals WHERE meals.projectId = :id")
-    fun getMealsByProjectID(id: Long) : Flow<List<MealEntity>>
+    @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
+    fun getMealsByProjectID(id: Long) : Flow<List<String>>
 
     @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
     fun getPersonNumberChangesByProjectID(id: Long) : Flow<List<PersonNumberChangeEntity>>
