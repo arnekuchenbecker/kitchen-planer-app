@@ -26,5 +26,6 @@ data class ProjectEntity (
     val name: String,
     val startDate: Date,
     val endDate: Date,
-    val imageUri: String
+    val imageUri: String,
+    val isArchived: Boolean
 )
