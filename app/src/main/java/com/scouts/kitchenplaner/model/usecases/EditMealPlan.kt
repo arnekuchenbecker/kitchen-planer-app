@@ -29,7 +29,7 @@ class EditMealPlan @Inject constructor(
 ) {
     suspend fun selectRecipeForMeal(project: Project, mealSlot: MealSlot, recipe: Recipe) {
         recipeManagementRepository.selectMainRecipeForProject(
-            project.id ?: -1,
+            project.id,
             recipe.id ?: -1,
             mealSlot
         )
@@ -37,18 +37,18 @@ class EditMealPlan @Inject constructor(
 
 
     suspend fun removeRecipesFromMeal(project: Project, mealSlot: MealSlot) {
-        recipeManagementRepository.removeRecipesFromMeal(project.id ?: -1, mealSlot)
+        recipeManagementRepository.removeRecipesFromMeal(project.id, mealSlot)
     }
 
     suspend fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
-        recipeManagementRepository.swapRecipes(project.id ?: -1, first, second)
+        recipeManagementRepository.swapRecipes(project.id, first, second)
     }
 
     suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size + 1) {
-        projectRepository.addMealToProject(meal, index, project.id ?: -1)
+        projectRepository.addMealToProject(meal, index, project.id)
     }
 
     suspend fun removeMeal(project: Project, meal: String) {
-        projectRepository.deleteMealFromProject(meal, project.id ?: -1)
+        projectRepository.deleteMealFromProject(meal, project.id)
     }
 }
