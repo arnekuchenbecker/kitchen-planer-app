@@ -17,6 +17,6 @@
 package com.scouts.kitchenplaner.datalayer.dtos
 
 data class ProjectArchivedDTO (
-    val projectId: Long,
+    val id: Long,
     val isArchived: Boolean
 )
