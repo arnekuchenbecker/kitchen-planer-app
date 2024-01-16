@@ -24,6 +24,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
@@ -103,7 +104,10 @@ interface ProjectDAO {
     suspend fun updateImage(image: ProjectImageDTO)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPersonNumberChange(personNumberChangeEntity: PersonNumberChangeEntity)
+    suspend fun insertPersonNumberChange(entity: PersonNumberChangeEntity)
+
+    @Delete(PersonNumberChangeEntity::class)
+    suspend fun deletePersonNumberChange(identifierDTO: PersonNumberChangeIdentifierDTO)
 
     @Insert
     suspend fun addUserToProject(user: UserProjectEntity)

@@ -22,8 +22,10 @@ import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
@@ -36,6 +38,7 @@ import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import javax.inject.Inject
 
 class ProjectRepository @Inject constructor(
@@ -73,6 +76,14 @@ class ProjectRepository @Inject constructor(
             })
             changeMap
         }
+    }
+
+    suspend fun setPersonNumberChange(id: Long, meal: String, date: Date, difference: Int) {
+        projectDAO.insertPersonNumberChange(PersonNumberChangeEntity(id, date, meal, difference))
+    }
+
+    suspend fun removePersonNumberChange(id: Long, meal: String, date: Date) {
+        projectDAO.deletePersonNumberChange(PersonNumberChangeIdentifierDTO(id, meal, date))
     }
 
     @Throws(DuplicatePrimaryKeyException::class)
