@@ -21,6 +21,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 
@@ -52,5 +53,5 @@ interface ShoppingListDAO {
 
     //Methods for archiving Projects
     @Delete(ShoppingListEntity::class)
-    suspend fun deleteShoppingListsByProjectId(projectId: Long)
+    suspend fun deleteShoppingListsByProjectId(projectId: ProjectIdDTO)
 }

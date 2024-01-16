@@ -20,7 +20,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
@@ -33,7 +33,7 @@ interface RecipeDAO {
     @Transaction
     suspend fun createRecipe(
         recipe: RecipeEntity,
-        speciality: List<DietarySpeciality>,
+        speciality: List<DietarySpecialityEntity>,
         ingredientGroups: List<IngredientGroupEntity>,
         ingredients: List<IngredientEntity>,
         instructions: List<InstructionEntity>
@@ -75,7 +75,7 @@ interface RecipeDAO {
     suspend fun insertIngredient(entity: IngredientEntity): Long
 
     @Insert
-    suspend fun insertDietarySpeciality(entity: DietarySpeciality): Long
+    suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
     suspend fun getRecipeById(id: Long) : RecipeEntity
@@ -86,8 +86,18 @@ interface RecipeDAO {
             "recipeEntity.description AS description, " +
             "recipeEntity.numberOfPeople AS numberOfPeople " +
             "FROM recipeEntity JOIN recipeProjectMeal " +
+            "WHERE projectId = :projectId " +
+            "UNION SELECT recipeEntity.id AS id, " +
+            "recipeEntity.title AS title, " +
+            "recipeEntity.imageUri AS imageURI, " +
+            "recipeEntity.description AS description, " +
+            "recipeEntity.numberOfPeople AS numberOfPeople " +
+            "FROM recipeEntity JOIN alternativeRecipeProjectMeal " +
             "WHERE projectId = :projectId")
     fun getRecipesByProjectId(projectId: Long) : Flow<List<RecipeEntity>>
+
+    @Query("SELECT * FROM dietaryspeciality WHERE recipe = :id")
+    suspend fun getAllergensByRecipeId(id: Long) : List<DietarySpecialityEntity>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long

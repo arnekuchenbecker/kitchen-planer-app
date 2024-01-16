@@ -22,6 +22,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectMealIdentifier
 import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
@@ -59,8 +60,8 @@ interface RecipeManagementDAO {
 
     @Transaction
     suspend fun archiveProjectRecipes(id: Long) {
-        deleteAlternativeRecipesByProjectId(id)
-        deleteMainRecipesByProjectId(id)
+        deleteAlternativeRecipesByProjectId(ProjectIdDTO(id))
+        deleteMainRecipesByProjectId(ProjectIdDTO(id))
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -92,10 +93,13 @@ interface RecipeManagementDAO {
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     fun getMainRecipesForProject(projectId: Long) : Flow<List<MainRecipeProjectMealEntity>>
 
+    @Query("SELECT * FROM alternativeRecipeProjectMeal WHERE projectId = :projectId")
+    fun getAlternativeRecipesForProject(projectId: Long) : Flow<List<AlternativeRecipeProjectMealEntity>>
+
     // Methods for archiving projects
     @Delete(AlternativeRecipeProjectMealEntity::class)
-    fun deleteAlternativeRecipesByProjectId(projectId: Long)
+    fun deleteAlternativeRecipesByProjectId(projectId: ProjectIdDTO)
 
     @Delete(MainRecipeProjectMealEntity::class)
-    fun deleteMainRecipesByProjectId(projectId: Long)
+    fun deleteMainRecipesByProjectId(projectId: ProjectIdDTO)
 }

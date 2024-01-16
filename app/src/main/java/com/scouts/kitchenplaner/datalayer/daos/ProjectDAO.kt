@@ -26,6 +26,7 @@ import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
@@ -118,7 +119,7 @@ interface ProjectDAO {
     // Methods for archiving projects
 
     @Delete(MealEntity::class)
-    suspend fun deleteMealsByProjectId(projectId: Long)
+    suspend fun deleteMealsByProjectId(projectId: ProjectIdDTO)
 
     @Update(ProjectEntity::class)
     suspend fun setProjectArchivedStatus(projectArchived: ProjectArchivedDTO)

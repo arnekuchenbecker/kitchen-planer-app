@@ -24,6 +24,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenPersonIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import kotlinx.coroutines.flow.Flow
@@ -86,5 +87,5 @@ interface AllergenDAO {
 
     // Methods for archiving projects
     @Delete(AllergenPersonEntity::class)
-    suspend fun deleteAllergenPersonsForProject(projectId: Long)
+    suspend fun deleteAllergenPersonsForProject(projectId: ProjectIdDTO)
 }
