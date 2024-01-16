@@ -16,8 +16,20 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-enum class DietaryTypes {
-    FREE_OF,
-    TRACE,
-    ALLERGEN
+enum class AllergenMealCover {
+    /**
+     * A meal has a recipe which is free of the combination of allergens
+     */
+    COVERED,
+
+    /**
+     * A meal has no recipe which is free of the combination of allergens
+     */
+    NOT_COVERED,
+
+    /**
+     * A meal has neither a recipe which is free of the combination of allergens nor do all recipes
+     * contain at least one of the allergens
+     */
+    UNKNOWN
 }

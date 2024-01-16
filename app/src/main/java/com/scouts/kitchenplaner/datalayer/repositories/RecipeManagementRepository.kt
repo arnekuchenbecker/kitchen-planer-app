@@ -21,7 +21,7 @@ import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealE
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class RecipeManagementRepository @Inject constructor(
@@ -56,10 +56,13 @@ class RecipeManagementRepository @Inject constructor(
         recipeManagementDAO.removeAllRecipesFromMeal(projectId, mealSlot.meal, mealSlot.date)
     }
 
-    fun getRecipeMealSlotsForProject(projectId: Long) : Flow<List<Pair<MealSlot, Long>>> {
-        return recipeManagementDAO.getMainRecipesForProject(projectId).map {
-            it.map { entity ->
-                Pair(MealSlot(entity.date, entity.meal), entity.recipeId)
+    fun getRecipeMealSlotsForProject(projectId: Long) : Flow<List<Pair<MealSlot, Pair<Long, List<Long>>>>> {
+        return recipeManagementDAO.getMainRecipesForProject(projectId)
+            .combine(recipeManagementDAO.getAlternativeRecipesForProject(projectId)) { main, alternatives ->
+            main.map { entity ->
+                Pair(MealSlot(entity.date, entity.meal), Pair(entity.recipeId, alternatives.filter {
+                    it.date == entity.date && it.meal == entity.meal
+                }.map { it.recipeId }))
             }
         }
     }

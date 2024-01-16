@@ -22,6 +22,8 @@ import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.datalayer.toModelEntity
+import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
@@ -62,5 +64,11 @@ class RecipeRepository @Inject constructor(
                 )
             })
 
+    }
+
+    suspend fun getAllergensForRecipe(id: Long) : List<DietarySpeciality> {
+        return recipeDAO.getAllergensByRecipeId(id).map {
+            it.toModelEntity()
+        }
     }
 }

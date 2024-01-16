@@ -19,8 +19,7 @@ package com.scouts.kitchenplaner.datalayer
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
-import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
-import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
@@ -29,6 +28,8 @@ import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import com.scouts.kitchenplaner.model.entities.DietarySpeciality
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
@@ -81,14 +82,14 @@ fun AllergenPersonEntity.toModelEntity(allergens: List<AllergenEntity>) : Allerg
     )
 }
 
-fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
+fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpecialityEntity>> {
 
-    val speciality: MutableList<DietarySpeciality> = mutableListOf()
+    val speciality: MutableList<DietarySpecialityEntity> = mutableListOf()
     speciality.addAll(allergen.map {
-        DietarySpeciality(id ?: 0, DietaryTypes.ALLERGEN, it)
+        DietarySpecialityEntity(id ?: 0, DietaryTypes.ALLERGEN, it)
     })
-    speciality.addAll(traces.map { DietarySpeciality(id ?: 0, DietaryTypes.TRACE, it) })
-    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id ?: 0, DietaryTypes.FREE_OF, it) })
+    speciality.addAll(traces.map { DietarySpecialityEntity(id ?: 0, DietaryTypes.TRACE, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpecialityEntity(id ?: 0, DietaryTypes.FREE_OF, it) })
     return Pair(
         RecipeEntity(
             id = id ?: 0,
@@ -126,4 +127,8 @@ fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, Li
             ShoppingListEntryEntity(id ?: 0, projectId, it.name, it.amount, it.unit)
         }
     )
+}
+
+fun DietarySpecialityEntity.toModelEntity() : DietarySpeciality {
+    return DietarySpeciality(speciality, type)
 }

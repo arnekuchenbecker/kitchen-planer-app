@@ -16,8 +16,8 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-enum class DietaryTypes {
-    FREE_OF,
-    TRACE,
-    ALLERGEN
+class DietarySpeciality(
+    val allergen: String,
+    val type: DietaryTypes
+) {
 }
