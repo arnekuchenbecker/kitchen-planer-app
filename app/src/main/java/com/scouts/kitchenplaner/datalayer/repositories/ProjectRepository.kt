@@ -24,6 +24,7 @@ import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
@@ -137,9 +138,9 @@ class ProjectRepository @Inject constructor(
 
     suspend fun archiveProject(projectId: Long) {
         recipeManagementDAO.archiveProjectRecipes(projectId)
-        allergenDAO.deleteAllergenPersonsForProject(projectId)
-        projectDAO.deleteMealsByProjectId(projectId)
-        shoppingListDAO.deleteShoppingListsByProjectId(projectId)
+        allergenDAO.deleteAllergenPersonsForProject(ProjectIdDTO(projectId))
+        projectDAO.deleteMealsByProjectId(ProjectIdDTO(projectId))
+        shoppingListDAO.deleteShoppingListsByProjectId(ProjectIdDTO(projectId))
         projectDAO.setProjectArchivedStatus(ProjectArchivedDTO(projectId, true))
     }
 }
