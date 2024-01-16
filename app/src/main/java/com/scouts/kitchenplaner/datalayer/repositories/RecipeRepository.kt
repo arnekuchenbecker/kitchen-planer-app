@@ -16,17 +16,28 @@
 
 package com.scouts.kitchenplaner.datalayer.repositories
 
+import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.model.entities.Recipe
+import com.scouts.kitchenplaner.model.entities.RecipeStub
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
     private val recipeDAO: RecipeDAO
 ) {
+    fun getRecipeStubsByProjectId(id: Long) : Flow<List<RecipeStub>> {
+        return recipeDAO.getRecipesByProjectId(id).map {
+            it.map { recipe ->
+                RecipeStub(recipe.id, recipe.title, Uri.parse(recipe.imageURI))
+            }
+        }
+    }
 
     suspend fun createRecipe(recipe: Recipe) {
 

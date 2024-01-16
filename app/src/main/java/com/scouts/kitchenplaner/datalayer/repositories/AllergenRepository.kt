@@ -20,13 +20,24 @@ import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenPersonIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class AllergenRepository @Inject constructor(
     private val allergenDAO: AllergenDAO
 ){
+    fun getAllergenPersonsByProjectID(id: Long) : Flow<List<AllergenPerson>> {
+        return allergenDAO.getAllergenPersonsByProjectID(id).combine(allergenDAO.getAllergensByProjectID(id)) { persons, allergens ->
+            persons.map {
+                it.toModelEntity(allergens.filter { entity -> it.name == entity.name })
+            }
+        }
+    }
+
     suspend fun deleteAllergen(projectId: Long, name: String, allergen: String) {
         allergenDAO.deleteAllergen(AllergenIdentifierDTO(projectId, name, allergen))
 

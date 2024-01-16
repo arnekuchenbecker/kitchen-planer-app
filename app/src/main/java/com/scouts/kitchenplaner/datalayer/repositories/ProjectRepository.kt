@@ -25,11 +25,12 @@ import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.exceptions.DuplicatePrimaryKeyException
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -51,15 +52,21 @@ class ProjectRepository @Inject constructor(
         return projectId
     }
 
-    fun getProjectByID(id: Long) : Flow<Project> {
-        val projectFlow = projectDAO.getProjectById(id)
-        val mealFlow = projectDAO.getMealsByProjectID(id)
-        val allergenPersonFlow = allergenDAO.getAllergenPersonsByProjectID(id)
-        val allergensFlow = allergenDAO.getAllergensByProjectID(id)
-        val personNumberFlow = projectDAO.getPersonNumberChangesByProjectID(id)
+    fun getProjectMetaDataByID(id: Long) : Flow<ProjectMetaData> {
+        return projectDAO.getProjectById(id).map { it.toModelEntity() }
+    }
 
-        return combine(projectFlow, mealFlow, allergenPersonFlow, allergensFlow, personNumberFlow) { project, meals, allergenPersons, allergens, personNumbers ->
-            project.toModelEntity(meals, allergenPersons, allergens, personNumbers)
+    fun getMealsByProjectID(id: Long) : Flow<List<String>> {
+        return projectDAO.getMealsByProjectID(id)
+    }
+
+    fun getPersonNumberChangesByProjectID(id: Long) : Flow<Map<MealSlot, Int>> {
+        return projectDAO.getPersonNumberChangesByProjectID(id).map {
+            val changeMap = mutableMapOf<MealSlot, Int>()
+            changeMap.putAll(it.map { change ->
+                Pair(MealSlot(change.date, change.meal), change.difference)
+            })
+            changeMap
         }
     }
 
@@ -82,9 +89,9 @@ class ProjectRepository @Inject constructor(
      * Testing purposes only, should be deleted once more robust methods of interacting with the
      * database have been established
      */
-    suspend fun getProjectByProjectName(projectName: String) : Project {
+    suspend fun getProjectByProjectName(projectName: String) : ProjectMetaData {
         val entity = projectDAO.getProjectByProjectName(projectName)
-        return entity.toModelEntity(listOf(), listOf(), listOf(), listOf())
+        return entity.toModelEntity()
     }
 
     fun getProjectOverview(user: User) : Flow<List<ProjectStub>> {
