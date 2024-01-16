@@ -16,32 +16,34 @@
 
 package com.scouts.kitchenplaner.datalayer
 
+import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
 import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
-import com.scouts.kitchenplaner.datalayer.entities.MealEntity
-import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
-import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectMetaData
+import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.ShoppingList
 
 fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
-        id = (id ?: 0),
+        id = id,
         name = name,
         startDate = startDate,
         endDate = endDate,
-        imageUri = projectImage.path ?: ""
+        imageUri = projectImage.path ?: "",
+        isArchived = false
     )
 }
 
@@ -58,35 +60,25 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntit
     })
 }
 
-fun ProjectEntity.toModelEntity(
-    meals: List<MealEntity>,
-    allergenPersons: List<AllergenPersonEntity>,
-    allergens: List<AllergenEntity>,
-    personNumbers: List<PersonNumberChangeEntity> //TODO when available in DomainLayer
-) : Project {
-    return Project(
-        id = id,
-        name = name,
-        startDate = startDate,
-        endDate = endDate,
-        meals = meals.map { it.name },
-        allergenPersons = allergenPersons.map { person ->
-            AllergenPerson(
-                name = person.name,
-                arrivalDate = person.arrivalDate,
-                arrivalMeal = person.arrivalMeal,
-                departureDate = person.departureDate,
-                departureMeal = person.departureMeal,
-                allergens = allergens
-                    .filter { it.name == person.name }
-                    .map { Allergen(it.allergen, it.traces) }
-            )
-        }
-    )
+fun ProjectEntity.toModelEntity() : ProjectMetaData {
+    return ProjectMetaData(ProjectStub(name, id, Uri.parse(imageUri)), startDate, endDate)
 }
 
 fun Allergen.toDataLayerEntity(projectId: Long, name: String) : AllergenEntity {
     return AllergenEntity(projectId, name, allergen, traces)
+}
+
+fun AllergenPersonEntity.toModelEntity(allergens: List<AllergenEntity>) : AllergenPerson {
+    return AllergenPerson(
+        name,
+        allergens.map {
+            Allergen(it.allergen, it.traces)
+        },
+        arrivalDate,
+        arrivalMeal,
+        departureDate,
+        departureMeal
+    )
 }
 
 fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
