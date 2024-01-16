@@ -14,26 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-
-@Entity(
-    tableName = "allergens",
-    foreignKeys = [
-        ForeignKey(
-            entity = AllergenPersonEntity::class,
-            parentColumns = ["name", "projectId"],
-            childColumns = ["name", "projectId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    primaryKeys = ["name", "projectId", "allergen"]
-)
-data class AllergenEntity(
-    var projectId: Long,
-    val name: String,
-    val allergen: String,
-    val traces: Boolean
+data class ProjectArchivedDTO (
+    val projectId: Long,
+    val isArchived: Boolean
 )

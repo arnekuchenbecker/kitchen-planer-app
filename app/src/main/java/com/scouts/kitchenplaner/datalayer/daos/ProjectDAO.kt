@@ -24,11 +24,13 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -87,7 +89,7 @@ interface ProjectDAO {
 
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
             "FROM projects INNER JOIN userprojects ON projects.id = userprojects.projectId " +
-            "WHERE userprojects.username = :username")
+            "WHERE userprojects.username = :username AND projects.isArchived = 0")
     fun getProjectsForUser(username: String) : Flow<List<ProjectStubDTO>>
 
     @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
@@ -102,4 +104,18 @@ interface ProjectDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPersonNumberChange(personNumberChangeEntity: PersonNumberChangeEntity)
+
+    @Insert
+    suspend fun addUserToProject(user: UserProjectEntity)
+
+    @Delete
+    suspend fun removeUserFromProject(user: UserProjectEntity)
+
+    // Methods for archiving projects
+
+    @Delete(MealEntity::class)
+    suspend fun deleteMealsByProjectId(projectId: Long)
+
+    @Update(ProjectEntity::class)
+    suspend fun setProjectArchivedStatus(projectArchived: ProjectArchivedDTO)
 }

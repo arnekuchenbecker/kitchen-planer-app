@@ -20,8 +20,11 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.exceptions.DuplicatePrimaryKeyException
@@ -38,9 +41,10 @@ import javax.inject.Inject
 class ProjectRepository @Inject constructor(
     private val projectDAO: ProjectDAO,
     private val allergenDAO: AllergenDAO,
-    private val recipeManagementDAO: RecipeManagementDAO
+    private val recipeManagementDAO: RecipeManagementDAO,
+    private val shoppingListDAO: ShoppingListDAO
 ) {
-    suspend fun insertProject(project: Project) : Long {
+    suspend fun insertProject(project: Project, creator: User) : Long {
         val projectId = projectDAO.createProject(
             project = project.toDataLayerEntity(),
             meals = project.meals.mapIndexed { index, it -> MealEntity(it, index, 0) }
@@ -49,6 +53,7 @@ class ProjectRepository @Inject constructor(
             projectId = projectId,
             allergens = project.allergenPersons.map { it.toDataLayerEntity(project.id) }
         )
+        projectDAO.addUserToProject(UserProjectEntity(projectId, creator.username))
         return projectId
     }
 
@@ -113,5 +118,17 @@ class ProjectRepository @Inject constructor(
                 ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
             }
         }
+    }
+
+    suspend fun leaveProject(user: User, projectId: Long) {
+        projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username))
+    }
+
+    suspend fun archiveProject(projectId: Long) {
+        recipeManagementDAO.archiveProjectRecipes(projectId)
+        allergenDAO.deleteAllergenPersonsForProject(projectId)
+        projectDAO.deleteMealsByProjectId(projectId)
+        shoppingListDAO.deleteShoppingListsByProjectId(projectId)
+        projectDAO.setProjectArchivedStatus(ProjectArchivedDTO(projectId, true))
     }
 }

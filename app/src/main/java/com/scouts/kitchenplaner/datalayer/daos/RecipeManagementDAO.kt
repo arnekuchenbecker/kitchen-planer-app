@@ -57,6 +57,12 @@ interface RecipeManagementDAO {
         })
     }
 
+    @Transaction
+    suspend fun archiveProjectRecipes(id: Long) {
+        deleteAlternativeRecipesByProjectId(id)
+        deleteMainRecipesByProjectId(id)
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
 
@@ -85,4 +91,11 @@ interface RecipeManagementDAO {
 
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     fun getMainRecipesForProject(projectId: Long) : Flow<List<MainRecipeProjectMealEntity>>
+
+    // Methods for archiving projects
+    @Delete(AlternativeRecipeProjectMealEntity::class)
+    fun deleteAlternativeRecipesByProjectId(projectId: Long)
+
+    @Delete(MainRecipeProjectMealEntity::class)
+    fun deleteMainRecipesByProjectId(projectId: Long)
 }

@@ -79,4 +79,8 @@ interface AllergenDAO {
             "WHERE allergens.name = :name " +
             "AND allergens.projectId = :projectId")
     suspend fun getAllergenCountByNameAndProjectId(name: String, projectId: Long) : Int
+
+    // Methods for archiving projects
+    @Delete(AllergenPersonEntity::class)
+    suspend fun deleteAllergenPersonsForProject(projectId: Long)
 }

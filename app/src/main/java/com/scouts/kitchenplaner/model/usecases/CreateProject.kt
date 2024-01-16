@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.User
 import javax.inject.Inject
 
 class CreateProject @Inject constructor(
@@ -35,6 +36,7 @@ class CreateProject @Inject constructor(
         if (project.endDate.before(project.startDate)) {
             return null
         }
-        return projectRepository.insertProject(project)
+        val currentUser = User("Arne") // TODO - get current user from datastore
+        return projectRepository.insertProject(project, currentUser)
     }
 }

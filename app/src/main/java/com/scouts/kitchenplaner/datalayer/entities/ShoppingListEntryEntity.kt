@@ -26,7 +26,8 @@ import androidx.room.ForeignKey
         ForeignKey(
             entity = ShoppingListEntity::class,
             parentColumns = ["id"],
-            childColumns = ["listId"]
+            childColumns = ["listId"],
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = ProjectEntity::class,

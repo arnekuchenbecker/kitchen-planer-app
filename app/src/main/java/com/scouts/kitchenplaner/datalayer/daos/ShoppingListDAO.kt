@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -48,4 +49,8 @@ interface ShoppingListDAO {
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
+
+    //Methods for archiving Projects
+    @Delete(ShoppingListEntity::class)
+    suspend fun deleteShoppingListsByProjectId(projectId: Long)
 }

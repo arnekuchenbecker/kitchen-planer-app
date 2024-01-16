@@ -24,6 +24,7 @@ import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -99,8 +100,11 @@ class DisplayProjectOverview @Inject constructor(
     }
 
     suspend fun archiveProject(project: Project) {
-
+        projectRepository.archiveProject(project.id)
     }
-    //TODO archiveProjectWithID - missing DataLayer support
-    //TODO leaveProjectWithID - missing DataLayer support
+
+    suspend fun leaveProject(project: Project) {
+        val currentUser = User("Arne") // TODO - get current user from datastore
+        projectRepository.leaveProject(currentUser, project.id)
+    }
 }
