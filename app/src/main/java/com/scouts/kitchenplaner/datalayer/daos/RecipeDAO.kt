@@ -25,6 +25,7 @@ import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDAO {
@@ -75,6 +76,18 @@ interface RecipeDAO {
 
     @Insert
     suspend fun insertDietarySpeciality(entity: DietarySpeciality): Long
+
+    @Query("SELECT * FROM recipeEntity WHERE id = :id")
+    suspend fun getRecipeById(id: Long) : RecipeEntity
+
+    @Query("SELECT recipeEntity.id AS id, " +
+            "recipeEntity.title AS title, " +
+            "recipeEntity.imageUri AS imageURI, " +
+            "recipeEntity.description AS description, " +
+            "recipeEntity.numberOfPeople AS numberOfPeople " +
+            "FROM recipeEntity JOIN recipeProjectMeal " +
+            "WHERE projectId = :projectId")
+    fun getRecipesByProjectId(projectId: Long) : Flow<List<RecipeEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
