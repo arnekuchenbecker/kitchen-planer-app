@@ -27,7 +27,7 @@ import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealEntity
-import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
@@ -51,7 +51,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         AllergenEntity::class,
         UserEntity::class,
         UserProjectEntity::class,
-        DietarySpeciality::class,
+        DietarySpecialityEntity::class,
         RecipeEntity::class,
         IngredientEntity::class,
         IngredientGroupEntity::class,

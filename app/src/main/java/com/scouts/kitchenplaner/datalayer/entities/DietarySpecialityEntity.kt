@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
 
 @Entity(
     foreignKeys = [ForeignKey(
@@ -28,7 +29,7 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class DietarySpeciality(
+data class DietarySpecialityEntity(
     @PrimaryKey var recipe: Long,
     val type: DietaryTypes,
     val speciality: String
