@@ -61,11 +61,12 @@ class DisplayProjectOverview @Inject constructor(
         val mealSlotFlow = recipeManagementRepository.getRecipeMealSlotsForProject(projectId)
         val recipeFlow = recipeRepository.getRecipeStubsByProjectId(projectId)
         val mealPlanFlow = mealSlotFlow.combine(recipeFlow) { meals, recipes ->
-            val mealMap = mutableMapOf<MealSlot, RecipeStub>()
-            meals.forEach { (slot, recipeId) ->
-                val recipe = recipes.find { it.id == recipeId }
-                if (recipe != null) {
-                    mealMap[slot] = recipe
+            val mealMap = mutableMapOf<MealSlot, Pair<RecipeStub, List<RecipeStub>>>()
+            meals.forEach { (slot, mealRecipes) ->
+                val mainRecipe = recipes.find { it.id == mealRecipes.first }
+                val alternatives = recipes.filter { mealRecipes.second.contains(it.id) }
+                if (mainRecipe != null) {
+                    mealMap[slot] = Pair(mainRecipe, alternatives)
                 }
             }
             mealMap
