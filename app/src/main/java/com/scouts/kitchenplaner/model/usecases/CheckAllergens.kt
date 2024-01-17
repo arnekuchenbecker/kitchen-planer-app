@@ -22,8 +22,10 @@ import com.scouts.kitchenplaner.model.entities.AllergenCheck
 import com.scouts.kitchenplaner.model.entities.AllergenMealCover
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
+import com.scouts.kitchenplaner.model.entities.before
 
 class CheckAllergens (
     private val recipeRepository: RecipeRepository
@@ -33,7 +35,10 @@ class CheckAllergens (
         val check = AllergenCheck()
         project.mealSlots.forEach { slot ->
             check.addEmptySlot(slot)
-            project.allergenPersons.forEach { person ->
+            project.allergenPersons.filter {
+                MealSlot(it.arrivalDate, it.arrivalMeal).before(slot, project.meals)
+                        && slot.before(MealSlot(it.departureDate, it.departureMeal), project.meals)
+            }.forEach { person ->
                 var coverType = AllergenMealCover.NOT_COVERED
                 val recipes = project.mealPlan[slot].first
                 if (recipes != null) {
