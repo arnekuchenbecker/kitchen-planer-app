@@ -25,7 +25,6 @@ import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
 import io.mockk.coEvery
