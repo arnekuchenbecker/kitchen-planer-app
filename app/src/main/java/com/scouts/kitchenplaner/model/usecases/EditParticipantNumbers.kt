@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.model.entities.MealNumberChange
 import com.scouts.kitchenplaner.model.entities.Project
 import java.util.Date
 import javax.inject.Inject
@@ -24,11 +25,11 @@ import javax.inject.Inject
 class EditParticipantNumbers @Inject constructor(
     private val projectRepository: ProjectRepository
 ) {
-    suspend fun setPersonNumberChange(project: Project, meal: String, date: Date, difference: Int) {
-        if (difference == 0) {
+    suspend fun setPersonNumberChange(project: Project, meal: String, date: Date, numberChange: MealNumberChange) {
+        if (numberChange.before == 0 && numberChange.after == 0) {
             removePersonNumberChange(project, meal, date)
         }
-        projectRepository.setPersonNumberChange(project.id, meal, date, difference)
+        projectRepository.setPersonNumberChange(project.id, meal, date, numberChange)
     }
 
     suspend fun removePersonNumberChange(project: Project, meal: String, date: Date) {

@@ -21,9 +21,6 @@ import com.scouts.kitchenplaner.listDatesUntil
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import java.util.Date
 
-/**
- * NOT FINAL --> Adjust when stuff actually happens to projects
- */
 class Project(
     private var _id: Long? = null,
     private var _name: String = "",

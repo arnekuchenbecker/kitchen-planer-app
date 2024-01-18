@@ -14,30 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import java.util.Date
-
-/**
- * Models the Arrival or departure of persons
- */
-@Entity(
-    tableName = "personNumberChanges",
-    primaryKeys = ["projectId", "date", "meal"],
-    foreignKeys = [
-        ForeignKey(
-            entity = MealEntity::class,
-            parentColumns = ["projectId", "name"],
-            childColumns = ["projectId", "meal"]
-        )
-    ]
-)
-data class PersonNumberChangeEntity(
-    val projectId: Long,
-    val date: Date,
-    val meal: String,
-    val differenceBefore: Int,
-    val differenceAfter: Int
+data class MealNumberChange (
+    val before: Int,
+    val after: Int
 )

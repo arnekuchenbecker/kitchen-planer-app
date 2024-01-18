@@ -32,6 +32,7 @@ import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.exceptions.DuplicatePrimaryKeyException
+import com.scouts.kitchenplaner.model.entities.MealNumberChange
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
@@ -74,18 +75,29 @@ class ProjectRepository @Inject constructor(
         projectDAO.updateImage(ProjectImageDTO(id, imageUri.toString()))
     }
 
-    fun getPersonNumberChangesByProjectID(id: Long) : Flow<Map<MealSlot, Int>> {
+    fun getPersonNumberChangesByProjectID(id: Long) : Flow<Map<MealSlot, MealNumberChange>> {
         return projectDAO.getPersonNumberChangesByProjectID(id).map {
-            val changeMap = mutableMapOf<MealSlot, Int>()
+            val changeMap = mutableMapOf<MealSlot, MealNumberChange>()
             changeMap.putAll(it.map { change ->
-                Pair(MealSlot(change.date, change.meal), change.difference)
+                Pair(
+                    MealSlot(change.date, change.meal),
+                    MealNumberChange(change.differenceBefore, change.differenceAfter)
+                )
             })
             changeMap
         }
     }
 
-    suspend fun setPersonNumberChange(id: Long, meal: String, date: Date, difference: Int) {
-        projectDAO.insertPersonNumberChange(PersonNumberChangeEntity(id, date, meal, difference))
+    suspend fun setPersonNumberChange(id: Long, meal: String, date: Date, numberChange: MealNumberChange) {
+        projectDAO.insertPersonNumberChange(
+            PersonNumberChangeEntity(
+                id,
+                date,
+                meal,
+                numberChange.before,
+                numberChange.after
+            )
+        )
     }
 
     suspend fun removePersonNumberChange(id: Long, meal: String, date: Date) {

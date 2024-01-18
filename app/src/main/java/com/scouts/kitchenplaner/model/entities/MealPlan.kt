@@ -25,13 +25,13 @@ class MealPlan (
     private var _endDate: Date,
     initialMeals: List<String> = listOf(),
     initialPlan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>> = mutableMapOf(),
-    initialNumberChanges: Map<MealSlot, Int> = mutableMapOf()
+    initialNumberChanges: Map<MealSlot, MealNumberChange> = mutableMapOf()
 ) {
     private var _plan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>> = initialPlan.filter { (slot, _) ->
         initialMeals.contains(slot.meal) && slot.date.between(_startDate, _endDate)
     }.toMutableMap()
     private var _meals: List<String> = initialMeals.toMutableList()
-    private var _numberChanges: Map<MealSlot, Int> = initialNumberChanges.filter { (slot, _) ->
+    private var _numberChanges: Map<MealSlot, MealNumberChange> = initialNumberChanges.filter { (slot, _) ->
         initialMeals.contains(slot.meal) && slot.date.between(_startDate, _endDate)
     }.toMutableMap()
 
@@ -50,10 +50,12 @@ class MealPlan (
         _numberChanges.filter { (slot, _) ->
             slot.date.before(mealSlot.date)
                     || (slot.date == mealSlot.date
-                    && meals.indexOf(slot.meal) <= meals.indexOf(mealSlot.meal))
+                    && meals.indexOf(slot.meal) < meals.indexOf(mealSlot.meal))
         }.forEach { (_, numberChange) ->
-            people += numberChange
+            people += numberChange.before + numberChange.after
         }
+
+        people += _numberChanges[mealSlot]?.before ?: 0
         return Pair(_plan[mealSlot], people)
     }
 
@@ -68,7 +70,7 @@ class MealPlan (
     }
 
     @DomainLayerRestricted
-    fun setNumberChanges(numberChanges: Map<MealSlot, Int>) {
+    fun setNumberChanges(numberChanges: Map<MealSlot, MealNumberChange>) {
         _numberChanges = numberChanges.filter { (slot, _) ->
             meals.contains(slot.meal) && slot.date.between(startDate, endDate)
         }
