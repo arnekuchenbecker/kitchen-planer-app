@@ -62,38 +62,12 @@ class AllergenCheckTest {
 
     private val breakfastStub = RecipeStub(1, "Brot", uri)
 
-    private val breakfast = Recipe(
-        1,
-        "Brot",
-        uri,
-        null,
-        1,
-        listOf(),
-        listOf("Gluten"),
-        listOf(),
-        listOf(),
-        listOf()
-    )
-
     private val breakfastDietaries = listOf(DietarySpeciality("Gluten", DietaryTypes.ALLERGEN))
 
     private val lunchStub = RecipeStub(
         2,
         "Kartoffelsuppe",
         uri
-    )
-
-    private val lunch = Recipe(
-        2,
-        "Kartoffelsuppe",
-        uri,
-        null,
-        1,
-        listOf("Sellerie"),
-        listOf(),
-        listOf("Gluten"),
-        listOf(),
-        listOf()
     )
 
     private val lunchDietaries = listOf(
