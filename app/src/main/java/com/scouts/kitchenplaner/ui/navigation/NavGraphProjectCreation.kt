@@ -43,7 +43,6 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
                 type = NavType.LongType
             })
         ) {
-            println(it.destination.route)
             val projectId = it.arguments?.getLong(Destinations.ProjectId) ?: -1
             InviteToProject (
                 projectId = projectId,
