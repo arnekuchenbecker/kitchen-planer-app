@@ -36,14 +36,20 @@ class IngredientList {
 
     @DomainLayerRestricted
     fun addIngredient(ingredient: Ingredient, mealSlot: MealSlot) {
-        val set = _ingredients[mealSlot] ?: sortedSetOf(Comparator { first, second ->
-            compareValues(first.name, second.name)
-        })
+        val set = _ingredients[mealSlot] ?: addNewSet(mealSlot)
         if (set.any { it.name == ingredient.name }) {
             val found = set.first { it.name == ingredient.name }
             found.setAmount(found.amount + ingredient.amount)
         } else {
             set.add(ingredient)
         }
+    }
+
+    private fun addNewSet(slot: MealSlot) : SortedSet<Ingredient> {
+        val newSet = sortedSetOf<Ingredient>({ first, second ->
+            compareValues(first.name, second.name)
+        })
+        _ingredients[slot] = newSet
+        return newSet
     }
 }
