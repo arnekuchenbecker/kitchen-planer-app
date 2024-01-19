@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -31,15 +32,15 @@ class KitchenAppDataStore (private val context: Context) {
         private val USERNAME = stringPreferencesKey("username")
     }
 
-    suspend fun setCurrentUser(username: String) {
+    suspend fun setCurrentUser(user: User) {
         context.dataStore.edit {
-            it[USERNAME] = username
+            it[USERNAME] = user.username
         }
     }
 
-    suspend fun getCurrentUser() : String {
-        return context.dataStore.data.map {
+    suspend fun getCurrentUser() : User {
+        return User(context.dataStore.data.map {
             it[USERNAME] ?: ""
-        }.first()
+        }.first())
     }
 }
