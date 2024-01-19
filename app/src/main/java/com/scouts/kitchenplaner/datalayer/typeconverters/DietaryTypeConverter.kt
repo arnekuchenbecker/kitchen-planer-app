@@ -14,22 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.datalayer.typeconverters
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.TypeConverter
+import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
 
-@Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+class DietaryTypeConverter {
+    @TypeConverter
+    fun enumToString(speciality: DietaryTypes): String {
+        return speciality.name
+    }
+
+    @TypeConverter
+    fun stringToDietaryType(speciality: String): DietaryTypes {
+        return DietaryTypes.valueOf(speciality)
+    }
+}

@@ -20,32 +20,23 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import java.util.Date
 
+/**
+ * Models the Arrival or departure of persons
+ */
 @Entity(
-    tableName = "allergenPersons",
+    tableName = "personNumberChanges",
+    primaryKeys = ["projectId", "date", "meal"],
     foreignKeys = [
         ForeignKey(
-            entity = ProjectEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["projectId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
             entity = MealEntity::class,
-            parentColumns = ["name", "projectId"],
-            childColumns = ["arrivalMeal", "projectId"],
-        ),
-        ForeignKey(
-            entity = MealEntity::class,
-            parentColumns = ["name", "projectId"],
-            childColumns = ["departureMeal", "projectId"]
+            parentColumns = ["projectId", "name"],
+            childColumns = ["projectId", "meal"]
         )
-    ],
-    primaryKeys = ["name", "projectId"])
-data class AllergenPersonEntity(
-    val name: String,
-    var projectId: Long,
-    val arrivalDate: Date,
-    val arrivalMeal: String,
-    val departureDate: Date,
-    val departureMeal: String
+    ]
+)
+data class PersonNumberChangeEntity(
+    val projectId: Long,
+    val date: Date,
+    val meal: String,
+    val difference: Int
 )

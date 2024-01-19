@@ -22,7 +22,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
+import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import kotlinx.coroutines.runBlocking
@@ -41,6 +43,8 @@ class ProjectDatabaseTest {
 
     private lateinit var repo: ProjectRepository
     private lateinit var projectDAO: ProjectDAO
+    private lateinit var allergenDAO: AllergenDAO
+    private lateinit var recipeManagementDAO: RecipeManagementDAO
     private lateinit var db: KitchenAppDatabase
 
     @Before
@@ -50,7 +54,9 @@ class ProjectDatabaseTest {
             context, KitchenAppDatabase::class.java
         ).build()
         projectDAO = db.projectDao()
-        repo = ProjectRepository(projectDAO)
+        allergenDAO = db.allergenDao()
+        recipeManagementDAO = db.recipeManagementDao()
+        repo = ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO)
     }
 
     @After
@@ -78,6 +84,7 @@ class ProjectDatabaseTest {
         val project2 = Project(name = "Test2")
 
         repo.getAllProjectsOverview().test {
+            awaitItem()
             val projectId = repo.insertProject(project)
             val flowContent = awaitItem()
 

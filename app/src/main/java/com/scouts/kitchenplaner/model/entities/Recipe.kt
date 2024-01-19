@@ -14,22 +14,20 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import android.net.Uri
 
-@Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+class Recipe(
+    val id: Long = 0,
+    val name: String = "",
+    val imageURI: Uri = Uri.EMPTY,
+    val description: String = "",
+    val numberOfPeople: Int = -1,
+    val traces: List<String> = listOf(),
+    val allergen: List<String> = listOf(),
+    val freeOfAllergen: List<String> = listOf(),
+    val instructions: List<String> = listOf(),
+    val ingredientGroups: List<IngredientGroup> = listOf()
+) {
+}

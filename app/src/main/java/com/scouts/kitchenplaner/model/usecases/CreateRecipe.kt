@@ -14,22 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.usecases
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.model.entities.Recipe
+import javax.inject.Inject
 
-@Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+class CreateRecipe @Inject constructor(
+    private val recipeRepository: RecipeRepository
+) {
+    suspend fun createRecipe(recipe: Recipe) {
+        recipeRepository.createRecipe(recipe)
+    }
+}

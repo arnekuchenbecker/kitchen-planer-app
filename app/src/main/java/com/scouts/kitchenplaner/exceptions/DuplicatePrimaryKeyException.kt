@@ -14,22 +14,8 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.exceptions
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+private const val DUPLICATE_MESSAGE = "Could not insert a new %s into the database: An entry with the same primary key already exists."
 
-@Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
-    foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["projectId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+class DuplicatePrimaryKeyException (insertionTarget: String) : Exception(DUPLICATE_MESSAGE.format(insertionTarget))

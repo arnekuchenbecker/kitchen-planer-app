@@ -18,34 +18,20 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import java.util.Date
 
 @Entity(
-    tableName = "allergenPersons",
-    foreignKeys = [
-        ForeignKey(
-            entity = ProjectEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["projectId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = MealEntity::class,
-            parentColumns = ["name", "projectId"],
-            childColumns = ["arrivalMeal", "projectId"],
-        ),
-        ForeignKey(
-            entity = MealEntity::class,
-            parentColumns = ["name", "projectId"],
-            childColumns = ["departureMeal", "projectId"]
-        )
-    ],
-    primaryKeys = ["name", "projectId"])
-data class AllergenPersonEntity(
+    primaryKeys = ["ingredientGroup", "recipe"],
+    foreignKeys = [ ForeignKey(
+        entity = IngredientGroupEntity::class,
+        parentColumns = ["name", "recipe"],
+        childColumns = ["ingredientGroup", "recipe"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
+data class IngredientEntity(
+    var recipe: Long,
+    val ingredientGroup: String,
     val name: String,
-    var projectId: Long,
-    val arrivalDate: Date,
-    val arrivalMeal: String,
-    val departureDate: Date,
-    val departureMeal: String
+    val amount: Float,
+    val unit: String //TODO maybe change for calculation
 )

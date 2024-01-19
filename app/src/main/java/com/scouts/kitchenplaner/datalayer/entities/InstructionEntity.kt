@@ -20,16 +20,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "meals",
-    primaryKeys = ["name", "projectId"],
+    primaryKeys = ["order", "recipe"],
     foreignKeys = [ForeignKey(
-        entity = ProjectEntity::class,
+        entity = RecipeEntity::class,
         parentColumns = ["id"],
-        childColumns = ["projectId"],
+        childColumns = ["recipe"],
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class MealEntity(
-    val name: String,
-    var projectId: Long
-)
+data class InstructionEntity(val order: Int, var recipe: Long, val instruction: String) {}
