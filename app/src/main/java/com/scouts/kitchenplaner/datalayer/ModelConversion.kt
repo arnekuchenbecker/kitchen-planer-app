@@ -26,9 +26,9 @@ import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
-import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Project
@@ -93,16 +93,16 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
 
     val speciality: MutableList<DietarySpeciality> = mutableListOf()
     speciality.addAll(allergen.map {
-        DietarySpeciality(id ?: 0, DietaryTypes.ALLERGEN, it)
+        DietarySpeciality(id, DietaryTypes.ALLERGEN, it)
     })
-    speciality.addAll(traces.map { DietarySpeciality(id ?: 0, DietaryTypes.TRACE, it) })
-    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id ?: 0, DietaryTypes.FREE_OF, it) })
+    speciality.addAll(traces.map { DietarySpeciality(id, DietaryTypes.TRACE, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id, DietaryTypes.FREE_OF, it) })
     return Pair(
         RecipeEntity(
-            id = id ?: 0,
+            id = id,
             title = name,
-            imageURI = imageURI ?: "",
-            description = description ?: "",
+            imageURI = imageURI.toString(),
+            description = description,
             numberOfPeople = numberOfPeople
         ), speciality
     )
