@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     primaryKeys = ["name", "recipe"],
@@ -26,7 +27,8 @@ import androidx.room.ForeignKey
         parentColumns = ["id"],
         childColumns = ["recipe"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index("recipe")]
 )
 data class IngredientGroupEntity(
     val name: String,
