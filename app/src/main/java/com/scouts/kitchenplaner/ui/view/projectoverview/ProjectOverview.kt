@@ -19,9 +19,7 @@ package com.scouts.kitchenplaner.ui.view.projectoverview
 import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -43,7 +41,6 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,10 +50,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
@@ -96,43 +91,30 @@ fun ProjectOverview(
             }
         })
     }, floatingActionButton = {
-        ExtendedFloatingActionButton(
-            onClick = {
-                if (!viewModel.archive) {
-                    onNavigateToCreateProject()
-                } else {
-                    viewModel.showArchiveDialog = true
-                }
-            },
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            text = {
-                if (!viewModel.archive) {
-                    Text("Neues Projekt")
-                } else {
-                    Text("Projekte löschen")
-                }
-            },
-            icon = {
-                if (!viewModel.archive) {
+        if (!viewModel.archive) {
+            ExtendedFloatingActionButton(onClick = onNavigateToCreateProject,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                text = { Text("Neues Projekt") },
+                icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "neues Projekt hinzufügen"
                     )
-                } else {
+                })
+        } else {
+            ExtendedFloatingActionButton(onClick = { viewModel.showArchiveDialog = true },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                text = { Text("Projekte löschen") },
+                icon = {
+
                     Icon(
                         imageVector = Icons.Filled.Check, contentDescription = "projekte löschen"
                     )
-                }
-
-            })
-
-    }) {
-        fun closeDialog() {
-            viewModel.showArchiveDialog = false
-            viewModel.archive = false
-            viewModel.clearSelection()
+                })
         }
+    }) {
         Box(modifier = Modifier.padding(it)) {
             LazyColumnWrapper(modifier = Modifier.padding(10.dp),
                 content = projects,
@@ -145,8 +127,7 @@ fun ProjectOverview(
                                 )
                             } else {
                                 viewModel.toggleSelection(
-                                    projectId = project.id,
-                                    selected = !selected
+                                    projectId = project.id, selected = !selected
                                 )
                                 println("Project ${project.id} is selected = $selected")
                             }
@@ -198,8 +179,8 @@ fun ProjectOverview(
                                 Icon(
                                     imageVector = Icons.Filled.Delete,
                                     contentDescription = "zu löschendes projekt",
-                                    tint= MaterialTheme.colorScheme.error,
-                                    modifier= Modifier
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier
                                         .fillMaxHeight(0.7f)
                                         .aspectRatio(1.0f)
 
@@ -217,35 +198,8 @@ fun ProjectOverview(
                 })
 
         }
-
         if (viewModel.showArchiveDialog) {
-            Dialog(onDismissRequest = { viewModel.showArchiveDialog = false }
-
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        Text("geteilte Projekte werden so vom Gerät entfernt. \nEs ist möglich diese wieder zu laden. \nNicht geteilte Projekte werden gelöscht und können nicht wieder hergestellt werden.")
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Button(onClick = { /*TODO delete selected projects*/
-                                projects.forEach { (project, selected) ->
-                                    if (selected) {
-                                        println(project.name)
-                                    }
-                                }
-                                closeDialog()
-                            }) { Text("OK") }
-                            Button(onClick = { closeDialog() }
-                            ) { Text("Abbrechen") }
-                        }
-                    }
-                }
-            }
+            archiveDialog(viewModel, projects)
         }
     }
 }
