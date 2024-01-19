@@ -16,11 +16,13 @@
 
 package com.scouts.kitchenplaner.model.entities
 
+import android.net.Uri
+
 class Recipe(
-    val id: Long? = 0,
+    val id: Long = 0,
     val name: String = "",
-    val imageURI: String?,
-    val description: String?,
+    val imageURI: Uri = Uri.EMPTY,
+    val description: String = "",
     val numberOfPeople: Int = -1,
     val traces: List<String> = listOf(),
     val allergen: List<String> = listOf(),
