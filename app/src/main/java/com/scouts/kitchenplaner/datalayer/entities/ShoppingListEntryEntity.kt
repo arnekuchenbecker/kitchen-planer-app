@@ -21,23 +21,17 @@ import androidx.room.ForeignKey
 
 @Entity(
     tableName = "shoppingListEntries",
-    primaryKeys = ["listId", "projectId", "itemName"],
+    primaryKeys = ["listId", "itemName"],
     foreignKeys = [
         ForeignKey(
             entity = ShoppingListEntity::class,
             parentColumns = ["id"],
             childColumns = ["listId"]
-        ),
-        ForeignKey(
-            entity = ProjectEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["projectId"]
         )
     ]
 )
 data class ShoppingListEntryEntity(
     var listId: Long,
-    val projectId: Long,
     val itemName: String,
     val amount: Int,
     val unit: String

@@ -19,6 +19,9 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.model.entities.ShoppingList
+import com.scouts.kitchenplaner.model.entities.ShoppingListItem
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class ShoppingListRepository @Inject constructor(
@@ -27,5 +30,23 @@ class ShoppingListRepository @Inject constructor(
     suspend fun createShoppingList(list: ShoppingList, projectId: Long) {
         val entities = list.toDataLayerEntity(projectId)
         shoppingListDAO.createShoppingList(entities.first, entities.second)
+    }
+
+    fun getShoppingListsForProject(projectId: Long) : Flow<List<ShoppingList>> {
+        val shoppingLists = shoppingListDAO.getShoppingListsByProjectID(projectId)
+        val shoppingListEntries = shoppingListDAO.getShoppingListEntriesByProjectID(projectId)
+        return shoppingLists.combine(shoppingListEntries) { lists, entries ->
+            lists.map { list ->
+                ShoppingList(
+                    list.id,
+                    list.name,
+                    entries
+                        .filter { it.listId == list.id }
+                        .map {
+                            ShoppingListItem(it.itemName, it.amount, it.unit)
+                        }.toMutableList()
+                )
+            }
+        }
     }
 }
