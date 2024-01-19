@@ -34,7 +34,7 @@ class Project(
     val mealPlan: MealPlan
         get() = _mealPlan
     val id: Long
-        get() = _id ?: -1
+        get() = _id ?: 0
 
     val name: String
         get() = _name

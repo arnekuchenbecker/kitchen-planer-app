@@ -32,6 +32,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -100,6 +101,12 @@ interface ProjectDAO {
 
     @Query("SELECT * FROM projects WHERE name = :projectName")
     suspend fun getProjectByProjectName(projectName: String) : ProjectEntity
+
+    @Query("SELECT EXISTS(SELECT 1 FROM users WHERE username = :username)")
+    suspend fun getExistsUserByName(username: String) : Int
+
+    @Insert
+    suspend fun insertUser(user: UserEntity)
 
     @Update(entity = ProjectEntity::class)
     suspend fun updateImage(image: ProjectImageDTO)

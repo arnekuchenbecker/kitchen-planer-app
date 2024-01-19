@@ -28,6 +28,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
@@ -59,6 +60,9 @@ class ProjectRepository @Inject constructor(
             projectId = projectId,
             allergens = project.allergenPersons.map { it.toDataLayerEntity(project.id) }
         )
+        if (!existsUser(creator)) { // TODO - should this really be how it works?
+            projectDAO.insertUser(UserEntity(creator.username))
+        }
         projectDAO.addUserToProject(UserProjectEntity(projectId, creator.username))
         return projectId
     }
@@ -159,5 +163,9 @@ class ProjectRepository @Inject constructor(
         projectDAO.deleteMealsByProjectId(ProjectIdDTO(projectId))
         shoppingListDAO.deleteShoppingListsByProjectId(ProjectIdDTO(projectId))
         projectDAO.setProjectArchivedStatus(ProjectArchivedDTO(projectId, true))
+    }
+
+    private suspend fun existsUser(user: User) : Boolean {
+        return projectDAO.getExistsUserByName(user.username) == 1
     }
 }
