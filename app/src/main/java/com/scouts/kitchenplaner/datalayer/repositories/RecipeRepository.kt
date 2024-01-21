@@ -31,7 +31,6 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -103,9 +102,11 @@ class RecipeRepository @Inject constructor(
 
     }
 
-    suspend fun getAllergensForRecipe(id: Long) : List<DietarySpeciality> {
-        return recipeDAO.getAllergensByRecipeId(id).first().map {
-            it.toModelEntity()
+    fun getAllergensForRecipe(id: Long) : Flow<List<DietarySpeciality>> {
+        return recipeDAO.getAllergensByRecipeId(id).map {
+            it.map { entity ->
+                entity.toModelEntity()
+            }
         }
     }
 }

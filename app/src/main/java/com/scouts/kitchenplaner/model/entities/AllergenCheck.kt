@@ -20,60 +20,44 @@ import com.scouts.kitchenplaner.model.DomainLayerRestricted
 
 class AllergenCheck {
     /**
-     * Contains for every meal slot, which combination of allergens is definitely not covered by any
+     * Contains for a meal slot, which combination of allergens is definitely not covered by any
      * recipe (first), for which combination of allergens it is not known whether a recipe covers
      * them (second) and for which combination of allergens there is a recipe that covers them (third)
      */
-    private val _checks = mutableMapOf<
-            MealSlot,
-            Triple<
-                    MutableList<AllergenPerson>,
-                    MutableList<AllergenPerson>,
-                    MutableList<AllergenPerson>
-                    >
-            >()
+    private val _coveredPersons = mutableListOf<AllergenPerson>()
+    val coveredPersons: List<AllergenPerson>
+        get() = _coveredPersons
+
+    private val _unknownPersons = mutableListOf<AllergenPerson>()
+    val unknownPersons: List<AllergenPerson>
+        get() = _unknownPersons
+
+    private val _notCoveredPersons = mutableListOf<AllergenPerson>()
+    val notCoveredPersons: List<AllergenPerson>
+        get() = _notCoveredPersons
+
 
     /**
      * Returns the worst AllergenMealCover for the given meal, i.e. if there is at least one
      * combination of allergens which is not covered, returns NOT_COVERED, if all combinations of
      * allergens are covered, returns COVERED otherwise UNKNOWN
      */
-    operator fun get(slot: MealSlot) : AllergenMealCover {
-        val check = _checks[slot] ?: return AllergenMealCover.UNKNOWN
-        return if (check.first.isNotEmpty()) {
+    val mealCover : AllergenMealCover
+        get() = if (notCoveredPersons.isNotEmpty()) {
             AllergenMealCover.NOT_COVERED
-        } else if (check.second.isNotEmpty()) {
+        } else if (unknownPersons.isNotEmpty()) {
             AllergenMealCover.UNKNOWN
         } else {
             AllergenMealCover.COVERED
         }
-    }
-
-    /**
-     * Returns the AllergenPersons whose combination of allergens have the given AllergenMealCover
-     * for the given meal slot.
-     */
-    operator fun get(slot: MealSlot, coverType: AllergenMealCover) : List<AllergenPerson> {
-        val check = _checks[slot] ?: return listOf()
-        return when(coverType) {
-            AllergenMealCover.COVERED -> check.third
-            AllergenMealCover.UNKNOWN -> check.second
-            AllergenMealCover.NOT_COVERED -> check.first
-        }
-    }
 
     @DomainLayerRestricted
-    fun addAllergenPerson(slot: MealSlot, coverType: AllergenMealCover, person: AllergenPerson) {
+    fun addAllergenPerson(coverType: AllergenMealCover, person: AllergenPerson) {
         val list = when (coverType) {
-            AllergenMealCover.COVERED -> _checks[slot]?.third
-            AllergenMealCover.UNKNOWN -> _checks[slot]?.second
-            AllergenMealCover.NOT_COVERED -> _checks[slot]?.first
+            AllergenMealCover.COVERED -> _coveredPersons
+            AllergenMealCover.UNKNOWN -> _unknownPersons
+            AllergenMealCover.NOT_COVERED -> _notCoveredPersons
         }
-        list?.add(person)
-    }
-
-    @DomainLayerRestricted
-    fun addEmptySlot(slot: MealSlot) {
-        _checks[slot] = Triple(mutableListOf(), mutableListOf(), mutableListOf())
+        list.add(person)
     }
 }

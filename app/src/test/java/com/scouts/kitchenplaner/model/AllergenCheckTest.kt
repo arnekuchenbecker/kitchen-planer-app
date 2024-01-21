@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.model
 
 import android.net.Uri
+import app.cash.turbine.test
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenMealCover
@@ -29,9 +30,11 @@ import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import java.util.Date
 
 class AllergenCheckTest {
@@ -79,7 +82,7 @@ class AllergenCheckTest {
      *      - Alice can't eat celery, but is fine with traces
      *      - Bob can't tolerate even traces of gluten, but arrives only for lunch
      *      - Breakfasts contain gluten, but the recipe is lacking information about celery
-     *      - Lunch contains no gluten,
+     *      - Lunch contains no gluten, but contains traces of celery
      */
     @Test
     fun checkAllergenCheckCreation() : Unit = runTest {
@@ -89,38 +92,64 @@ class AllergenCheckTest {
         coEvery { project.mealPlan[mealSlots[0]] } returns Pair(Pair(breakfastStub, listOf()), 5)
         coEvery { project.mealPlan[mealSlots[1]] } returns Pair(Pair(lunchStub, listOf()), 5)
         coEvery { project.mealPlan[mealSlots[2]] } returns Pair(Pair(breakfastStub, listOf()), 5)
-        coEvery { recipeRepository.getAllergensForRecipe(1) } returns breakfastDietaries
-        coEvery { recipeRepository.getAllergensForRecipe(2) } returns lunchDietaries
+        coEvery { recipeRepository.getAllergensForRecipe(1) } returns flowOf(breakfastDietaries)
+        coEvery { recipeRepository.getAllergensForRecipe(2) } returns flowOf(lunchDietaries)
 
-        val result = checkAllergens.getAllergenCheck(project)
-        Assertions.assertEquals(AllergenMealCover.UNKNOWN, result[mealSlots[0]])
-        Assertions.assertEquals(AllergenMealCover.COVERED, result[mealSlots[1]])
-        Assertions.assertEquals(AllergenMealCover.NOT_COVERED, result[mealSlots[2]])
+        val projectFlow = flowOf(project)
 
-        val coveredPersonsBreakfast1 = result[mealSlots[0], AllergenMealCover.COVERED]
-        val unknownPersonsBreakfast1 = result[mealSlots[0], AllergenMealCover.UNKNOWN]
-        val notCoveredPersonsBreakfast1 = result[mealSlots[0], AllergenMealCover.NOT_COVERED]
-        Assertions.assertEquals(0, coveredPersonsBreakfast1.size)
-        Assertions.assertEquals(1, unknownPersonsBreakfast1.size)
-        Assertions.assertEquals("Alice", unknownPersonsBreakfast1[0].name)
-        Assertions.assertEquals(0, notCoveredPersonsBreakfast1.size)
+        val results = mealSlots.associateWith {
+            checkAllergens.getAllergenCheck(projectFlow, it)
+        }
 
-        val coveredPersonsLunch = result[mealSlots[1], AllergenMealCover.COVERED]
-        val unknownPersonsLunch = result[mealSlots[1], AllergenMealCover.UNKNOWN]
-        val notCoveredPersonsLunch = result[mealSlots[1], AllergenMealCover.NOT_COVERED]
-        Assertions.assertEquals(2, coveredPersonsLunch.size)
-        Assertions.assertTrue(coveredPersonsLunch.any { it.name == "Alice" })
-        Assertions.assertTrue(coveredPersonsLunch.any { it.name == "Bob" })
-        Assertions.assertEquals(0, unknownPersonsLunch.size)
-        Assertions.assertEquals(0, notCoveredPersonsLunch.size)
+        //projectFlow.emit(project)
 
-        val coveredPersonsBreakfast2 = result[mealSlots[2], AllergenMealCover.COVERED]
-        val unknownPersonsBreakfast2 = result[mealSlots[2], AllergenMealCover.UNKNOWN]
-        val notCoveredPersonsBreakfast2 = result[mealSlots[2], AllergenMealCover.NOT_COVERED]
-        Assertions.assertEquals(0, coveredPersonsBreakfast2.size)
-        Assertions.assertEquals(1, unknownPersonsBreakfast2.size)
-        Assertions.assertTrue(unknownPersonsBreakfast2.any {it.name == "Alice"})
-        Assertions.assertEquals(1, notCoveredPersonsBreakfast2.size)
-        Assertions.assertTrue(notCoveredPersonsBreakfast2.any {it.name == "Bob"})
+        results[mealSlots[0]]?.test { // first breakfast
+            val check = awaitItem()
+            Assertions.assertEquals(0, check.coveredPersons.size,
+                "Did not find the correct number of covered persons for the first breakfast")
+            Assertions.assertEquals(0, check.notCoveredPersons.size,
+                "Did not find the correct number of not covered persons for the first breakfast")
+            Assertions.assertEquals(1, check.unknownPersons.size,
+                "Did not find the correct number of unknown persons for the first breakfast")
+            Assertions.assertTrue(check.unknownPersons.any { it.name == "Alice" },
+                "Did not find Alice as not covered person for the first breakfast")
+            Assertions.assertEquals(check.mealCover, AllergenMealCover.UNKNOWN,
+                "Did not find the correct meal cover for the first breakfast")
+            awaitComplete()
+        } ?: fail("MealSlot was not found in check")
+
+        results[mealSlots[1]]?.test { // lunch
+            val check = awaitItem()
+            Assertions.assertEquals(2, check.coveredPersons.size,
+                "Did not find the correct number of covered persons for the lunch")
+            Assertions.assertEquals(0, check.notCoveredPersons.size,
+                "Did not find the correct number of not covered persons for lunch")
+            Assertions.assertEquals(0, check.unknownPersons.size,
+                "Did not find the correct number of unknown persons for lunch")
+            Assertions.assertTrue(check.coveredPersons.any { it.name == "Alice" },
+                "Did not find Alice as covered person for the lunch")
+            Assertions.assertTrue(check.coveredPersons.any { it.name == "Bob" },
+                "Did not find Bob as covered person for the lunch")
+            Assertions.assertEquals(check.mealCover, AllergenMealCover.COVERED,
+                "Did not find the correct meal cover for the lunch")
+            awaitComplete()
+        } ?: fail("MealSlot was not found in check")
+
+        results[mealSlots[2]]?.test { // second breakfast
+            val check = awaitItem()
+            Assertions.assertEquals(0, check.coveredPersons.size,
+                "Did not find the correct number of covered persons for the second breakfast")
+            Assertions.assertEquals(1, check.notCoveredPersons.size,
+                "Did not find the correct number of not covered persons for the second breakfast")
+            Assertions.assertEquals(1, check.unknownPersons.size,
+                "Did not find the correct number of unknown persons for the second breakfast")
+            Assertions.assertTrue(check.notCoveredPersons.any { it.name == "Bob" },
+                "Did not find Bob as not covered person for the second breakfast")
+            Assertions.assertTrue(check.unknownPersons.any { it.name == "Alice" },
+                "Did not find Alice as unknown person for the second breakfast")
+            Assertions.assertEquals(check.mealCover, AllergenMealCover.NOT_COVERED,
+                "Did not find the correct meal cover for the second breakfast")
+            awaitComplete()
+        } ?: fail("MealSlot was not found in check")
     }
 }
