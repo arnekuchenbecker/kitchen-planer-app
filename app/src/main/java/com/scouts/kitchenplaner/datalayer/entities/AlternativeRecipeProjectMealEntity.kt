@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import java.util.Date
 
 @Entity(
@@ -34,6 +35,10 @@ import java.util.Date
             parentColumns = ["id"],
             childColumns = ["recipeId"]
         )
+    ],
+    indices = [
+        Index("recipeId"),
+        Index("projectId", "meal")
     ]
 )
 data class AlternativeRecipeProjectMealEntity(
