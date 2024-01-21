@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "userprojects",
@@ -33,7 +34,11 @@ import androidx.room.ForeignKey
             childColumns = ["projectId"]
         )
     ],
-    primaryKeys = ["projectId", "username"]
+    primaryKeys = ["projectId", "username"],
+    indices = [
+        Index("username"),
+        Index("projectId")
+    ]
 )
 data class UserProjectEntity(
     val projectId: Long,
