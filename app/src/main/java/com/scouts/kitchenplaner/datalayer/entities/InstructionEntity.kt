@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     primaryKeys = ["order", "recipe"],
@@ -26,6 +27,11 @@ import androidx.room.ForeignKey
         parentColumns = ["id"],
         childColumns = ["recipe"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index("recipe")]
 )
-data class InstructionEntity(val order: Int, var recipe: Long, val instruction: String) {}
+data class InstructionEntity(
+    val order: Int,
+    var recipe: Long,
+    val instruction: String
+)
