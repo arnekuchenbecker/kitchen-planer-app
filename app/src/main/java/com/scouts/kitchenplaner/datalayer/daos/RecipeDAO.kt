@@ -20,11 +20,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDAO {
@@ -78,4 +81,19 @@ interface RecipeDAO {
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
+
+    @Query("SELECT id, title, imageURI FROM recipeEntity")
+    suspend fun getAllRecipeStubs(): Flow<List<RecipeStubDTO>>
+
+    @Query("SELECT * FROM recipeEntity WHERE id = :id")
+    suspend fun getRecipeById(id: Long): Flow<RecipeEntity>
+
+    @Query("SELECT * FROM dietaryspeciality WHERE recipe = :recipeId")
+    suspend fun getDietarySpecialityById(recipeId: Long): Flow<List<DietarySpeciality>>
+
+    @Query("SELECT * FROM IngredientEntity WHERE recipe = :recipeId")
+    suspend fun getIngredientsForRecipe(recipeId: Long): Flow<List<IngredientEntity>>
+
+    @Query("SELECT * FROM InstructionEntity WHERE recipe = :recipeId")
+    suspend fun getInstructionForRecipe(recipeId: Long): Flow<List<InstructionEntity>>
 }

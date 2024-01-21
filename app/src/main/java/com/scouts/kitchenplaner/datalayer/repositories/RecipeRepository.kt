@@ -21,11 +21,14 @@ import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.Recipe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
-    private val recipeDAO: RecipeDAO
+    private val recipeDAO: RecipeDAO,
 ) {
 
     suspend fun createRecipe(recipe: Recipe) {
@@ -50,6 +53,17 @@ class RecipeRepository @Inject constructor(
                     order = index, recipe = 0, instruction = instruction
                 )
             })
+    }
 
+    suspend fun getRecipeById(recipeId: Long): Flow<Recipe> {
+        val recipeFlow = recipeDAO.getRecipeById(recipeId)
+        val ingredientFlow = recipeDAO.getIngredientsForRecipe(recipeId)
+        val dietaryFlow = recipeDAO.getDietarySpecialityById(recipeId)
+        val instructionFlow = recipeDAO.getInstructionForRecipe(recipeId)
+        return combine(recipeFlow,ingredientFlow, dietaryFlow, instructionFlow) { recipe, ingredient, dietary, instruction ->
+            recipe.toModelEntity(
+                ingredient, dietary, instruction
+            )
+        }
     }
 }

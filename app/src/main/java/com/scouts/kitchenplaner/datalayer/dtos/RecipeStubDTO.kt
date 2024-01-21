@@ -14,20 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import android.net.Uri
+import java.net.URI
 
-class Recipe(
-    val id: Long = 0,
-    val name: String = "",
-    val imageURI: Uri = Uri.EMPTY,
-    val description: String = "",
-    val numberOfPeople: Int = -1,
-    val traces: List<String> = listOf(),
-    val allergens: List<String> = listOf(),
-    val freeOfAllergen: List<String> = listOf(),
-    var instructions: List<String> = listOf(),
-    val ingredientGroups: List<IngredientGroup> = listOf()
-) {
-}
+data class RecipeStubDTO(
+    val id: Long,
+    val title: String,
+    val imageURI: String
+)
