@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "shoppingListEntries",
@@ -34,7 +35,8 @@ import androidx.room.ForeignKey
             parentColumns = ["id"],
             childColumns = ["projectId"]
         )
-    ]
+    ],
+    indices = [Index("projectId")]
 )
 data class ShoppingListEntryEntity(
     var listId: Long,

@@ -80,7 +80,7 @@ class RecipeRepository @Inject constructor(
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
-            val entities = it.toDataLayerEntity(recipe.id ?: 0)
+            val entities = it.toDataLayerEntity(recipe.id)
             ingredients.addAll(entities)
         }
 
