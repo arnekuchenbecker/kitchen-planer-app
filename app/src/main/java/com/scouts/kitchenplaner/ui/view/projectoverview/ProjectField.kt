@@ -43,25 +43,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.ProjectStub
-import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
 @Composable
-fun projectField(
+fun ProjectField(
     project: ProjectStub,
     selected: Boolean,
-    viewModel: ProjectSelectionViewModel,
-    onNavigateToDetailedProject: (Long) -> Unit
+    onNavigateToDetailedProject: (Long) -> Unit,
+    toggleSelection: (Long, Boolean) -> Unit,
+    archive: Boolean
 ) {
     Box(modifier = Modifier
         .clickable {
-            if (!viewModel.archive) {
+            if (!archive) {
                 onNavigateToDetailedProject(
                     project.id
                 )
             } else {
-                viewModel.toggleSelection(
-                    projectId = project.id, selected = !selected
-                )
+                toggleSelection(project.id, !selected)
             }
         }
         .fillMaxWidth()
@@ -105,7 +103,7 @@ fun projectField(
                 text = project.name,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-            if (viewModel.archive && selected) {
+            if (archive && selected) {
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Filled.Delete,

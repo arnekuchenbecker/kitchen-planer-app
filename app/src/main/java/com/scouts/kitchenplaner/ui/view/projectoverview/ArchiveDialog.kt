@@ -34,18 +34,13 @@ import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
 @Composable
-fun archiveDialog(
-    viewModel: ProjectSelectionViewModel,
-    projects: List<Pair<ProjectStub, Boolean>>
+fun ArchiveDialog(
+    projects: List<Pair<ProjectStub, Boolean>>,
+    onCloseDialog: () -> Unit,
+
 ) {
 
-    fun closeDialog() {
-        viewModel.showArchiveDialog = false
-        viewModel.archive = false
-        viewModel.clearSelection()
-    }
-
-    Dialog(onDismissRequest = { viewModel.showArchiveDialog = false }
+    Dialog(onDismissRequest = onCloseDialog
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -63,9 +58,9 @@ fun archiveDialog(
                                 println(project.name)
                             }
                         }
-                        closeDialog()
+                        onCloseDialog()
                     }) { Text("OK") }
-                    Button(onClick = { closeDialog() }
+                    Button(onClick = onCloseDialog
                     ) { Text("Abbrechen") }
                 }
             }

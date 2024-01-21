@@ -105,18 +105,20 @@ fun ProjectOverview(
             LazyColumnWrapper(modifier = Modifier.padding(10.dp),
                 content = projects,
                 DisplayContent = { (project, selected), _ ->
-                    projectField(
+                    ProjectField(
                         project = project,
                         selected = selected,
-                        viewModel = viewModel,
-                        onNavigateToDetailedProject = onNavigateToDetailedProject
+                        onNavigateToDetailedProject = onNavigateToDetailedProject,
+                        toggleSelection = viewModel::toggleSelection,
+                        archive = viewModel.archive
                     )
                 }, DisplayLast = { (project, selected), _ ->
-                    projectField(
+                    ProjectField(
                         project = project,
                         selected = selected,
-                        viewModel = viewModel,
-                        onNavigateToDetailedProject = onNavigateToDetailedProject
+                        onNavigateToDetailedProject = onNavigateToDetailedProject,
+                        toggleSelection = viewModel::toggleSelection,
+                        archive = viewModel.archive
                     )
                     //To allow scrolling stuff from behind the FAB
                     Spacer(modifier = Modifier.height(75.dp))
@@ -130,7 +132,11 @@ fun ProjectOverview(
 
         }
         if (viewModel.showArchiveDialog) {
-            archiveDialog(viewModel, projects)
+            ArchiveDialog(projects, onCloseDialog = {
+                viewModel.showArchiveDialog = false
+                viewModel.archive = false
+                viewModel.clearSelection()
+            })
         }
     }
 }
