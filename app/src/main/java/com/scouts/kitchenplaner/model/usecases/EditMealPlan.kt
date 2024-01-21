@@ -27,8 +27,8 @@ class EditMealPlan @Inject constructor(
     private val recipeManagementRepository: RecipeManagementRepository,
     private val projectRepository: ProjectRepository
 ) {
-    suspend fun selectRecipeForMeal(project: Project, mealSlot: MealSlot, recipe: Recipe) {
-        recipeManagementRepository.selectMainRecipeForProject(
+    suspend fun selectRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: Recipe) {
+        recipeManagementRepository.chooseMainRecipeForMealSlot(
             project.id,
             recipe.id ?: -1,
             mealSlot
@@ -36,11 +36,11 @@ class EditMealPlan @Inject constructor(
     }
 
 
-    suspend fun removeRecipesFromMeal(project: Project, mealSlot: MealSlot) {
+    suspend fun removeRecipesFromMealSlot(project: Project, mealSlot: MealSlot) {
         recipeManagementRepository.removeRecipesFromMeal(project.id, mealSlot)
     }
 
-    suspend fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
+    suspend fun swapMealSlots(project: Project, first: MealSlot, second: MealSlot) {
         recipeManagementRepository.swapRecipes(project.id, first, second)
     }
 

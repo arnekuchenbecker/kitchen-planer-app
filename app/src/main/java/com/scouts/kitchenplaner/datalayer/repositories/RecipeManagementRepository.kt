@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.repositories
 
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectMealIdentifier
 import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.model.entities.MealSlot
@@ -30,13 +31,13 @@ class RecipeManagementRepository @Inject constructor(
     /**
      * Selects the main recipe for a meal
      */
-    suspend fun selectMainRecipeForProject(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
-        recipeManagementDAO.addRecipeToProjectMeal(
+    suspend fun chooseMainRecipeForMealSlot(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
+        recipeManagementDAO.addMainRecipeToProjectMeal(
             MainRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
         )
     }
 
-    suspend fun addAlternativeRecipeForProject(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
+    suspend fun addAlternativeRecipeForMealSlot(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
         recipeManagementDAO.addAlternativeRecipeToProjectMeal(
             AlternativeRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
         )
@@ -54,6 +55,16 @@ class RecipeManagementRepository @Inject constructor(
 
     suspend fun removeRecipesFromMeal(projectId: Long, mealSlot: MealSlot) {
         recipeManagementDAO.removeAllRecipesFromMeal(projectId, mealSlot.meal, mealSlot.date)
+    }
+
+    suspend fun removeMainRecipeFromMealSlot(projectId: Long, mealSlot: MealSlot) {
+        recipeManagementDAO.removeMainRecipeFromProjectMeal(ProjectMealIdentifier(projectId, mealSlot.meal, mealSlot.date))
+    }
+
+    suspend fun removeAlternativeRecipeFromMealSlot(projectId: Long, mealSlot: MealSlot, recipeId: Long) {
+        recipeManagementDAO.removeAlternativeRecipeFromMeal(
+            AlternativeRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
+        )
     }
 
     fun getRecipeMealSlotsForProject(projectId: Long) : Flow<List<Pair<MealSlot, Pair<Long, List<Long>>>>> {

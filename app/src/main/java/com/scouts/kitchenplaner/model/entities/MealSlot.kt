@@ -21,8 +21,10 @@ import java.util.Date
 data class MealSlot (
     val date: Date,
     val meal: String
-)
-
-fun MealSlot.before(other: MealSlot, meals: List<String>) : Boolean {
-    return this.date.before(other.date) || (this.date == other.date && meals.indexOf(this.meal) <= meals.indexOf(other.meal))
+) {
+    fun before(other: MealSlot, meals: List<String>): Boolean {
+        return this.date.before(other.date) || (this.date == other.date && meals.indexOf(this.meal) <= meals.indexOf(
+            other.meal
+        ))
+    }
 }

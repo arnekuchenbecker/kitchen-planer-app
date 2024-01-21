@@ -19,7 +19,6 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
@@ -79,20 +78,16 @@ class RecipeRepository @Inject constructor(
 
     suspend fun createRecipe(recipe: Recipe) {
 
-        val ingredientGroups: MutableList<IngredientGroupEntity> =
-            mutableListOf()
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
-            val entity = it.toDataLayerEntity(recipe.id ?: 0)
-            ingredientGroups.add(entity.first)
-            ingredients.addAll(entity.second)
+            val entities = it.toDataLayerEntity(recipe.id ?: 0)
+            ingredients.addAll(entities)
         }
 
         val dataLayerEntity = recipe.toDataLayerEntity()
         recipeDAO.createRecipe(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
-            ingredientGroups = ingredientGroups,
             ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
                 InstructionEntity(

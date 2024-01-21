@@ -29,7 +29,6 @@ import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
@@ -54,7 +53,6 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         DietarySpecialityEntity::class,
         RecipeEntity::class,
         IngredientEntity::class,
-        IngredientGroupEntity::class,
         InstructionEntity::class,
         MainRecipeProjectMealEntity::class,
         AlternativeRecipeProjectMealEntity::class,

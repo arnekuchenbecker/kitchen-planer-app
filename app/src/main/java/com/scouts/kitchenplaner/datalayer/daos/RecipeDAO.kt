@@ -22,7 +22,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +33,6 @@ interface RecipeDAO {
     suspend fun createRecipe(
         recipe: RecipeEntity,
         speciality: List<DietarySpecialityEntity>,
-        ingredientGroups: List<IngredientGroupEntity>,
         ingredients: List<IngredientEntity>,
         instructions: List<InstructionEntity>
     ): Long {
@@ -49,10 +47,6 @@ interface RecipeDAO {
             ingredient.recipe = recipeId
             insertIngredient(ingredient)
         }
-        ingredientGroups.forEach { group ->
-            group.recipe = recipeId
-            insertIngredientGroup(group)
-        }
 
         instructions.forEach { step ->
             step.recipe = recipeId
@@ -64,9 +58,6 @@ interface RecipeDAO {
 
     @Insert
     suspend fun insertInstructionStep(entity: InstructionEntity): Long
-
-    @Insert
-    suspend fun insertIngredientGroup(entity: IngredientGroupEntity): Long
 
     @Insert
     suspend fun insertRecipe(entity: RecipeEntity): Long

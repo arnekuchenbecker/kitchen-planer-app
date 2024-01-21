@@ -21,7 +21,6 @@ import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
@@ -101,10 +100,8 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpecialityEntity>
     )
 }
 
-fun IngredientGroup.toDataLayerEntity(recipeID: Long): Pair<IngredientGroupEntity, List<IngredientEntity>> {
-    return Pair(
-        IngredientGroupEntity(name = name, recipeID),
-        ingredients.map {
+fun IngredientGroup.toDataLayerEntity(recipeID: Long): List<IngredientEntity> {
+    return ingredients.map {
             IngredientEntity(
                 recipe = recipeID,
                 ingredientGroup = name,
@@ -113,7 +110,6 @@ fun IngredientGroup.toDataLayerEntity(recipeID: Long): Pair<IngredientGroupEntit
                 amount = it.amount
             )
         }
-    )
 }
 
 fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {

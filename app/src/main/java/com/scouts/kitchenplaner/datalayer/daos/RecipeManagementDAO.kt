@@ -33,26 +33,26 @@ import java.util.Date
 interface RecipeManagementDAO {
     @Transaction
     suspend fun removeAllRecipesFromMeal(projectId: Long, meal: String, date: Date) {
-        removeMainRecipeProjectFromMeal(ProjectMealIdentifier(projectId, meal, date))
+        removeMainRecipeFromProjectMeal(ProjectMealIdentifier(projectId, meal, date))
         removeAlternativeRecipesFromMeal(ProjectMealIdentifier(projectId, meal, date))
     }
 
     @Transaction
     suspend fun swapMeals(projectId: Long, firstMeal: String, firstDate: Date, secondMeal: String, secondDate: Date) {
-        val firstRecipe = getRecipeIdForMealSlot(projectId, firstMeal, firstDate)
-        val secondRecipe = getRecipeIdForMealSlot(projectId, secondMeal, secondDate)
+        val firstRecipe = getMainRecipeIdForMealSlot(projectId, firstMeal, firstDate)
+        val secondRecipe = getMainRecipeIdForMealSlot(projectId, secondMeal, secondDate)
         val firstAlternatives = getAlternativeRecipeIdsForMealSlot(projectId, firstMeal, firstDate)
         val secondAlternatives = getAlternativeRecipeIdsForMealSlot(projectId, secondMeal, secondDate)
 
         removeAllRecipesFromMeal(projectId, firstMeal, firstDate)
         removeAllRecipesFromMeal(projectId, secondMeal, secondDate)
 
-        addRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, firstMeal, firstDate, secondRecipe))
+        addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, firstMeal, firstDate, secondRecipe))
         addAllAlternativeRecipesToProjectMeal(secondAlternatives.map {
             AlternativeRecipeProjectMealEntity(projectId, firstMeal, firstDate, it)
         })
 
-        addRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, secondMeal, secondDate, firstRecipe))
+        addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, secondMeal, secondDate, firstRecipe))
         addAllAlternativeRecipesToProjectMeal(firstAlternatives.map {
             AlternativeRecipeProjectMealEntity(projectId, secondMeal, secondDate, it)
         })
@@ -65,7 +65,7 @@ interface RecipeManagementDAO {
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
+    suspend fun addMainRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
 
     @Insert
     suspend fun addAlternativeRecipeToProjectMeal(entity: AlternativeRecipeProjectMealEntity)
@@ -73,16 +73,19 @@ interface RecipeManagementDAO {
     @Insert fun addAllAlternativeRecipesToProjectMeal(entities: List<AlternativeRecipeProjectMealEntity>)
 
     @Delete(MainRecipeProjectMealEntity::class)
-    suspend fun removeMainRecipeProjectFromMeal(entity: ProjectMealIdentifier)
+    suspend fun removeMainRecipeFromProjectMeal(entity: ProjectMealIdentifier)
 
     @Delete(AlternativeRecipeProjectMealEntity::class)
     suspend fun removeAlternativeRecipesFromMeal(entity: ProjectMealIdentifier)
+
+    @Delete
+    suspend fun removeAlternativeRecipeFromMeal(entity: AlternativeRecipeProjectMealEntity)
 
     @Query("SELECT recipeId FROM recipeProjectMeal " +
             "WHERE projectId = :projectId " +
             "AND meal = :meal " +
             "AND date = :date")
-    suspend fun getRecipeIdForMealSlot(projectId: Long, meal: String, date: Date) : Long
+    suspend fun getMainRecipeIdForMealSlot(projectId: Long, meal: String, date: Date) : Long
 
     @Query("SELECT recipeId FROM alternativeRecipeProjectMeal " +
             "WHERE projectId = :projectId " +

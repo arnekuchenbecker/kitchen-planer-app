@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.model
 
 import android.net.Uri
-import com.scouts.kitchenplaner.model.entities.MealNumberChange
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import io.mockk.mockk
@@ -42,11 +41,11 @@ class PersonNumberTest {
     fun testTotalNumberCalculation() {
         project.mealPlan.setNumberChanges(
             mapOf(
-                MealSlot(Date(0), "Frühstück") to MealNumberChange(0, 5),
-                MealSlot(Date(24*60*60*1000), "Mittagessen") to MealNumberChange(0, 70),
-                MealSlot(Date(48*60*60*1000), "Mittagessen") to MealNumberChange(-3, 0),
-                MealSlot(Date(72*60*60*1000), "Frühstück") to MealNumberChange(0, -68),
-                MealSlot(Date(72*60*60*1000), "Mittagessen") to MealNumberChange(0, -4),
+                MealSlot(Date(0), "Mittagessen") to 5,
+                MealSlot(Date(24*60*60*1000), "Abendessen") to 70,
+                MealSlot(Date(48*60*60*1000), "Mittagessen") to -3,
+                MealSlot(Date(72*60*60*1000), "Mittagessen") to -68,
+                MealSlot(Date(72*60*60*1000), "Abendessen") to -4,
             )
         )
 

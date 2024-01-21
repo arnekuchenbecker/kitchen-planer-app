@@ -25,13 +25,13 @@ class MealPlan (
     private var _endDate: Date,
     initialMeals: List<String> = listOf(),
     initialPlan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>> = mutableMapOf(),
-    initialNumberChanges: Map<MealSlot, MealNumberChange> = mutableMapOf()
+    initialNumberChanges: Map<MealSlot, Int> = mutableMapOf()
 ) {
     private var _plan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>> = initialPlan.filter { (slot, _) ->
         initialMeals.contains(slot.meal) && slot.date.between(_startDate, _endDate)
     }.toMutableMap()
     private var _meals: List<String> = initialMeals.toMutableList()
-    private var _numberChanges: Map<MealSlot, MealNumberChange> = initialNumberChanges.filter { (slot, _) ->
+    private var _numberChanges: Map<MealSlot, Int> = initialNumberChanges.filter { (slot, _) ->
         initialMeals.contains(slot.meal) && slot.date.between(_startDate, _endDate)
     }.toMutableMap()
 
@@ -46,16 +46,12 @@ class MealPlan (
 
     operator fun get(mealSlot: MealSlot) : Pair<Pair<RecipeStub, List<RecipeStub>>?, Int> {
         assert(meals.contains(mealSlot.meal))
-        var people = 0
-        _numberChanges.filter { (slot, _) ->
+        val people = _numberChanges.filter { (slot, _) ->
             slot.date.before(mealSlot.date)
                     || (slot.date == mealSlot.date
-                    && meals.indexOf(slot.meal) < meals.indexOf(mealSlot.meal))
-        }.forEach { (_, numberChange) ->
-            people += numberChange.before + numberChange.after
-        }
+                    && meals.indexOf(slot.meal) <= meals.indexOf(mealSlot.meal))
+        }.values.reduce { first, second -> first + second }
 
-        people += _numberChanges[mealSlot]?.before ?: 0
         return Pair(_plan[mealSlot], people)
     }
 
@@ -70,7 +66,7 @@ class MealPlan (
     }
 
     @DomainLayerRestricted
-    fun setNumberChanges(numberChanges: Map<MealSlot, MealNumberChange>) {
+    fun setNumberChanges(numberChanges: Map<MealSlot, Int>) {
         _numberChanges = numberChanges.filter { (slot, _) ->
             meals.contains(slot.meal) && slot.date.between(startDate, endDate)
         }
