@@ -124,7 +124,6 @@ fun ProjectOverview(
                     Spacer(modifier = Modifier.height(75.dp))
                 },
                 DisplayEmpty = {
-                    Text("${projects.size}")
                     Text(
                         text = "Keine Projekte"
                     )
