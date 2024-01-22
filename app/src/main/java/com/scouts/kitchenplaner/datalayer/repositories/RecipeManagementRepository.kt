@@ -38,7 +38,7 @@ class RecipeManagementRepository @Inject constructor(
     }
 
     suspend fun addAlternativeRecipeForMealSlot(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
-        recipeManagementDAO.addAlternativeRecipeToProjectMeal(
+        recipeManagementDAO.addSingleAlternativeRecipeToProjectMeal(
             AlternativeRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
         )
     }
@@ -62,7 +62,7 @@ class RecipeManagementRepository @Inject constructor(
     }
 
     suspend fun removeAlternativeRecipeFromMealSlot(projectId: Long, mealSlot: MealSlot, recipeId: Long) {
-        recipeManagementDAO.removeAlternativeRecipeFromMeal(
+        recipeManagementDAO.removeSingleAlternativeRecipeFromMeal(
             AlternativeRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
         )
     }

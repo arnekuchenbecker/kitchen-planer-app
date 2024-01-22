@@ -34,7 +34,7 @@ interface RecipeManagementDAO {
     @Transaction
     suspend fun removeAllRecipesFromMeal(projectId: Long, meal: String, date: Date) {
         removeMainRecipeFromProjectMeal(ProjectMealIdentifier(projectId, meal, date))
-        removeAlternativeRecipesFromMeal(ProjectMealIdentifier(projectId, meal, date))
+        removeAllAlternativeRecipesFromMeal(ProjectMealIdentifier(projectId, meal, date))
     }
 
     @Transaction
@@ -68,7 +68,7 @@ interface RecipeManagementDAO {
     suspend fun addMainRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
 
     @Insert
-    suspend fun addAlternativeRecipeToProjectMeal(entity: AlternativeRecipeProjectMealEntity)
+    suspend fun addSingleAlternativeRecipeToProjectMeal(entity: AlternativeRecipeProjectMealEntity)
 
     @Insert fun addAllAlternativeRecipesToProjectMeal(entities: List<AlternativeRecipeProjectMealEntity>)
 
@@ -76,10 +76,10 @@ interface RecipeManagementDAO {
     suspend fun removeMainRecipeFromProjectMeal(entity: ProjectMealIdentifier)
 
     @Delete(AlternativeRecipeProjectMealEntity::class)
-    suspend fun removeAlternativeRecipesFromMeal(entity: ProjectMealIdentifier)
+    suspend fun removeAllAlternativeRecipesFromMeal(entity: ProjectMealIdentifier)
 
     @Delete
-    suspend fun removeAlternativeRecipeFromMeal(entity: AlternativeRecipeProjectMealEntity)
+    suspend fun removeSingleAlternativeRecipeFromMeal(entity: AlternativeRecipeProjectMealEntity)
 
     @Query("SELECT recipeId FROM recipeProjectMeal " +
             "WHERE projectId = :projectId " +
