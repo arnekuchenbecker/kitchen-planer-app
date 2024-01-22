@@ -29,4 +29,5 @@ class ProjectSelection @Inject constructor(
         val currentUser = User("Arne") //TODO retrieve user from storage
         return projectRepository.getProjectOverview(currentUser)
     }
+    //TODO delete project
 }
