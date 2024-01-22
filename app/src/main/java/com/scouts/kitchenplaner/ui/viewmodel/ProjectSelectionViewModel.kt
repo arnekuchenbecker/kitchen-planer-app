@@ -16,11 +16,50 @@
 
 package com.scouts.kitchenplaner.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.usecases.ProjectSelection
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+@HiltViewModel
 class ProjectSelectionViewModel @Inject constructor(
     private val projectSelection: ProjectSelection
-) {
-    val projects = projectSelection.getProjectsForCurrentUser()
+) : ViewModel() {
+    private val projects = projectSelection.getProjectsForCurrentUser()
+    private val selectedFlow = MutableStateFlow<Map<Long, Boolean>>(mapOf())
+
+    val projectSelected: Flow<List<Pair<ProjectStub, Boolean>>> =
+        projects.combine(selectedFlow) { project, selected ->
+            project.map { stub ->
+                Pair(
+                    stub,
+                    selected[stub.id] ?: false
+                )
+            }
+        }
+    var archive by mutableStateOf(false)
+    var showArchiveDialog by mutableStateOf(false)
+
+
+
+    fun toggleSelection(projectId: Long, selected: Boolean) {
+        selectedFlow.update{
+            it + Pair(projectId,selected)
+        }
+    }
+
+    fun clearSelection(){
+        selectedFlow.update {mutableStateMapOf() }
+    }
 }
