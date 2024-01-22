@@ -37,7 +37,7 @@ interface AllergenDAO {
         allergens.forEach {
             it.first.projectId = projectId
             insertAllergenPerson(it.first)
-println("")
+
             it.second.forEach { allergen ->
                 allergen.projectId = projectId
                 insertAllergen(allergen)
