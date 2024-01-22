@@ -60,7 +60,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         ShoppingListEntity::class,
         ShoppingListEntryEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, DietaryTypeConverter::class)
