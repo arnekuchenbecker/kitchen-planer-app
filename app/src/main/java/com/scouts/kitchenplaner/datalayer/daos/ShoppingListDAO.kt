@@ -24,6 +24,7 @@ import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingListDAO {
@@ -47,6 +48,21 @@ interface ShoppingListDAO {
 
     @Insert
     suspend fun insertShoppingListItems(items: List<ShoppingListEntryEntity>)
+
+    @Query("SELECT * FROM shoppingLists WHERE projectId = :projectId")
+    fun getShoppingListsByProjectID(projectId: Long) : Flow<List<ShoppingListEntity>>
+
+    @Query("SELECT * FROM shoppingLists WHERE id = :id")
+    fun getShoppingListByID(id: Long) : Flow<ShoppingListEntity>
+
+    @Query("SELECT shoppingListEntries.listId AS listId, " +
+            "shoppingListEntries.amount AS amount, " +
+            "shoppingListEntries.itemName AS itemName, " +
+            "shoppingListEntries.unit AS unit " +
+            "FROM shoppingLists " +
+            "JOIN shoppingListEntries ON shoppingLists.id = shoppingListEntries.listId " +
+            "WHERE shoppingLists.projectId = :projectId")
+    fun getShoppingListEntriesByProjectID(projectId: Long) : Flow<List<ShoppingListEntryEntity>>
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long

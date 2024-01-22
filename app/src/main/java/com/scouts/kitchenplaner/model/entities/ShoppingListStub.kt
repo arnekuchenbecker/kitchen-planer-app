@@ -14,28 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-
-@Entity(
-    tableName = "shoppingListEntries",
-    primaryKeys = ["listId", "itemName"],
-    foreignKeys = [
-        ForeignKey(
-            entity = ShoppingListEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["listId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("listId")]
-)
-data class ShoppingListEntryEntity(
-    var listId: Long,
-    val itemName: String,
-    val amount: Int,
-    val unit: String
+data class ShoppingListStub(
+    val id: Long,
+    val name: String
 )

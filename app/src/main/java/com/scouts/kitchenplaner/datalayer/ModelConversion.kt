@@ -120,7 +120,7 @@ fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, Li
             projectId = projectId
         ),
         items.map {
-            ShoppingListEntryEntity(id ?: 0, projectId, it.name, it.amount, it.unit)
+            ShoppingListEntryEntity(id ?: 0, it.name, it.amount, it.unit)
         }
     )
 }
