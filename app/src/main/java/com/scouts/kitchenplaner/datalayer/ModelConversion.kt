@@ -42,7 +42,7 @@ fun Project.toDataLayerEntity(): ProjectEntity {
         name = name,
         startDate = startDate,
         endDate = endDate,
-        imageUri = projectImage.path ?: "",
+        imageUri = projectImage.toString(),
         isArchived = false
     )
 }

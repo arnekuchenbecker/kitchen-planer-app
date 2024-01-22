@@ -62,6 +62,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics:1.6.0-beta03")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.0-beta03")
     implementation("androidx.compose.material3:material3-android:1.2.0-beta01")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-android:1.6.0-rc01")
     implementation("io.coil-kt:coil-compose:2.5.0")

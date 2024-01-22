@@ -16,46 +16,126 @@
 
 package com.scouts.kitchenplaner.ui.view.projectoverview
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
+import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
 fun ProjectOverview(
     onNavigateToDetailedProject: (Long) -> Unit,
-    onNavigateToCreateProject: () -> Unit
+    onNavigateToCreateProject: () -> Unit,
+    viewModel: ProjectSelectionViewModel = hiltViewModel()
 ) {
-    var projectId by remember { mutableStateOf(0f) }
-    Column {
-        Text(text = "This is the project overview, where all own projects are displayed")
-        Text(text = "available Links to other sides are: ")
-        Row {
-            Text("ProjectDetails")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = projectId,
-                onValueChange = { projectId = it },
-                valueRange = 1f..5f,
-                steps = 5
-            )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
+    val projects by viewModel.projectSelected.collectAsState(initial = listOf())
 
+    Scaffold(topBar = {
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ), title = {
+            Text("Meine Projekte")
+        }, actions = {
+            Button(onClick = {
+                viewModel.archive = !viewModel.archive
+                viewModel.clearSelection()
+            }) {
+                if (viewModel.archive) {
+                    Icon(
+                        imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "projekte löschen"
+                    )
+                }
+            }
+        })
+    }, floatingActionButton = {
+        if (!viewModel.archive) {
+            ExtendedFloatingActionButton(onClick = onNavigateToCreateProject,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                text = { Text("Neues Projekt") },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "neues Projekt hinzufügen"
+                    )
+                })
+        } else {
+            ExtendedFloatingActionButton(onClick = { viewModel.showArchiveDialog = true },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                text = { Text("Projekte löschen") },
+                icon = {
+
+                    Icon(
+                        imageVector = Icons.Filled.Check, contentDescription = "projekte löschen"
+                    )
+                })
+        }
+    }) {
+        Box(modifier = Modifier.padding(it)) {
+            LazyColumnWrapper(modifier = Modifier.padding(10.dp),
+                content = projects,
+                DisplayContent = { (project, selected), _ ->
+                    ProjectField(
+                        project = project,
+                        selected = selected,
+                        onNavigateToDetailedProject = onNavigateToDetailedProject,
+                        toggleSelection = viewModel::toggleSelection,
+                        archive = viewModel.archive
+                    )
+                }, DisplayLast = { (project, selected), _ ->
+                    ProjectField(
+                        project = project,
+                        selected = selected,
+                        onNavigateToDetailedProject = onNavigateToDetailedProject,
+                        toggleSelection = viewModel::toggleSelection,
+                        archive = viewModel.archive
+                    )
+                    //To allow scrolling stuff from behind the FAB
+                    Spacer(modifier = Modifier.height(75.dp))
+                },
+                DisplayEmpty = {
+                    Text(
+                        text = "Keine Projekte"
+                    )
+                })
 
         }
-        Row {
-            Text("ProjectCreation")
-            Button(onClick = onNavigateToCreateProject) {}
+        if (viewModel.showArchiveDialog) {
+            ArchiveDialog(projects, onCloseDialog = {
+                viewModel.showArchiveDialog = false
+                viewModel.archive = false
+                viewModel.clearSelection()
+            })
         }
     }
 }
-
