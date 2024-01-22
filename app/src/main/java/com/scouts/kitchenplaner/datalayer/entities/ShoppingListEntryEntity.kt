@@ -30,7 +30,7 @@ import androidx.room.Index
             childColumns = ["listId"]
         )
     ],
-    indices = [Index("projectId")]
+    indices = [Index("listId")]
 )
 data class ShoppingListEntryEntity(
     var listId: Long,
