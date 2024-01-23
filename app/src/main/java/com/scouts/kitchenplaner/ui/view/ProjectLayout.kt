@@ -16,28 +16,39 @@
 
 package com.scouts.kitchenplaner.ui.view
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.scouts.kitchenplaner.ui.navigation.Destinations
 import com.scouts.kitchenplaner.ui.navigation.NavHostProjects
+import com.scouts.kitchenplaner.ui.viewmodel.ProjectFrameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectLayout(id: Long, navController: NavHostController) {
+fun ProjectLayout(
+    id: Long,
+    navController: NavHostController,
+    viewModel: ProjectFrameViewModel = hiltViewModel()
+) {
     var selectedItem by remember { mutableStateOf(0) }
     val projectNavController: NavHostController = rememberNavController()
 
@@ -46,19 +57,30 @@ fun ProjectLayout(id: Long, navController: NavHostController) {
         Pair("Einkaufsliste", Destinations.ShoppingListGraph)
     )
     val backStackEntry by projectNavController.currentBackStackEntryAsState()
-    println(id)
+    val projectName by viewModel.getProjectName(id).collectAsState()
     Scaffold(topBar = {
-        SecondaryTabRow(selectedTabIndex = selectedItem) {
-            sites.forEachIndexed { index, site ->
-                if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
-                    selectedItem = index;
+        Column {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                title = {
+                    Text(projectName)
                 }
-                Tab(selected = selectedItem == index, onClick = {
-                    projectNavController.navigate("${site.second}/$id") {
-                        launchSingleTop = true
+            )
+            SecondaryTabRow(selectedTabIndex = selectedItem) {
+                sites.forEachIndexed { index, site ->
+                    if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
+                        selectedItem = index;
                     }
-                }, text = { Text(site.first) })
+                    Tab(selected = selectedItem == index, onClick = {
+                        projectNavController.navigate("${site.second}/$id") {
+                            launchSingleTop = true
+                        }
+                    }, text = { Text(site.first) })
 
+                }
             }
         }
     }) {
