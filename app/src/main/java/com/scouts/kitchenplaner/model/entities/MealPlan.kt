@@ -47,10 +47,8 @@ class MealPlan (
     operator fun get(mealSlot: MealSlot) : Pair<Pair<RecipeStub, List<RecipeStub>>?, Int> {
         assert(meals.contains(mealSlot.meal))
         val people = _numberChanges.filter { (slot, _) ->
-            slot.date.before(mealSlot.date)
-                    || (slot.date == mealSlot.date
-                    && meals.indexOf(slot.meal) <= meals.indexOf(mealSlot.meal))
-        }.values.reduce { first, second -> first + second }
+            slot.before(mealSlot, meals)
+        }.values.reduceOrNull { first, second -> first + second } ?: 0
 
         return Pair(_plan[mealSlot], people)
     }
