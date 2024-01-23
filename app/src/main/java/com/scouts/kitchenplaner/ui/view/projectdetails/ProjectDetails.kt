@@ -16,48 +16,104 @@
 
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
+import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun ProjectDetails(
     projectID: Long,
     onNavigateToRecipeToCook: (Long) -> Unit,
-    onNavigateToRecipeCreation: () -> Unit
+    onNavigateToRecipeCreation: () -> Unit,
+    viewModel: ProjectDetailsViewModel = hiltViewModel()
 ) {
-    Column {
+    var projectInitialized by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = null) {
+        viewModel.getProject(projectID)
+        projectInitialized = true
+    }
+    if (projectInitialized) {
+        val project by viewModel.projectFlow.collectAsState()
 
-        Text(text = "This is the screen, where all information to one specific project are displayed displayed")
-        Text(text = "The projectID is $projectID", color = Color.Red)
-        Text(text = "available Links to other sides are: ")
-        var listID by remember { mutableStateOf(1f) }
+        Column {
+            Row (
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = project.name)
 
-        Row {
-            Text(text = "Recipe To Cook")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = listID,
-                onValueChange = { listID = it },
-                valueRange = 1f..20f,
-                steps = 5
-            )
-            Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
+                AsyncImage(
+                    modifier = Modifier
+                        .border(2.dp, MaterialTheme.colorScheme.primary)
+                        .height(180.dp)
+                        .aspectRatio(1.0f),
+                    model = project.projectImage,
+                    contentDescription = "Project image for project ${project.name}"
+                )
+            }
+
+            DisplayMealPlan(/*project.mealPlan*/)
+
+            Text(text = "This is the screen, where all information to one specific project are displayed displayed")
+            Text(text = "The projectID is $projectID", color = Color.Red)
+            Text(text = "available Links to other sides are: ")
+            var listID by remember { mutableStateOf(1f) }
+
+            Row {
+                Text(text = "Recipe To Cook")
+                Slider(
+                    modifier = Modifier.fillMaxWidth(0.3f),
+                    value = listID,
+                    onValueChange = { listID = it },
+                    valueRange = 1f..20f,
+                    steps = 5
+                )
+                Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
+            }
+            Row {
+                Text(text = "Create recipe screen")
+                Button(onClick = onNavigateToRecipeCreation) {}
+            }
         }
-        Row {
-            Text(text = "Create recipe screen")
-            Button(onClick = onNavigateToRecipeCreation) {}
-        }
+    } else {
+        Text(text = "Waiting for the project to be loaded.")
+    }
+}
 
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun ProjectDetailsPreview() {
+    KitchenPlanerTheme(dynamicColor = false) {
+        ProjectDetails(
+            projectID = 1,
+            onNavigateToRecipeToCook = {},
+            onNavigateToRecipeCreation = {})
     }
 }
