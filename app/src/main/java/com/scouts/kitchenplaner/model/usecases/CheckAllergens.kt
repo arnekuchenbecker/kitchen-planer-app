@@ -67,7 +67,7 @@ class CheckAllergens (
                 }.fold(AllergenMealCover.NOT_COVERED) { acc, newValue ->
                     if (acc == AllergenMealCover.NOT_COVERED) {
                         newValue
-                    } else if (acc == AllergenMealCover.UNKNOWN && newValue == AllergenMealCover.COVERED) {
+                    } else if (newValue == AllergenMealCover.COVERED) {
                         newValue
                     } else {
                         acc
@@ -94,9 +94,10 @@ class CheckAllergens (
                 } else if (acc == AllergenMealCover.NOT_COVERED) {
                     AllergenMealCover.NOT_COVERED
                 } else {
-                    if (newValue.traces && specialities.first { it.allergen == newValue.allergen }.type != DietaryTypes.FREE_OF) {
+                    val filteredSpecialities = specialities.filter { it.allergen == newValue.allergen }
+                    if (newValue.traces && filteredSpecialities.isNotEmpty() && filteredSpecialities.any { it.type != DietaryTypes.FREE_OF }) {
                         AllergenMealCover.NOT_COVERED
-                    } else if (specialities.first { it.allergen == newValue.allergen }.type == DietaryTypes.ALLERGEN) {
+                    } else if (filteredSpecialities.isNotEmpty() && filteredSpecialities.any { it.type == DietaryTypes.ALLERGEN }) {
                         AllergenMealCover.NOT_COVERED
                     } else {
                         acc
