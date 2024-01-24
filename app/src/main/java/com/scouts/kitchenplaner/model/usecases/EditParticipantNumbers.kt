@@ -18,25 +18,20 @@ package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.User
+import java.util.Date
 import javax.inject.Inject
 
-class CreateProject @Inject constructor(
+class EditParticipantNumbers @Inject constructor(
     private val projectRepository: ProjectRepository
 ) {
-    /**
-     * @return The project id of the newly created project or null if project wasn't a valid project.
-     */
-    suspend fun createProject(project: Project) : Long? {
-        /*
-        * TODO: Check that project is actually valid to be a new project, i.e:
-        *       - There shouldn't be any recipes added yet
-        *       - There shouldn't be any shopping lists created yet
-        * */
-        if (project.endDate.before(project.startDate)) {
-            return null
+    suspend fun setPersonNumberChange(project: Project, meal: String, date: Date, differenceBefore: Int) {
+        if (differenceBefore == 0) {
+            removePersonNumberChange(project, meal, date)
         }
-        val currentUser = User("Arne") // TODO - get current user from datastore
-        return projectRepository.insertProject(project, currentUser)
+        projectRepository.setPersonNumberChange(project.id, meal, date, differenceBefore)
+    }
+
+    suspend fun removePersonNumberChange(project: Project, meal: String, date: Date) {
+        projectRepository.removePersonNumberChange(project.id, meal, date)
     }
 }

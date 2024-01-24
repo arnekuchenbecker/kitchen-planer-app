@@ -14,18 +14,8 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
-
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
-)
+@RequiresOptIn("This should only be used inside the domain layer. Changes made might not be reflected to the UI automatically")
+@Retention(AnnotationRetention.BINARY)
+annotation class DomainLayerRestricted()

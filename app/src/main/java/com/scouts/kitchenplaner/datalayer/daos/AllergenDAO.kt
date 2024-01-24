@@ -21,8 +21,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenPersonIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import kotlinx.coroutines.flow.Flow
@@ -79,4 +81,11 @@ interface AllergenDAO {
             "WHERE allergens.name = :name " +
             "AND allergens.projectId = :projectId")
     suspend fun getAllergenCountByNameAndProjectId(name: String, projectId: Long) : Int
+
+    @Update
+    suspend fun updateAllergenPerson(entity: AllergenPersonEntity)
+
+    // Methods for archiving projects
+    @Delete(AllergenPersonEntity::class)
+    suspend fun deleteAllergenPersonsForProject(projectId: ProjectIdDTO)
 }

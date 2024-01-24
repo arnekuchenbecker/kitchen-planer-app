@@ -17,15 +17,22 @@
 package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Date
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = RecipeEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["recipe"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("recipe")]
+)
+data class DietarySpecialityEntity(
+    @PrimaryKey var recipe: Long,
+    val type: DietaryTypes,
+    val speciality: String
 )

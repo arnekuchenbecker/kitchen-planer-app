@@ -27,7 +27,8 @@ import androidx.room.Index
         ForeignKey(
             entity = ShoppingListEntity::class,
             parentColumns = ["id"],
-            childColumns = ["listId"]
+            childColumns = ["listId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [Index("listId")]
