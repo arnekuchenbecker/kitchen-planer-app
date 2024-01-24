@@ -17,7 +17,20 @@
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
 import androidx.compose.runtime.Composable
+import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
+import java.util.Date
+
+data class MealSlot(val meal: String, val date: Date)
+data class RecipeStub(val id: Long, val name: String)
 
 @Composable
-fun DisplayMealPlan (/*mealPlan: MealPlan*/) {
+fun DisplayMealPlan (mealSlots: List<MealSlot>, mealPlan: Map<MealSlot, Pair<Pair<RecipeStub, List<RecipeStub>>?, Int>>) {
+    val test =
+    LazyColumnWrapper(
+        content = mealSlots.mapNotNull { mealPlan[it] },
+        DisplayContent = { it, index ->
+
+        }) {
+
+    }
 }
