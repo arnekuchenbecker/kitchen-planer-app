@@ -17,19 +17,75 @@
 package com.scouts.kitchenplaner.model.entities
 
 import android.net.Uri
+import com.scouts.kitchenplaner.listDatesUntil
+import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import java.util.Date
 
-/**
- * NOT FINAL --> Adjust when stuff actually happens to projects
- */
 class Project(
-    val id: Long? = null,
-    val name: String = "",
-    val startDate: Date = Date(0),
-    val endDate: Date = Date(0),
-    val meals: List<String> = listOf(),
-    val allergenPersons: List<AllergenPerson> = listOf(),
-    val projectImage: Uri = Uri.EMPTY
+    private var _id: Long? = null,
+    private var _name: String = "",
+    initialStartDate: Date,
+    initialEndDate: Date,
+    private var _allergenPersons: List<AllergenPerson> = listOf(),
+    initialMeals: List<String> = listOf(),
+    private var _projectImage: Uri = Uri.EMPTY
 ){
+    private var _mealPlan = MealPlan(initialStartDate, initialEndDate, initialMeals)
+    val mealPlan: MealPlan
+        get() = _mealPlan
+    val id: Long
+        get() = _id ?: 0
 
+    val name: String
+        get() = _name
+
+    val startDate: Date
+        get() = _mealPlan.startDate
+
+    val endDate: Date
+        get() = _mealPlan.endDate
+
+    val meals: List<String>
+        get() = _mealPlan.meals
+
+    val allergenPersons: List<AllergenPerson>
+        get() = _allergenPersons
+
+    val projectImage: Uri
+        get() = _projectImage
+
+    val mealSlots: List<MealSlot>
+        get() = startDate.listDatesUntil(endDate).map { date ->
+            meals.map { MealSlot(date, it) }
+        }.flatten()
+
+    @DomainLayerRestricted
+    fun setID(id: Long) {
+        _id = id
+    }
+
+    @DomainLayerRestricted
+    fun setName(name: String) {
+        _name = name
+    }
+
+    @DomainLayerRestricted
+    fun setStartDate(startDate: Date) {
+        _mealPlan.setStartDate(startDate)
+    }
+
+    @DomainLayerRestricted
+    fun setEndDate(endDate: Date) {
+        _mealPlan.setEndDate(endDate)
+    }
+
+    @DomainLayerRestricted
+    fun setImageUri(uri: Uri) {
+        _projectImage = uri
+    }
+
+    @DomainLayerRestricted
+    fun setAllergenPersons(allergenPersons: List<AllergenPerson>) {
+        _allergenPersons = allergenPersons
+    }
 }

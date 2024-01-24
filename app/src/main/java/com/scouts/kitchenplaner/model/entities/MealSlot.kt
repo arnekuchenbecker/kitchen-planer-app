@@ -14,18 +14,17 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
-)
+data class MealSlot (
+    val date: Date,
+    val meal: String
+) {
+    fun before(other: MealSlot, meals: List<String>): Boolean {
+        return this.date.before(other.date) || (this.date == other.date && meals.indexOf(this.meal) <= meals.indexOf(
+            other.meal
+        ))
+    }
+}

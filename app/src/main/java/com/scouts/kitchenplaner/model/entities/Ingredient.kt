@@ -16,5 +16,11 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class Ingredient(val name: String, val amount: Float, val unit: String) {
+class Ingredient(val name: String, private var _amount: Float, val unit: String) {
+    val amount: Float
+        get() = _amount
+
+    fun setAmount(newAmount: Float) {
+        _amount = newAmount
+    }
 }

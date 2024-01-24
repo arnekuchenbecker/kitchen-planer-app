@@ -40,5 +40,8 @@ data class PersonNumberChangeEntity(
     val projectId: Long,
     val date: Date,
     val meal: String,
-    val difference: Int
+    /**
+     * differences are applied before the specified meal slot
+     */
+    val differenceBefore: Int
 )

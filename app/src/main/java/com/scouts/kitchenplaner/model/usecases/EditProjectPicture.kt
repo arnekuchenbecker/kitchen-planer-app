@@ -14,18 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.usecases
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+import android.net.Uri
+import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.model.entities.Project
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
-)
+class EditProjectPicture (
+    private val projectRepository: ProjectRepository
+) {
+    suspend fun setProjectPicture(project: Project, image: Uri) {
+        projectRepository.changeProjectPicture(project.id, image)
+    }
+}

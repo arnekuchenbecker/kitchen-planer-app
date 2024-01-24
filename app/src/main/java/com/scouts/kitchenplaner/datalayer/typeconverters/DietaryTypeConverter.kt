@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.typeconverters
 
 import androidx.room.TypeConverter
-import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
 
 class DietaryTypeConverter {
     @TypeConverter
