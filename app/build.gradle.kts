@@ -55,15 +55,16 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.compose.ui:ui:1.6.0-beta03")
-    implementation("androidx.compose.ui:ui-graphics:1.6.0-beta03")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.0-beta03")
-    implementation("androidx.compose.material3:material3-android:1.2.0-beta01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
-    implementation("androidx.compose.runtime:runtime-android:1.6.0-beta03")
+    implementation("androidx.compose.ui:ui:1.6.0-rc01")
+    implementation("androidx.compose.ui:ui-graphics:1.6.0-rc01")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.0-rc01")
+    implementation("androidx.compose.material3:material3-android:1.2.0-beta02")
+    implementation("androidx.compose.runtime:runtime-android:1.6.0-rc01")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
@@ -78,6 +79,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.4.2")
     testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("io.mockk:mockk:1.12.4")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.4.2")
 

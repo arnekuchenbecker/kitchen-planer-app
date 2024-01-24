@@ -56,20 +56,19 @@ class CreateProjectViewModel @Inject constructor(
             }
 
             if (inputState.allergens.any {
-                    it.arrivalDateMillis == null || it.departureDateMillis == null
-                            || it.departureMeal == "" || it.arrivalMeal == ""
+                    it.arrivalDateMillis == null || it.departureDateMillis == null || it.departureMeal == "" || it.arrivalMeal == ""
                 }) {
                 return@launch
             }
 
             val project = Project(
-                name = inputState.name,
-                startDate = startDate,
-                endDate = endDate,
-                meals = mutableListOf<String>().apply {
+                _name = inputState.name,
+                initialStartDate = startDate,
+                initialEndDate = endDate,
+                initialMeals = mutableListOf<String>().apply {
                     addAll(inputState.meals)
                 },
-                allergenPersons = mutableListOf<AllergenPerson>().apply {
+                _allergenPersons = mutableListOf<AllergenPerson>().apply {
                     addAll(inputState.allergens.map { person ->
                         AllergenPerson(
                             name = person.name,
@@ -83,7 +82,7 @@ class CreateProjectViewModel @Inject constructor(
                         )
                     })
                 },
-                projectImage = inputState.image ?: Uri.EMPTY
+                _projectImage = inputState.image ?: Uri.EMPTY
             )
 
             val projectId = createProject.createProject(project)

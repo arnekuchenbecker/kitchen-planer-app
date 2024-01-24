@@ -19,32 +19,31 @@ package com.scouts.kitchenplaner.datalayer
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
-import com.scouts.kitchenplaner.datalayer.entities.DietarySpeciality
-import com.scouts.kitchenplaner.datalayer.entities.DietaryTypes
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.IngredientGroupEntity
-import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
-import com.scouts.kitchenplaner.datalayer.entities.MealEntity
-import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
-import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.model.entities.DietarySpeciality
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ProjectMetaData
+import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.ShoppingList
 
 fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
-        id = (id ?: 0),
+        id = id,
         name = name,
         startDate = startDate,
         endDate = endDate,
-        imageUri = projectImage.path ?: ""
+        imageUri = projectImage.toString(),
+        isArchived = false
     )
 }
 
@@ -61,45 +60,30 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntit
     })
 }
 
-fun ProjectEntity.toModelEntity(
-    meals: List<MealEntity>,
-    allergenPersons: List<AllergenPersonEntity>,
-    allergens: List<AllergenEntity>,
-    personNumbers: List<PersonNumberChangeEntity> //TODO when available in DomainLayer
-): Project {
-    return Project(
-        id = id,
-        name = name,
-        startDate = startDate,
-        endDate = endDate,
-        meals = meals.map { it.name },
-        allergenPersons = allergenPersons.map { person ->
-            AllergenPerson(
-                name = person.name,
-                arrivalDate = person.arrivalDate,
-                arrivalMeal = person.arrivalMeal,
-                departureDate = person.departureDate,
-                departureMeal = person.departureMeal,
-                allergens = allergens
-                    .filter { it.name == person.name }
-                    .map { Allergen(it.allergen, it.traces) }
-            )
-        }
-    )
+fun ProjectEntity.toModelEntity(): ProjectMetaData {
+    return ProjectMetaData(ProjectStub(name, id, Uri.parse(imageUri)), startDate, endDate)
 }
 
 fun Allergen.toDataLayerEntity(projectId: Long, name: String): AllergenEntity {
     return AllergenEntity(projectId, name, allergen, traces)
 }
 
-fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
+fun AllergenPersonEntity.toModelEntity(allergens: List<AllergenEntity>): AllergenPerson {
+    return AllergenPerson(
+        name, allergens.map {
+            Allergen(it.allergen, it.traces)
+        }, arrivalDate, arrivalMeal, departureDate, departureMeal
+    )
+}
 
-    val speciality: MutableList<DietarySpeciality> = mutableListOf()
+fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpecialityEntity>> {
+
+    val speciality: MutableList<DietarySpecialityEntity> = mutableListOf()
     speciality.addAll(allergens.map {
-        DietarySpeciality(id, DietaryTypes.ALLERGEN, it)
+        DietarySpecialityEntity(id, DietaryTypes.ALLERGEN, it)
     })
-    speciality.addAll(traces.map { DietarySpeciality(id, DietaryTypes.TRACE, it) })
-    speciality.addAll(freeOfAllergen.map { DietarySpeciality(id, DietaryTypes.FREE_OF, it) })
+    speciality.addAll(traces.map { DietarySpecialityEntity(id, DietaryTypes.TRACE, it) })
+    speciality.addAll(freeOfAllergen.map { DietarySpecialityEntity(id, DietaryTypes.FREE_OF, it) })
     return Pair(
         RecipeEntity(
             id = id,
@@ -111,63 +95,26 @@ fun Recipe.toDataLayerEntity(): Pair<RecipeEntity, List<DietarySpeciality>> {
     )
 }
 
-fun IngredientGroup.toDataLayerEntity(recipeID: Long): Pair<IngredientGroupEntity, List<IngredientEntity>> {
-    return Pair(
-        IngredientGroupEntity(name = name, recipeID),
-        ingredients.map {
-            IngredientEntity(
-                recipe = recipeID,
-                ingredientGroup = name,
-                name = it.name,
-                unit = it.unit,
-                amount = it.amount
-            )
-        }
-    )
+fun IngredientGroup.toDataLayerEntity(recipeID: Long): List<IngredientEntity> {
+    return ingredients.map {
+        IngredientEntity(
+            recipe = recipeID,
+            ingredientGroup = name,
+            name = it.name,
+            unit = it.unit,
+            amount = it.amount
+        )
+    }
 }
 
 fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
-    return Pair(
-        ShoppingListEntity(
-            id = id ?: 0,
-            name = name,
-            projectId = projectId
-        ),
-        items.map {
-            ShoppingListEntryEntity(id ?: 0, projectId, it.name, it.amount, it.unit)
-        }
-    )
+    return Pair(ShoppingListEntity(
+        id = id ?: 0, name = name, projectId = projectId
+    ), items.map {
+        ShoppingListEntryEntity(id ?: 0, it.name, it.amount, it.unit)
+    })
 }
 
-fun RecipeEntity.toModelEntity(
-    ingredients: List<IngredientEntity>,
-    dietarySpeciality: List<DietarySpeciality>,
-    instruction: List<InstructionEntity>
-): Recipe {
-    val ingredientGroups = ingredients.groupBy { it.ingredientGroup }.mapValues { (_, value) ->
-        value.map { ing ->
-            Ingredient(
-                name = ing.name,
-                amount = ing.amount,
-                unit = ing.unit
-            )
-        }
-    }.map { (key, value) -> IngredientGroup(name = key, ingredients = value) }
-
-    val dietaries = dietarySpeciality.groupBy { it.type }
-        .mapValues { (_, value) -> value.map { speciality -> speciality.speciality } }
-
-    return Recipe(
-        id = id,
-        name = title,
-        imageURI = Uri.parse(imageURI),
-        description = description,
-        numberOfPeople = numberOfPeople,
-        traces = dietaries[DietaryTypes.TRACE] ?: listOf(),
-        allergens = dietaries[DietaryTypes.ALLERGEN] ?: listOf(),
-        freeOfAllergen = dietaries[DietaryTypes.FREE_OF] ?: listOf(),
-        instructions = instruction.sortedBy { it.order }.map { it.instruction },
-        ingredientGroups = ingredientGroups,
-    )
-
+fun DietarySpecialityEntity.toModelEntity(): DietarySpeciality {
+    return DietarySpeciality(speciality, type)
 }

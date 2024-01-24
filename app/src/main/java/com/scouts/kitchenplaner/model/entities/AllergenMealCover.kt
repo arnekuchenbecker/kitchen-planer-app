@@ -14,18 +14,22 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+enum class AllergenMealCover {
+    /**
+     * A meal has a recipe which is free of the combination of allergens
+     */
+    COVERED,
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
-)
+    /**
+     * A meal has no recipe which is free of the combination of allergens
+     */
+    NOT_COVERED,
+
+    /**
+     * A meal has neither a recipe which is free of the combination of allergens nor do all recipes
+     * contain at least one of the allergens
+     */
+    UNKNOWN
+}

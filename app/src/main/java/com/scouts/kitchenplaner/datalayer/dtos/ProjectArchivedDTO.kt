@@ -14,10 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-enum class DietaryTypes {
-    FREE_OF,
-    TRACE,
-    ALLERGEN
-}
+data class ProjectArchivedDTO (
+    val id: Long,
+    val isArchived: Boolean
+)

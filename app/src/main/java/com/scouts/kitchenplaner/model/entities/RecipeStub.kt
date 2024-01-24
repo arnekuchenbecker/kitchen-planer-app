@@ -14,23 +14,13 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
+import android.net.Uri
 
-@Entity(
-    primaryKeys = ["name", "recipe"],
-    foreignKeys = [ForeignKey(
-        entity = RecipeEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["recipe"],
-        onDelete = ForeignKey.CASCADE
-    )],
-    indices = [Index("recipe")]
-)
-data class IngredientGroupEntity(
-    val name: String,
-    var recipe: Long
-)
+class RecipeStub (
+    val id: Long? = 0,
+    val name: String = "",
+    val imageURI: Uri
+) {
+}
