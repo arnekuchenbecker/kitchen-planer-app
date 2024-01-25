@@ -17,11 +17,13 @@
 package com.scouts.kitchenplaner.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.model.usecases.RecipeSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeSelectionViewModel @Inject constructor(private val recipes = RecipeSelection) :
-    ViewModel {
+class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
+    ViewModel() {
+        val recipes = recipeSelection.getAllRecipeStubs();
 
 }
