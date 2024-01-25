@@ -16,33 +16,18 @@
 
 package com.scouts.kitchenplaner.ui.view.projectoverview
 
-import android.net.Uri
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.HideImage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.ui.view.OverviewField
 
 @Composable
 fun ProjectField(
@@ -52,8 +37,8 @@ fun ProjectField(
     toggleSelection: (Long, Boolean) -> Unit,
     archive: Boolean
 ) {
-    Box(modifier = Modifier
-        .clickable {
+    OverviewField(
+        onClick = {
             if (!archive) {
                 onNavigateToDetailedProject(
                     project.id
@@ -61,61 +46,96 @@ fun ProjectField(
             } else {
                 toggleSelection(project.id, !selected)
             }
-        }
-        .fillMaxWidth()
-        .padding(5.dp)
-        .border(
-            width = 2.dp,
-            color = MaterialTheme.colorScheme.primary,
-            shape = RoundedCornerShape(6.dp)
-        )
-        .height(75.dp)
-
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(start = 5.dp, end = 15.dp)
-        ) {
-            if (project.imageUri == Uri.EMPTY) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxHeight(0.9f)
-                        .aspectRatio(1.0f)
-                        .padding(start = 5.dp),
-                    imageVector = Icons.Filled.HideImage,
-                    contentDescription = "Projektplatzhalter"
-                )
-            } else {
-                AsyncImage(
-                    model = project.imageUri,
-                    contentDescription = "Project Image",
-                    modifier = Modifier
-                        .fillMaxHeight(0.85f)
-                        .aspectRatio(1.0f)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-            Text(
-                modifier = Modifier.padding(10.dp),
-                text = project.name,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+        },
+        text = project.name,
+        imageUri = project.imageUri,
+        imageDescription = "Project Image",
+        additional =
+        {
             if (archive && selected) {
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = "zu löschendes projekt",
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .fillMaxHeight(0.7f)
-                        .aspectRatio(1.0f)
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "zu löschendes projekt",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .fillMaxHeight(0.7f)
+                            .aspectRatio(1.0f)
 
-                )
+                    )
+                }
+
             }
         }
+    )
 
-    }
+
+    /*
+        Box(modifier = Modifier
+            .clickable {
+                if (!archive) {
+                    onNavigateToDetailedProject(
+                        project.id
+                    )
+                } else {
+                    toggleSelection(project.id, !selected)
+                }
+            }
+            .fillMaxWidth()
+            .padding(5.dp)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .height(75.dp)
+
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(start = 5.dp, end = 15.dp)
+            ) {
+                if (project.imageUri == Uri.EMPTY) {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxHeight(0.9f)
+                            .aspectRatio(1.0f)
+                            .padding(start = 5.dp),
+                        imageVector = Icons.Filled.HideImage,
+                        contentDescription = "Projektplatzhalter"
+                    )
+                } else {
+                    AsyncImage(
+                        model = project.imageUri,
+                        contentDescription = "Project Image",
+                        modifier = Modifier
+                            .fillMaxHeight(0.85f)
+                            .aspectRatio(1.0f)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(10.dp),
+                    text = project.name,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                if (archive && selected) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "zu löschendes projekt",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .fillMaxHeight(0.7f)
+                            .aspectRatio(1.0f)
+
+                    )
+                }
+            }
+
+        } */
 }

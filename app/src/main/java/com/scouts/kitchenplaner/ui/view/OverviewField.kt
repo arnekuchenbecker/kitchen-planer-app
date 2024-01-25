@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui
+package com.scouts.kitchenplaner.ui.view
 
 import android.net.Uri
 import androidx.compose.foundation.border
