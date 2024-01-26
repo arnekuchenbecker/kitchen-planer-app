@@ -20,6 +20,7 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
@@ -28,15 +29,17 @@ import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
     private val recipeDAO: RecipeDAO
 ) {
-    fun getRecipeStubsByProjectId(id: Long) : Flow<List<RecipeStub>> {
+    fun getRecipeStubsByProjectId(id: Long): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesByProjectId(id).map {
             it.map { recipe ->
                 RecipeStub(recipe.id, recipe.title, Uri.parse(recipe.imageURI))
@@ -44,13 +47,17 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeById(id: Long) : Flow<Recipe> {
+    fun getRecipeById(id: Long, user: String): Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
         val dietaryFlow = recipeDAO.getAllergensByRecipeId(id)
-
-        return combine(recipeFlow, ingredientFlow, instructionsFlow, dietaryFlow) { recipe, ingredients, instructions, dietaries ->
+        return combine(
+            recipeFlow,
+            ingredientFlow,
+            instructionsFlow,
+            dietaryFlow
+        ) { recipe, ingredients, instructions, dietaries ->
             val groups = ingredients.groupBy { it.ingredientGroup }.map { (name, ingredients) ->
                 IngredientGroup(name, ingredients.map { ingredient ->
                     Ingredient(ingredient.name, ingredient.amount, ingredient.unit)
@@ -97,11 +104,15 @@ class RecipeRepository @Inject constructor(
 
     }
 
-    fun getAllergensForRecipe(id: Long) : Flow<List<DietarySpeciality>> {
+    fun getAllergensForRecipe(id: Long): Flow<List<DietarySpeciality>> {
         return recipeDAO.getAllergensByRecipeId(id).map {
             it.map { entity ->
                 entity.toModelEntity()
             }
         }
+    }
+
+    suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
+        recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))
     }
 }
