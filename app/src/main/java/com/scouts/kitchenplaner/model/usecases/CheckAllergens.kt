@@ -31,8 +31,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CheckAllergens (
+class CheckAllergens @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
     @OptIn(DomainLayerRestricted::class, ExperimentalCoroutinesApi::class)
