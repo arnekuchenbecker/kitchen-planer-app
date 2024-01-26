@@ -16,6 +16,8 @@
 
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -32,20 +35,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.scouts.kitchenplaner.model.entities.AllergenCheck
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun ProjectDetails(
     projectID: Long,
@@ -60,13 +72,26 @@ fun ProjectDetails(
     }
     if (projectInitialized) {
         val project by viewModel.projectFlow.collectAsState()
+        val allergenChecks = remember { mutableStateMapOf<MealSlot, StateFlow<AllergenCheck>>() }
 
         Column {
             Row (
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = project.name)
+                Text(
+                    text = project.name,
+                    fontSize = 8.em,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp)
+                        .basicMarquee(
+                            iterations = Int.MAX_VALUE,
+                            delayMillis = 3000
+                        ),
+                    maxLines = 1
+                )
 
                 AsyncImage(
                     modifier = Modifier
@@ -74,11 +99,19 @@ fun ProjectDetails(
                         .height(180.dp)
                         .aspectRatio(1.0f),
                     model = project.projectImage,
+                    contentScale = ContentScale.Crop,
                     contentDescription = "Project image for project ${project.name}"
                 )
             }
 
-            DisplayMealPlan(/*project.mealPlan*/)
+            DisplayMealPlan(mealSlots = project.mealSlots, mealPlan = project.mealPlan, getAllergenCheck = { slot ->
+                if (!allergenChecks.containsKey(slot)) {
+                    allergenChecks[slot] = viewModel.getAllergenCheck(slot)
+                }
+                allergenChecks[slot]!!
+            }, onSwap = { first, second ->
+                viewModel.swapMeals(project, first, second)
+            })
 
             Text(text = "This is the screen, where all information to one specific project are displayed displayed")
             Text(text = "The projectID is $projectID", color = Color.Red)
