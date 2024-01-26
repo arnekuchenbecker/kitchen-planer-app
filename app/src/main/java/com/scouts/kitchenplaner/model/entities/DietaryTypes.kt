@@ -14,22 +14,10 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-
-@Entity(
-    foreignKeys = [ForeignKey(
-        entity = RecipeEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["recipe"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class DietarySpeciality(
-    @PrimaryKey var recipe: Long,
-    val type: DietaryTypes,
-    val speciality: String
-)
+enum class DietaryTypes {
+    FREE_OF,
+    TRACE,
+    ALLERGEN
+}
