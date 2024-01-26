@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import java.util.Date
 
 @Entity(
     tableName = "userprojects",
@@ -42,5 +43,6 @@ import androidx.room.Index
 )
 data class UserProjectEntity(
     val projectId: Long,
-    val username: String
+    val username: String,
+    val lastShown: Date
 )

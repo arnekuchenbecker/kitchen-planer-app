@@ -18,12 +18,14 @@ package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -69,33 +71,41 @@ interface RecipeDAO {
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
-    fun getRecipeById(id: Long) : Flow<RecipeEntity>
+    fun getRecipeById(id: Long): Flow<RecipeEntity>
 
     @Query("SELECT * FROM ingrediententity WHERE recipe = :id")
-    fun getIngredientsByRecipeId(id: Long) : Flow<List<IngredientEntity>>
+    fun getIngredientsByRecipeId(id: Long): Flow<List<IngredientEntity>>
 
     @Query("SELECT * FROM instructionentity WHERE recipe = :id ORDER BY `order`")
-    fun getInstructionsByRecipeId(id: Long) : Flow<List<InstructionEntity>>
+    fun getInstructionsByRecipeId(id: Long): Flow<List<InstructionEntity>>
 
-    @Query("SELECT recipeEntity.id AS id, " +
-            "recipeEntity.title AS title, " +
-            "recipeEntity.imageUri AS imageURI, " +
-            "recipeEntity.description AS description, " +
-            "recipeEntity.numberOfPeople AS numberOfPeople " +
-            "FROM recipeEntity JOIN recipeProjectMeal " +
-            "WHERE projectId = :projectId " +
-            "UNION SELECT recipeEntity.id AS id, " +
-            "recipeEntity.title AS title, " +
-            "recipeEntity.imageUri AS imageURI, " +
-            "recipeEntity.description AS description, " +
-            "recipeEntity.numberOfPeople AS numberOfPeople " +
-            "FROM recipeEntity JOIN alternativeRecipeProjectMeal " +
-            "WHERE projectId = :projectId")
-    fun getRecipesByProjectId(projectId: Long) : Flow<List<RecipeEntity>>
+    @Query(
+        "SELECT recipeEntity.id AS id, " +
+                "recipeEntity.title AS title, " +
+                "recipeEntity.imageUri AS imageURI, " +
+                "recipeEntity.description AS description, " +
+                "recipeEntity.numberOfPeople AS numberOfPeople " +
+                "FROM recipeEntity JOIN recipeProjectMeal " +
+                "WHERE projectId = :projectId " +
+                "UNION SELECT recipeEntity.id AS id, " +
+                "recipeEntity.title AS title, " +
+                "recipeEntity.imageUri AS imageURI, " +
+                "recipeEntity.description AS description, " +
+                "recipeEntity.numberOfPeople AS numberOfPeople " +
+                "FROM recipeEntity JOIN alternativeRecipeProjectMeal " +
+                "WHERE projectId = :projectId"
+    )
+    fun getRecipesByProjectId(projectId: Long): Flow<List<RecipeEntity>>
 
     @Query("SELECT * FROM dietaryspecialityentity WHERE recipe = :id")
-    fun getAllergensByRecipeId(id: Long) : Flow<List<DietarySpecialityEntity>>
+    fun getAllergensByRecipeId(id: Long): Flow<List<DietarySpecialityEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserRecipeUse(entity: UserRecipeEntity): Long
+
+    @Query("SELECT * FROM userRecipe WHERE user = :user ORDER BY lastShown DESC LIMIT :limit")
+    fun getThreeLatestRecipesForUser(user: String, limit: Int): List<UserRecipeEntity>
 }

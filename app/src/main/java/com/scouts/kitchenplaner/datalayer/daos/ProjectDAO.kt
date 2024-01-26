@@ -42,7 +42,7 @@ interface ProjectDAO {
     suspend fun createProject(
         project: ProjectEntity,
         meals: List<MealEntity>
-    ) : Long {
+    ): Long {
         val rowId = insertProject(project)
         val projectId = getProjectIdByRowId(rowId)
 
@@ -55,55 +55,63 @@ interface ProjectDAO {
     }
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertProject(entity: ProjectEntity) : Long
+    suspend fun insertProject(entity: ProjectEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertMealEntity(entity: MealEntity) : Long
+    suspend fun insertMealEntity(entity: MealEntity): Long
 
-    @Query("UPDATE meals " +
-            "SET `order` = `order` + 1 " +
-            "WHERE projectId = :projectId " +
-            "AND `order` >= :index")
+    @Query(
+        "UPDATE meals " +
+                "SET `order` = `order` + 1 " +
+                "WHERE projectId = :projectId " +
+                "AND `order` >= :index"
+    )
     suspend fun increaseMealOrder(projectId: Long, index: Int)
 
-    @Query("UPDATE meals " +
-            "SET `order` = `order` - 1 " +
-            "WHERE projectId = :projectId " +
-            "AND `order` >= :index")
+    @Query(
+        "UPDATE meals " +
+                "SET `order` = `order` - 1 " +
+                "WHERE projectId = :projectId " +
+                "AND `order` >= :index"
+    )
     suspend fun decreaseMealOrder(projectId: Long, index: Int)
 
     @Delete(MealEntity::class)
     suspend fun deleteMeal(meal: MealIdentifierDTO)
 
     @Query("SELECT `order` FROM meals WHERE projectId = :projectId AND name = :name")
-    suspend fun getMealOrder(projectId: Long, name: String) : Int
+    suspend fun getMealOrder(projectId: Long, name: String): Int
 
     @Query("SELECT * FROM projects WHERE projects.id = :id")
-    fun getProjectById(id: Long) : Flow<ProjectEntity>
+    fun getProjectById(id: Long): Flow<ProjectEntity>
 
     @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
-    fun getMealsByProjectID(id: Long) : Flow<List<String>>
+    fun getMealsByProjectID(id: Long): Flow<List<String>>
 
     @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
-    fun getPersonNumberChangesByProjectID(id: Long) : Flow<List<PersonNumberChangeEntity>>
+    fun getPersonNumberChangesByProjectID(id: Long): Flow<List<PersonNumberChangeEntity>>
 
     @Query("SELECT id FROM projects WHERE rowId = :rowId")
-    suspend fun getProjectIdByRowId(rowId: Long) : Long
+    suspend fun getProjectIdByRowId(rowId: Long): Long
 
-    @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
-            "FROM projects INNER JOIN userprojects ON projects.id = userprojects.projectId " +
-            "WHERE userprojects.username = :username AND projects.isArchived = 0")
-    fun getProjectsForUser(username: String) : Flow<List<ProjectStubDTO>>
+    @Query(
+        "SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
+                "FROM projects INNER JOIN userprojects ON projects.id = userprojects.projectId " +
+                "WHERE userprojects.username = :username AND projects.isArchived = 0"
+    )
+    fun getProjectsForUser(username: String): Flow<List<ProjectStubDTO>>
 
-    @Query("SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
-            "FROM projects")
-    fun getAllProjectStubs() : Flow<List<ProjectStubDTO>>
+    @Query(
+        "SELECT projects.name AS name, projects.id AS id, projects.imageUri AS imageUri " +
+                "FROM projects"
+    )
+    fun getAllProjectStubs(): Flow<List<ProjectStubDTO>>
 
     @Query("SELECT * FROM projects WHERE name = :projectName")
-    suspend fun getProjectByProjectName(projectName: String) : ProjectEntity
+    suspend fun getProjectByProjectName(projectName: String): ProjectEntity
 
     @Query("SELECT EXISTS(SELECT 1 FROM users WHERE username = :username)")
-    suspend fun getExistsUserByName(username: String) : Int
+    suspend fun getExistsUserByName(username: String): Int
 
     @Insert
     suspend fun insertUser(user: UserEntity)
@@ -122,6 +130,12 @@ interface ProjectDAO {
 
     @Delete
     suspend fun removeUserFromProject(user: UserProjectEntity)
+
+    @Update
+    suspend fun updateLastShownProjectForUser(entity: UserProjectEntity)
+
+    @Query("SELECT * FROM userprojects WHERE username = :user ORDER BY lastShown DESC LIMIT :limit")
+    suspend fun getLatestShownProjectsForUser(user: String, limit: Int): List<UserProjectEntity>
 
     // Methods for archiving projects
 
