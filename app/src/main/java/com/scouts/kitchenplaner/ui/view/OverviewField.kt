@@ -45,10 +45,10 @@ import coil.compose.AsyncImage
 @Composable
 fun OverviewField(
     onClick: () -> Unit = {},
-    imageUri: Uri? = Uri.EMPTY,
+    imageUri: Uri = Uri.EMPTY,
     imageDescription: String = "",
     text: String,
-    additional: @Composable () -> Unit = {}
+    additionalContent: @Composable () -> Unit = {}
 ) {
     Box(modifier = Modifier
         .clickable { onClick() }
@@ -92,7 +92,7 @@ fun OverviewField(
                 text = text,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-            additional()
+            additionalContent()
         }
     }
 }
@@ -101,7 +101,7 @@ fun OverviewField(
 @Preview(showBackground = true)
 @Composable
 fun prevOverviewField() {
-    OverviewField(text = "Test", additional = {
+    OverviewField(text = "Test", additionalContent = {
         Icon(
             imageVector = Icons.Filled.HideImage, contentDescription = "Projektplatzhalter"
         )

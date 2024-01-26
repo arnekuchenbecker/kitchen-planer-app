@@ -49,7 +49,7 @@ fun ProjectField(
         text = project.name,
         imageUri = project.imageUri,
         imageDescription = "Project Image",
-        additional = {
+        additionalContent = {
             if (archive && selected) {
                 Row {
                     Spacer(modifier = Modifier.weight(1f))

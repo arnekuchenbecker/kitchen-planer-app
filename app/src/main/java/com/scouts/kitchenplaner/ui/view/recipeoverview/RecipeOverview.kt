@@ -22,14 +22,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,8 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.view.Header
-import com.scouts.kitchenplaner.ui.view.OverviewField
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
+import com.scouts.kitchenplaner.ui.view.OverviewField
 import com.scouts.kitchenplaner.ui.viewmodel.RecipeSelectionViewModel
 
 @Composable
@@ -63,19 +60,20 @@ fun RecipeOverview(
             })
     }) {
         Box(modifier = Modifier.padding(it)) {
-            LazyColumnWrapper(content = recipes, DisplayContent = { stub, _ ->
-                OverviewField(text = stub.name,
-                    imageUri = stub.imageURI,
-                    imageDescription = "Rezept bild",
-                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
-            }, DisplayLast = { stub, _ ->
-                OverviewField(text = stub.name,
-                    imageUri = stub.imageURI,
-                    imageDescription = "Rezept bild",
-                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
-                //To allow scrolling stuff from behind the FAB
-                Spacer(modifier = Modifier.height(75.dp))
-            }, DisplayEmpty = { Text("Keine Rezepte") })
+            LazyColumnWrapper(modifier = Modifier.padding(10.dp),
+                content = recipes, DisplayContent = { stub, _ ->
+                    OverviewField(text = stub.name,
+                        imageUri = stub.imageURI,
+                        imageDescription = "Rezept bild",
+                        onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
+                }, DisplayLast = { stub, _ ->
+                    OverviewField(text = stub.name,
+                        imageUri = stub.imageURI,
+                        imageDescription = "Rezept bild",
+                        onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
+                    //To allow scrolling stuff from behind the FAB
+                    Spacer(modifier = Modifier.height(75.dp))
+                }, DisplayEmpty = { Text("Keine Rezepte") })
         }
     }
 }
