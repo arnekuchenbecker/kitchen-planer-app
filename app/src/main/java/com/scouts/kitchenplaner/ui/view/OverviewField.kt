@@ -48,7 +48,7 @@ fun OverviewField(
     imageUri: Uri? = Uri.EMPTY,
     imageDescription: String = "",
     text: String,
-    additional: @Composable() () -> Unit = {}
+    additional: @Composable () -> Unit = {}
 ) {
     Box(modifier = Modifier
         .clickable { onClick() }
@@ -102,8 +102,10 @@ fun OverviewField(
 @Composable
 fun prevOverviewField() {
     OverviewField(text = "Test",
-        additional = { Icon(
-            imageVector = Icons.Filled.HideImage,
-            contentDescription = "Projektplatzhalter"
-        ) })
+        additional = {
+            Icon(
+                imageVector = Icons.Filled.HideImage,
+                contentDescription = "Projektplatzhalter"
+            )
+        })
 }

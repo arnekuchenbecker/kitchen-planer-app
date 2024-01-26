@@ -36,11 +36,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.view.Header
 import com.scouts.kitchenplaner.ui.view.OverviewField
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.viewmodel.RecipeSelectionViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeOverview(
     onNavigationCreateRecipe: () -> Unit,
@@ -50,10 +50,7 @@ fun RecipeOverview(
     val recipes by viewModel.recipes.collectAsState(initial = listOf())
     Scaffold(
         topBar = {
-            TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ), title = { Text("Rezepte") })
+            Header("Rezepte")
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
