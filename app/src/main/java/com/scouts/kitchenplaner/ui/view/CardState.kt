@@ -16,9 +16,15 @@
 
 package com.scouts.kitchenplaner.ui.view
 
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 data class CardState(val title: String,
+                     val titleInteractions: @Composable () -> Unit = {},
                      val onDelete: () -> Unit,
                      val toBeDeleted: Boolean,
-                     val content: @Composable () -> Unit)
+                     val contentModifier: Modifier = Modifier.heightIn(max = 100.dp),
+                     val content: @Composable () -> Unit
+)

@@ -44,7 +44,7 @@ fun AllergenCard(name: String, allergens: List<Pair<String, Boolean>>, onTitleCl
         expanded = expand,
         onCardArrowClick = { expand = !expand },
         onTitleClick = onTitleClick,
-        cardState = CardState("$name (${allergens.size} EBs)", onDelete, toBeDeleted) {
+        cardState = CardState(title = "$name (${allergens.size} EBs)", onDelete = onDelete, toBeDeleted = toBeDeleted) {
             LazyColumn {
                 items(allergens) { (allergen, traces) ->
                     var itemToBeDeleted by remember { mutableStateOf(false) }
