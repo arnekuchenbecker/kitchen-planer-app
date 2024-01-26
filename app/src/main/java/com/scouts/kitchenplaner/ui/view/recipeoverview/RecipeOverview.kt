@@ -48,45 +48,34 @@ fun RecipeOverview(
     viewModel: RecipeSelectionViewModel = hiltViewModel()
 ) {
     val recipes by viewModel.recipes.collectAsState(initial = listOf())
-    Scaffold(
-        topBar = {
-            Header("Rezepte")
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onNavigationCreateRecipe,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                text = { Text("neues Rezept") },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "neues Rezept erstellen"
-                    )
-                }
-            )
-        }
-    ) {
+    Scaffold(topBar = {
+        Header("Rezepte")
+    }, floatingActionButton = {
+        ExtendedFloatingActionButton(onClick = onNavigationCreateRecipe,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            text = { Text("neues Rezept") },
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "neues Rezept erstellen"
+                )
+            })
+    }) {
         Box(modifier = Modifier.padding(it)) {
             LazyColumnWrapper(content = recipes, DisplayContent = { stub, _ ->
-                OverviewField(
-                    text = stub.name,
+                OverviewField(text = stub.name,
                     imageUri = stub.imageURI,
                     imageDescription = "Rezept bild",
-                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) }
-                )
+                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
             }, DisplayLast = { stub, _ ->
-                OverviewField(
-                    text = stub.name,
+                OverviewField(text = stub.name,
                     imageUri = stub.imageURI,
                     imageDescription = "Rezept bild",
-                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) }
-                )
+                    onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
                 //To allow scrolling stuff from behind the FAB
                 Spacer(modifier = Modifier.height(75.dp))
             }, DisplayEmpty = { Text("Keine Rezepte") })
         }
-
-
     }
 }

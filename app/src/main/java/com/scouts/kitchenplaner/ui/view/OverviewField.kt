@@ -101,11 +101,9 @@ fun OverviewField(
 @Preview(showBackground = true)
 @Composable
 fun prevOverviewField() {
-    OverviewField(text = "Test",
-        additional = {
-            Icon(
-                imageVector = Icons.Filled.HideImage,
-                contentDescription = "Projektplatzhalter"
-            )
-        })
+    OverviewField(text = "Test", additional = {
+        Icon(
+            imageVector = Icons.Filled.HideImage, contentDescription = "Projektplatzhalter"
+        )
+    })
 }

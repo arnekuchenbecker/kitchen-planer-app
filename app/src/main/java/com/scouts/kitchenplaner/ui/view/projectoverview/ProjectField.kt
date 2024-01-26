@@ -37,21 +37,19 @@ fun ProjectField(
     toggleSelection: (Long, Boolean) -> Unit,
     archive: Boolean
 ) {
-    OverviewField(
-        onClick = {
-            if (!archive) {
-                onNavigateToDetailedProject(
-                    project.id
-                )
-            } else {
-                toggleSelection(project.id, !selected)
-            }
-        },
+    OverviewField(onClick = {
+        if (!archive) {
+            onNavigateToDetailedProject(
+                project.id
+            )
+        } else {
+            toggleSelection(project.id, !selected)
+        }
+    },
         text = project.name,
         imageUri = project.imageUri,
         imageDescription = "Project Image",
-        additional =
-        {
+        additional = {
             if (archive && selected) {
                 Row {
                     Spacer(modifier = Modifier.weight(1f))
@@ -67,75 +65,5 @@ fun ProjectField(
                 }
 
             }
-        }
-    )
-
-
-    /*
-        Box(modifier = Modifier
-            .clickable {
-                if (!archive) {
-                    onNavigateToDetailedProject(
-                        project.id
-                    )
-                } else {
-                    toggleSelection(project.id, !selected)
-                }
-            }
-            .fillMaxWidth()
-            .padding(5.dp)
-            .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(6.dp)
-            )
-            .height(75.dp)
-
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(start = 5.dp, end = 15.dp)
-            ) {
-                if (project.imageUri == Uri.EMPTY) {
-                    Icon(
-                        modifier = Modifier
-                            .fillMaxHeight(0.9f)
-                            .aspectRatio(1.0f)
-                            .padding(start = 5.dp),
-                        imageVector = Icons.Filled.HideImage,
-                        contentDescription = "Projektplatzhalter"
-                    )
-                } else {
-                    AsyncImage(
-                        model = project.imageUri,
-                        contentDescription = "Project Image",
-                        modifier = Modifier
-                            .fillMaxHeight(0.85f)
-                            .aspectRatio(1.0f)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
-                Text(
-                    modifier = Modifier.padding(10.dp),
-                    text = project.name,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-                if (archive && selected) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "zu löschendes projekt",
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .fillMaxHeight(0.7f)
-                            .aspectRatio(1.0f)
-
-                    )
-                }
-            }
-
-        } */
+        })
 }
