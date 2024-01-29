@@ -66,7 +66,7 @@ fun ProjectDetails(
     viewModel: ProjectDetailsViewModel = hiltViewModel()
 ) {
     var projectInitialized by remember { mutableStateOf(false) }
-    
+
     LaunchedEffect(key1 = null) {
         viewModel.getProject(projectID)
         projectInitialized = true
