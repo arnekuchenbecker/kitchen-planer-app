@@ -18,21 +18,36 @@ package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.Recipe
+import com.scouts.kitchenplaner.model.entities.RecipeStub
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class EditMealPlan @Inject constructor(
     private val recipeManagementRepository: RecipeManagementRepository,
+    private val recipeRepository: RecipeRepository,
     private val projectRepository: ProjectRepository
 ) {
-    suspend fun selectRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: Recipe) {
+    suspend fun selectMainRecipeForMealSlot(project: Project, mealSlot: MealSlot, newID: Long) {
         recipeManagementRepository.chooseMainRecipeForMealSlot(
             project.id,
-            recipe.id ?: -1,
+            newID,
             mealSlot
         )
+    }
+
+    suspend fun addAlternativeRecipeForMealSlot(project: Project, mealSlot: MealSlot, newID: Long) {
+        recipeManagementRepository.addAlternativeRecipeForMealSlot(project.id, newID, mealSlot)
+    }
+
+    suspend fun removeAlternativeRecipeFromMeal(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
+        recipeManagementRepository.removeAlternativeRecipeFromMealSlot(project.id, mealSlot, recipe.id ?: 0)
+    }
+
+    suspend fun removeMainRecipeFromMeal(project: Project, mealSlot: MealSlot) {
+        recipeManagementRepository.removeMainRecipeFromMealSlot(project.id, mealSlot)
     }
 
 
@@ -50,5 +65,9 @@ class EditMealPlan @Inject constructor(
 
     suspend fun removeMeal(project: Project, meal: String) {
         projectRepository.deleteMealFromProject(meal, project.id)
+    }
+
+    fun findRecipesForQuery(query: String) : Flow<List<RecipeStub>> {
+        return recipeRepository.getRecipesForQueryByName(query)
     }
 }

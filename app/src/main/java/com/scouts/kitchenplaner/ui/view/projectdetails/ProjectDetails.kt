@@ -26,10 +26,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,12 +46,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.AllergenCheck
 import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class,
+@OptIn(
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -66,8 +62,11 @@ fun ProjectDetails(
     viewModel: ProjectDetailsViewModel = hiltViewModel()
 ) {
     var projectInitialized by remember { mutableStateOf(false) }
+    var displayRecipeSelectionDialog by remember { mutableStateOf(false) }
+    lateinit var recipeToExchange: Pair<MealSlot, RecipeStub?>
 
     LaunchedEffect(key1 = null) {
+        println(projectID)
         viewModel.getProject(projectID)
         projectInitialized = true
     }
@@ -77,7 +76,7 @@ fun ProjectDetails(
         val allergenChecks = remember { mutableStateMapOf<MealSlot, StateFlow<AllergenCheck>>() }
 
         Column {
-            Row (
+            Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -106,35 +105,53 @@ fun ProjectDetails(
                 )
             }
 
-            DisplayMealPlan(mealSlots = project.mealSlots, mealPlan = project.mealPlan, getAllergenCheck = { slot ->
-                if (!allergenChecks.containsKey(slot)) {
-                    allergenChecks[slot] = viewModel.getAllergenCheck(slot)
+            DisplayMealPlan(
+                modifier = Modifier.padding(top = 5.dp),
+                mealSlots = project.mealSlots,
+                mealPlan = project.mealPlan,
+                getAllergenCheck = { slot ->
+                    if (!allergenChecks.containsKey(slot)) {
+                        allergenChecks[slot] = viewModel.getAllergenCheck(slot)
+                    }
+                    allergenChecks[slot]!!
+                },
+                onSwap = { first, second ->
+                    viewModel.swapMeals(project, first, second)
+                },
+                onShowRecipe = {
+                    onNavigateToRecipeToCook(it.id ?: 0)
+                },
+                onDeleteRecipe = { slot, recipe ->
+                    if (recipe == null) {
+                        viewModel.onDeleteMainRecipe(project, slot)
+                    } else {
+                        viewModel.onDeleteAlternativeRecipe(project, slot, recipe)
+                    }
+                },
+                displayRecipeSelectionDialog = { slot, exchange ->
+                    displayRecipeSelectionDialog = true
+                    recipeToExchange = Pair(slot, exchange)
                 }
-                allergenChecks[slot]!!
-            }, onSwap = { first, second ->
-                viewModel.swapMeals(project, first, second)
-            })
+            )
+        }
 
-            Text(text = "This is the screen, where all information to one specific project are displayed displayed")
-            Text(text = "The projectID is $projectID", color = Color.Red)
-            Text(text = "available Links to other sides are: ")
-            var listID by remember { mutableStateOf(1f) }
-
-            Row {
-                Text(text = "Recipe To Cook")
-                Slider(
-                    modifier = Modifier.fillMaxWidth(0.3f),
-                    value = listID,
-                    onValueChange = { listID = it },
-                    valueRange = 1f..20f,
-                    steps = 5
-                )
-                Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
-            }
-            Row {
-                Text(text = "Create recipe screen")
-                Button(onClick = onNavigateToRecipeCreation) {}
-            }
+        if (displayRecipeSelectionDialog) {
+            val suggestions by viewModel.recipeSuggestions.collectAsState()
+            RecipeSelectionDialog(
+                onDismissRequest = { displayRecipeSelectionDialog = false },
+                onNavigateToRecipeCreation = onNavigateToRecipeCreation,
+                onSelection = { newRecipe ->
+                    val oldRecipe = recipeToExchange.second
+                    if (oldRecipe != null) {
+                        viewModel.exchangeRecipe(project, recipeToExchange.first, oldRecipe, newRecipe)
+                    } else {
+                        viewModel.addRecipe(project, recipeToExchange.first, newRecipe)
+                    }
+                },
+                onQueryChange = viewModel::onRecipeQueryChanged,
+                recipeQuery = viewModel.recipeQuery,
+                searchResults = suggestions
+            )
         }
     } else {
         Text(text = "Waiting for the project to be loaded.")

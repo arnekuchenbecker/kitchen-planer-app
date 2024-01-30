@@ -104,4 +104,12 @@ class RecipeRepository @Inject constructor(
             }
         }
     }
+
+    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeStub>> {
+        return recipeDAO.getRecipesForQueryByName("%$query%").map {
+            it.map { entity ->
+                RecipeStub(entity.id, entity.title, Uri.parse(entity.imageURI))
+            }
+        }
+    }
 }

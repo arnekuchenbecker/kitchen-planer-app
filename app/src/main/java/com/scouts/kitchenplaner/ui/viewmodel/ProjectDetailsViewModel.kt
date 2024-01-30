@@ -17,6 +17,10 @@
 package com.scouts.kitchenplaner.ui.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
@@ -29,9 +33,11 @@ import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
 import com.scouts.kitchenplaner.model.usecases.EditMealPlan
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -44,6 +50,15 @@ class ProjectDetailsViewModel @Inject constructor(
     private val editMealPlan: EditMealPlan
 ) : ViewModel() {
     lateinit var projectFlow: StateFlow<Project>
+
+    var recipeQuery by mutableStateOf("")
+        private set
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var recipeSuggestions = snapshotFlow { recipeQuery }.flatMapLatest {
+        println("Calling flow for $it")
+        editMealPlan.findRecipesForQuery(it)
+    }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
     @OptIn(DomainLayerRestricted::class)
     suspend fun getProject(projectId: Long) {
@@ -64,7 +79,7 @@ class ProjectDetailsViewModel @Inject constructor(
                         departureMeal = "Frühstück"
                     )
                 ),
-                initialMeals = listOf("Frühstück"),
+                initialMeals = listOf("Frühstück", "Mittagessen"),
                 _projectImage = Uri.parse("content://com.android.providers.media.documents/document/image%3A62")
             ).apply {
                 mealPlan.setPlan(
@@ -102,6 +117,44 @@ class ProjectDetailsViewModel @Inject constructor(
     fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
         viewModelScope.launch {
             editMealPlan.swapMealSlots(project, first, second)
+        }
+    }
+
+    fun onDeleteMainRecipe(project: Project, slot: MealSlot) {
+        viewModelScope.launch {
+            editMealPlan.removeRecipesFromMealSlot(project, slot)
+        }
+    }
+
+    fun onDeleteAlternativeRecipe(project: Project, slot: MealSlot, recipeStub: RecipeStub) {
+        viewModelScope.launch {
+            editMealPlan.removeAlternativeRecipeFromMeal(project, slot, recipeStub)
+        }
+    }
+
+    fun onRecipeQueryChanged(newQuery: String) {
+        recipeQuery = newQuery
+    }
+
+    fun exchangeRecipe(project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newID: Long) {
+        viewModelScope.launch {
+            if (project.mealPlan[mealSlot].first?.first?.id == oldRecipe.id) {
+                editMealPlan.removeMainRecipeFromMeal(project, mealSlot)
+                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
+            } else {
+                editMealPlan.removeAlternativeRecipeFromMeal(project, mealSlot, oldRecipe)
+                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
+            }
+        }
+    }
+
+    fun addRecipe(project: Project, mealSlot: MealSlot, newID: Long) {
+        viewModelScope.launch {
+            if (project.mealPlan[mealSlot].first != null) {
+                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
+            } else {
+                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
+            }
         }
     }
 }

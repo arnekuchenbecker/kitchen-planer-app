@@ -18,10 +18,12 @@ package com.scouts.kitchenplaner.ui.view.projectdetails
 
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -36,6 +38,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -68,11 +72,16 @@ fun DisplayMealPlan(
     mealSlots: List<MealSlot>,
     mealPlan: MealPlan,
     getAllergenCheck: (MealSlot) -> StateFlow<AllergenCheck>,
-    onSwap: (MealSlot, MealSlot) -> Unit
+    onSwap: (MealSlot, MealSlot) -> Unit,
+    onShowRecipe: (RecipeStub) -> Unit,
+    displayRecipeSelectionDialog: (MealSlot, RecipeStub?) -> Unit,
+    onDeleteRecipe: (MealSlot, RecipeStub?) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var firstSwap by remember { mutableStateOf<MealSlot?>(null) }
     LazyColumnWrapper(
         content = mealSlots,
+        modifier = modifier,
         DisplayContent = { slot, _ ->
             val planSlot = mealPlan[slot]
 
@@ -93,19 +102,25 @@ fun DisplayMealPlan(
                 slot = slot,
                 cover = getAllergenCheck(slot).collectAsState().value.mealCover,
                 onSwap = { onSwapItems() },
+                onDeleteRecipe = { onDeleteRecipe(slot, it) },
+                onShowRecipe = onShowRecipe,
+                displayRecipeSelectionDialog = {
+                    displayRecipeSelectionDialog(slot, it)
+                },
                 toBeSwapped = firstSwap == slot
             )
+        },
+        DisplayEmpty = {
+            Text(text = "Dieses Projekt hat keine Mahlzeiten...")
         }
-    ) {
-
-    }
+    )
 }
 
 @Composable
 fun NoRecipesSelected(
     onClick: () -> Unit
 ) {
-    Column (horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Dieser Mahlzeit wurden noch keine Rezepte zugeordnet.")
         HorizontalDivider()
         IconButton(onClick = onClick) {
@@ -121,7 +136,10 @@ fun MealDisplayItem(
     slot: MealSlot,
     cover: AllergenMealCover,
     onSwap: () -> Unit,
-    toBeSwapped: Boolean
+    toBeSwapped: Boolean,
+    onDeleteRecipe: (RecipeStub?) -> Unit,
+    displayRecipeSelectionDialog: (RecipeStub?) -> Unit,
+    onShowRecipe: (RecipeStub) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExpandableCard(
@@ -155,11 +173,23 @@ fun MealDisplayItem(
                         )
                     }
 
-                    IconButton(onClick = onSwap) {
+                    val buttonColors = if (expanded) {
+                        IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                    } else {
+                        IconButtonDefaults.iconButtonColors()
+                    }
+
+                    IconButton(onClick = onSwap, colors = buttonColors) {
                         if (toBeSwapped) {
-                            Icon(imageVector = Icons.Filled.SwapHorizontalCircle, contentDescription = "Swap meals")
+                            Icon(
+                                imageVector = Icons.Filled.SwapHorizontalCircle,
+                                contentDescription = "Swap meals"
+                            )
                         } else {
-                            Icon(imageVector = Icons.Filled.SwapHoriz, contentDescription = "Swap meals")
+                            Icon(
+                                imageVector = Icons.Filled.SwapHoriz,
+                                contentDescription = "Swap meals"
+                            )
                         }
                     }
                 }
@@ -169,9 +199,23 @@ fun MealDisplayItem(
             contentModifier = Modifier
         ) {
             if (recipes == null) {
-                NoRecipesSelected({})
+                NoRecipesSelected {
+                    displayRecipeSelectionDialog(null)
+                }
             } else {
-                DisplayRecipesForMeal(recipes, {},{},{})
+                DisplayRecipesForMeal(
+                    recipes = recipes,
+                    onExchange = { toExchange ->
+                        displayRecipeSelectionDialog(toExchange)
+                    },
+                    onDelete = { toDelete ->
+                        onDeleteRecipe(toDelete)
+                    },
+                    onAddAlternative = {
+                        displayRecipeSelectionDialog(null)
+                    },
+                    onShowRecipe = onShowRecipe
+                )
             }
         }
     )
@@ -180,26 +224,43 @@ fun MealDisplayItem(
 @Composable
 fun DisplayRecipesForMeal(
     recipes: Pair<RecipeStub, List<RecipeStub>>,
-    onExchange: (Long) -> Unit,
-    onDelete: (Long) -> Unit,
-    onAddAlternative: () -> Unit
+    onExchange: (RecipeStub) -> Unit,
+    onDelete: (RecipeStub?) -> Unit,
+    onAddAlternative: () -> Unit,
+    onShowRecipe: (RecipeStub) -> Unit
 ) {
     Column {
         var editMain by remember { mutableStateOf(false) }
 
         Text("Hauptrezept:")
         HorizontalDivider()
-        DisplayRecipe(recipes.first, editMain, onExchange, onDelete) { editMain = !editMain }
+        //TODO Dialog --> this will remove all recipe from this meal slot if this is the main recipe
+        DisplayRecipe(
+            recipes.first,
+            editMain,
+            onExchange,
+            { onDelete(null) },
+            onShowRecipe
+        ) { editMain = !editMain }
         HorizontalDivider(thickness = 3.dp)
         Text("Alternativrezepte:")
         HorizontalDivider()
         recipes.second.forEach {
             var editAlternative by remember { mutableStateOf(false) }
             println("Displaying recipe ${it.name}")
-            DisplayRecipe(it, editAlternative, onExchange, onDelete) { editAlternative = !editAlternative }
+            DisplayRecipe(
+                it,
+                editAlternative,
+                onExchange,
+                onDelete,
+                onShowRecipe
+            ) { editAlternative = !editAlternative }
         }
         HorizontalDivider()
-        IconButton(onClick = onAddAlternative, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+        IconButton(
+            onClick = onAddAlternative,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
             Icon(imageVector = Icons.Filled.Add, contentDescription = "Add new alternative recipe")
         }
     }
@@ -209,48 +270,71 @@ fun DisplayRecipesForMeal(
 fun DisplayRecipe(
     recipe: RecipeStub,
     editing: Boolean,
-    onExchange: (Long) -> Unit,
-    onDelete: (Long) -> Unit,
+    onExchange: (RecipeStub) -> Unit,
+    onDelete: (RecipeStub) -> Unit,
+    onDisplayRecipe: (RecipeStub) -> Unit,
     onClick: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { onClick() }
-    ) {
-        if (recipe.imageURI == Uri.EMPTY) {
-            Icon(
-                modifier = Modifier
-                    .height(45.dp)
-                    .aspectRatio(1.0f)
-                    .padding(start = 5.dp),
-                imageVector = Icons.Filled.HideImage,
-                contentDescription = "Projektplatzhalter"
-            )
-        } else {
-            AsyncImage(
-                modifier = Modifier
-                    .height(45.dp)
-                    .aspectRatio(1f)
-                    .padding(start = 5.dp),
-                model = recipe.imageURI,
-                contentDescription = "Image for ${recipe.name}"
-            )
-        }
-        Spacer(modifier = Modifier.weight(0.5f))
-        if (!editing) {
-            Text(recipe.name)
-        } else {
-            Row {
-                Button(onClick = { onExchange(recipe.id ?: 0) }) {
-                    Text("Ändern")
-                }
-
-                DeleteButton {
-                    onDelete(recipe.id ?: 0)
-                }
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable { onClick() }
+                .height(45.dp)
+        ) {
+            if (recipe.imageURI == Uri.EMPTY) {
+                Icon(
+                    modifier = Modifier
+                        .height(45.dp)
+                        .aspectRatio(1.0f)
+                        .padding(start = 5.dp),
+                    imageVector = Icons.Filled.HideImage,
+                    contentDescription = "Projektplatzhalter"
+                )
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .height(45.dp)
+                        .aspectRatio(1f)
+                        .padding(start = 5.dp),
+                    model = recipe.imageURI,
+                    contentDescription = "Image for ${recipe.name}"
+                )
             }
+            Spacer(modifier = Modifier.weight(0.5f))
+            Text(recipe.name)
+            Spacer(modifier = Modifier.weight(0.5f))
         }
-        Spacer(modifier = Modifier.weight(0.5f))
+        if (editing) {
+            HorizontalDivider()
+            RecipeInteractions(
+                onDisplayRecipe = { onDisplayRecipe(recipe) },
+                onExchange = { onExchange(recipe) },
+                onDelete = { onDelete(recipe) }
+            )
+        }
+    }
+}
+
+@Composable
+fun RecipeInteractions(
+    onDisplayRecipe: () -> Unit,
+    onExchange: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Button(onClick = onDisplayRecipe) {
+            Text("Anzeigen")
+        }
+
+        Button(onClick = onExchange) {
+            Text("Ändern")
+        }
+
+        DeleteButton(onClick = onDelete)
     }
 }
 
@@ -264,6 +348,9 @@ fun MealDisplayItemPreview() {
             slot = MealSlot(Date(0), "Frühstück"),
             cover = AllergenMealCover.UNKNOWN,
             onSwap = {},
+            onDeleteRecipe = {},
+            onShowRecipe = {},
+            displayRecipeSelectionDialog = {},
             toBeSwapped = true
         )
     }
@@ -287,7 +374,7 @@ fun DisplayRecipesPreview() {
                     RecipeStub(name = "Rezept2", imageURI = Uri.EMPTY),
                     RecipeStub(name = "Rezept3", imageURI = Uri.EMPTY)
                 )
-            ), {}, {}, {}
+            ), {}, {}, {}, {}
         )
     }
 }
