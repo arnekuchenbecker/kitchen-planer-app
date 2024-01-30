@@ -19,8 +19,9 @@ package com.scouts.kitchenplaner.model.usecases
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
+import javax.inject.Inject
 
-class EditProjectPicture (
+class EditProjectPicture @Inject constructor(
     private val projectRepository: ProjectRepository
 ) {
     suspend fun setProjectPicture(project: Project, image: Uri) {

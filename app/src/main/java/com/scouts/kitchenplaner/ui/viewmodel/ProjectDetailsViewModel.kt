@@ -32,6 +32,7 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
 import com.scouts.kitchenplaner.model.usecases.EditMealPlan
+import com.scouts.kitchenplaner.model.usecases.EditProjectPicture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -47,7 +48,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectDetailsViewModel @Inject constructor(
     private val checkAllergens: CheckAllergens,
-    private val editMealPlan: EditMealPlan
+    private val editMealPlan: EditMealPlan,
+    private val editProjectPicture: EditProjectPicture
 ) : ViewModel() {
     lateinit var projectFlow: StateFlow<Project>
 
@@ -122,7 +124,7 @@ class ProjectDetailsViewModel @Inject constructor(
 
     fun onDeleteMainRecipe(project: Project, slot: MealSlot) {
         viewModelScope.launch {
-            editMealPlan.removeRecipesFromMealSlot(project, slot)
+            editMealPlan.removeMainRecipeFromMeal(project, slot)
         }
     }
 
@@ -155,6 +157,12 @@ class ProjectDetailsViewModel @Inject constructor(
             } else {
                 editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
             }
+        }
+    }
+
+    fun setProjectImage(project: Project, path: Uri?) {
+        viewModelScope.launch {
+            editProjectPicture.setProjectPicture(project, path ?: return@launch)
         }
     }
 }
