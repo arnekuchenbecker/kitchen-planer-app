@@ -88,4 +88,11 @@ class Project(
     fun setAllergenPersons(allergenPersons: List<AllergenPerson>) {
         _allergenPersons = allergenPersons
     }
+
+    override fun equals(other: Any?): Boolean = (other is Project)
+            && _id == other._id
+            && _name == other._name
+            && _allergenPersons == other._allergenPersons
+            && _projectImage == other._projectImage
+            && _mealPlan == other._mealPlan
 }

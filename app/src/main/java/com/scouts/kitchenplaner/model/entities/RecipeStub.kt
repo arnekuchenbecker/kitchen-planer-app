@@ -18,7 +18,7 @@ package com.scouts.kitchenplaner.model.entities
 
 import android.net.Uri
 
-class RecipeStub (
+data class RecipeStub (
     val id: Long? = 0,
     val name: String = "",
     val imageURI: Uri

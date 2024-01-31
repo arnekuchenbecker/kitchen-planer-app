@@ -16,11 +16,27 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class Ingredient(val name: String, private var _amount: Float, val unit: String) {
+class Ingredient(
+    val name: String,
+    private var _amount: Float,
+    val unit: String
+) {
     val amount: Float
         get() = _amount
 
     fun setAmount(newAmount: Float) {
         _amount = newAmount
+    }
+
+    override fun equals(other: Any?): Boolean = (other is Ingredient)
+            && name == other.name
+            && _amount == other._amount
+            && unit == other.unit
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + _amount.hashCode()
+        result = 31 * result + unit.hashCode()
+        return result
     }
 }

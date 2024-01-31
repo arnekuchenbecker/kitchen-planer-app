@@ -21,7 +21,7 @@ import java.util.Date
 /**
  * NOT FINAL --> Adjust when actually used
  */
-class AllergenPerson(
+data class AllergenPerson(
     val name: String = "",
     val allergens: List<Allergen> = listOf(),
     val arrivalDate: Date = Date(0),
