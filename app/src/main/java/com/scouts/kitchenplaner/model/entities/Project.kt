@@ -89,10 +89,27 @@ class Project(
         _allergenPersons = allergenPersons
     }
 
-    override fun equals(other: Any?): Boolean = (other is Project)
-            && _id == other._id
-            && _name == other._name
-            && _allergenPersons == other._allergenPersons
-            && _projectImage == other._projectImage
-            && _mealPlan == other._mealPlan
+    override fun equals(other: Any?): Boolean {
+        if (other is Project) {
+            val idEQ = _id == other._id
+            val nameEQ = _name == other._name
+            val allergenEQ = _allergenPersons == other._allergenPersons
+            val imageEQ = _projectImage == other._projectImage
+            val mealPlanEQ = _mealPlan == other._mealPlan
+            println("id: $idEQ, name: $nameEQ, allergens: $allergenEQ, image: $imageEQ, mealPlan: $mealPlanEQ")
+            return idEQ && nameEQ && allergenEQ && imageEQ && mealPlanEQ
+        } else {
+            return false
+        }
+
+    }
+
+    override fun hashCode(): Int {
+        var result = _id?.hashCode() ?: 0
+        result = 31 * result + _name.hashCode()
+        result = 31 * result + _allergenPersons.hashCode()
+        result = 31 * result + _projectImage.hashCode()
+        result = 31 * result + _mealPlan.hashCode()
+        return result
+    }
 }

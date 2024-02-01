@@ -23,23 +23,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.scouts.kitchenplaner.model.DomainLayerRestricted
-import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenCheck
-import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
+import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
 import com.scouts.kitchenplaner.model.usecases.EditMealPlan
 import com.scouts.kitchenplaner.model.usecases.EditProjectPicture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -49,67 +46,32 @@ import javax.inject.Inject
 class ProjectDetailsViewModel @Inject constructor(
     private val checkAllergens: CheckAllergens,
     private val editMealPlan: EditMealPlan,
-    private val editProjectPicture: EditProjectPicture
+    private val editProjectPicture: EditProjectPicture,
+    private val displayProjectOverview: DisplayProjectOverview
 ) : ViewModel() {
-    lateinit var projectFlow: StateFlow<Project>
+    private var projectVersion: Long = 0
+    lateinit var projectFlow: StateFlow<Pair<Project, Long>>
 
     var recipeQuery by mutableStateOf("")
         private set
 
+    var recipeToExchange = Pair<MealSlot, RecipeStub?>(MealSlot(Date(0), ""), null)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     var recipeSuggestions = snapshotFlow { recipeQuery }.flatMapLatest {
-        println("Calling flow for $it")
         editMealPlan.findRecipesForQuery(it)
     }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
-    @OptIn(DomainLayerRestricted::class)
     suspend fun getProject(projectId: Long) {
-        delay(2000)
-        projectFlow = flowOf(
-            Project(
-                _id = projectId,
-                _name = "Dummy Project asdöflkjaskdöfalkds",
-                initialStartDate = Date(0),
-                initialEndDate = Date(48 * 3600 * 1000),
-                _allergenPersons = listOf(
-                    AllergenPerson(
-                        name = "Test",
-                        allergens = listOf(Allergen("Gluten", true)),
-                        arrivalDate = Date(0),
-                        arrivalMeal = "Frühstück",
-                        departureDate = Date(48 * 3600 * 1000),
-                        departureMeal = "Frühstück"
-                    )
-                ),
-                initialMeals = listOf("Frühstück", "Mittagessen"),
-                _projectImage = Uri.parse("content://com.android.providers.media.documents/document/image%3A62")
-            ).apply {
-                mealPlan.setPlan(
-                    mapOf(
-                        MealSlot(Date(0), "Frühstück") to Pair(
-                            RecipeStub(1, "Frühstück", Uri.EMPTY),
-                            listOf(
-                                RecipeStub(2, "Frühstück (glutenspuren)", Uri.EMPTY),
-                            )
-                        ),
-                        MealSlot(Date(24*3600*1000), "Frühstück") to Pair(
-                            RecipeStub(4, "Unknown", Uri.EMPTY),
-                            listOf()
-                        ),
-                        MealSlot(Date(48*3600*1000), "Frühstück") to Pair(
-                            RecipeStub(1, "Frühstück", Uri.EMPTY),
-                            listOf(
-                                RecipeStub(3, "Frühstück (glutenfrei)", Uri.EMPTY)
-                            )
-                        )
-                    )
-                )
-            }
-        ).stateIn(viewModelScope)
+        projectFlow = displayProjectOverview
+            .getProject(projectId)
+            .map{
+                Pair(it, projectVersion++)
+            }.stateIn(viewModelScope)
     }
 
     fun getAllergenCheck(slot: MealSlot): StateFlow<AllergenCheck> {
-        return checkAllergens.getAllergenCheck(projectFlow, slot).stateIn(
+        return checkAllergens.getAllergenCheck(projectFlow.map { it.first }, slot).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = AllergenCheck()

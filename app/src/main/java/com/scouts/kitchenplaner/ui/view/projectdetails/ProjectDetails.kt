@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.model.entities.AllergenCheck
 import com.scouts.kitchenplaner.model.entities.MealSlot
-import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
@@ -60,10 +59,8 @@ fun ProjectDetails(
 ) {
     var projectInitialized by remember { mutableStateOf(false) }
     var displayRecipeSelectionDialog by remember { mutableStateOf(false) }
-    lateinit var recipeToExchange: Pair<MealSlot, RecipeStub?>
 
     LaunchedEffect(key1 = null) {
-        println(projectID)
         viewModel.getProject(projectID)
         projectInitialized = true
     }
@@ -79,7 +76,7 @@ fun ProjectDetails(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = project.name,
+                    text = project.first.name,
                     fontSize = 8.em,
                     modifier = Modifier
                         .weight(1f)
@@ -93,9 +90,9 @@ fun ProjectDetails(
 
                 PicturePicker(
                     onPathSelected = {
-                        viewModel.setProjectImage(project, it)
+                        viewModel.setProjectImage(project.first, it)
                     },
-                    path = project.projectImage,
+                    path = project.first.projectImage,
                     modifier = Modifier
                         .height(180.dp)
                         .aspectRatio(1.0f)
@@ -104,8 +101,8 @@ fun ProjectDetails(
 
             DisplayMealPlan(
                 modifier = Modifier.padding(top = 5.dp),
-                mealSlots = project.mealSlots,
-                mealPlan = project.mealPlan,
+                mealSlots = project.first.mealSlots,
+                mealPlan = project.first.mealPlan,
                 getAllergenCheck = { slot ->
                     if (!allergenChecks.containsKey(slot)) {
                         allergenChecks[slot] = viewModel.getAllergenCheck(slot)
@@ -113,21 +110,21 @@ fun ProjectDetails(
                     allergenChecks[slot]!!
                 },
                 onSwap = { first, second ->
-                    viewModel.swapMeals(project, first, second)
+                    viewModel.swapMeals(project.first, first, second)
                 },
                 onShowRecipe = {
                     onNavigateToRecipeToCook(it.id ?: 0)
                 },
                 onDeleteRecipe = { slot, recipe ->
                     if (recipe == null) {
-                        viewModel.onDeleteMainRecipe(project, slot)
+                        viewModel.onDeleteMainRecipe(project.first, slot)
                     } else {
-                        viewModel.onDeleteAlternativeRecipe(project, slot, recipe)
+                        viewModel.onDeleteAlternativeRecipe(project.first, slot, recipe)
                     }
                 },
                 displayRecipeSelectionDialog = { slot, exchange ->
                     displayRecipeSelectionDialog = true
-                    recipeToExchange = Pair(slot, exchange)
+                    viewModel.recipeToExchange = Pair(slot, exchange)
                 }
             )
         }
@@ -138,12 +135,13 @@ fun ProjectDetails(
                 onDismissRequest = { displayRecipeSelectionDialog = false },
                 onNavigateToRecipeCreation = onNavigateToRecipeCreation,
                 onSelection = { newRecipe ->
-                    val oldRecipe = recipeToExchange.second
+                    val oldRecipe = viewModel.recipeToExchange.second
                     if (oldRecipe != null) {
-                        viewModel.exchangeRecipe(project, recipeToExchange.first, oldRecipe, newRecipe)
+                        viewModel.exchangeRecipe(project.first, viewModel.recipeToExchange.first, oldRecipe, newRecipe)
                     } else {
-                        viewModel.addRecipe(project, recipeToExchange.first, newRecipe)
+                        viewModel.addRecipe(project.first, viewModel.recipeToExchange.first, newRecipe)
                     }
+                    displayRecipeSelectionDialog = false
                 },
                 onQueryChange = viewModel::onRecipeQueryChanged,
                 recipeQuery = viewModel.recipeQuery,

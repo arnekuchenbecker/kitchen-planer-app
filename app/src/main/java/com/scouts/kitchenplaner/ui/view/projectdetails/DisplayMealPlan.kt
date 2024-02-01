@@ -247,7 +247,6 @@ fun DisplayRecipesForMeal(
         HorizontalDivider()
         recipes.second.forEach {
             var editAlternative by remember { mutableStateOf(false) }
-            println("Displaying recipe ${it.name}")
             DisplayRecipe(
                 it,
                 editAlternative,
