@@ -14,17 +14,36 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.ui.state
 
-import android.net.Uri
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.model.entities.Project
-import javax.inject.Inject
+enum class ProjectDialogValues {
+    /**
+     * Display no dialog
+     */
+    NONE,
 
-class EditProjectPicture @Inject constructor(
-    private val projectRepository: ProjectRepository
-) {
-    suspend fun setProjectPicture(project: Project, image: Uri) {
-        projectRepository.changeProjectPicture(project.id, image)
-    }
+    /**
+     * Display the name change dialog
+     */
+    NAME_CHANGE,
+
+    /**
+     * Display the image change dialog
+     */
+    IMAGE_CHANGE,
+
+    /**
+     * Display the date change dialog
+     */
+    DATE_CHANGE,
+
+    /**
+     * Display the number change dialog
+     */
+    NUMBER_CHANGE,
+
+    /**
+     * Display the dialog for inviting people to the project
+     */
+    INVITE
 }

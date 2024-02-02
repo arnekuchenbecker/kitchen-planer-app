@@ -72,6 +72,11 @@ interface ProjectDAO {
             "AND `order` >= :index")
     suspend fun decreaseMealOrder(projectId: Long, index: Int)
 
+    @Query("UPDATE projects " +
+            "SET name = :name " +
+            "WHERE id = :projectId")
+    suspend fun changeProjectName(projectId: Long, name: String)
+
     @Delete(MealEntity::class)
     suspend fun deleteMeal(meal: MealIdentifierDTO)
 

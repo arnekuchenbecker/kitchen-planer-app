@@ -16,7 +16,6 @@
 
 package com.scouts.kitchenplaner.ui.viewmodel
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,7 +29,6 @@ import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
 import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
 import com.scouts.kitchenplaner.model.usecases.EditMealPlan
-import com.scouts.kitchenplaner.model.usecases.EditProjectPicture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,7 +44,6 @@ import javax.inject.Inject
 class ProjectDetailsViewModel @Inject constructor(
     private val checkAllergens: CheckAllergens,
     private val editMealPlan: EditMealPlan,
-    private val editProjectPicture: EditProjectPicture,
     private val displayProjectOverview: DisplayProjectOverview
 ) : ViewModel() {
     private var projectVersion: Long = 0
@@ -119,12 +116,6 @@ class ProjectDetailsViewModel @Inject constructor(
             } else {
                 editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
             }
-        }
-    }
-
-    fun setProjectImage(project: Project, path: Uri?) {
-        viewModelScope.launch {
-            editProjectPicture.setProjectPicture(project, path ?: return@launch)
         }
     }
 }

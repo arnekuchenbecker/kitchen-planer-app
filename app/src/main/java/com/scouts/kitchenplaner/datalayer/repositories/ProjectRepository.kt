@@ -70,6 +70,10 @@ class ProjectRepository @Inject constructor(
         return projectDAO.getProjectById(id).map { it.toModelEntity() }
     }
 
+    fun getProjectStubByID(id: Long) : Flow<ProjectStub> {
+        return projectDAO.getProjectById(id).map { ProjectStub(it.name, it.id, Uri.parse(it.imageUri)) }
+    }
+
     fun getMealsByProjectID(id: Long) : Flow<List<String>> {
         return projectDAO.getMealsByProjectID(id)
     }
@@ -149,6 +153,10 @@ class ProjectRepository @Inject constructor(
                 ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
             }
         }
+    }
+
+    suspend fun setProjectName(id: Long, name: String) {
+        projectDAO.changeProjectName(id, name)
     }
 
     suspend fun leaveProject(user: User, projectId: Long) {
