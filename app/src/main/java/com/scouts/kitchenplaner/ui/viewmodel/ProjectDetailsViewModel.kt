@@ -34,7 +34,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -46,8 +46,7 @@ class ProjectDetailsViewModel @Inject constructor(
     private val editMealPlan: EditMealPlan,
     private val displayProjectOverview: DisplayProjectOverview
 ) : ViewModel() {
-    private var projectVersion: Long = 0
-    lateinit var projectFlow: StateFlow<Pair<Project, Long>>
+    lateinit var projectFlow: StateFlow<Project>
 
     var recipeQuery by mutableStateOf("")
         private set
@@ -62,13 +61,14 @@ class ProjectDetailsViewModel @Inject constructor(
     suspend fun getProject(projectId: Long) {
         projectFlow = displayProjectOverview
             .getProject(projectId)
-            .map{
-                Pair(it, projectVersion++)
-            }.stateIn(viewModelScope)
+            .onEach {
+                println(it)
+            }
+            .stateIn(viewModelScope)
     }
 
     fun getAllergenCheck(slot: MealSlot): StateFlow<AllergenCheck> {
-        return checkAllergens.getAllergenCheck(projectFlow.map { it.first }, slot).stateIn(
+        return checkAllergens.getAllergenCheck(projectFlow, slot).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = AllergenCheck()

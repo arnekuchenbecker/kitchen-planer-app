@@ -61,8 +61,8 @@ fun ProjectDetails(
 
         DisplayMealPlan(
             modifier = Modifier.padding(top = 5.dp),
-            mealSlots = project.first.mealSlots,
-            mealPlan = project.first.mealPlan,
+            mealSlots = project.mealSlots,
+            mealPlan = project.mealPlan,
             getAllergenCheck = { slot ->
                 if (!allergenChecks.containsKey(slot)) {
                     allergenChecks[slot] = viewModel.getAllergenCheck(slot)
@@ -70,16 +70,16 @@ fun ProjectDetails(
                 allergenChecks[slot]!!
             },
             onSwap = { first, second ->
-                viewModel.swapMeals(project.first, first, second)
+                viewModel.swapMeals(project, first, second)
             },
             onShowRecipe = {
                 onNavigateToRecipeToCook(it.id ?: 0)
             },
             onDeleteRecipe = { slot, recipe ->
                 if (recipe == null) {
-                    viewModel.onDeleteMainRecipe(project.first, slot)
+                    viewModel.onDeleteMainRecipe(project, slot)
                 } else {
-                    viewModel.onDeleteAlternativeRecipe(project.first, slot, recipe)
+                    viewModel.onDeleteAlternativeRecipe(project, slot, recipe)
                 }
             },
             displayRecipeSelectionDialog = { slot, exchange ->
@@ -97,14 +97,14 @@ fun ProjectDetails(
                     val oldRecipe = viewModel.recipeToExchange.second
                     if (oldRecipe != null) {
                         viewModel.exchangeRecipe(
-                            project.first,
+                            project,
                             viewModel.recipeToExchange.first,
                             oldRecipe,
                             newRecipe
                         )
                     } else {
                         viewModel.addRecipe(
-                            project.first,
+                            project,
                             viewModel.recipeToExchange.first,
                             newRecipe
                         )

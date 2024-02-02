@@ -101,20 +101,4 @@ class Project(
         newProject._mealPlan.setNumberChanges(numberChanges)
         return newProject
     }
-
-    override fun equals(other: Any?): Boolean = (other is Project)
-            && _id == other._id
-            && _name == other._name
-            && _allergenPersons == other._allergenPersons
-            && _projectImage == other._projectImage
-            && _mealPlan == other._mealPlan
-
-    override fun hashCode(): Int {
-        var result = _id?.hashCode() ?: 0
-        result = 31 * result + _name.hashCode()
-        result = 31 * result + _allergenPersons.hashCode()
-        result = 31 * result + _projectImage.hashCode()
-        result = 31 * result + _mealPlan.hashCode()
-        return result
-    }
 }
