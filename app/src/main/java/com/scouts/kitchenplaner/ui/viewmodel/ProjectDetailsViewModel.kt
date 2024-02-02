@@ -16,106 +16,35 @@
 
 package com.scouts.kitchenplaner.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.scouts.kitchenplaner.model.entities.AllergenCheck
-import com.scouts.kitchenplaner.model.entities.MealSlot
-import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.model.usecases.CheckAllergens
-import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
-import com.scouts.kitchenplaner.model.usecases.EditMealPlan
+import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.usecases.EditProjectSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectDetailsViewModel @Inject constructor(
-    private val checkAllergens: CheckAllergens,
-    private val editMealPlan: EditMealPlan,
-    private val displayProjectOverview: DisplayProjectOverview
+class ProjectFrameViewModel @Inject constructor(
+    private val projectSettings: EditProjectSettings
 ) : ViewModel() {
-    lateinit var projectFlow: StateFlow<Project>
-
-    var recipeQuery by mutableStateOf("")
-        private set
-
-    var recipeToExchange = Pair<MealSlot, RecipeStub?>(MealSlot(Date(0), ""), null)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    var recipeSuggestions = snapshotFlow { recipeQuery }.flatMapLatest {
-        editMealPlan.findRecipesForQuery(it)
-    }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
-
-    suspend fun getProject(projectId: Long) {
-        projectFlow = displayProjectOverview
-            .getProject(projectId)
-            .onEach {
-                println(it)
-            }
-            .stateIn(viewModelScope)
+    fun getProjectStub(projectId: Long) : StateFlow<ProjectStub> {
+        return projectSettings.getProjectStub(projectId).stateIn(viewModelScope, SharingStarted.Eagerly, ProjectStub("", projectId, Uri.EMPTY))
     }
 
-    fun getAllergenCheck(slot: MealSlot): StateFlow<AllergenCheck> {
-        return checkAllergens.getAllergenCheck(projectFlow, slot).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = AllergenCheck()
-        )
-    }
-
-    fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
+    fun setProjectName(projectId: Long, name: String) {
         viewModelScope.launch {
-            editMealPlan.swapMealSlots(project, first, second)
+            projectSettings.setProjectName(projectId, name)
         }
     }
 
-    fun onDeleteMainRecipe(project: Project, slot: MealSlot) {
+    fun setProjectImage(projectId: Long, image: Uri) {
         viewModelScope.launch {
-            editMealPlan.removeMainRecipeFromMeal(project, slot)
-        }
-    }
-
-    fun onDeleteAlternativeRecipe(project: Project, slot: MealSlot, recipeStub: RecipeStub) {
-        viewModelScope.launch {
-            editMealPlan.removeAlternativeRecipeFromMeal(project, slot, recipeStub)
-        }
-    }
-
-    fun onRecipeQueryChanged(newQuery: String) {
-        recipeQuery = newQuery
-    }
-
-    fun exchangeRecipe(project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newID: Long) {
-        viewModelScope.launch {
-            if (project.mealPlan[mealSlot].first?.first?.id == oldRecipe.id) {
-                editMealPlan.removeMainRecipeFromMeal(project, mealSlot)
-                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
-            } else {
-                editMealPlan.removeAlternativeRecipeFromMeal(project, mealSlot, oldRecipe)
-                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
-            }
-        }
-    }
-
-    fun addRecipe(project: Project, mealSlot: MealSlot, newID: Long) {
-        viewModelScope.launch {
-            if (project.mealPlan[mealSlot].first != null) {
-                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
-            } else {
-                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
-            }
+            projectSettings.setProjectPicture(projectId, image)
         }
     }
 }
