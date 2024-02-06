@@ -26,7 +26,6 @@ import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
-import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
@@ -122,7 +121,7 @@ class ProjectRepository @Inject constructor(
         projectDAO.decreaseMealOrder(projectId, order)
     }
 
-  //  suspend fun getProjectStubForProjectId(projectId: Long){}
+    //  suspend fun getProjectStubForProjectId(projectId: Long){}
     /**
      * Testing purposes only, should be deleted once more robust methods of interacting with the
      * database have been established
@@ -169,8 +168,11 @@ class ProjectRepository @Inject constructor(
         projectDAO.updateLastShownProjectForUser(UserProjectEntity(projectId, user.username, time))
     }
 
-     fun getLastShownProjectStubs(user: User, limit: Int): Flow<List<ProjectStubDTO>>{
+    fun getLastShownProjectIds(user: User, limit: Int): List<Long> {
+        return projectDAO.getLatestShownProjectsForUser(user.username, limit)
+            .map { project -> project.projectId }
     }
+
 
     private suspend fun existsUser(user: User): Boolean {
         return projectDAO.getExistsUserByName(user.username) == 1
