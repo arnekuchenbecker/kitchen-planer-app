@@ -19,32 +19,50 @@ package com.scouts.kitchenplaner.ui.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
 import com.scouts.kitchenplaner.model.usecases.EditProjectSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectFrameViewModel @Inject constructor(
+class ProjectDetailsViewModel @Inject constructor(
+    private val displayProjectOverview: DisplayProjectOverview,
     private val projectSettings: EditProjectSettings
 ) : ViewModel() {
-    fun getProjectStub(projectId: Long) : StateFlow<ProjectStub> {
-        return projectSettings.getProjectStub(projectId).stateIn(viewModelScope, SharingStarted.Eagerly, ProjectStub("", projectId, Uri.EMPTY))
+    lateinit var projectFlow: StateFlow<Project>
+    suspend fun getProject(projectId: Long) {
+        projectFlow = displayProjectOverview
+            .getProject(projectId)
+            .stateIn(viewModelScope)
     }
 
-    fun setProjectName(projectId: Long, name: String) {
+    fun setProjectName(project: Project, name: String) {
         viewModelScope.launch {
-            projectSettings.setProjectName(projectId, name)
+            projectSettings.setProjectName(project, name)
         }
     }
 
-    fun setProjectImage(projectId: Long, image: Uri) {
+    fun setProjectImage(project: Project, uri: Uri) {
         viewModelScope.launch {
-            projectSettings.setProjectPicture(projectId, image)
+            projectSettings.setProjectPicture(project, uri)
+        }
+    }
+
+    fun setProjectDates(project: Project, start: Date, end: Date) {
+        viewModelScope.launch {
+            projectSettings.setProjectDates(project, start, end)
+        }
+    }
+
+    fun setNumberChanges(project: Project, changes: Map<MealSlot, Int>) {
+        viewModelScope.launch {
+            projectSettings.setNumberChanges(project, changes)
         }
     }
 }

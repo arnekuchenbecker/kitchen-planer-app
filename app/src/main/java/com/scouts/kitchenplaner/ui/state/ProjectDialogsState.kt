@@ -16,13 +16,26 @@
 
 package com.scouts.kitchenplaner.ui.state
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.scouts.kitchenplaner.model.entities.MealPlan
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import java.util.Date
 
 class ProjectDialogsState (
     val onNameChange: (String) -> Unit,
-    val onPictureChange: (String) -> Unit
+    val onPictureChange: (Uri) -> Unit,
+    val onDateChange: (Date, Date) -> Unit,
+    val onNumbersChange: (Map<MealSlot, Int>) -> Unit,
+    val projectId: Long,
+    val currentImage: Uri,
+    val startDate: Date,
+    val endDate: Date,
+    val mealPlan: MealPlan,
+    val mealSlots: List<MealSlot>,
+    val projectPublished: Boolean
 ) {
     var displayDialog by mutableStateOf(ProjectDialogValues.NONE)
 }

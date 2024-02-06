@@ -45,8 +45,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,173 +69,227 @@ import com.scouts.kitchenplaner.ui.navigation.Destinations
 import com.scouts.kitchenplaner.ui.navigation.NavHostProjects
 import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
 import com.scouts.kitchenplaner.ui.state.ProjectDialogsState
-import com.scouts.kitchenplaner.ui.viewmodel.ProjectFrameViewModel
+import com.scouts.kitchenplaner.ui.view.projectsettingsdialogs.ProjectSettingsDialogs
+import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectLayout(
     id: Long,
     navController: NavHostController,
-    viewModel: ProjectFrameViewModel = hiltViewModel()
+    viewModel: ProjectDetailsViewModel = hiltViewModel()
 ) {
-    var selectedItem by remember { mutableStateOf(0) }
+    var projectInitialized by remember { mutableStateOf(false) }
 
-    val dialogState = remember {
-        ProjectDialogsState(
-            onNameChange = { viewModel.setProjectName(id, it) },
-            onPictureChange = {}
-        )
+    LaunchedEffect(key1 = null) {
+        viewModel.getProject(id)
+        projectInitialized = true
     }
-    var showSideBar by remember { mutableStateOf(false) }
-    val projectNavController: NavHostController = rememberNavController()
 
-    val sites = listOf(
-        Pair("Übersicht", Destinations.ProjectsStart),
-        Pair("Einkaufsliste", Destinations.ShoppingListGraph)
-    )
-    val backStackEntry by projectNavController.currentBackStackEntryAsState()
-    val project by viewModel.getProjectStub(id).collectAsState()
+    if (projectInitialized) {
+        val project by viewModel.projectFlow.collectAsState()
+        var selectedItem by remember { mutableIntStateOf(0) }
 
-    Scaffold(
-        topBar = {
-            Column {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            AsyncImage(
-                                model = project.imageUri,
-                                contentDescription = "Project image",
-                                modifier = Modifier
-                                    .width(45.dp)
-                                    .aspectRatio(1.0f)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                            Text(text = project.name, modifier = Modifier.padding(start = 10.dp))
-                        }
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                showSideBar = !showSideBar
-                            },
-                            colors = IconButtonDefaults.filledIconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
-                        ) {
-                            Crossfade(targetState = showSideBar, label = "Icon Fade") { showClose ->
-                                if (showClose) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Hide Sidebar",
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = "Expand Sidebar",
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
+        val dialogState =
+            ProjectDialogsState(
+                onNameChange = { viewModel.setProjectName(project, it) },
+                onPictureChange = { viewModel.setProjectImage(project, it) },
+                onDateChange = { start, end ->
+                    viewModel.setProjectDates(project, start, end)
+                },
+                onNumbersChange = {
+                    viewModel.setNumberChanges(project, it)
+                },
+                projectId = project.id,
+                currentImage = project.projectImage,
+                startDate = project.startDate,
+                endDate = project.endDate,
+                mealPlan = project.mealPlan,
+                mealSlots = project.mealSlots,
+                projectPublished = false //TODO replace with actual value
+            )
+
+        var showSideBar by remember { mutableStateOf(false) }
+        val projectNavController: NavHostController = rememberNavController()
+
+        val sites = listOf(
+            Pair("Übersicht", Destinations.ProjectsStart),
+            Pair("Einkaufsliste", Destinations.ShoppingListGraph)
+        )
+        val backStackEntry by projectNavController.currentBackStackEntryAsState()
+
+        Scaffold(
+            topBar = {
+                Column {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        ),
+                        title = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                AsyncImage(
+                                    model = project.projectImage,
+                                    contentDescription = "Project image",
+                                    modifier = Modifier
+                                        .width(45.dp)
+                                        .aspectRatio(1.0f)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Text(
+                                    text = project.name,
+                                    modifier = Modifier.padding(start = 10.dp)
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    showSideBar = !showSideBar
+                                },
+                                colors = IconButtonDefaults.filledIconButtonColors(contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                            ) {
+                                Crossfade(
+                                    targetState = showSideBar,
+                                    label = "Icon Fade"
+                                ) { showClose ->
+                                    if (showClose) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Hide Sidebar",
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Default.Menu,
+                                            contentDescription = "Expand Sidebar",
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                )
-                SecondaryTabRow(selectedTabIndex = selectedItem) {
-                    sites.forEachIndexed { index, site ->
-                        if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
-                            selectedItem = index;
-                        }
-                        Tab(selected = selectedItem == index, onClick = {
-                            projectNavController.navigate("${site.second}/$id") {
-                                launchSingleTop = true
+                    )
+                    SecondaryTabRow(selectedTabIndex = selectedItem) {
+                        sites.forEachIndexed { index, site ->
+                            if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
+                                selectedItem = index;
                             }
-                        }, text = { Text(site.first) })
+                            Tab(selected = selectedItem == index, onClick = {
+                                projectNavController.navigate("${site.second}/$id") {
+                                    launchSingleTop = true
+                                }
+                            }, text = { Text(site.first) })
 
+                        }
                     }
                 }
             }
-        }
-    ) {
-        NavHostProjects(
-            modifier = Modifier
-                .padding(it)
-                .pointerInput(Unit) {
-                    detectTapGestures {
+        ) {
+            NavHostProjects(
+                modifier = Modifier
+                    .padding(it)
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            showSideBar = false
+                        }
+                    },
+                projectNavController = projectNavController,
+                project = project,
+                onNavigateToRecipe = { navController.navigate(Destinations.RecipeCreationGraph) }
+            )
+            SideDrawer(
+                expand = showSideBar,
+                modifier = Modifier.padding(it)
+            ) {
+                Text(
+                    text = "Einstellungen",
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    fontSize = 8.em,
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                HorizontalDivider()
+                SideDrawerItem(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "Edit project name",
+                            modifier = Modifier.padding(end = 15.dp)
+                        )
+                        Text(text = "Namen ändern")
+                    },
+                    onClick = {
+                        dialogState.displayDialog = ProjectDialogValues.NAME_CHANGE
                         showSideBar = false
                     }
-                },
-            projectNavController = projectNavController,
-            id = id,
-            onNavigateToRecipe = { navController.navigate(Destinations.RecipeCreationGraph) }
-        )
-        SideDrawer(
-            expand = showSideBar,
-            modifier = Modifier.padding(it)
-        ) {
-            Text(
-                text = "Einstellungen",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                fontSize = 8.em,
-                modifier = Modifier.padding(20.dp).align(Alignment.CenterHorizontally)
-            )
-            HorizontalDivider()
-            SideDrawerItem(
-                content = {
-                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit project name", modifier = Modifier.padding(end = 15.dp))
-                    Text(text = "Namen ändern")
-                },
-                onClick = {
-                    dialogState.displayDialog = ProjectDialogValues.NAME_CHANGE
-                    showSideBar = false
-                }
-            )
-            SideDrawerItem(
-                content = {
-                    Icon(imageVector = Icons.Filled.ImageSearch, contentDescription = "Edit project image", modifier = Modifier.padding(end = 15.dp))
-                    Text(text = "Projekt-Bild ändern")
-                },
-                onClick = {
-                    dialogState.displayDialog = ProjectDialogValues.IMAGE_CHANGE
-                    showSideBar = false
-                }
-            )
-            SideDrawerItem(
-                content = {
-                    Icon(imageVector = Icons.Filled.EditCalendar, contentDescription = "Edit start / end date", modifier = Modifier.padding(end = 15.dp))
-                    Text(text = "Start-/Enddatum")
-                },
-                onClick = {
-                    dialogState.displayDialog = ProjectDialogValues.DATE_CHANGE
-                    showSideBar = false
-                }
-            )
-            SideDrawerItem(
-                content = {
-                    Icon(imageVector = Icons.Filled.SwapHoriz, contentDescription = "Edit arrivals and departures", modifier = Modifier.padding(end = 15.dp))
-                    Text(text = "Ankunft / Abfahrt")
-                },
-                onClick = {
-                    dialogState.displayDialog = ProjectDialogValues.NUMBER_CHANGE
-                    showSideBar = false
-                }
-            )
-            SideDrawerItem(
-                content = {
-                    Icon(imageVector = Icons.Filled.Share, contentDescription = "Invite other people", modifier = Modifier.padding(end = 15.dp))
-                    Text(text = "Teilen")
-                },
-                onClick = {
-                    dialogState.displayDialog = ProjectDialogValues.NUMBER_CHANGE
-                    showSideBar = false
-                }
-            )
+                )
+                SideDrawerItem(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.ImageSearch,
+                            contentDescription = "Edit project image",
+                            modifier = Modifier.padding(end = 15.dp)
+                        )
+                        Text(text = "Projekt-Bild ändern")
+                    },
+                    onClick = {
+                        dialogState.displayDialog = ProjectDialogValues.IMAGE_CHANGE
+                        showSideBar = false
+                    }
+                )
+                SideDrawerItem(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.EditCalendar,
+                            contentDescription = "Edit start / end date",
+                            modifier = Modifier.padding(end = 15.dp)
+                        )
+                        Text(text = "Start-/Enddatum")
+                    },
+                    onClick = {
+                        dialogState.displayDialog = ProjectDialogValues.DATE_CHANGE
+                        showSideBar = false
+                    }
+                )
+                SideDrawerItem(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.SwapHoriz,
+                            contentDescription = "Edit arrivals and departures",
+                            modifier = Modifier.padding(end = 15.dp)
+                        )
+                        Text(text = "Ankunft / Abfahrt")
+                    },
+                    onClick = {
+                        dialogState.displayDialog = ProjectDialogValues.NUMBER_CHANGE
+                        showSideBar = false
+                    }
+                )
+                SideDrawerItem(
+                    content = {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = "Invite other people",
+                            modifier = Modifier.padding(end = 15.dp)
+                        )
+                        Text(text = "Teilen")
+                    },
+                    onClick = {
+                        dialogState.displayDialog = ProjectDialogValues.INVITE
+                        showSideBar = false
+                    }
+                )
+            }
         }
+
+        ProjectSettingsDialogs(
+            state = dialogState
+        )
+    } else {
+        Text(text = "Waiting for the project to be loaded.")
     }
 
-    ProjectSettingsDialogs(
-        state = dialogState
-    )
 }

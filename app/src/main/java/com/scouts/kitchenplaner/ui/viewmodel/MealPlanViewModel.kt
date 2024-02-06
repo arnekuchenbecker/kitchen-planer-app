@@ -27,27 +27,22 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.usecases.CheckAllergens
-import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
 import com.scouts.kitchenplaner.model.usecases.EditMealPlan
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectDetailsViewModel @Inject constructor(
+class MealPlanViewModel @Inject constructor(
     private val checkAllergens: CheckAllergens,
-    private val editMealPlan: EditMealPlan,
-    private val displayProjectOverview: DisplayProjectOverview
+    private val editMealPlan: EditMealPlan
 ) : ViewModel() {
-    lateinit var projectFlow: StateFlow<Project>
-
     var recipeQuery by mutableStateOf("")
         private set
 
@@ -58,17 +53,8 @@ class ProjectDetailsViewModel @Inject constructor(
         editMealPlan.findRecipesForQuery(it)
     }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
-    suspend fun getProject(projectId: Long) {
-        projectFlow = displayProjectOverview
-            .getProject(projectId)
-            .onEach {
-                println(it)
-            }
-            .stateIn(viewModelScope)
-    }
-
-    fun getAllergenCheck(slot: MealSlot): StateFlow<AllergenCheck> {
-        return checkAllergens.getAllergenCheck(projectFlow, slot).stateIn(
+    fun getAllergenCheck(project: Project, slot: MealSlot): StateFlow<AllergenCheck> {
+        return checkAllergens.getAllergenCheck(project, slot).stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = AllergenCheck()

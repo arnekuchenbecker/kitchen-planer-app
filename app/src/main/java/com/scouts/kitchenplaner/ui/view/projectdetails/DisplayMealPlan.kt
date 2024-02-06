@@ -96,11 +96,17 @@ fun DisplayMealPlan(
                 }
             }
 
+            val coverFlow = remember { getAllergenCheck(slot) }
+            val cover by coverFlow.collectAsState()
+            if (slot.date == Date(1707868800000)) {
+                println("${cover.mealCover}, ${cover.coveredPersons.size + cover.notCoveredPersons.size + cover.unknownPersons.size}")
+            }
+
             MealDisplayItem(
                 persons = planSlot.second,
                 recipes = planSlot.first,
                 slot = slot,
-                cover = getAllergenCheck(slot).collectAsState().value.mealCover,
+                cover = cover.mealCover,
                 onSwap = { onSwapItems() },
                 onDeleteRecipe = { onDeleteRecipe(slot, it) },
                 onShowRecipe = onShowRecipe,
