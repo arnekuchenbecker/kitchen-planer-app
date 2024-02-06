@@ -173,11 +173,11 @@ fun ProjectLayout(
                     )
                     SecondaryTabRow(selectedTabIndex = selectedItem) {
                         sites.forEachIndexed { index, site ->
-                            if (backStackEntry?.destination?.hierarchy?.any { it.route == "${site.second}/{${Destinations.ProjectId}}" } == true) {
+                            if (backStackEntry?.destination?.hierarchy?.any { it.route == site.second } == true) {
                                 selectedItem = index;
                             }
                             Tab(selected = selectedItem == index, onClick = {
-                                projectNavController.navigate("${site.second}/$id") {
+                                projectNavController.navigate(site.second) {
                                     launchSingleTop = true
                                 }
                             }, text = { Text(site.first) })

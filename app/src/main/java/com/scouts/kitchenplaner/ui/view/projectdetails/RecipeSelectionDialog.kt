@@ -16,11 +16,8 @@
 
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
+import com.scouts.kitchenplaner.ui.view.OverviewField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,23 +103,13 @@ fun RecipeSelectionDialog(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         DisplayContent = { it, _ ->
-                            Box (modifier = Modifier
-                                .fillMaxWidth(0.9f)
-                                .height(45.dp)
-                                .padding(3.dp)
-                                .border(
-                                    2.dp,
-                                    MaterialTheme.colorScheme.primary,
-                                    RoundedCornerShape(10.dp)
-                                )
-                                .clickable { onSelection(it.id ?: 0) }
-                            ) {
-                                Row (modifier = Modifier.align(Alignment.Center)) {
-                                    Text(
-                                        text = it.name
-                                    )
-                                }
-                            }
+                            OverviewField (
+                                modifier = Modifier.height(50.dp).padding(horizontal = 5.dp),
+                                onClick = { onSelection(it.id ?: 0) },
+                                imageUri = it.imageURI,
+                                imageDescription = "Recipe Image for ${it.name}",
+                                text = it.name
+                            )
                         },
                         DisplayEmpty = {
                             Box (modifier = Modifier
