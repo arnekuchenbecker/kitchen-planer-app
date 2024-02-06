@@ -54,7 +54,7 @@ class CreateRecipeViewModel @Inject constructor(
     fun createRecipe() {
         if (recipeName.isBlank()
             || ingredients.isEmpty()
-            || ingredients.all { (_, ingredients) -> ingredients.isEmpty() }) {
+            || ingredients.any { (_, ingredients) -> ingredients.isEmpty() }) {
             return
         }
         viewModelScope.launch {
