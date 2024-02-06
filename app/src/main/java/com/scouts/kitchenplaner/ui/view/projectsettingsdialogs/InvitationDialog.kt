@@ -16,36 +16,39 @@
 
 package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.ui.view.InvitationElements
 
 @Composable
-fun NameChangeDialog(
+fun InvitationDialog(
     onDismissRequest: () -> Unit,
-    onNameChange: (String) -> Unit
+    projectPublished: Boolean,
+    projectId: Long
 ) {
-    var text by remember { mutableStateOf("") }
-
+    var published by remember { mutableStateOf(projectPublished) }
     SettingDialog(
         onDismissRequest = onDismissRequest,
-        title = "Namen ändern",
-        onConfirm = { onNameChange(text) }
+        title = "Weiter Personen einladen",
+        onConfirm = { /*TODO Check project's published status*/ }
     ) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            placeholder = { Text("PfiLa 2345") },
-            label = { Text("Projekt Name") },
-            modifier = Modifier.padding(bottom = 20.dp),
-            singleLine = true
-        )
+        Row (verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = published, onCheckedChange = { published = it })
+            Text(text = "Projekt teilen", modifier = Modifier.padding(start = 15.dp))
+        }
+
+        if (published) {
+            InvitationElements(projectId = projectId)
+        }
     }
 }

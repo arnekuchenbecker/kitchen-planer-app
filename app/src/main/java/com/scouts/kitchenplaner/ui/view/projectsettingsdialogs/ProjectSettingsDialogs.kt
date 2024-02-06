@@ -14,12 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view
+package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.toMutableStateMap
 import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
 import com.scouts.kitchenplaner.ui.state.ProjectDialogsState
-import com.scouts.kitchenplaner.ui.view.projectsettingsdialogs.NameChangeDialog
 
 @Composable
 fun ProjectSettingsDialogs(
@@ -30,10 +30,28 @@ fun ProjectSettingsDialogs(
             onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
             onNameChange = state.onNameChange
         )
-        ProjectDialogValues.IMAGE_CHANGE -> println(/*TODO*/)
-        ProjectDialogValues.DATE_CHANGE -> println(/*TODO*/)
-        ProjectDialogValues.NUMBER_CHANGE -> println(/*TODO*/)
-        ProjectDialogValues.INVITE -> println(/*TODO*/)
+        ProjectDialogValues.IMAGE_CHANGE -> ImageChangeDialog(
+            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
+            onImageChange = state.onPictureChange,
+            currentImage = state.currentImage
+        )
+        ProjectDialogValues.DATE_CHANGE -> DateChangeDialog(
+            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
+            onDateChange = state.onDateChange,
+            startDate = state.startDate,
+            endDate = state.endDate
+        )
+        ProjectDialogValues.NUMBER_CHANGE -> NumberChangeDialog(
+            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
+            onConfirm = state.onNumbersChange,
+            presentPersons = state.mealSlots.map { Pair(it, state.mealPlan[it].second) }.toMutableStateMap(),
+            mealSlots = state.mealSlots
+        )
+        ProjectDialogValues.INVITE -> InvitationDialog(
+            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
+            projectPublished = state.projectPublished,
+            projectId = state.projectId
+        )
         ProjectDialogValues.NONE -> Unit // Nothing to display here
     }
 }

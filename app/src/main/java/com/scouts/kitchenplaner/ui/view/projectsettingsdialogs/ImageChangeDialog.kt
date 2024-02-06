@@ -16,9 +16,9 @@
 
 package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import android.net.Uri
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,26 +26,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.ui.view.DeleteButton
+import com.scouts.kitchenplaner.ui.view.PicturePicker
 
 @Composable
-fun NameChangeDialog(
+fun ImageChangeDialog(
+    currentImage: Uri,
     onDismissRequest: () -> Unit,
-    onNameChange: (String) -> Unit
+    onImageChange: (Uri) -> Unit
 ) {
-    var text by remember { mutableStateOf("") }
-
+    var uri by remember { mutableStateOf(currentImage) }
     SettingDialog(
         onDismissRequest = onDismissRequest,
-        title = "Namen ändern",
-        onConfirm = { onNameChange(text) }
+        onConfirm = { onImageChange(uri) },
+        title = "Bild ändern"
     ) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            placeholder = { Text("PfiLa 2345") },
-            label = { Text("Projekt Name") },
-            modifier = Modifier.padding(bottom = 20.dp),
-            singleLine = true
+        PicturePicker(
+            onPathSelected = { uri = it ?: Uri.EMPTY },
+            path = uri,
+            modifier = Modifier
+                .height(100.dp)
+                .aspectRatio(1.0f)
         )
+
+        DeleteButton(onClick = { uri = Uri.EMPTY })
     }
 }
