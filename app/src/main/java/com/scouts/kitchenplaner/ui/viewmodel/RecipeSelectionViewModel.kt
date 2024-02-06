@@ -24,6 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
     ViewModel() {
-        val recipes = recipeSelection.getAllRecipeStubs();
+    val recipes = recipeSelection.getAllRecipeStubs();
 
 }

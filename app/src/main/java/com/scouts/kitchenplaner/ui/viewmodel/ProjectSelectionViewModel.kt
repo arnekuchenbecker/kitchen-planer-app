@@ -20,13 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.usecases.ProjectSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
@@ -52,14 +50,13 @@ class ProjectSelectionViewModel @Inject constructor(
     var showArchiveDialog by mutableStateOf(false)
 
 
-
     fun toggleSelection(projectId: Long, selected: Boolean) {
-        selectedFlow.update{
-            it + Pair(projectId,selected)
+        selectedFlow.update {
+            it + Pair(projectId, selected)
         }
     }
 
-    fun clearSelection(){
-        selectedFlow.update {mutableStateMapOf() }
+    fun clearSelection() {
+        selectedFlow.update { mutableStateMapOf() }
     }
 }
