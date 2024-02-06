@@ -44,6 +44,12 @@ class RecipeRepository @Inject constructor(
         }
     }
 
+    fun getRecipeStubById(id: Long) : Flow<RecipeStub> {
+        return recipeDAO.getRecipeById(id).map {
+            RecipeStub(it.id, it.title, Uri.parse(it.imageURI))
+        }
+    }
+
     fun getRecipeById(id: Long) : Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)

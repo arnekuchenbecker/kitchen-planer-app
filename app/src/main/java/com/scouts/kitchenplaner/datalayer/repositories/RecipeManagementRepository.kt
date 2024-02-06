@@ -77,4 +77,11 @@ class RecipeManagementRepository @Inject constructor(
             }
         }
     }
+
+    fun getRecipesForMealSlot(projectId: Long, mealSlot: MealSlot) : Flow<List<Long>> {
+        return recipeManagementDAO.getMainRecipeIdForMealSlot(projectId, mealSlot.meal, mealSlot.date)
+            .combine(recipeManagementDAO.getAlternativeRecipeIdsForMealSlot(projectId, mealSlot.meal, mealSlot.date)) { main, alternatives ->
+                alternatives + main
+            }
+    }
 }

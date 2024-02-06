@@ -39,10 +39,10 @@ interface RecipeManagementDAO {
 
     @Transaction
     suspend fun swapMeals(projectId: Long, firstMeal: String, firstDate: Date, secondMeal: String, secondDate: Date) {
-        val firstRecipe = getMainRecipeIdForMealSlot(projectId, firstMeal, firstDate)
-        val secondRecipe = getMainRecipeIdForMealSlot(projectId, secondMeal, secondDate)
-        val firstAlternatives = getAlternativeRecipeIdsForMealSlot(projectId, firstMeal, firstDate)
-        val secondAlternatives = getAlternativeRecipeIdsForMealSlot(projectId, secondMeal, secondDate)
+        val firstRecipe = getMainRecipeIdForMealSlotImmediate(projectId, firstMeal, firstDate)
+        val secondRecipe = getMainRecipeIdForMealSlotImmediate(projectId, secondMeal, secondDate)
+        val firstAlternatives = getAlternativeRecipeIdsForMealSlotImmediate(projectId, firstMeal, firstDate)
+        val secondAlternatives = getAlternativeRecipeIdsForMealSlotImmediate(projectId, secondMeal, secondDate)
 
         removeAllRecipesFromMeal(projectId, firstMeal, firstDate)
         removeAllRecipesFromMeal(projectId, secondMeal, secondDate)
@@ -85,13 +85,25 @@ interface RecipeManagementDAO {
             "WHERE projectId = :projectId " +
             "AND meal = :meal " +
             "AND date = :date")
-    suspend fun getMainRecipeIdForMealSlot(projectId: Long, meal: String, date: Date) : Long
+    suspend fun getMainRecipeIdForMealSlotImmediate(projectId: Long, meal: String, date: Date) : Long
 
     @Query("SELECT recipeId FROM alternativeRecipeProjectMeal " +
             "WHERE projectId = :projectId " +
             "AND meal = :meal " +
             "AND date = :date")
-    suspend fun getAlternativeRecipeIdsForMealSlot(projectId: Long, meal: String, date: Date) : List<Long>
+    suspend fun getAlternativeRecipeIdsForMealSlotImmediate(projectId: Long, meal: String, date: Date) : List<Long>
+
+    @Query("SELECT recipeId FROM recipeProjectMeal " +
+            "WHERE projectId = :projectId " +
+            "AND meal = :meal " +
+            "AND date = :date")
+    fun getMainRecipeIdForMealSlot(projectId: Long, meal: String, date: Date) : Flow<Long>
+
+    @Query("SELECT recipeId FROM alternativeRecipeProjectMeal " +
+            "WHERE projectId = :projectId " +
+            "AND meal = :meal " +
+            "AND date = :date")
+    fun getAlternativeRecipeIdsForMealSlot(projectId: Long, meal: String, date: Date) : Flow<List<Long>>
 
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     fun getMainRecipesForProject(projectId: Long) : Flow<List<MainRecipeProjectMealEntity>>
