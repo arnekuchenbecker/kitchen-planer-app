@@ -107,5 +107,5 @@ interface RecipeDAO {
     suspend fun insertUserRecipeUse(entity: UserRecipeEntity): Long
 
     @Query("SELECT * FROM userRecipe WHERE user = :user ORDER BY lastShown DESC LIMIT :limit")
-    fun getThreeLatestRecipesForUser(user: String, limit: Int): List<UserRecipeEntity>
+    fun getLatestRecipesForUser(user: String, limit: Int): List<UserRecipeEntity>
 }

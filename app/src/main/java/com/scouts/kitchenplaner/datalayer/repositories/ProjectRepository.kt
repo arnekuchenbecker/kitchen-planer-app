@@ -121,7 +121,6 @@ class ProjectRepository @Inject constructor(
         projectDAO.decreaseMealOrder(projectId, order)
     }
 
-    //  suspend fun getProjectStubForProjectId(projectId: Long){}
     /**
      * Testing purposes only, should be deleted once more robust methods of interacting with the
      * database have been established
@@ -164,15 +163,18 @@ class ProjectRepository @Inject constructor(
         projectDAO.setProjectArchivedStatus(ProjectArchivedDTO(projectId, true))
     }
 
+    // TODO has to be used every time a user sees a project
     suspend fun updateProjectShown(projectId: Long, user: User, time: Date) {
         projectDAO.updateLastShownProjectForUser(UserProjectEntity(projectId, user.username, time))
     }
 
     fun getLastShownProjectIds(user: User, limit: Int): List<Long> {
-        return projectDAO.getLatestShownProjectsForUser(user.username, limit)
-            .map { project -> project.projectId }
+        val projects = projectDAO.getLatestShownProjectsForUser(user.username, limit)
+            .map { project ->
+                project.projectId
+            }
+        return projects
     }
-
 
     private suspend fun existsUser(user: User): Boolean {
         return projectDAO.getExistsUserByName(user.username) == 1

@@ -47,7 +47,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeById(id: Long, user: String): Flow<Recipe> {
+    fun getRecipeById(id: Long): Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
@@ -112,7 +112,21 @@ class RecipeRepository @Inject constructor(
         }
     }
 
+    fun getRecipeStubById(id: Long): Flow<RecipeStub> {
+        return recipeDAO.getRecipeById(id).map { recipe ->
+            RecipeStub(
+                id = recipe.id,
+                name = recipe.title,
+                imageURI = Uri.parse(recipe.imageURI)
+            )
+        }
+    }
+        // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
         recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))
+    }
+
+    fun getLastShownRecipeIdsForUser(user: User, limit: Int): List<Long> {
+        return recipeDAO.getLatestRecipesForUser(user.username, limit).map { it -> it.recipe }
     }
 }
