@@ -14,10 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.viewmodel
 
-import android.net.Uri
+import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.model.usecases.RecipeSelection
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RecipeStub(
-    val id: Long? = 0, val name: String = "", val imageURI: Uri
-)
+@HiltViewModel
+class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
+    ViewModel() {
+    val recipes = recipeSelection.getAllRecipeStubs();
+
+}

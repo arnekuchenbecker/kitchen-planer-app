@@ -16,10 +16,4 @@
 
 package com.scouts.kitchenplaner.datalayer.dtos
 
-import java.net.URI
-
-data class RecipeStubDTO(
-    val id: Long,
-    val title: String,
-    val imageURI: String
-)
+data class RecipeStubDTO(val id: Long, val title: String, val imageURI: String)

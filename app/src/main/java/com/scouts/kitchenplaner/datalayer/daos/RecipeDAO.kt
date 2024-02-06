@@ -102,7 +102,6 @@ interface RecipeDAO {
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
 
-    @Query("SELECT id, title, imageURI FROM recipeEntity")
+    @Query("SELECT recipeEntity.id AS id,recipeEntity.title AS title, recipeEntity.imageURI AS imageURI FROM recipeEntity")
     fun getAllRecipeStubs(): Flow<List<RecipeStubDTO>>
-
 }

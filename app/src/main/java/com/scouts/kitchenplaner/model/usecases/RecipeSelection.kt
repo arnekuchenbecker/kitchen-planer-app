@@ -14,10 +14,18 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.model.usecases
 
-import android.net.Uri
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.model.entities.RecipeStub
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class RecipeStub(
-    val id: Long? = 0, val name: String = "", val imageURI: Uri
-)
+class RecipeSelection @Inject constructor(private val repository: RecipeRepository) {
+
+    fun getAllRecipeStubs(): Flow<List<RecipeStub>>{
+        return repository.getAllRecipeStubs();
+    }
+
+
+}
