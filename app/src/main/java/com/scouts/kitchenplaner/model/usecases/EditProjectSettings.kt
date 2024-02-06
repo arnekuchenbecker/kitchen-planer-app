@@ -35,12 +35,21 @@ class EditProjectSettings @Inject constructor(
     }
 
     suspend fun setProjectDates(project: Project, startDate: Date, endDate: Date) {
-        projectRepository.setProjectDates(project.id, startDate, endDate)
+        if (startDate.before(endDate)) {
+            projectRepository.setProjectDates(project.id, startDate, endDate)
+        }
     }
 
     suspend fun setNumberChanges(project: Project, changes: Map<MealSlot, Int>) {
         changes.forEach { (slot, change) ->
-            projectRepository.setPersonNumberChange(project.id, slot.meal, slot.date, change)
+            val result = project.mealSlots
+                .filter { it.before(slot, project.meals) }
+                .fold(0) { acc, newValue ->
+                    acc + (changes[newValue] ?: 0)
+                }
+            if (result >= 0) {
+                projectRepository.setPersonNumberChange(project.id, slot.meal, slot.date, change)
+            }
         }
     }
 }
