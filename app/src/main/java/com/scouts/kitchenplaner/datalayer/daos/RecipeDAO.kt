@@ -20,10 +20,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -69,36 +71,41 @@ interface RecipeDAO {
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
-    fun getRecipeById(id: Long) : Flow<RecipeEntity>
+    fun getRecipeById(id: Long): Flow<RecipeEntity>
 
     @Query("SELECT * FROM ingrediententity WHERE recipe = :id")
-    fun getIngredientsByRecipeId(id: Long) : Flow<List<IngredientEntity>>
+    fun getIngredientsByRecipeId(id: Long): Flow<List<IngredientEntity>>
 
     @Query("SELECT * FROM instructionentity WHERE recipe = :id ORDER BY `order`")
-    fun getInstructionsByRecipeId(id: Long) : Flow<List<InstructionEntity>>
+    fun getInstructionsByRecipeId(id: Long): Flow<List<InstructionEntity>>
 
-    @Query("SELECT recipeEntity.id AS id, " +
-            "recipeEntity.title AS title, " +
-            "recipeEntity.imageUri AS imageURI, " +
-            "recipeEntity.description AS description, " +
-            "recipeEntity.numberOfPeople AS numberOfPeople " +
-            "FROM recipeEntity JOIN recipeProjectMeal " +
-            "WHERE projectId = :projectId " +
-            "UNION SELECT recipeEntity.id AS id, " +
-            "recipeEntity.title AS title, " +
-            "recipeEntity.imageUri AS imageURI, " +
-            "recipeEntity.description AS description, " +
-            "recipeEntity.numberOfPeople AS numberOfPeople " +
-            "FROM recipeEntity JOIN alternativeRecipeProjectMeal " +
-            "WHERE projectId = :projectId")
-    fun getRecipesByProjectId(projectId: Long) : Flow<List<RecipeEntity>>
+    @Query(
+        "SELECT recipeEntity.id AS id, " +
+                "recipeEntity.title AS title, " +
+                "recipeEntity.imageUri AS imageURI, " +
+                "recipeEntity.description AS description, " +
+                "recipeEntity.numberOfPeople AS numberOfPeople " +
+                "FROM recipeEntity JOIN recipeProjectMeal " +
+                "WHERE projectId = :projectId " +
+                "UNION SELECT recipeEntity.id AS id, " +
+                "recipeEntity.title AS title, " +
+                "recipeEntity.imageUri AS imageURI, " +
+                "recipeEntity.description AS description, " +
+                "recipeEntity.numberOfPeople AS numberOfPeople " +
+                "FROM recipeEntity JOIN alternativeRecipeProjectMeal " +
+                "WHERE projectId = :projectId"
+    )
+    fun getRecipesByProjectId(projectId: Long): Flow<List<RecipeEntity>>
 
     @Query("SELECT * FROM dietaryspecialityentity WHERE recipe = :id")
-    fun getAllergensByRecipeId(id: Long) : Flow<List<DietarySpecialityEntity>>
+    fun getAllergensByRecipeId(id: Long): Flow<List<DietarySpecialityEntity>>
 
     @Query("SELECT * FROM recipeEntity WHERE title LIKE :query")
     fun getRecipesForQueryByName(query: String) : Flow<List<RecipeEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
+
+    @Query("SELECT recipeEntity.id AS id,recipeEntity.title AS title, recipeEntity.imageURI AS imageURI FROM recipeEntity")
+    fun getAllRecipeStubs(): Flow<List<RecipeStubDTO>>
 }

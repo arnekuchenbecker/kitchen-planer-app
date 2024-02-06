@@ -36,7 +36,7 @@ import javax.inject.Inject
 class RecipeRepository @Inject constructor(
     private val recipeDAO: RecipeDAO
 ) {
-    fun getRecipeStubsByProjectId(id: Long) : Flow<List<RecipeStub>> {
+    fun getRecipeStubsByProjectId(id: Long): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesByProjectId(id).map {
             it.map { recipe ->
                 RecipeStub(recipe.id, recipe.title, Uri.parse(recipe.imageURI))
@@ -56,7 +56,12 @@ class RecipeRepository @Inject constructor(
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
         val dietaryFlow = recipeDAO.getAllergensByRecipeId(id)
 
-        return combine(recipeFlow, ingredientFlow, instructionsFlow, dietaryFlow) { recipe, ingredients, instructions, dietaries ->
+        return combine(
+            recipeFlow,
+            ingredientFlow,
+            instructionsFlow,
+            dietaryFlow
+        ) { recipe, ingredients, instructions, dietaries ->
             val groups = ingredients.groupBy { it.ingredientGroup }.map { (name, ingredients) ->
                 IngredientGroup(name, ingredients.map { ingredient ->
                     Ingredient(ingredient.name, ingredient.amount, ingredient.unit)
@@ -103,10 +108,22 @@ class RecipeRepository @Inject constructor(
 
     }
 
-    fun getAllergensForRecipe(id: Long) : Flow<List<DietarySpeciality>> {
+    fun getAllergensForRecipe(id: Long): Flow<List<DietarySpeciality>> {
         return recipeDAO.getAllergensByRecipeId(id).map {
             it.map { entity ->
                 entity.toModelEntity()
+            }
+        }
+    }
+
+    fun getAllRecipeStubs(): Flow<List<RecipeStub>> {
+        return recipeDAO.getAllRecipeStubs().map {
+            it.map { stub ->
+                RecipeStub(
+                    id = stub.id,
+                    name = stub.title,
+                    imageURI = Uri.parse(stub.imageURI)
+                )
             }
         }
     }
