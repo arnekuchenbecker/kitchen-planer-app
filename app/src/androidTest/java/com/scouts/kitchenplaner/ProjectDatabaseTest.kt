@@ -25,8 +25,10 @@ import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
+import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -37,6 +39,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
 class ProjectDatabaseTest {
@@ -45,6 +48,7 @@ class ProjectDatabaseTest {
     private lateinit var projectDAO: ProjectDAO
     private lateinit var allergenDAO: AllergenDAO
     private lateinit var recipeManagementDAO: RecipeManagementDAO
+    private lateinit var shoppingListDAO: ShoppingListDAO
     private lateinit var db: KitchenAppDatabase
 
     @Before
@@ -56,7 +60,8 @@ class ProjectDatabaseTest {
         projectDAO = db.projectDao()
         allergenDAO = db.allergenDao()
         recipeManagementDAO = db.recipeManagementDao()
-        repo = ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO)
+        shoppingListDAO = db.shoppingListDao()
+        repo = ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO)
     }
 
     @After
@@ -69,30 +74,30 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testInsertProject(): Unit = runBlocking {
-        val project = Project(name = "Test")
-        repo.insertProject(project)
+        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
+        repo.insertProject(project, User("Arne"))
         val retValue = repo.getProjectByProjectName("Test")
-        assertEquals("Test", retValue.name)
-        assertNotEquals(null, retValue.id)
+        assertEquals("Test", retValue.stub.name)
+        assertNotEquals(null, retValue.stub.id)
     }
 
 
     @Test
     @Throws(Exception::class)
     fun testGetAllProjects(): Unit = runTest {
-        val project = Project(name = "Test")
-        val project2 = Project(name = "Test2")
+        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
+        val project2 = Project(_name = "Test2", initialStartDate = Date(0), initialEndDate = Date(1))
 
         repo.getAllProjectsOverview().test {
             awaitItem()
-            val projectId = repo.insertProject(project)
+            val projectId = repo.insertProject(project, User("Arne"))
             val flowContent = awaitItem()
 
             assertEquals("Incorrect number of projects in flow", 1, flowContent.size)
             assertEquals("Incorrect project name", project.name, flowContent[0].name)
             assertEquals("Incorrect project id", projectId, flowContent[0].id)
 
-            val project2Id = repo.insertProject(project2)
+            val project2Id = repo.insertProject(project2, User("Arne"))
 
             assertNotEquals("Same project id for different projects", projectId, project2Id)
 

@@ -17,9 +17,41 @@
 package com.scouts.kitchenplaner
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 fun Long.toDateString() : String {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
     return dateFormat.format(this)
+}
+
+/**
+ * Checks if this Date is between start and end (both inclusive)
+ */
+@Throws(IllegalArgumentException::class)
+fun Date.between(start: Date, end: Date) : Boolean {
+    if (end.before(start)) {
+        throw IllegalArgumentException("End date must not be before start date!")
+    } else {
+        return this == start || (this.after(start) && this.before(end)) || this == end
+    }
+}
+
+fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
+    var date = this
+    val result = mutableListOf<Date>()
+    while (date.before(endInclusive)) {
+        result.add(Date(date.time))
+        date = incrementDate(date)
+    }
+    result.add(endInclusive)
+    return result
+}
+
+private fun incrementDate(date: Date) : Date {
+    val cal = Calendar.getInstance()
+    cal.time = date
+    cal.add(Calendar.DATE, 1)
+    return Date(cal.time.time)
 }

@@ -35,5 +35,6 @@ import androidx.room.Index
 )
 data class MealEntity(
     val name: String,
+    val order: Int,
     var projectId: Long
 )

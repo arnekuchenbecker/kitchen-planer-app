@@ -14,18 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.ui.viewmodel
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import java.util.Date
+import androidx.lifecycle.ViewModel
+import com.scouts.kitchenplaner.model.usecases.RecipeSelection
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-@Entity(tableName = "projects")
-data class ProjectEntity (
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val imageUri: String,
-    val isArchived: Boolean
-)
+@HiltViewModel
+class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
+    ViewModel() {
+        val recipes = recipeSelection.getAllRecipeStubs();
+
+}

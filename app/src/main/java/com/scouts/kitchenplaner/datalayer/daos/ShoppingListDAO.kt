@@ -17,9 +17,11 @@
 package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import kotlinx.coroutines.flow.Flow
@@ -64,4 +66,8 @@ interface ShoppingListDAO {
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
+
+    //Methods for archiving Projects
+    @Delete(ShoppingListEntity::class)
+    suspend fun deleteShoppingListsByProjectId(projectId: ProjectIdDTO)
 }

@@ -25,21 +25,19 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.view.HeaderWithButton
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
@@ -54,28 +52,20 @@ fun ProjectOverview(
     val projects by viewModel.projectSelected.collectAsState(initial = listOf())
 
     Scaffold(topBar = {
-        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ), title = {
-            Text("Meine Projekte")
-        }, actions = {
-            Button(onClick = {
-                viewModel.archive = !viewModel.archive
-                viewModel.clearSelection()
-            }) {
-                if (viewModel.archive) {
-                    Icon(
-                        imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen"
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "projekte löschen"
-                    )
-                }
+        HeaderWithButton(title = "Meine Projekte", buttonClick = {
+            viewModel.archive = !viewModel.archive
+            viewModel.clearSelection()
+        }) {
+            if (viewModel.archive) {
+                Icon(
+                    imageVector = Icons.Filled.Cancel, contentDescription = "abbrechen"
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Delete, contentDescription = "projekte löschen"
+                )
             }
-        })
+        }
     }, floatingActionButton = {
         if (!viewModel.archive) {
             ExtendedFloatingActionButton(onClick = onNavigateToCreateProject,
@@ -112,7 +102,8 @@ fun ProjectOverview(
                         toggleSelection = viewModel::toggleSelection,
                         archive = viewModel.archive
                     )
-                }, DisplayLast = { (project, selected), _ ->
+                },
+                DisplayLast = { (project, selected), _ ->
                     ProjectField(
                         project = project,
                         selected = selected,

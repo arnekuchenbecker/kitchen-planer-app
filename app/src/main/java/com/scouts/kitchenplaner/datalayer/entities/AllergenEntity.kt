@@ -25,7 +25,9 @@ import androidx.room.ForeignKey
         ForeignKey(
             entity = AllergenPersonEntity::class,
             parentColumns = ["name", "projectId"],
-            childColumns = ["name", "projectId"])
+            childColumns = ["name", "projectId"],
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     primaryKeys = ["name", "projectId", "allergen"]
 )

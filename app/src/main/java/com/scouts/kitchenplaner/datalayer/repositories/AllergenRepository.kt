@@ -19,20 +19,37 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.AllergenPersonIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import java.util.Date
 import javax.inject.Inject
 
 class AllergenRepository @Inject constructor(
     private val allergenDAO: AllergenDAO
 ){
+    fun getAllergenPersonsByProjectID(id: Long) : Flow<List<AllergenPerson>> {
+        return allergenDAO.getAllergenPersonsByProjectID(id).combine(allergenDAO.getAllergensByProjectID(id)) { persons, allergens ->
+            persons.map {
+                it.toModelEntity(allergens.filter { entity -> it.name == entity.name })
+            }
+        }
+    }
+
     suspend fun deleteAllergen(projectId: Long, name: String, allergen: String) {
         allergenDAO.deleteAllergen(AllergenIdentifierDTO(projectId, name, allergen))
 
         if (allergenDAO.getAllergenCountByNameAndProjectId(name, projectId) == 0) {
             allergenDAO.deleteAllergenPerson(AllergenPersonIdentifierDTO(projectId, name))
         }
+    }
+
+    suspend fun deleteAllergenPerson(person: AllergenPerson, projectId: Long) {
+        allergenDAO.deleteAllergenPerson(AllergenPersonIdentifierDTO(projectId, person.name))
     }
 
     suspend fun addAllergenPerson(person: AllergenPerson, projectId: Long) {
@@ -45,5 +62,31 @@ class AllergenRepository @Inject constructor(
 
     suspend fun addAllergen(name: String, projectId: Long, allergen: Allergen) {
         allergenDAO.insertAllergen(allergen.toDataLayerEntity(projectId, name))
+    }
+
+    suspend fun updateAllergenPersonArrival(projectId: Long, person: AllergenPerson, newDate: Date, newMeal: String) {
+        allergenDAO.updateAllergenPerson(
+            AllergenPersonEntity(
+                person.name,
+                projectId,
+                newDate,
+                newMeal,
+                person.departureDate,
+                person.departureMeal
+            )
+        )
+    }
+
+    suspend fun updateAllergenPersonDeparture(projectId: Long, person: AllergenPerson, newDate: Date, newMeal: String) {
+        allergenDAO.updateAllergenPerson(
+            AllergenPersonEntity(
+                person.name,
+                projectId,
+                person.arrivalDate,
+                person.arrivalMeal,
+                newDate,
+                newMeal
+            )
+        )
     }
 }
