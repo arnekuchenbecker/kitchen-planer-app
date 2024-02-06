@@ -29,4 +29,9 @@ data class AllergenPerson(
     val departureDate: Date = Date(0),
     val departureMeal: String = ""
 ) {
+    val arrivalMealSlot: MealSlot
+        get() = MealSlot(arrivalDate, arrivalMeal)
+
+    val departureMealSlot: MealSlot
+        get() = MealSlot(departureDate, departureMeal)
 }

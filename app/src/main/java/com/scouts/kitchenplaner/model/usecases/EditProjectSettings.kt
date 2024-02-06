@@ -18,22 +18,29 @@ package com.scouts.kitchenplaner.model.usecases
 
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.model.entities.ProjectStub
-import kotlinx.coroutines.flow.Flow
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.Project
+import java.util.Date
 import javax.inject.Inject
 
 class EditProjectSettings @Inject constructor(
     private val projectRepository: ProjectRepository
 ) {
-    fun getProjectStub(projectId: Long) : Flow<ProjectStub> {
-        return projectRepository.getProjectStubByID(projectId)
+    suspend fun setProjectName(project: Project, name: String) {
+        projectRepository.setProjectName(project.id, name)
     }
 
-    suspend fun setProjectName(projectId: Long, name: String) {
-        projectRepository.setProjectName(projectId, name)
+    suspend fun setProjectPicture(project: Project, image: Uri) {
+        projectRepository.changeProjectPicture(project.id, image)
     }
 
-    suspend fun setProjectPicture(projectId: Long, image: Uri) {
-        projectRepository.changeProjectPicture(projectId, image)
+    suspend fun setProjectDates(project: Project, startDate: Date, endDate: Date) {
+        projectRepository.setProjectDates(project.id, startDate, endDate)
+    }
+
+    suspend fun setNumberChanges(project: Project, changes: Map<MealSlot, Int>) {
+        changes.forEach { (slot, change) ->
+            projectRepository.setPersonNumberChange(project.id, slot.meal, slot.date, change)
+        }
     }
 }

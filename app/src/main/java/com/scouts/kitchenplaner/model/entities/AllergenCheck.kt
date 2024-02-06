@@ -60,16 +60,4 @@ class AllergenCheck {
         }
         list.add(person)
     }
-
-    override fun equals(other: Any?): Boolean = (other is AllergenCheck)
-            && _coveredPersons == other._coveredPersons
-            && _unknownPersons == other._unknownPersons
-            && _notCoveredPersons == other._unknownPersons
-
-    override fun hashCode(): Int {
-        var result = _coveredPersons.hashCode()
-        result = 31 * result + _unknownPersons.hashCode()
-        result = 31 * result + _notCoveredPersons.hashCode()
-        return result
-    }
 }
