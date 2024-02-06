@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.createproject
+package com.scouts.kitchenplaner.ui.view.allergendialog
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
