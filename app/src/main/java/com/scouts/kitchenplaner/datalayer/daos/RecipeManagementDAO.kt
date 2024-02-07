@@ -71,10 +71,11 @@ interface RecipeManagementDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMainRecipeToProjectMeal(entity: MainRecipeProjectMealEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addSingleAlternativeRecipeToProjectMeal(entity: AlternativeRecipeProjectMealEntity)
 
-    @Insert fun addAllAlternativeRecipesToProjectMeal(entities: List<AlternativeRecipeProjectMealEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addAllAlternativeRecipesToProjectMeal(entities: List<AlternativeRecipeProjectMealEntity>)
 
     @Delete(MainRecipeProjectMealEntity::class)
     suspend fun removeMainRecipeFromProjectMeal(entity: ProjectMealIdentifier)
