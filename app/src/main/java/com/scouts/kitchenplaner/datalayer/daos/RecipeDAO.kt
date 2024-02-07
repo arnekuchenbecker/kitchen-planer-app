@@ -25,7 +25,6 @@ import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
-import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 
 @Dao
