@@ -45,5 +45,10 @@ enum class ProjectDialogValues {
     /**
      * Display the dialog for inviting people to the project
      */
-    INVITE
+    INVITE,
+
+    /**
+     * Display the dialog for editing intolerant persons
+     */
+    ALLERGENS
 }

@@ -35,7 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.scouts.kitchenplaner.ui.navigation.Destinations
 import com.scouts.kitchenplaner.ui.navigation.NavHostProjects
-import com.scouts.kitchenplaner.ui.state.ProjectDialogsState
+import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
 import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetailsTopBar
 import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectSettingsSideDrawer
 import com.scouts.kitchenplaner.ui.view.projectsettingsdialogs.ProjectSettingsDialogs
@@ -58,25 +58,6 @@ fun ProjectLayout(
         val project by viewModel.projectFlow.collectAsState()
         var selectedItem by remember { mutableIntStateOf(0) }
 
-        val dialogState =
-            ProjectDialogsState(
-                onNameChange = { viewModel.setProjectName(project, it) },
-                onPictureChange = { viewModel.setProjectImage(project, it) },
-                onDateChange = { start, end ->
-                    viewModel.setProjectDates(project, start, end)
-                },
-                onNumbersChange = {
-                    viewModel.setNumberChanges(project, it)
-                },
-                projectId = project.id,
-                currentImage = project.projectImage,
-                startDate = project.startDate,
-                endDate = project.endDate,
-                mealPlan = project.mealPlan,
-                mealSlots = project.mealSlots,
-                projectPublished = false //TODO replace with actual value
-            )
-
         var showSideBar by remember { mutableStateOf(false) }
         val projectNavController: NavHostController = rememberNavController()
 
@@ -84,6 +65,8 @@ fun ProjectLayout(
             Pair("Übersicht", Destinations.ProjectsStart),
             Pair("Einkaufsliste", Destinations.ShoppingListGraph)
         )
+
+        var displaySettingsDialog by remember { mutableStateOf(ProjectDialogValues.NONE) }
 
         Scaffold(
             topBar = {
@@ -114,7 +97,7 @@ fun ProjectLayout(
             ProjectSettingsSideDrawer(
                 modifier = Modifier.padding(it),
                 displayDialog = { dialog ->
-                    dialogState.displayDialog = dialog
+                    displaySettingsDialog = dialog
                     showSideBar = false
                 },
                 showSideBar = showSideBar
@@ -122,7 +105,20 @@ fun ProjectLayout(
         }
 
         ProjectSettingsDialogs(
-            state = dialogState
+            displayDialog = displaySettingsDialog,
+            onNameChange = { viewModel.setProjectName(project, it) },
+            onPictureChange = { viewModel.setProjectImage(project, it) },
+            onDateChange = { start, end ->
+                viewModel.setProjectDates(project, start, end)
+            },
+            onNumbersChange = {
+                viewModel.setNumberChanges(project, it)
+            },
+            onRemovePerson = { viewModel.removeAllergenPerson(project, it) },
+            onRemoveAllergen = { person, allergen -> viewModel.removeAllergenFromPerson(project, person, allergen) },
+            onAddAllergenPerson = { viewModel.addAllergenPerson(project, it) },
+            onDismissRequest = { displaySettingsDialog = ProjectDialogValues.NONE },
+            project = project
         )
     } else {
         Text(text = "Waiting for the project to be loaded.")

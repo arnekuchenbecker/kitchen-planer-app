@@ -16,41 +16,62 @@
 
 package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.toMutableStateMap
+import com.scouts.kitchenplaner.model.entities.Allergen
+import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
-import com.scouts.kitchenplaner.ui.state.ProjectDialogsState
+import java.util.Date
 
 @Composable
 fun ProjectSettingsDialogs(
-    state: ProjectDialogsState
+    displayDialog: ProjectDialogValues,
+    onDismissRequest: () -> Unit,
+    onNameChange: (String) -> Unit,
+    onPictureChange: (Uri) -> Unit,
+    onDateChange: (Date, Date) -> Unit,
+    onNumbersChange: (Map<MealSlot, Int>) -> Unit,
+    onRemovePerson: (AllergenPerson) -> Unit,
+    onRemoveAllergen: (AllergenPerson, Allergen) -> Unit,
+    onAddAllergenPerson: (AllergenPerson) -> Unit,
+    project: Project
 ) {
-    when (state.displayDialog) {
+    when (displayDialog) {
         ProjectDialogValues.NAME_CHANGE -> NameChangeDialog(
-            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
-            onNameChange = state.onNameChange
+            onDismissRequest = onDismissRequest,
+            onNameChange = onNameChange
         )
         ProjectDialogValues.IMAGE_CHANGE -> ImageChangeDialog(
-            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
-            onImageChange = state.onPictureChange,
-            currentImage = state.currentImage
+            onDismissRequest = onDismissRequest,
+            onImageChange = onPictureChange,
+            currentImage = project.projectImage
         )
         ProjectDialogValues.DATE_CHANGE -> DateChangeDialog(
-            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
-            onDateChange = state.onDateChange,
-            startDate = state.startDate,
-            endDate = state.endDate
+            onDismissRequest = onDismissRequest,
+            onDateChange = onDateChange,
+            startDate = project.startDate,
+            endDate = project.endDate
         )
         ProjectDialogValues.NUMBER_CHANGE -> NumberChangeDialog(
-            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
-            onConfirm = state.onNumbersChange,
-            presentPersons = state.mealSlots.map { Pair(it, state.mealPlan[it].second) }.toMutableStateMap(),
-            mealSlots = state.mealSlots
+            onDismissRequest = onDismissRequest,
+            onConfirm = onNumbersChange,
+            presentPersons = project.mealSlots.map { Pair(it, project.mealPlan[it].second) }.toMutableStateMap(),
+            mealSlots = project.mealSlots
         )
         ProjectDialogValues.INVITE -> InvitationDialog(
-            onDismissRequest = { state.displayDialog = ProjectDialogValues.NONE },
-            projectPublished = state.projectPublished,
-            projectId = state.projectId
+            onDismissRequest = onDismissRequest,
+            projectPublished = false, // TODO - replace with actual value
+            projectId = project.id
+        )
+        ProjectDialogValues.ALLERGENS -> EditAllergenPersonsDialog (
+            onDismissRequest = onDismissRequest,
+            onRemovePerson = onRemovePerson,
+            onRemoveAllergen = onRemoveAllergen,
+            allergenPersons = project.allergenPersons,
+            onAddAllergenPerson = onAddAllergenPerson
         )
         ProjectDialogValues.NONE -> Unit // Nothing to display here
     }

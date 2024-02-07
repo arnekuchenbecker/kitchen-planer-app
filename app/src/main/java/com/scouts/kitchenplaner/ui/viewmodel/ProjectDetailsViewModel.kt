@@ -19,9 +19,12 @@ package com.scouts.kitchenplaner.ui.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.scouts.kitchenplaner.model.entities.Allergen
+import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
+import com.scouts.kitchenplaner.model.usecases.EditAllergens
 import com.scouts.kitchenplaner.model.usecases.EditProjectSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +36,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectDetailsViewModel @Inject constructor(
     private val displayProjectOverview: DisplayProjectOverview,
-    private val projectSettings: EditProjectSettings
+    private val projectSettings: EditProjectSettings,
+    private val editAllergens: EditAllergens
 ) : ViewModel() {
     lateinit var projectFlow: StateFlow<Project>
     suspend fun getProject(projectId: Long) {
@@ -63,6 +67,24 @@ class ProjectDetailsViewModel @Inject constructor(
     fun setNumberChanges(project: Project, changes: Map<MealSlot, Int>) {
         viewModelScope.launch {
             projectSettings.setNumberChanges(project, changes)
+        }
+    }
+
+    fun removeAllergenPerson(project: Project, person: AllergenPerson) {
+        viewModelScope.launch {
+            editAllergens.removeAllergenPerson(project, person)
+        }
+    }
+
+    fun removeAllergenFromPerson(project: Project, person: AllergenPerson, allergen: Allergen) {
+        viewModelScope.launch {
+            editAllergens.removeAllergenFromPerson(project, person, allergen)
+        }
+    }
+
+    fun addAllergenPerson(project: Project, person: AllergenPerson) {
+        viewModelScope.launch {
+            editAllergens.addAllergenPerson(project, person)
         }
     }
 }
