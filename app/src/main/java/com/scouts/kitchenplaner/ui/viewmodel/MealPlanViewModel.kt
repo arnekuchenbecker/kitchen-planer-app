@@ -49,8 +49,8 @@ class MealPlanViewModel @Inject constructor(
     var recipeToExchange = Pair<MealSlot, RecipeStub?>(MealSlot(Date(0), ""), null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var recipeSuggestions = snapshotFlow { recipeQuery }.flatMapLatest {
-        editMealPlan.findRecipesForQuery(it)
+    fun getRecipeSuggestions(project: Project, mealSlot: MealSlot) = snapshotFlow { recipeQuery }.flatMapLatest {
+        editMealPlan.findRecipesForQuery(project, mealSlot, it)
     }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
     fun getAllergenCheck(project: Project, slot: MealSlot): StateFlow<AllergenCheck> {

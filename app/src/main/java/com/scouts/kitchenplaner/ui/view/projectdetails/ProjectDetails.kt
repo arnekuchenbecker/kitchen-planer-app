@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.viewmodel.MealPlanViewModel
 
@@ -36,7 +37,7 @@ fun ProjectDetails(
     onNavigateToRecipeCreation: () -> Unit,
     viewModel: MealPlanViewModel = hiltViewModel()
 ) {
-    var displayRecipeSelectionDialog by remember { mutableStateOf(false) }
+    var selectionDialogForSlot by remember { mutableStateOf<MealSlot?>(null) }
 
     DisplayMealPlan(
         modifier = Modifier.padding(top = 5.dp),
@@ -59,15 +60,15 @@ fun ProjectDetails(
             }
         },
         displayRecipeSelectionDialog = { slot, exchange ->
-            displayRecipeSelectionDialog = true
+            selectionDialogForSlot = slot
             viewModel.recipeToExchange = Pair(slot, exchange)
         }
     )
 
-    if (displayRecipeSelectionDialog) {
-        val suggestions by viewModel.recipeSuggestions.collectAsState()
+    if (selectionDialogForSlot != null) {
+        val suggestions by viewModel.getRecipeSuggestions(project, selectionDialogForSlot!!).collectAsState()
         RecipeSelectionDialog(
-            onDismissRequest = { displayRecipeSelectionDialog = false },
+            onDismissRequest = { selectionDialogForSlot = null },
             onNavigateToRecipeCreation = onNavigateToRecipeCreation,
             onSelection = { newRecipe ->
                 val oldRecipe = viewModel.recipeToExchange.second
@@ -85,7 +86,7 @@ fun ProjectDetails(
                         newRecipe
                     )
                 }
-                displayRecipeSelectionDialog = false
+                selectionDialogForSlot = null
             },
             onQueryChange = viewModel::onRecipeQueryChanged,
             recipeQuery = viewModel.recipeQuery,

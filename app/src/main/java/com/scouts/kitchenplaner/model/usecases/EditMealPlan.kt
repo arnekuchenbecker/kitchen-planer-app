@@ -23,6 +23,7 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class EditMealPlan @Inject constructor(
@@ -67,7 +68,12 @@ class EditMealPlan @Inject constructor(
         projectRepository.deleteMealFromProject(meal, project.id)
     }
 
-    fun findRecipesForQuery(query: String) : Flow<List<RecipeStub>> {
+    fun findRecipesForQuery(project: Project, mealSlot: MealSlot, query: String) : Flow<List<RecipeStub>> {
         return recipeRepository.getRecipesForQueryByName(query)
+            .combine(recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlot)) { suggestions, recipes ->
+                suggestions.filter {
+                    !recipes.any { id -> it.id == id }
+                }
+            }
     }
 }
