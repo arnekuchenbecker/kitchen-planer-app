@@ -45,8 +45,18 @@ class CheckAllergens @Inject constructor(
     fun getAllergenCheck(project: Project, mealSlot: MealSlot): Flow<AllergenCheck> {
         val recipesFlow = recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlot)
             .flatMapLatest { ids ->
-                combine(ids.filter { it != 0L }
-                    .map { recipeRepository.getRecipeStubById(it) }) { flows -> flows.toList() }
+                val filteredIds = ids.filter { it != 0L }
+                if (filteredIds.isNotEmpty()) {
+                    combine(filteredIds
+                        .map {
+                            recipeRepository.getRecipeStubById(it)
+                        }
+                    ) {
+                        stubs -> stubs.toList()
+                    }
+                } else {
+                    flowOf(listOf())
+                }
             }
         val personsFlow = allergenRepository.getAllergenPersonsByProjectID(project.id)
 
@@ -58,12 +68,16 @@ class CheckAllergens @Inject constructor(
                 }
             }
             .combine(recipesFlow) { persons, recipes ->
+                println("${mealSlot.date.time.toDateString()}: ${persons.size}, ${recipes.size}")
                 Pair(persons, recipes)
             }
             .flatMapLatest { (persons, recipes) ->
                 val recipeCoverFlows = persons.map { person ->
                     val coverFlows = recipes.map { recipe ->
                         checkRecipe(recipe, person)
+                    }
+                    if (coverFlows.isEmpty()) {
+                        return@flatMapLatest flowOf(AllergenCheck())
                     }
                     val covers = combine(coverFlows) { covers ->
                         covers.fold(AllergenMealCover.NOT_COVERED) { acc, newValue ->
