@@ -44,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,10 +80,12 @@ fun DisplayMealPlan(
     modifier: Modifier = Modifier
 ) {
     var firstSwap by remember { mutableStateOf<MealSlot?>(null) }
+    val expandedCards = remember { mutableStateListOf<Int>() }
+
     LazyColumnWrapper(
         content = mealSlots,
         modifier = modifier,
-        DisplayContent = { slot, _ ->
+        DisplayContent = { slot, index ->
             val planSlot = mealPlan[slot]
 
             fun onSwapItems() {
@@ -98,15 +101,20 @@ fun DisplayMealPlan(
 
             val coverFlow = remember { getAllergenCheck(slot) }
             val cover by coverFlow.collectAsState()
-            if (slot.date == Date(1707868800000)) {
-                println("${cover.mealCover}, ${cover.coveredPersons.size + cover.notCoveredPersons.size + cover.unknownPersons.size}")
-            }
 
             MealDisplayItem(
                 persons = planSlot.second,
                 recipes = planSlot.first,
                 slot = slot,
                 cover = cover.mealCover,
+                expanded = expandedCards.contains(index),
+                toggleExpanded = {
+                    if (expandedCards.contains(index)) {
+                        expandedCards.remove(index)
+                    } else {
+                        expandedCards.add(index)
+                    }
+                },
                 onSwap = { onSwapItems() },
                 onDeleteRecipe = { onDeleteRecipe(slot, it) },
                 onShowRecipe = onShowRecipe,
@@ -141,17 +149,18 @@ fun MealDisplayItem(
     recipes: Pair<RecipeStub, List<RecipeStub>>?,
     slot: MealSlot,
     cover: AllergenMealCover,
+    expanded: Boolean,
+    toggleExpanded: () -> Unit,
     onSwap: () -> Unit,
     toBeSwapped: Boolean,
     onDeleteRecipe: (RecipeStub?) -> Unit,
     displayRecipeSelectionDialog: (RecipeStub?) -> Unit,
     onShowRecipe: (RecipeStub) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
     ExpandableCard(
         expanded = expanded,
-        onCardArrowClick = { expanded = !expanded },
-        onTitleClick = { expanded = !expanded },
+        onCardArrowClick = toggleExpanded,
+        onTitleClick = toggleExpanded,
         cardState = CardState(
             title = "${slot.date.time.toDateString()}, ${slot.meal}\n$persons ${if (persons == 1) "Person" else "Personen"}",
             titleInteractions = {
@@ -352,6 +361,8 @@ fun MealDisplayItemPreview() {
             recipes = null,
             slot = MealSlot(Date(0), "Frühstück"),
             cover = AllergenMealCover.UNKNOWN,
+            expanded = true,
+            toggleExpanded = {},
             onSwap = {},
             onDeleteRecipe = {},
             onShowRecipe = {},

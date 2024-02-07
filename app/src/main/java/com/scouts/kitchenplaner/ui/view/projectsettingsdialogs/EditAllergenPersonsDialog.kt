@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,14 +48,15 @@ fun EditAllergenPersonsDialog(
         onConfirm = { /* Nothing to do here */ }
     ) {
         var showAdderDialog by remember { mutableStateOf(false) }
-        var adderState = remember { AllergenPersonAdderState() }
+        val adderState = remember { AllergenPersonAdderState() }
+        val expandedCards = remember { mutableStateListOf<Int>() }
         Button(onClick = { showAdderDialog = true }) {
             Text(text = "Weitere Person hinzufügen")
         }
 
         LazyColumnWrapper(
             content = allergenPersons,
-            DisplayContent = { person, _ ->
+            DisplayContent = { person, index ->
                 var personToBeDeleted by remember { mutableStateOf(false) }
                 AllergenCard(
                     name = person.name,
@@ -62,7 +64,15 @@ fun EditAllergenPersonsDialog(
                     onTitleClick = { personToBeDeleted = !personToBeDeleted },
                     onDelete = { onRemovePerson(person) },
                     onItemDelete = { onRemoveAllergen(person, Allergen(it.first, it.second)) },
-                    toBeDeleted = personToBeDeleted
+                    toBeDeleted = personToBeDeleted,
+                    expand = expandedCards.contains(index),
+                    toggleExpand = {
+                        if (expandedCards.contains(index)) {
+                            expandedCards.remove(index)
+                        } else {
+                            expandedCards.add(index)
+                        }
+                    }
                 )
             },
             DisplayEmpty = {

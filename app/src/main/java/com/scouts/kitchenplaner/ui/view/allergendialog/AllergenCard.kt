@@ -38,11 +38,19 @@ import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.ExpandableCard
 
 @Composable
-fun AllergenCard(name: String, allergens: List<Pair<String, Boolean>>, onTitleClick: () -> Unit, onDelete: () -> Unit, onItemDelete: (Pair<String, Boolean>) -> Unit, toBeDeleted: Boolean) {
-    var expand by remember { mutableStateOf(false) }
+fun AllergenCard(
+    name: String,
+    allergens: List<Pair<String, Boolean>>,
+    onTitleClick: () -> Unit,
+    onDelete: () -> Unit,
+    onItemDelete: (Pair<String, Boolean>) -> Unit,
+    toBeDeleted: Boolean,
+    toggleExpand: () -> Unit,
+    expand: Boolean
+) {
     ExpandableCard(
         expanded = expand,
-        onCardArrowClick = { expand = !expand },
+        onCardArrowClick = toggleExpand,
         onTitleClick = onTitleClick,
         cardState = CardState(title = "$name (${allergens.size} EBs)", onDelete = onDelete, toBeDeleted = toBeDeleted) {
             LazyColumn {

@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -64,6 +65,7 @@ fun EditAllergensDialog(
                     .fillMaxHeight()
             ) {
                 var removingIndex by remember { mutableIntStateOf(-1) }
+                val expandedCards = remember { mutableStateListOf<Int>() }
 
                 Button(onClick = { displayDialog = true }) {
                     Text(text = "Neue Person hinzufügen")
@@ -97,7 +99,15 @@ fun EditAllergensDialog(
                             onItemDelete = {(allergen, traces) ->
                                 onRemoveItem(person.name, allergen, traces)
                             },
-                            toBeDeleted = removingIndex == index
+                            toBeDeleted = removingIndex == index,
+                            expand = expandedCards.contains(index),
+                            toggleExpand = {
+                                if (expandedCards.contains(index)) {
+                                    expandedCards.remove(index)
+                                } else {
+                                    expandedCards.add(index)
+                                }
+                            }
                         )
                     },
                     DisplayEmpty = {

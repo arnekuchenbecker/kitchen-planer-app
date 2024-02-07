@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.EnergySavingsLeaf
 import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.MedicalInformation
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.HorizontalDivider
@@ -111,7 +111,7 @@ fun ProjectSettingsSideDrawer(
         SideDrawerItem(
             content = {
                 Icon(
-                    imageVector = Icons.Filled.EnergySavingsLeaf,
+                    imageVector = Icons.Filled.MedicalInformation,
                     contentDescription = "Edit Allergens",
                     modifier = Modifier.padding(end = 15.dp)
                 )

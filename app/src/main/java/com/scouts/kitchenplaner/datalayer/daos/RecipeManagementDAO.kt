@@ -47,12 +47,16 @@ interface RecipeManagementDAO {
         removeAllRecipesFromMeal(projectId, firstMeal, firstDate)
         removeAllRecipesFromMeal(projectId, secondMeal, secondDate)
 
-        addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, firstMeal, firstDate, secondRecipe))
+        if (secondRecipe != null) {
+            addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, firstMeal, firstDate, secondRecipe))
+        }
         addAllAlternativeRecipesToProjectMeal(secondAlternatives.map {
             AlternativeRecipeProjectMealEntity(projectId, firstMeal, firstDate, it)
         })
 
-        addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, secondMeal, secondDate, firstRecipe))
+        if (firstRecipe != null) {
+            addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectId, secondMeal, secondDate, firstRecipe))
+        }
         addAllAlternativeRecipesToProjectMeal(firstAlternatives.map {
             AlternativeRecipeProjectMealEntity(projectId, secondMeal, secondDate, it)
         })
@@ -85,7 +89,7 @@ interface RecipeManagementDAO {
             "WHERE projectId = :projectId " +
             "AND meal = :meal " +
             "AND date = :date")
-    suspend fun getMainRecipeIdForMealSlotImmediate(projectId: Long, meal: String, date: Date) : Long
+    suspend fun getMainRecipeIdForMealSlotImmediate(projectId: Long, meal: String, date: Date) : Long?
 
     @Query("SELECT recipeId FROM alternativeRecipeProjectMeal " +
             "WHERE projectId = :projectId " +

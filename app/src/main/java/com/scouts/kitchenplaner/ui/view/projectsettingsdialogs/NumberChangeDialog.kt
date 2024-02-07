@@ -83,9 +83,9 @@ fun NumberChangeDialog(
                     val color = if (change < 0) {
                         Color.Red
                     } else if (change == 0) {
-                        Color.Yellow
+                        Color(red = 1f, green = 0.7f, blue = 0f)
                     } else {
-                        Color.Green
+                        Color(red = 0f, blue = 0.2f, green = 0.7f)
                     }
                     Text(
                         text = "${if (change > 0) "+" else ""}$change",
