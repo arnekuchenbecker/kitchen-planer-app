@@ -22,5 +22,4 @@ data class RecipeStub (
     val id: Long? = 0,
     val name: String = "",
     val imageURI: Uri
-) {
-}
+)

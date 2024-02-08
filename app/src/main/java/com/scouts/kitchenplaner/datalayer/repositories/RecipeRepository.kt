@@ -31,10 +31,11 @@ import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
-    private val recipeDAO: RecipeDAO
+    private val recipeDAO: RecipeDAO,
 ) {
     fun getRecipeStubsByProjectId(id: Long): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesByProjectId(id).map {
@@ -81,13 +82,13 @@ class RecipeRepository @Inject constructor(
                 ingredientGroups = groups,
                 instructions = instructions.map { it.instruction },
                 traces = dietaryInformation[DietaryTypes.TRACE] ?: listOf(),
-                allergen = dietaryInformation[DietaryTypes.ALLERGEN] ?: listOf(),
+                allergens = dietaryInformation[DietaryTypes.ALLERGEN] ?: listOf(),
                 freeOfAllergen = dietaryInformation[DietaryTypes.FREE_OF] ?: listOf()
             )
         }
     }
 
-    suspend fun createRecipe(recipe: Recipe) {
+    suspend fun createRecipe(recipe: Recipe) : Long {
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
@@ -96,7 +97,7 @@ class RecipeRepository @Inject constructor(
         }
 
         val dataLayerEntity = recipe.toDataLayerEntity()
-        recipeDAO.createRecipe(
+        return recipeDAO.createRecipe(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
             ingredients = ingredients,

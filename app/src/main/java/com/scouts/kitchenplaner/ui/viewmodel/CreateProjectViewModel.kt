@@ -57,8 +57,7 @@ class CreateProjectViewModel @Inject constructor(
             }
 
             if (inputState.allergens.any {
-                    it.arrivalDateMillis == null || it.departureDateMillis == null
-                            || it.departureMeal == "" || it.arrivalMeal == ""
+                    it.arrivalDateMillis == null || it.departureDateMillis == null || it.departureMeal == "" || it.arrivalMeal == ""
                 }) {
                 return@launch
             }

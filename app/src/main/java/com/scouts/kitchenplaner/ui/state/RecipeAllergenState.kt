@@ -14,16 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.viewmodel
+package com.scouts.kitchenplaner.ui.state
 
-import androidx.lifecycle.ViewModel
-import com.scouts.kitchenplaner.model.usecases.RecipeSelection
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import androidx.compose.runtime.mutableStateListOf
 
-@HiltViewModel
-class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
-    ViewModel() {
-    val recipes = recipeSelection.getAllRecipeStubs();
-
+class RecipeAllergenState {
+    val allergens = mutableStateListOf<String>()
+    val traces = mutableStateListOf<String>()
+    val freeOf = mutableStateListOf<String>()
 }

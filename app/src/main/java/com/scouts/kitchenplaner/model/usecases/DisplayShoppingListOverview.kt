@@ -27,10 +27,10 @@ class DisplayShoppingListOverview @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository
 ) {
     fun getAllShoppingListsForProject(project: Project) : Flow<List<ShoppingList>> {
-        return shoppingListRepository.getShoppingListsForProject(project.id ?: 0)
+        return shoppingListRepository.getShoppingListsForProject(project.id)
     }
 
     fun getShoppingListStubsForProject(project: Project) : Flow<List<ShoppingListStub>> {
-        return shoppingListRepository.getShoppingListStubsForProject(project.id ?: 0)
+        return shoppingListRepository.getShoppingListStubsForProject(project.id)
     }
 }
