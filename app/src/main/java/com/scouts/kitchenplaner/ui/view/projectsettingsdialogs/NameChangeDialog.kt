@@ -42,7 +42,6 @@ fun NameChangeDialog(
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
-            placeholder = { Text("PfiLa 2345") },
             label = { Text("Projekt Name") },
             modifier = Modifier.padding(bottom = 20.dp),
             singleLine = true
