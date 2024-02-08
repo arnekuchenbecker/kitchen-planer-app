@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.MedicalInformation
 import androidx.compose.material.icons.filled.Share
@@ -106,6 +107,19 @@ fun ProjectSettingsSideDrawer(
             },
             onClick = {
                 displayDialog(ProjectDialogValues.NUMBER_CHANGE)
+            }
+        )
+        SideDrawerItem(
+            content = {
+                Icon(
+                    imageVector = Icons.Filled.Fastfood,
+                    contentDescription = "Edit meals",
+                    modifier = Modifier.padding(end = 15.dp)
+                )
+                Text(text = "Mahlzeiten")
+            },
+            onClick = {
+                displayDialog(ProjectDialogValues.MEALS)
             }
         )
         SideDrawerItem(

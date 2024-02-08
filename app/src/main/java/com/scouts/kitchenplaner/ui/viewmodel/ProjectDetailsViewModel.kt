@@ -25,6 +25,7 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.usecases.DisplayProjectOverview
 import com.scouts.kitchenplaner.model.usecases.EditAllergens
+import com.scouts.kitchenplaner.model.usecases.EditMealPlan
 import com.scouts.kitchenplaner.model.usecases.EditProjectSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +38,8 @@ import javax.inject.Inject
 class ProjectDetailsViewModel @Inject constructor(
     private val displayProjectOverview: DisplayProjectOverview,
     private val projectSettings: EditProjectSettings,
-    private val editAllergens: EditAllergens
+    private val editAllergens: EditAllergens,
+    private val editMealPlan: EditMealPlan
 ) : ViewModel() {
     lateinit var projectFlow: StateFlow<Project>
     suspend fun getProject(projectId: Long) {
@@ -85,6 +87,24 @@ class ProjectDetailsViewModel @Inject constructor(
     fun addAllergenPerson(project: Project, person: AllergenPerson) {
         viewModelScope.launch {
             editAllergens.addAllergenPerson(project, person)
+        }
+    }
+
+    fun addMeal(project: Project, meal: String, addBefore: Int) {
+        if (!project.meals.contains(meal)) {
+            viewModelScope.launch {
+                if (addBefore < 0) {
+                    editMealPlan.addMeal(project, meal)
+                } else {
+                    editMealPlan.addMeal(project, meal, addBefore)
+                }
+            }
+        }
+    }
+
+    fun removeMeal(project: Project, meal: String) {
+        viewModelScope.launch {
+            editMealPlan.removeMeal(project, meal)
         }
     }
 }

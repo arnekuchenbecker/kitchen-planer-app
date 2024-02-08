@@ -60,7 +60,7 @@ class EditMealPlan @Inject constructor(
         recipeManagementRepository.swapRecipes(project.id, first, second)
     }
 
-    suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size + 1) {
+    suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size) {
         projectRepository.addMealToProject(meal, index, project.id)
     }
 

@@ -37,6 +37,8 @@ fun ProjectSettingsDialogs(
     onRemovePerson: (AllergenPerson) -> Unit,
     onRemoveAllergen: (AllergenPerson, Allergen) -> Unit,
     onAddAllergenPerson: (AllergenPerson) -> Unit,
+    onMealAdd: (String, Int) -> Unit,
+    onMealRemove: (String) -> Unit,
     project: Project
 ) {
     when (displayDialog) {
@@ -72,6 +74,12 @@ fun ProjectSettingsDialogs(
             onRemoveAllergen = onRemoveAllergen,
             allergenPersons = project.allergenPersons,
             onAddAllergenPerson = onAddAllergenPerson
+        )
+        ProjectDialogValues.MEALS -> MealChangeDialog(
+            onDismissRequest = onDismissRequest,
+            meals = project.meals,
+            onMealAdd = onMealAdd,
+            onMealRemove = onMealRemove
         )
         ProjectDialogValues.NONE -> Unit // Nothing to display here
     }

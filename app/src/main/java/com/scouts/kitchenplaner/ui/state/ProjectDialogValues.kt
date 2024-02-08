@@ -50,5 +50,10 @@ enum class ProjectDialogValues {
     /**
      * Display the dialog for editing intolerant persons
      */
-    ALLERGENS
+    ALLERGENS,
+
+    /**
+     * Display the dialog for editing meals
+     */
+    MEALS
 }

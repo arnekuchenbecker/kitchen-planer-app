@@ -118,6 +118,8 @@ fun ProjectLayout(
             onRemoveAllergen = { person, allergen -> viewModel.removeAllergenFromPerson(project, person, allergen) },
             onAddAllergenPerson = { viewModel.addAllergenPerson(project, it) },
             onDismissRequest = { displaySettingsDialog = ProjectDialogValues.NONE },
+            onMealAdd = { meal, index -> viewModel.addMeal(project, meal, index) },
+            onMealRemove = { viewModel.removeMeal(project, it) },
             project = project
         )
     } else {
