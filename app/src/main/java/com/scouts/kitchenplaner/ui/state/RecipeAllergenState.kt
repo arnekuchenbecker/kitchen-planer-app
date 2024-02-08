@@ -14,10 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.state
 
-import android.net.Uri
+import androidx.compose.runtime.mutableStateListOf
 
-class RecipeStub(
-    val id: Long? = 0, val name: String = "", val imageURI: Uri
-)
+class RecipeAllergenState {
+    val allergens = mutableStateListOf<String>()
+    val traces = mutableStateListOf<String>()
+    val freeOf = mutableStateListOf<String>()
+}

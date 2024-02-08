@@ -47,11 +47,12 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeById(id: Long): Flow<Recipe> {
+    fun getRecipeById(id: Long) : Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
         val dietaryFlow = recipeDAO.getAllergensByRecipeId(id)
+
         return combine(
             recipeFlow,
             ingredientFlow,
@@ -77,13 +78,13 @@ class RecipeRepository @Inject constructor(
                 ingredientGroups = groups,
                 instructions = instructions.map { it.instruction },
                 traces = dietaryInformation[DietaryTypes.TRACE] ?: listOf(),
-                allergen = dietaryInformation[DietaryTypes.ALLERGEN] ?: listOf(),
+                allergens = dietaryInformation[DietaryTypes.ALLERGEN] ?: listOf(),
                 freeOfAllergen = dietaryInformation[DietaryTypes.FREE_OF] ?: listOf()
             )
         }
     }
 
-    suspend fun createRecipe(recipe: Recipe) {
+    suspend fun createRecipe(recipe: Recipe) : Long {
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
@@ -92,7 +93,7 @@ class RecipeRepository @Inject constructor(
         }
 
         val dataLayerEntity = recipe.toDataLayerEntity()
-        recipeDAO.createRecipe(
+        return recipeDAO.createRecipe(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
             ingredients = ingredients,
@@ -108,6 +109,18 @@ class RecipeRepository @Inject constructor(
         return recipeDAO.getAllergensByRecipeId(id).map {
             it.map { entity ->
                 entity.toModelEntity()
+            }
+        }
+    }
+
+    fun getAllRecipeStubs(): Flow<List<RecipeStub>> {
+        return recipeDAO.getAllRecipeStubs().map {
+            it.map { stub ->
+                RecipeStub(
+                    id = stub.id,
+                    name = stub.title,
+                    imageURI = Uri.parse(stub.imageURI)
+                )
             }
         }
     }

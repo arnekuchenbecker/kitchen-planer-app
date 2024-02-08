@@ -23,7 +23,7 @@ import javax.inject.Inject
 class CreateRecipe @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend fun createRecipe(recipe: Recipe) {
-        recipeRepository.createRecipe(recipe)
+    suspend fun createRecipe(recipe: Recipe) : Long {
+        return recipeRepository.createRecipe(recipe)
     }
 }

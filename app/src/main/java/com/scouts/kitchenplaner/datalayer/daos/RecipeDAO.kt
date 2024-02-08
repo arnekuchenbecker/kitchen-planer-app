@@ -21,6 +21,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
@@ -102,6 +103,9 @@ interface RecipeDAO {
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
+
+    @Query("SELECT recipeEntity.id AS id,recipeEntity.title AS title, recipeEntity.imageURI AS imageURI FROM recipeEntity")
+    fun getAllRecipeStubs(): Flow<List<RecipeStubDTO>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserRecipeUse(entity: UserRecipeEntity): Long

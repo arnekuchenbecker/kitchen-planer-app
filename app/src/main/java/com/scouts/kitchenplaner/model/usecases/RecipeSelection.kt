@@ -16,21 +16,16 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
-import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.ShoppingList
-import com.scouts.kitchenplaner.model.entities.ShoppingListStub
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class DisplayShoppingListOverview @Inject constructor(
-    private val shoppingListRepository: ShoppingListRepository
-) {
-    fun getAllShoppingListsForProject(project: Project) : Flow<List<ShoppingList>> {
-        return shoppingListRepository.getShoppingListsForProject(project.id)
+class RecipeSelection @Inject constructor(private val repository: RecipeRepository) {
+
+    fun getAllRecipeStubs(): Flow<List<RecipeStub>>{
+        return repository.getAllRecipeStubs();
     }
 
-    fun getShoppingListStubsForProject(project: Project) : Flow<List<ShoppingListStub>> {
-        return shoppingListRepository.getShoppingListStubsForProject(project.id)
-    }
+
 }
