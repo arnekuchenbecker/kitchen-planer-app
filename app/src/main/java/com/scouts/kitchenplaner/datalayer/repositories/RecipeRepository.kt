@@ -82,7 +82,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun createRecipe(recipe: Recipe) {
+    suspend fun createRecipe(recipe: Recipe) : Long {
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
@@ -91,7 +91,7 @@ class RecipeRepository @Inject constructor(
         }
 
         val dataLayerEntity = recipe.toDataLayerEntity()
-        recipeDAO.createRecipe(
+        return recipeDAO.createRecipe(
             recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
             ingredients = ingredients,

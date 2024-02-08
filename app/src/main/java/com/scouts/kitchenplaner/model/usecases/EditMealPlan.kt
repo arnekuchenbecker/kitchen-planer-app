@@ -30,7 +30,7 @@ class EditMealPlan @Inject constructor(
     suspend fun selectRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: Recipe) {
         recipeManagementRepository.chooseMainRecipeForMealSlot(
             project.id,
-            recipe.id ?: -1,
+            recipe.id,
             mealSlot
         )
     }

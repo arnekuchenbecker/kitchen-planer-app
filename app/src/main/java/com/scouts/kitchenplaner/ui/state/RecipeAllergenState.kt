@@ -14,16 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.ui.state
 
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
+import androidx.compose.runtime.mutableStateListOf
 
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
+class RecipeAllergenState {
+    val allergens = mutableStateListOf<String>()
+    val traces = mutableStateListOf<String>()
+    val freeOf = mutableStateListOf<String>()
 }
