@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,7 +43,8 @@ fun SettingDialog(
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface (
-            shape = RoundedCornerShape(20.dp)
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column (
                 modifier = Modifier.padding(20.dp),
