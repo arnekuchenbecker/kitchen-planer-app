@@ -64,7 +64,7 @@ class CreateRecipeViewModel @Inject constructor(
                 description = description,
                 numberOfPeople = calculatedFor,
                 traces = allergenState.traces,
-                allergen = allergenState.allergens,
+                allergens = allergenState.allergens,
                 freeOfAllergen = allergenState.freeOf,
                 instructions = instructions,
                 ingredientGroups = ingredients.map { (name, ingredients) ->
