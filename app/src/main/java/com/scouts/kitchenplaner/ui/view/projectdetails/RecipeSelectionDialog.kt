@@ -52,7 +52,7 @@ fun RecipeSelectionDialog(
     onDismissRequest: () -> Unit,
     onNavigateToRecipeCreation: () -> Unit,
     onQueryChange: (String) -> Unit,
-    onSelection: (Long) -> Unit,
+    onSelection: (RecipeStub) -> Unit,
     recipeQuery: String,
     searchResults: List<RecipeStub>
 ) {
@@ -105,7 +105,7 @@ fun RecipeSelectionDialog(
                         DisplayContent = { it, _ ->
                             OverviewField (
                                 modifier = Modifier.height(50.dp).padding(horizontal = 5.dp),
-                                onClick = { onSelection(it.id ?: 0) },
+                                onClick = { onSelection(it) },
                                 imageUri = it.imageURI,
                                 imageDescription = "Recipe Image for ${it.name}",
                                 text = it.name

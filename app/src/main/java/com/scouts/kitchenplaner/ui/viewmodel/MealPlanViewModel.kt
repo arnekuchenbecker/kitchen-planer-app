@@ -83,24 +83,24 @@ class MealPlanViewModel @Inject constructor(
         recipeQuery = newQuery
     }
 
-    fun exchangeRecipe(project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newID: Long) {
+    fun exchangeRecipe(project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newRecipe: RecipeStub) {
         viewModelScope.launch {
             if (project.mealPlan[mealSlot].first?.first?.id == oldRecipe.id) {
                 editMealPlan.removeMainRecipeFromMeal(project, mealSlot)
-                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
+                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newRecipe)
             } else {
                 editMealPlan.removeAlternativeRecipeFromMeal(project, mealSlot, oldRecipe)
-                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
+                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newRecipe)
             }
         }
     }
 
-    fun addRecipe(project: Project, mealSlot: MealSlot, newID: Long) {
+    fun addRecipe(project: Project, mealSlot: MealSlot, newRecipe: RecipeStub) {
         viewModelScope.launch {
             if (project.mealPlan[mealSlot].first != null) {
-                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newID)
+                editMealPlan.addAlternativeRecipeForMealSlot(project, mealSlot, newRecipe)
             } else {
-                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newID)
+                editMealPlan.selectMainRecipeForMealSlot(project, mealSlot, newRecipe)
             }
         }
     }
