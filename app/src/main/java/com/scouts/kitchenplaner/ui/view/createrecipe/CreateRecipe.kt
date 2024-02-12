@@ -18,8 +18,11 @@ package com.scouts.kitchenplaner.ui.view.createrecipe
 
 import android.content.Intent
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -65,6 +68,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.ui.state.RecipeAllergenState
+import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
@@ -194,6 +199,11 @@ fun CreateRecipe(
                 }
             )
 
+            AllergenInput(
+                modifier = columnItemModifier,
+                allergens = viewModel.allergenState
+            )
+
             Spacer(modifier = Modifier.height(100.dp))
         }
     }
@@ -215,13 +225,7 @@ fun InstructionInput(
             .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
             .padding(15.dp)
     ) {
-        Text(
-            text = "Kochanweisungen",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 10.dp)
-        )
+        Headline(text = "Kochanweisungen")
         HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -306,13 +310,7 @@ fun IngredientsInput(
             .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
             .padding(15.dp)
     ) {
-        Text(
-            text = "Zutaten",
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 10.dp)
-        )
+        Headline(text = "Zutaten")
         ingredientGroups.forEach { (name, ingredients) ->
             HorizontalDivider(modifier = Modifier.padding(10.dp))
             Row(
@@ -433,4 +431,103 @@ fun DisplayIngredient(
             )
         }
     }
+}
+
+@Composable
+fun AllergenInput(
+    modifier: Modifier = Modifier,
+    allergens: RecipeAllergenState
+) {
+    Column(
+        modifier = modifier
+            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+            .padding(15.dp)
+    ) {
+        AllergenCategoryInput(
+            title = { Headline(text = "Enthält Allergene") },
+            content = allergens.allergens,
+            onAdd = { allergens.allergens.add(it) },
+            onDelete = { allergen -> allergens.allergens.removeAll { it == allergen } }
+        )
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
+
+        AllergenCategoryInput(
+            title = { Headline("Enthält Spuren") },
+            content = allergens.traces,
+            onAdd = { allergens.traces.add(it) },
+            onDelete = { allergen -> allergens.traces.removeAll { it == allergen } }
+        )
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
+
+        AllergenCategoryInput(
+            title = { Headline("Enthält nicht") },
+            content = allergens.freeOf,
+            onAdd = { allergens.freeOf.add(it) },
+            onDelete = { allergen -> allergens.traces.removeAll { it == allergen } }
+        )
+    }
+}
+
+@Composable
+fun AllergenCategoryInput(
+    title: @Composable () -> Unit,
+    content: List<String>,
+    onAdd: (String) -> Unit,
+    onDelete: (String) -> Unit
+) {
+    Column {
+        title()
+        var newAllergen by remember { mutableStateOf("") }
+        OutlinedTextField(
+            value = newAllergen,
+            onValueChange = { newAllergen = it },
+            singleLine = true,
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        onAdd(newAllergen)
+                        newAllergen = ""
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Create new ingredient group"
+                    )
+                }
+            },
+            label = { Text("Allergen hinzufügen") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        content.forEach {
+            var toBeDeleted by remember { mutableStateOf(false) }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
+                    .height(45.dp)
+                    .clickable { toBeDeleted = !toBeDeleted },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = it)
+                if (toBeDeleted) {
+                    DeleteButton(onClick = { onDelete(it) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ColumnScope.Headline(text: String) {
+    Text(
+        text = text,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(bottom = 10.dp)
+    )
 }
