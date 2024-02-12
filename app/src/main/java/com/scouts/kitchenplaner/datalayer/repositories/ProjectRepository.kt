@@ -50,7 +50,7 @@ class ProjectRepository @Inject constructor(
     private val recipeManagementDAO: RecipeManagementDAO,
     private val shoppingListDAO: ShoppingListDAO
 ) {
-    suspend fun insertProject(project: Project, creator: User) : Long {
+    suspend fun insertProject(project: Project, creator: User): Long {
         val projectId = projectDAO.createProject(
             project = project.toDataLayerEntity(),
             meals = project.meals.mapIndexed { index, it -> MealEntity(it, index, 0) }
@@ -62,15 +62,15 @@ class ProjectRepository @Inject constructor(
         if (!existsUser(creator)) { // TODO - should this really be how it works?
             projectDAO.insertUser(UserEntity(creator.username))
         }
-        projectDAO.addUserToProject(UserProjectEntity(projectId, creator.username))
+        projectDAO.addUserToProject(UserProjectEntity(projectId, creator.username, Date()))
         return projectId
     }
 
-    fun getProjectMetaDataByID(id: Long) : Flow<ProjectMetaData> {
+    fun getProjectMetaDataByID(id: Long): Flow<ProjectMetaData> {
         return projectDAO.getProjectById(id).map { it.toModelEntity() }
     }
 
-    fun getMealsByProjectID(id: Long) : Flow<List<String>> {
+    fun getMealsByProjectID(id: Long): Flow<List<String>> {
         return projectDAO.getMealsByProjectID(id)
     }
 
@@ -78,7 +78,7 @@ class ProjectRepository @Inject constructor(
         projectDAO.updateImage(ProjectImageDTO(id, imageUri.toString()))
     }
 
-    fun getPersonNumberChangesByProjectID(id: Long) : Flow<Map<MealSlot, Int>> {
+    fun getPersonNumberChangesByProjectID(id: Long): Flow<Map<MealSlot, Int>> {
         return projectDAO.getPersonNumberChangesByProjectID(id).map {
             val changeMap = mutableMapOf<MealSlot, Int>()
             changeMap.putAll(it.map { change ->
@@ -125,12 +125,12 @@ class ProjectRepository @Inject constructor(
      * Testing purposes only, should be deleted once more robust methods of interacting with the
      * database have been established
      */
-    suspend fun getProjectByProjectName(projectName: String) : ProjectMetaData {
+    suspend fun getProjectByProjectName(projectName: String): ProjectMetaData {
         val entity = projectDAO.getProjectByProjectName(projectName)
         return entity.toModelEntity()
     }
 
-    fun getProjectOverview(user: User) : Flow<List<ProjectStub>> {
+    fun getProjectOverview(user: User): Flow<List<ProjectStub>> {
         return projectDAO.getProjectsForUser(user.username).map {
             it.map { project ->
                 ProjectStub(project.name, project.id, Uri.parse(project.imageUri))
@@ -141,7 +141,7 @@ class ProjectRepository @Inject constructor(
     /**
      * Testing purposes only
      */
-    fun getAllProjectsOverview() : Flow<List<ProjectStub>> {
+    fun getAllProjectsOverview(): Flow<List<ProjectStub>> {
         return projectDAO.getAllProjectStubs().distinctUntilChanged { old, new ->
             old.size == new.size && new.containsAll(old)
         }.map {
@@ -152,7 +152,7 @@ class ProjectRepository @Inject constructor(
     }
 
     suspend fun leaveProject(user: User, projectId: Long) {
-        projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username))
+        projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username, Date()))
     }
 
     suspend fun archiveProject(projectId: Long) {
@@ -163,7 +163,21 @@ class ProjectRepository @Inject constructor(
         projectDAO.setProjectArchivedStatus(ProjectArchivedDTO(projectId, true))
     }
 
-    private suspend fun existsUser(user: User) : Boolean {
+    // TODO has to be used every time a user sees a project
+    suspend fun updateProjectShown(projectId: Long, user: User, time: Date) {
+        projectDAO.updateLastShownProjectForUser(UserProjectEntity(projectId, user.username, time))
+    }
+
+    fun getLastShownProjectIds(user: User, limit: Int): List<Long> {
+        val projects = projectDAO.getLatestShownProjectsForUser(user.username, limit)
+            .map { project ->
+                project.projectId
+            }
+        return projects
+    }
+
+    private suspend fun existsUser(user: User): Boolean {
         return projectDAO.getExistsUserByName(user.username) == 1
     }
+
 }

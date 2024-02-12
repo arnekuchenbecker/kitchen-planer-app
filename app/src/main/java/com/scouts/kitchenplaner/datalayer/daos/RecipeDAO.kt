@@ -26,6 +26,7 @@ import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -105,4 +106,10 @@ interface RecipeDAO {
 
     @Query("SELECT recipeEntity.id AS id,recipeEntity.title AS title, recipeEntity.imageURI AS imageURI FROM recipeEntity")
     fun getAllRecipeStubs(): Flow<List<RecipeStubDTO>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserRecipeUse(entity: UserRecipeEntity): Long
+
+    @Query("SELECT * FROM userRecipe WHERE user = :user ORDER BY lastShown DESC LIMIT :limit")
+    fun getLatestRecipesForUser(user: String, limit: Int): List<UserRecipeEntity>
 }

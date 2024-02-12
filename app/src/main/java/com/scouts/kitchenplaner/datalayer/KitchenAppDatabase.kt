@@ -39,6 +39,7 @@ import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import com.scouts.kitchenplaner.datalayer.typeconverters.DateConverter
 import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
 
@@ -58,7 +59,8 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         AlternativeRecipeProjectMealEntity::class,
         PersonNumberChangeEntity::class,
         ShoppingListEntity::class,
-        ShoppingListEntryEntity::class
+        ShoppingListEntryEntity::class,
+        UserRecipeEntity::class
     ],
     version = 5,
     exportSchema = false
