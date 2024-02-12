@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
@@ -66,7 +67,7 @@ interface RecipeDAO {
     @Insert
     suspend fun insertIngredient(entity: IngredientEntity): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")

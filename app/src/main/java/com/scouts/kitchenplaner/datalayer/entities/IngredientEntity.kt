@@ -19,7 +19,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 
 @Entity(
-    primaryKeys = ["ingredientGroup", "recipe"]
+    primaryKeys = ["ingredientGroup", "recipe", "name"]
 )
 data class IngredientEntity(
     var recipe: Long,
