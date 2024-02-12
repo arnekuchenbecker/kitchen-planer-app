@@ -42,7 +42,7 @@ class CreateRecipeViewModel @Inject constructor(
     var recipeName by mutableStateOf("")
     var uri by mutableStateOf<Uri?>(null)
     var description by mutableStateOf("")
-    var calculatedFor by mutableStateOf(1)
+    var calculatedFor by mutableStateOf("1")
     var allergenState by mutableStateOf(RecipeAllergenState())
     val instructions = mutableStateListOf<String>()
     private val _ingredients = mutableStateMapOf<String, SnapshotStateList<Ingredient>>()
@@ -62,7 +62,7 @@ class CreateRecipeViewModel @Inject constructor(
                 name = recipeName,
                 imageURI = uri ?: Uri.EMPTY,
                 description = description,
-                numberOfPeople = calculatedFor,
+                numberOfPeople = calculatedFor.toIntOrNull() ?: 1,
                 traces = allergenState.traces,
                 allergens = allergenState.allergens,
                 freeOfAllergen = allergenState.freeOf,
@@ -74,5 +74,33 @@ class CreateRecipeViewModel @Inject constructor(
             val recipeId = createRecipe.createRecipe(recipe)
             navigateFlow.emit(recipeId)
         }
+    }
+
+    fun addIngredient(group: String, ingredient: Ingredient) {
+        if (ingredient.name.isNotBlank() && ingredient.amount != 0f && ingredient.unit.isNotBlank()) {
+            _ingredients[group]?.add(ingredient)
+        }
+    }
+
+    fun addIngredientGroup(group: String) {
+        if (!_ingredients.containsKey(group)) {
+            _ingredients[group] = mutableStateListOf()
+        }
+    }
+
+    fun deleteIngredient(group: String, ingredient: Ingredient) {
+        _ingredients[group]?.removeAll { it.name == ingredient.name }
+    }
+
+    fun deleteGroup(group: String) {
+        _ingredients.remove(group)
+    }
+
+    fun importRecipe(url: String) {
+        //TODO
+    }
+
+    fun importRecipeFromID(id: Long) {
+        //TODO
     }
 }
