@@ -20,6 +20,7 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
@@ -28,14 +29,15 @@ import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.RecipeStub
+import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-
+import java.util.Date
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(
-    private val recipeDAO: RecipeDAO,
+    private val recipeDAO: RecipeDAO
 ) {
     fun getRecipeStubsByProjectId(id: Long): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesByProjectId(id).map {
@@ -135,5 +137,14 @@ class RecipeRepository @Inject constructor(
                 RecipeStub(entity.id, entity.title, Uri.parse(entity.imageURI))
             }
         }
+    }
+
+    // TODO has to be used every time a user sees a recipe
+    suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
+        recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))
+    }
+
+    fun getLastShownRecipeIdsForUser(user: User, limit: Int): List<Long> {
+        return recipeDAO.getLatestRecipesForUser(user.username, limit).map { it -> it.recipe }
     }
 }
