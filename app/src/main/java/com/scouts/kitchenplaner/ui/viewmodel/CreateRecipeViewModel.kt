@@ -96,11 +96,14 @@ class CreateRecipeViewModel @Inject constructor(
         _ingredients.remove(group)
     }
 
-    fun importRecipe(url: String) {
+    /**
+     * Source can either be the full chefkoch URL or the recipe ID only
+     */
+    fun importRecipe(source: String) {
         //TODO
     }
 
-    fun importRecipeFromID(id: Long) {
+    private fun importRecipeFromID(id: Long) {
         //TODO
     }
 }

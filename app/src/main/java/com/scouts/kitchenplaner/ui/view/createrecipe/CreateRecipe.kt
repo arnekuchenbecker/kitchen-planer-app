@@ -17,39 +17,24 @@
 package com.scouts.kitchenplaner.ui.view.createrecipe
 
 import android.content.Intent
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -63,13 +48,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.scouts.kitchenplaner.model.entities.Ingredient
-import com.scouts.kitchenplaner.ui.state.RecipeAllergenState
-import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
@@ -209,325 +189,9 @@ fun CreateRecipe(
     }
 
     if (showImportDialog) {
-        //TODO
-    }
-}
-
-@Composable
-fun InstructionInput(
-    modifier: Modifier = Modifier,
-    instructions: List<String>,
-    onAddInstruction: (String, Int?) -> Unit
-) {
-    var showAddInstructionDialog by remember { mutableStateOf(false) }
-    Column(
-        modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
-    ) {
-        Headline(text = "Kochanweisungen")
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Weiteren Schritt hinzufügen...", modifier = Modifier.padding(end = 15.dp))
-            OutlinedIconButton(onClick = { showAddInstructionDialog = true }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Open dialog to add a new instruction"
-                )
-            }
-        }
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
-        instructions.forEachIndexed { index, instruction ->
-            Row {
-                Box(modifier = Modifier.width(30.dp)) {
-                    Text("${index + 1}.")
-                }
-                Text(instruction)
-            }
-        }
-    }
-
-    if (showAddInstructionDialog) {
-        Dialog(
-            onDismissRequest = { showAddInstructionDialog = false }
-        ) {
-            var numberFieldText by remember { mutableStateOf("") }
-            var instructionText by remember { mutableStateOf("") }
-            Surface(shape = RoundedCornerShape(15.dp)) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    OutlinedNumberField(
-                        value = numberFieldText,
-                        onValueChange = { numberFieldText = it },
-                        label = { Text(text = "Einfügen vor Schritt...") },
-                        type = NumberFieldType.POSITIVE,
-                        modifier = Modifier.padding(vertical = 5.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = instructionText,
-                        onValueChange = { instructionText = it },
-                        label = { Text(text = "Anweisungen") },
-                        modifier = Modifier.padding(vertical = 5.dp)
-                    )
-
-                    OutlinedButton(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 5.dp),
-                        onClick = {
-                            onAddInstruction(
-                                instructionText,
-                                numberFieldText.toIntOrNull()?.minus(1)
-                            )
-                            showAddInstructionDialog = false
-                        }
-                    ) {
-                        Text(text = "Anweisung hinzufügen")
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun IngredientsInput(
-    modifier: Modifier = Modifier,
-    ingredientGroups: Map<String, List<Ingredient>>,
-    onGroupAdd: (String) -> Unit,
-    onIngredientAdd: (String, Ingredient) -> Unit,
-    onIngredientDelete: (String, Ingredient) -> Unit,
-    onDeleteIngredientGroup: (String) -> Unit
-) {
-    println("Displaying ingredients: ${ingredientGroups.size}")
-    var addIngredientToGroup by remember { mutableStateOf("") }
-    var newGroupName by remember { mutableStateOf("") }
-    Column(
-        modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
-    ) {
-        Headline(text = "Zutaten")
-        ingredientGroups.forEach { (name, ingredients) ->
-            HorizontalDivider(modifier = Modifier.padding(10.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = name, fontWeight = FontWeight.Black)
-                Spacer(modifier = Modifier.weight(1.0f))
-                IconButton(
-                    onClick = {
-                        addIngredientToGroup = name
-                    }
-                ) {
-                    Icon(Icons.Filled.Add, "Add ingredient to group")
-                }
-                IconButton(
-                    onClick = {
-                        onDeleteIngredientGroup(name)
-                    }
-                ) {
-                    Icon(Icons.Filled.Delete, "Delete ingredient group")
-                }
-            }
-            ingredients.forEach {
-                DisplayIngredient(onDeleteClick = { onIngredientDelete(name, it) }, ingredient = it)
-            }
-        }
-
-        OutlinedTextField(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            value = newGroupName,
-            onValueChange = { newGroupName = it },
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        onGroupAdd(newGroupName)
-                        newGroupName = ""
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Create new ingredient group"
-                    )
-                }
-            },
-            label = { Text("Gruppe hinzufügen") }
+        RecipeImportDialog(
+            onDismissRequest = { showImportDialog = false },
+            importRecipe = { viewModel.importRecipe(it) }
         )
     }
-
-    if (addIngredientToGroup.isNotEmpty()) {
-        var name by remember { mutableStateOf("") }
-        var amount by remember { mutableStateOf("") }
-        var unit by remember { mutableStateOf("") }
-        Dialog(onDismissRequest = { addIngredientToGroup = "" }) {
-            Surface(shape = RoundedCornerShape(15.dp)) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text(text = "Zutat") },
-                        modifier = Modifier.padding(vertical = 5.dp)
-                    )
-
-                    OutlinedNumberField(
-                        value = amount,
-                        onValueChange = { amount = it },
-                        label = { Text(text = "Menge") },
-                        type = NumberFieldType.FLOAT,
-                        modifier = Modifier.padding(vertical = 5.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = unit,
-                        onValueChange = { unit = it },
-                        label = { Text(text = "Einheit") },
-                        modifier = Modifier.padding(vertical = 5.dp)
-                    )
-
-                    OutlinedButton(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 5.dp),
-                        onClick = {
-                            onIngredientAdd(
-                                addIngredientToGroup,
-                                Ingredient(name, amount.toFloatOrNull() ?: 0f, unit)
-                            )
-                            name = ""
-                            amount = ""
-                            unit = ""
-                            addIngredientToGroup = ""
-                        }
-                    ) {
-                        Text(text = "Zutat hinzufügen")
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DisplayIngredient(
-    onDeleteClick: () -> Unit,
-    ingredient: Ingredient
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = ingredient.name)
-        Spacer(modifier = Modifier.weight(1.0f))
-        Text(text = "${ingredient.amount} ${ingredient.unit}")
-        IconButton(
-            onClick = onDeleteClick
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Edit ingredient"
-            )
-        }
-    }
-}
-
-@Composable
-fun AllergenInput(
-    modifier: Modifier = Modifier,
-    allergens: RecipeAllergenState
-) {
-    Column(
-        modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
-    ) {
-        AllergenCategoryInput(
-            title = { Headline(text = "Enthält Allergene") },
-            content = allergens.allergens,
-            onAdd = { allergens.allergens.add(it) },
-            onDelete = { allergen -> allergens.allergens.removeAll { it == allergen } }
-        )
-
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
-
-        AllergenCategoryInput(
-            title = { Headline("Enthält Spuren") },
-            content = allergens.traces,
-            onAdd = { allergens.traces.add(it) },
-            onDelete = { allergen -> allergens.traces.removeAll { it == allergen } }
-        )
-
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
-
-        AllergenCategoryInput(
-            title = { Headline("Enthält nicht") },
-            content = allergens.freeOf,
-            onAdd = { allergens.freeOf.add(it) },
-            onDelete = { allergen -> allergens.traces.removeAll { it == allergen } }
-        )
-    }
-}
-
-@Composable
-fun AllergenCategoryInput(
-    title: @Composable () -> Unit,
-    content: List<String>,
-    onAdd: (String) -> Unit,
-    onDelete: (String) -> Unit
-) {
-    Column {
-        title()
-        var newAllergen by remember { mutableStateOf("") }
-        OutlinedTextField(
-            value = newAllergen,
-            onValueChange = { newAllergen = it },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        onAdd(newAllergen)
-                        newAllergen = ""
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Create new ingredient group"
-                    )
-                }
-            },
-            label = { Text("Allergen hinzufügen") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        content.forEach {
-            var toBeDeleted by remember { mutableStateOf(false) }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp)
-                    .height(45.dp)
-                    .clickable { toBeDeleted = !toBeDeleted },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = it)
-                if (toBeDeleted) {
-                    DeleteButton(onClick = { onDelete(it) })
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ColumnScope.Headline(text: String) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(bottom = 10.dp)
-    )
 }
