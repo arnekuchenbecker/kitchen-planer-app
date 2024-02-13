@@ -40,7 +40,7 @@ class NetworkLayerModule {
 
     @Provides
     @Singleton
-    fun provideChefkochAPISerivce(retrofit: Retrofit) : ChefkochAPIService {
+    fun provideChefkochAPIService(retrofit: Retrofit) : ChefkochAPIService {
         return retrofit.create(ChefkochAPIService::class.java)
     }
 }
