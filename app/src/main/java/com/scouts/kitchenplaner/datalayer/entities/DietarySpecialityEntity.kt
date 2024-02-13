@@ -19,10 +19,10 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.PrimaryKey
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
 
 @Entity(
+    primaryKeys = ["recipe", "speciality"],
     foreignKeys = [ForeignKey(
         entity = RecipeEntity::class,
         parentColumns = ["id"],
@@ -32,7 +32,7 @@ import com.scouts.kitchenplaner.model.entities.DietaryTypes
     indices = [Index("recipe")]
 )
 data class DietarySpecialityEntity(
-    @PrimaryKey var recipe: Long,
+    var recipe: Long,
     val type: DietaryTypes,
     val speciality: String
 )
