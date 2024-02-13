@@ -16,7 +16,6 @@
 
 package com.scouts.kitchenplaner.ui.view.createrecipe
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +28,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -45,7 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.Ingredient
-import com.scouts.kitchenplaner.ui.Headline
+import com.scouts.kitchenplaner.ui.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
@@ -58,17 +56,14 @@ fun IngredientsInput(
     onIngredientDelete: (String, Ingredient) -> Unit,
     onDeleteIngredientGroup: (String) -> Unit
 ) {
-    println("Displaying ingredients: ${ingredientGroups.size}")
     var addIngredientToGroup by remember { mutableStateOf("") }
     var newGroupName by remember { mutableStateOf("") }
-    Column(
+
+    ContentBox(
+        title = "Zutaten",
         modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
     ) {
-        Headline(text = "Zutaten")
         ingredientGroups.forEach { (name, ingredients) ->
-            HorizontalDivider(modifier = Modifier.padding(10.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -92,6 +87,7 @@ fun IngredientsInput(
             ingredients.forEach {
                 DisplayIngredient(onDeleteClick = { onIngredientDelete(name, it) }, ingredient = it)
             }
+            HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
 
         OutlinedTextField(

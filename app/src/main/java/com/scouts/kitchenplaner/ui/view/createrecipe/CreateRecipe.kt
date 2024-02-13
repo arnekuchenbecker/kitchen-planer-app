@@ -31,14 +31,10 @@ import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.view.HeaderWithButton
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
@@ -71,25 +68,15 @@ fun CreateRecipe(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                title = {
-                    Text("Create a New Recipe")
-                },
-                actions = {
-                    IconButton(onClick = { showImportDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.ImportExport,
-                            contentDescription = "Import Recipe from chefkoch.de"
-                        )
-                    }
-                }
-            )
-
+            HeaderWithButton(
+                title = "Create a New Recipe",
+                buttonClick = { showImportDialog = true }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ImportExport,
+                    contentDescription = "Import Recipe from chefkoch.de"
+                )
+            }
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(

@@ -16,7 +16,6 @@
 
 package com.scouts.kitchenplaner.ui.view.createrecipe
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
@@ -43,7 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.scouts.kitchenplaner.ui.Headline
+import com.scouts.kitchenplaner.ui.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
@@ -55,13 +53,10 @@ fun InstructionInput(
     onAddInstruction: (String, Int?) -> Unit
 ) {
     var showAddInstructionDialog by remember { mutableStateOf(false) }
-    Column(
+    ContentBox(
+        title = "Kochanweisungen",
         modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
     ) {
-        Headline(text = "Kochanweisungen")
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
