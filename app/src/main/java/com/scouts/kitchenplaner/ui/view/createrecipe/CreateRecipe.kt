@@ -28,9 +28,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.viewmodel.CreateRecipeViewModel
 
 @Composable
-fun CreateRecipe(onNavigationToRecipeDetails: (Long) -> Unit) {
+fun CreateRecipe(
+    onNavigationToRecipeDetails: (Long) -> Unit,
+    viewModel: CreateRecipeViewModel = hiltViewModel()
+) {
     var recipeID by remember { mutableStateOf(0f) }
     Column {
         Text("Here you can create a new recipe")
@@ -47,6 +52,9 @@ fun CreateRecipe(onNavigationToRecipeDetails: (Long) -> Unit) {
             Button(onClick = { onNavigationToRecipeDetails(recipeID.toLong()) }) {
 
             }
+        }
+        Button(onClick = { viewModel.testImport() }) {
+            Text("Import Recipe")
         }
     }
 }

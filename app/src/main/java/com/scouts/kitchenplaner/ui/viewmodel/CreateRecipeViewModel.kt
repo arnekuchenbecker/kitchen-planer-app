@@ -29,6 +29,7 @@ import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.CreateRecipe
+import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
 import com.scouts.kitchenplaner.ui.state.RecipeAllergenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateRecipeViewModel @Inject constructor(
-    private val createRecipe: CreateRecipe
+    private val createRecipe: CreateRecipe,
+    private val chefkochAPIService: ChefkochAPIService
 ) : ViewModel() {
     var recipeName by mutableStateOf("")
     var uri by mutableStateOf<Uri?>(null)
@@ -54,7 +56,8 @@ class CreateRecipeViewModel @Inject constructor(
     fun createRecipe() {
         if (recipeName.isBlank()
             || ingredients.isEmpty()
-            || ingredients.any { (_, ingredients) -> ingredients.isEmpty() }) {
+            || ingredients.any { (_, ingredients) -> ingredients.isEmpty() }
+        ) {
             return
         }
         viewModelScope.launch {
@@ -73,6 +76,23 @@ class CreateRecipeViewModel @Inject constructor(
             )
             val recipeId = createRecipe.createRecipe(recipe)
             navigateFlow.emit(recipeId)
+        }
+    }
+
+    fun testImport() = viewModelScope.launch {
+        val response = chefkochAPIService.getRecipe(1103211216284465)
+        if (response.isSuccessful) {
+            println("Request successful: ${response.code()}")
+            val body = response.body() ?: return@launch
+            println("Found recipe ${body.title}")
+            body.ingredientGroups.forEach {
+                println("Found ingredient group ${it.header}")
+                it.ingredients.forEach { ingredient ->
+                    println(ingredient)
+                }
+            }
+        } else {
+            println("Request failed (${response.code()})")
         }
     }
 }
