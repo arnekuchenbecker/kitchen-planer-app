@@ -16,11 +16,12 @@
 
 package com.scouts.kitchenplaner.networklayer
 
-import retrofit2.Call
+import com.scouts.kitchenplaner.networklayer.dtos.ChefkochRecipe
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ChefkochAPIService {
     @GET("recipes/{id}")
-    fun getRecipe(@Path("id") recipeId: Long) : Call<Unit>
+    suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
 }
