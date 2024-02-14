@@ -31,8 +31,8 @@ class ImportRecipe @Inject constructor(
 ) {
     suspend fun import(
         id: Long,
-        onSuccess: (Recipe) -> Unit,
-        onFailure: (Int, String) -> Unit
+        onFailure: (Int, String) -> Unit,
+        onSuccess: (Recipe) -> Unit
     ) {
         val response = chefkochAPIService.getRecipe(id)
         if (response.isSuccessful) {
@@ -48,7 +48,7 @@ class ImportRecipe @Inject constructor(
                     name = recipeName,
                     imageURI = uri,
                     numberOfPeople = chefkochRecipe.servings,
-                    instructions = chefkochRecipe.instructions.split("\n\n"),
+                    instructions = chefkochRecipe.instructions.split("\n").filter { it.isNotBlank() },
                     ingredientGroups = chefkochRecipe.ingredientGroups.map { group ->
                         val ingredients = group.ingredients.map { Ingredient(it.name, it.amount, it.unit) }
                         IngredientGroup(group.header, ingredients)
