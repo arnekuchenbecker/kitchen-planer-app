@@ -14,17 +14,25 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.ui
 
-import androidx.room.Entity
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 
-@Entity(
-    primaryKeys = ["ingredientGroup", "recipe", "name"]
-)
-data class IngredientEntity(
-    var recipe: Long,
-    val ingredientGroup: String,
-    val name: String,
-    val amount: Float,
-    val unit: String //TODO maybe change for calculation
-)
+
+@Composable
+fun ColumnScope.Headline(text: String) {
+    Text(
+        text = text,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(bottom = 10.dp)
+    )
+}

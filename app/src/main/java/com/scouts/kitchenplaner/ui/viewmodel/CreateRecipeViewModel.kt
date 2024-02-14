@@ -44,7 +44,7 @@ class CreateRecipeViewModel @Inject constructor(
     var recipeName by mutableStateOf("")
     var uri by mutableStateOf<Uri?>(null)
     var description by mutableStateOf("")
-    var calculatedFor by mutableStateOf(1)
+    var calculatedFor by mutableStateOf("1")
     var allergenState by mutableStateOf(RecipeAllergenState())
     val instructions = mutableStateListOf<String>()
     private val _ingredients = mutableStateMapOf<String, SnapshotStateList<Ingredient>>()
@@ -65,7 +65,7 @@ class CreateRecipeViewModel @Inject constructor(
                 name = recipeName,
                 imageURI = uri ?: Uri.EMPTY,
                 description = description,
-                numberOfPeople = calculatedFor,
+                numberOfPeople = calculatedFor.toIntOrNull() ?: 1,
                 traces = allergenState.traces,
                 allergens = allergenState.allergens,
                 freeOfAllergen = allergenState.freeOf,
@@ -79,20 +79,34 @@ class CreateRecipeViewModel @Inject constructor(
         }
     }
 
-    fun testImport() = viewModelScope.launch {
-        val response = chefkochAPIService.getRecipe(1103211216284465)
-        if (response.isSuccessful) {
-            println("Request successful: ${response.code()}")
-            val body = response.body() ?: return@launch
-            println("Found recipe ${body.title}")
-            body.ingredientGroups.forEach {
-                println("Found ingredient group ${it.header}")
-                it.ingredients.forEach { ingredient ->
-                    println(ingredient)
-                }
-            }
-        } else {
-            println("Request failed (${response.code()})")
+    fun addIngredient(group: String, ingredient: Ingredient) {
+        if (ingredient.name.isNotBlank() && ingredient.amount != 0f && ingredient.unit.isNotBlank()) {
+            _ingredients[group]?.add(ingredient)
         }
+    }
+
+    fun addIngredientGroup(group: String) {
+        if (!_ingredients.containsKey(group)) {
+            _ingredients[group] = mutableStateListOf()
+        }
+    }
+
+    fun deleteIngredient(group: String, ingredient: Ingredient) {
+        _ingredients[group]?.removeAll { it.name == ingredient.name }
+    }
+
+    fun deleteGroup(group: String) {
+        _ingredients.remove(group)
+    }
+
+    /**
+     * Source can either be the full chefkoch URL or the recipe ID only
+     */
+    fun importRecipe(source: String) {
+        //TODO
+    }
+
+    private fun importRecipeFromID(id: Long) {
+        //TODO
     }
 }
