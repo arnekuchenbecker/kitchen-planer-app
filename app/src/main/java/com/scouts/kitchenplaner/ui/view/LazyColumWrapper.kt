@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun <T> LazyColumnWrapper(
+fun <T : Any> LazyColumnWrapper(
     modifier: Modifier = Modifier,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: List<T>,
@@ -30,17 +30,24 @@ fun <T> LazyColumnWrapper(
     DisplayLast: @Composable (T, Int) -> Unit = DisplayContent,
     DisplayEmpty: @Composable () -> Unit
 ) {
-    LazyColumn (
+    LazyColumn(
         modifier = modifier,
         horizontalAlignment = horizontalAlignment
     ) {
         if (content.isNotEmpty()) {
-            items(content.size - 1) {
+            items(
+                count = content.size - 1,
+                key = { content[it] }
+            ) {
                 DisplayContent(content[it], it)
             }
-            item { DisplayLast(content[content.lastIndex], content.lastIndex) }
+            item(
+                key = content[content.lastIndex]
+            ) {
+                DisplayLast(content[content.lastIndex], content.lastIndex)
+            }
         } else {
-            item { DisplayEmpty() }
+            item(key = null) { DisplayEmpty() }
         }
     }
 }

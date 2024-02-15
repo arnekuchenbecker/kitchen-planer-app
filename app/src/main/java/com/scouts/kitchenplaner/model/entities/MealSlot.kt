@@ -16,12 +16,15 @@
 
 package com.scouts.kitchenplaner.model.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
+@Parcelize
 data class MealSlot (
     val date: Date,
     val meal: String
-) {
+) : Parcelable {
     fun before(other: MealSlot, meals: List<String>): Boolean {
         return this.date.before(other.date) || (this.date == other.date && meals.indexOf(this.meal) <= meals.indexOf(
             other.meal
