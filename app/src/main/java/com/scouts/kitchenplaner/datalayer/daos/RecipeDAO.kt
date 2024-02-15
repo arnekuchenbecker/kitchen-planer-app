@@ -68,7 +68,7 @@ interface RecipeDAO {
     @Insert
     suspend fun insertIngredient(entity: IngredientEntity): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
