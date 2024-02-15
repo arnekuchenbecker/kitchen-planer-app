@@ -66,7 +66,9 @@ fun ProjectDetails(
     )
 
     if (selectionDialogForSlot != null) {
-        val suggestions by viewModel.getRecipeSuggestions(project, selectionDialogForSlot!!).collectAsState()
+        val suggestions by remember {
+            viewModel.getRecipeSuggestions(project, selectionDialogForSlot!!)
+        }.collectAsState()
         RecipeSelectionDialog(
             onDismissRequest = { selectionDialogForSlot = null },
             onNavigateToRecipeCreation = onNavigateToRecipeCreation,
