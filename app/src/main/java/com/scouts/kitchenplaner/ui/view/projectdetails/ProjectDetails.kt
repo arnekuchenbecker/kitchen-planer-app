@@ -16,15 +16,12 @@
 
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
@@ -40,7 +37,6 @@ fun ProjectDetails(
     var selectionDialogForSlot by remember { mutableStateOf<MealSlot?>(null) }
 
     DisplayMealPlan(
-        modifier = Modifier.padding(top = 5.dp),
         mealSlots = project.mealSlots,
         mealPlan = project.mealPlan,
         getAllergenCheck = { slot ->

@@ -36,18 +36,15 @@ fun <T : Any> LazyColumnWrapper(
     ) {
         if (content.isNotEmpty()) {
             items(
-                count = content.size - 1,
-                key = { content[it] }
+                count = content.size - 1
             ) {
                 DisplayContent(content[it], it)
             }
-            item(
-                key = content[content.lastIndex]
-            ) {
+            item {
                 DisplayLast(content[content.lastIndex], content.lastIndex)
             }
         } else {
-            item(key = null) { DisplayEmpty() }
+            item { DisplayEmpty() }
         }
     }
 }
