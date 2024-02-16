@@ -135,7 +135,7 @@ interface ProjectDAO {
     suspend fun updateLastShownProjectForUser(entity: UserProjectEntity)
 
     @Query("SELECT * FROM userprojects WHERE username = :user ORDER BY lastShown DESC LIMIT :limit")
-    fun getLatestShownProjectsForUser(user: String, limit: Int): List<UserProjectEntity>
+    fun getLatestShownProjectsForUser(user: String, limit: Int): Flow<List<UserProjectEntity>>
 
     // Methods for archiving projects
 

@@ -47,7 +47,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeById(id: Long) : Flow<Recipe> {
+    fun getRecipeById(id: Long): Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
@@ -84,7 +84,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun createRecipe(recipe: Recipe) : Long {
+    suspend fun createRecipe(recipe: Recipe): Long {
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
@@ -134,12 +134,14 @@ class RecipeRepository @Inject constructor(
             )
         }
     }
-        // TODO has to be used every time a user sees a recipe
+
+    // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
         recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))
     }
 
-    fun getLastShownRecipeIdsForUser(user: User, limit: Int): List<Long> {
-        return recipeDAO.getLatestRecipesForUser(user.username, limit).map { it -> it.recipe }
+    fun getLastShownRecipeIdsForUser(user: User, limit: Int): Flow<List<Long>> {
+        return recipeDAO.getLatestRecipesForUser(user.username, limit)
+            .map { it.map { entity -> entity.recipe } }
     }
 }

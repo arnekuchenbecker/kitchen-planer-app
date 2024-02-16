@@ -21,8 +21,12 @@ import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import kotlinx.coroutines.flow.first
+import com.scouts.kitchenplaner.model.entities.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 private const val AMOUNT_PROJECTS = 3
@@ -35,22 +39,41 @@ class ShowPersonalStartScreen @Inject constructor(
 ) {
 
 
-    suspend fun getLatestProjectsForCurrentUser(): List<ProjectStub> {
-        val currentUser = dataStore.getCurrentUser()
-        return projectRepository.getLastShownProjectIds(user = currentUser, limit = AMOUNT_PROJECTS)
-            .map {
-                projectRepository.getProjectMetaDataByID(it).map { metadata ->
-                    metadata.stub
-                }.first()
+    fun getLatestProjectsForCurrentUser(): Flow<List<ProjectStub>> {
+        var currentUser: User;
+        runBlocking {
+            currentUser = dataStore.getCurrentUser()
+        }
+        var projectListFlow = flowOf(listOf<ProjectStub>())
+        projectRepository.getLastShownProjectIds(
+            user = currentUser, limit = AMOUNT_PROJECTS
+        ).map { list ->
+            list.map { id ->
+                projectListFlow.combine(projectRepository.getProjectMetaDataByID(id)) { oldList, metadata ->
+                    oldList.plusElement(metadata.stub)
+                }
             }
-
+        }
+        return projectListFlow
     }
 
-    suspend fun getLatestRecipesForCurrentUser(): List<RecipeStub> {
-        val currentUser = dataStore.getCurrentUser()
-        return recipeRepository.getLastShownRecipeIdsForUser(
+    fun getLatestRecipesForCurrentUser(): Flow<List<RecipeStub>> {
+        var currentUser: User;
+        runBlocking {
+            currentUser = dataStore.getCurrentUser()
+        }
+        var recipeListFlow = flowOf(listOf<RecipeStub>())
+        recipeRepository.getLastShownRecipeIdsForUser(
             user = currentUser, limit = AMOUNT_RECIPES
-        ).map { recipeRepository.getRecipeStubById(it).first() }
+        ).map { list ->
+            list.map { id ->
+                recipeListFlow.combine(recipeRepository.getRecipeStubById(id)) { oldList, recipe ->
+                    oldList.plusElement(
+                        recipe
+                    )
+                }
+            }
+        }
+        return recipeListFlow
     }
-
 }

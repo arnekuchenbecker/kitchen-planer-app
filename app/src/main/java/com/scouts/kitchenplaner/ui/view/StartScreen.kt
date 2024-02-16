@@ -33,6 +33,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.scouts.kitchenplaner.model.usecases.ShowPersonalStartScreen
+import javax.inject.Inject
 
 @Composable
 fun StartScreen(
@@ -41,7 +43,8 @@ fun StartScreen(
     onNavigateToProjectCreation: () -> Unit,
     onNavigateToCreateRecipe: () -> Unit,
     onNavigateToRecipeDetail: (Long) -> Unit
-) {
+)
+{
     var projectId by remember { mutableStateOf(0f) }
     var recipeID by remember { mutableStateOf(0f) }
 
