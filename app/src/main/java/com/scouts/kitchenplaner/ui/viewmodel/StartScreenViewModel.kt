@@ -31,10 +31,6 @@ class StartScreenViewModel @Inject constructor(
     private val startScreen: ShowPersonalStartScreen
 ) : ViewModel() {
 
-    val latestProjects = viewModelScope.async {  startScreen.getLatestProjectsForCurrentUser()}.await()
-    val latestRecipes = viewModelScope.async { startScreen.getLatestRecipesForCurrentUser()}
-
-    fun getLatestProjects(): List<ProjectStub>{
-        return latestProjects.await()
-    }
+    val latestProjects = startScreen.getLatestProjectsForCurrentUser()
+    val latestRecipes = startScreen.getLatestRecipesForCurrentUser()
 }
