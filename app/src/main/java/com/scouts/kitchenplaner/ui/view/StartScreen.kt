@@ -77,6 +77,7 @@ fun StartScreen(
     {
         Column(modifier = modifier.padding(it)) {
             ScreenHeader(buttonClick = onNavigateToProjectCreation, buttonText = "Neues Projekt", fieldText = "Meine Projekte")
+            Text("Projektlist ${projects.size}")
             LazyColumnWrapper(content = projects, DisplayContent = { project, _ ->
                 OverviewField(
                     onClick = { onNavigateToDetailedProject(project.id) },
