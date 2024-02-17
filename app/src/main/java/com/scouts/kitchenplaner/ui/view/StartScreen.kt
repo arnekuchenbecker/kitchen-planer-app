@@ -17,13 +17,10 @@
 package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -31,7 +28,6 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,10 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -76,8 +69,11 @@ fun StartScreen(
     })
     {
         Column(modifier = modifier.padding(it)) {
-            ScreenHeader(buttonClick = onNavigateToProjectCreation, buttonText = "Neues Projekt", fieldText = "Meine Projekte")
-            Text("Projektlist ${projects.size}")
+            ScreenHeader(
+                buttonClick = onNavigateToProjectCreation,
+                buttonText = "Neues Projekt",
+                fieldText = "Meine Projekte"
+            )
             LazyColumnWrapper(content = projects, DisplayContent = { project, _ ->
                 OverviewField(
                     onClick = { onNavigateToDetailedProject(project.id) },
@@ -89,7 +85,11 @@ fun StartScreen(
                 Text("Noch keine Projekte ")
             })
 
-            ScreenHeader(buttonClick = onNavigateToCreateRecipe, buttonText = "Neues Rezept", fieldText = "Meine Rezepte")
+            ScreenHeader(
+                buttonClick = onNavigateToCreateRecipe,
+                buttonText = "Neues Rezept",
+                fieldText = "Meine Rezepte"
+            )
 
             LazyColumnWrapper(content = recipes, DisplayContent = { recipe, _ ->
                 OverviewField(
@@ -111,7 +111,7 @@ fun startScreenPreview() {
 }
 
 @Composable
-fun ScreenHeader(buttonClick: () -> Unit, buttonText: String, fieldText: String){
+fun ScreenHeader(buttonClick: () -> Unit, buttonText: String, fieldText: String) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.secondaryContainer)
