@@ -20,6 +20,9 @@ import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.Recipe
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import java.util.Date
 import javax.inject.Inject
 
@@ -27,12 +30,13 @@ class DisplayRecipe @Inject constructor(
     private val recipeRepository: RecipeRepository,
     private val userDataStore: KitchenAppDataStore
 ) {
-    suspend fun showRecipeById(id: Long): Flow<Recipe> {
-        recipeRepository.updateLastShownRecipeForUser(
-            userDataStore.getCurrentUser(),
-            id,
-            Date()
-        )
-        return recipeRepository.getRecipeById(id);
+    fun showRecipeById(id: Long): Flow<Recipe> {
+        return recipeRepository.getRecipeById(id).onEach {
+            recipeRepository.updateLastShownRecipeForUser(
+                userDataStore.getCurrentUser(),
+                id,
+                Date()
+            )
+        }
     }
 }
