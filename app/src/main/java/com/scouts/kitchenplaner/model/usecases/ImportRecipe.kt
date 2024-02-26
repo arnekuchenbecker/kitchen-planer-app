@@ -39,13 +39,9 @@ class ImportRecipe @Inject constructor(
             val chefkochRecipe = response.body()
             if (chefkochRecipe != null) {
                 val uri = Uri.parse(chefkochRecipe.previewImageUrlTemplate.replace(FORMAT_STRING, FORMAT_INPUT))
-                val recipeName = if (chefkochRecipe.subtitle.isNotBlank()) {
-                    "${chefkochRecipe.title} - ${chefkochRecipe.subtitle}"
-                } else {
-                    chefkochRecipe.title
-                }
                 val recipe = Recipe(
-                    name = recipeName,
+                    name = chefkochRecipe.title,
+                    description = chefkochRecipe.subtitle,
                     imageURI = uri,
                     numberOfPeople = chefkochRecipe.servings,
                     instructions = chefkochRecipe.instructions.split("\n").filter { it.isNotBlank() },
