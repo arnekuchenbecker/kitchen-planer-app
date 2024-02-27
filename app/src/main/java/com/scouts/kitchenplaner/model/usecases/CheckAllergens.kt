@@ -27,7 +27,6 @@ import com.scouts.kitchenplaner.model.entities.DietaryTypes
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.toDateString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -68,7 +67,6 @@ class CheckAllergens @Inject constructor(
                 }
             }
             .combine(recipesFlow) { persons, recipes ->
-                println("${mealSlot.date.time.toDateString()}: ${persons.size}, ${recipes.size}")
                 Pair(persons, recipes)
             }
             .flatMapLatest { (persons, recipes) ->
@@ -95,12 +93,11 @@ class CheckAllergens @Inject constructor(
                     covers.map { Pair(person, it) }
                 }
                 combine(recipeCoverFlows) { covers ->
-                    val check = AllergenCheck()
-                    covers.forEach { (person, cover) ->
-                        check.addAllergenPerson(cover, person)
+                    AllergenCheck().apply {
+                        covers.forEach { (person, cover) ->
+                            this.addAllergenPerson(cover, person)
+                        }
                     }
-                    println("${mealSlot.date.time.toDateString()}: ${check.mealCover}, ${check.coveredPersons.size + check.notCoveredPersons.size + check.unknownPersons.size}")
-                    check
                 }
             }
     }
