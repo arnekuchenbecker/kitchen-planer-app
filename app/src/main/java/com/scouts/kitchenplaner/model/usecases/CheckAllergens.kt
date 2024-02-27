@@ -46,8 +46,8 @@ class CheckAllergens @Inject constructor(
             .flatMapLatest { ids ->
                 val filteredIds = ids.filter { it != 0L }
                 if (filteredIds.isNotEmpty()) {
-                    combine(filteredIds
-                        .map {
+                    combine(
+                        filteredIds.map {
                             recipeRepository.getRecipeStubById(it)
                         }
                     ) {
