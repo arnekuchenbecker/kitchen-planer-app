@@ -61,6 +61,10 @@ fun EditAllergenPersonsDialog(
                 AllergenCard(
                     name = person.name,
                     allergens = person.allergens.map { Pair(it.allergen, it.traces) },
+                    arrivalDate = person.arrivalDate.time,
+                    arrivalMeal = person.arrivalMeal,
+                    departureDate = person.departureDate.time,
+                    departureMeal = person.departureMeal,
                     onTitleClick = { personToBeDeleted = !personToBeDeleted },
                     onDelete = { onRemovePerson(person) },
                     onItemDelete = { onRemoveAllergen(person, Allergen(it.first, it.second)) },

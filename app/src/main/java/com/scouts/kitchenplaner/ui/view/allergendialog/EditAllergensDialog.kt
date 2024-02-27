@@ -88,6 +88,10 @@ fun EditAllergensDialog(
                         AllergenCard(
                             name = person.name,
                             allergens = person.allergens,
+                            arrivalDate = person.arrivalDateMillis,
+                            arrivalMeal = person.arrivalMeal,
+                            departureDate = person.departureDateMillis,
+                            departureMeal = person.departureMeal,
                             onTitleClick = {
                                 removingIndex = if (removingIndex == index) {
                                     -1

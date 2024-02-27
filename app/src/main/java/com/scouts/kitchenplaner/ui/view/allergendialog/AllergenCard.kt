@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.toDateString
 import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.ExpandableCard
@@ -41,6 +42,10 @@ import com.scouts.kitchenplaner.ui.view.ExpandableCard
 fun AllergenCard(
     name: String,
     allergens: List<Pair<String, Boolean>>,
+    arrivalDate: Long?,
+    arrivalMeal: String,
+    departureDate: Long?,
+    departureMeal: String,
     onTitleClick: () -> Unit,
     onDelete: () -> Unit,
     onItemDelete: (Pair<String, Boolean>) -> Unit,
@@ -48,11 +53,16 @@ fun AllergenCard(
     toggleExpand: () -> Unit,
     expand: Boolean
 ) {
+    val dateString = if (arrivalDate != null && departureDate != null) {
+        "\n${arrivalDate.toDateString()} ($arrivalMeal) - ${departureDate.toDateString()} ($departureMeal)"
+    } else {
+        ""
+    }
     ExpandableCard(
         expanded = expand,
         onCardArrowClick = toggleExpand,
         onTitleClick = onTitleClick,
-        cardState = CardState(title = "$name (${allergens.size} EBs)", onDelete = onDelete, toBeDeleted = toBeDeleted) {
+        cardState = CardState(title = "$name\n(${allergens.size} EBs)$dateString", onDelete = onDelete, toBeDeleted = toBeDeleted) {
             LazyColumn {
                 items(allergens) { (allergen, traces) ->
                     var itemToBeDeleted by remember { mutableStateOf(false) }
