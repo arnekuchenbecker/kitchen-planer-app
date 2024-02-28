@@ -27,9 +27,10 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class ShoppingListsViewModel(
+class ShoppingListsViewModel @Inject constructor(
     private val displayShoppingListOverview: DisplayShoppingListOverview,
     private val editShoppingLists: EditShoppingLists
 ) : ViewModel() {

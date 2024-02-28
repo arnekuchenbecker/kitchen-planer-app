@@ -19,8 +19,9 @@ package com.scouts.kitchenplaner.model.usecases
 import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ShoppingListStub
+import javax.inject.Inject
 
-class EditShoppingLists(
+class EditShoppingLists @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository
 ) {
     suspend fun deleteShoppingList(project: Project, list: ShoppingListStub) {

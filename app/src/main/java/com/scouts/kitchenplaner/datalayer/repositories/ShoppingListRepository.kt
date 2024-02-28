@@ -36,7 +36,7 @@ class ShoppingListRepository @Inject constructor(
     }
 
     suspend fun deleteShoppingList(shoppingList: ShoppingListStub, projectId: Long) {
-        shoppingListDAO.deleteShoppingList(ShoppingListEntity(shoppingList.id ?: -1, shoppingList.name, projectId))
+        shoppingListDAO.deleteShoppingList(ShoppingListEntity(shoppingList.id, shoppingList.name, projectId))
     }
 
     fun getShoppingListsForProject(projectId: Long) : Flow<List<ShoppingList>> {
