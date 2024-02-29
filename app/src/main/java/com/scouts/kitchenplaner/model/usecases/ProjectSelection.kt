@@ -16,17 +16,23 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ProjectSelection @Inject constructor(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val userRepository: KitchenAppDataStore
 ) {
-    fun getProjectsForCurrentUser() : Flow<List<ProjectStub>> {
-        val currentUser = User("Arne") //TODO retrieve user from storage
+    fun getProjectsForCurrentUser(): Flow<List<ProjectStub>> {
+        val currentUser: User
+        runBlocking {
+            currentUser = userRepository.getCurrentUser()
+        }
         return projectRepository.getProjectOverview(currentUser)
     }
     //TODO delete project
