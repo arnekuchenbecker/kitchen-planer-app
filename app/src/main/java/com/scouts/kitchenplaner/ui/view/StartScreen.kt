@@ -95,7 +95,7 @@ fun StartScreen(
                 OverviewField(
                     onClick = { onNavigateToRecipeDetail(recipe.id) },
                     imageUri = recipe.imageURI,
-                    imageDescription = "Recipe Picture for project ${recipe.name}",
+                    imageDescription = "Recipe Picture for recipe ${recipe.name}",
                     text = recipe.name
                 )
             }, DisplayEmpty = {

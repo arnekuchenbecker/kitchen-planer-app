@@ -22,11 +22,9 @@ import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.entities.User
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -49,14 +47,10 @@ class ShowPersonalStartScreen @Inject constructor(
         return projectRepository.getLastShownProjectIds(currentUser, AMOUNT_PROJECTS)
             .flatMapLatest { ids ->
                 val helper = ids.map { id ->
-                    val project = projectRepository.getProjectMetaDataByID(id).map { it.stub }
-                    val projectFlow: Flow<List<ProjectStub>> = flowOf(listOf())
-                    projectFlow.combine(project) { prev, prod ->
-                        return@combine prev + prod
-                    }
+                    projectRepository.getProjectMetaDataByID(id).map { it.stub }
                 }
                 combine(helper) {
-                    it.toList().flatten()
+                    it.toList()
                 }
             }
     }
@@ -70,13 +64,9 @@ class ShowPersonalStartScreen @Inject constructor(
             user = currentUser, limit = AMOUNT_RECIPES
         ).flatMapLatest { ids ->
             val helper = ids.map { id ->
-                val recipe = recipeRepository.getRecipeStubById(id)
-                val recipeFlow: Flow<List<RecipeStub>> = flowOf(listOf())
-                recipeFlow.combine(recipe) { prev, rec ->
-                    return@combine prev + rec
-                }
+                recipeRepository.getRecipeStubById(id)
             }
-            combine(helper) { it.toList().flatten() }
+            combine(helper) { it.toList() }
         }
     }
 }
