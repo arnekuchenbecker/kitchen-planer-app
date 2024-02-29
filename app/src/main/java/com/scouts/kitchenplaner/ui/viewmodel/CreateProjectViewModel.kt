@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
+import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.usecases.CreateProject
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
@@ -63,11 +64,7 @@ class CreateProjectViewModel @Inject constructor(
 
             val project = Project(
                 _name = inputState.name,
-                initialStartDate = startDate,
-                initialEndDate = endDate,
-                initialMeals = mutableListOf<String>().apply {
-                    addAll(inputState.meals)
-                },
+                _mealPlan = MealPlan(startDate, endDate, mutableListOf<String>().apply{ addAll(inputState.meals) }),
                 _allergenPersons = mutableListOf<AllergenPerson>().apply {
                     addAll(inputState.allergens.map { person ->
                         AllergenPerson(

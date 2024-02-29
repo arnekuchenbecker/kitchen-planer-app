@@ -101,6 +101,9 @@ interface RecipeDAO {
     @Query("SELECT * FROM dietaryspecialityentity WHERE recipe = :id")
     fun getAllergensByRecipeId(id: Long): Flow<List<DietarySpecialityEntity>>
 
+    @Query("SELECT * FROM recipeEntity WHERE title LIKE :query")
+    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeEntity>>
+
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long
 

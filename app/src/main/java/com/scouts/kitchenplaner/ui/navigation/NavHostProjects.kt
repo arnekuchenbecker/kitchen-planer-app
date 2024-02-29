@@ -23,6 +23,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetails
 import com.scouts.kitchenplaner.ui.view.recipeforproject.RecipeForProjectScreen
 
@@ -33,24 +34,19 @@ private const val RECIPE_TO_COOK = "recipeToCook"
 fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
-    id: Long = 0L,
+    project: Project,
     onNavigateToRecipe: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
         navController = projectNavController,
-        startDestination = "${Destinations.ProjectsStart}/$id",
+        startDestination = Destinations.ProjectsStart,
     ) {
         composable(
-            "${Destinations.ProjectsStart}/{${Destinations.ProjectId}}",
-            arguments = listOf(navArgument(Destinations.ProjectId) { type = NavType.LongType })
-        ) { projectId ->
-            var project = projectId.arguments?.getLong("id")
-            if (project == 0L) {
-                project = id
-            }
+            Destinations.ProjectsStart
+        ) {
             ProjectDetails(
-                projectID = project!!,
+                project = project,
                 onNavigateToRecipeToCook = { recipeID -> projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID") },
                 onNavigateToRecipeCreation = onNavigateToRecipe
             )
@@ -65,7 +61,7 @@ fun NavHostProjects(
                 projectNavController.currentBackStackEntry?.arguments?.getLong(RECIPE_ID) ?: -1
             )
         }
-        shoppingListGraph(navController = projectNavController)
+        shoppingListGraph(navController = projectNavController, projectId = project.id)
 
     }
 }

@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class DietarySpeciality(
+data class DietarySpeciality(
     val allergen: String,
     val type: DietaryTypes
 ) {

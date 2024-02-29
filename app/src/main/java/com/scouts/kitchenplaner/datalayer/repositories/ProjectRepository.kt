@@ -24,6 +24,7 @@ import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectDatesDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
@@ -68,6 +69,10 @@ class ProjectRepository @Inject constructor(
 
     fun getProjectMetaDataByID(id: Long): Flow<ProjectMetaData> {
         return projectDAO.getProjectById(id).map { it.toModelEntity() }
+    }
+
+    fun getProjectStubByID(id: Long) : Flow<ProjectStub> {
+        return projectDAO.getProjectById(id).map { ProjectStub(it.name, it.id, Uri.parse(it.imageUri)) }
     }
 
     fun getMealsByProjectID(id: Long): Flow<List<String>> {
@@ -151,6 +156,14 @@ class ProjectRepository @Inject constructor(
         }
     }
 
+    suspend fun setProjectName(id: Long, name: String) {
+        projectDAO.changeProjectName(id, name)
+    }
+
+    suspend fun setProjectDates(id: Long, startDate: Date, endDate: Date) {
+        projectDAO.updateDates(ProjectDatesDTO(id, startDate, endDate))
+    }
+
     suspend fun leaveProject(user: User, projectId: Long) {
         projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username, Date()))
     }
@@ -179,5 +192,4 @@ class ProjectRepository @Inject constructor(
     private suspend fun existsUser(user: User): Boolean {
         return projectDAO.getExistsUserByName(user.username) == 1
     }
-
 }
