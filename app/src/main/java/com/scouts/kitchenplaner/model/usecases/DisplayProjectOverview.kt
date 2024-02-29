@@ -16,6 +16,7 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
@@ -25,23 +26,25 @@ import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 import javax.inject.Inject
 
 class DisplayProjectOverview @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val allergenRepository: AllergenRepository,
     private val recipeManagementRepository: RecipeManagementRepository,
-    private val recipeRepository: RecipeRepository
+    private val recipeRepository: RecipeRepository,
+    private val userRepository: KitchenAppDataStore
 ) {
     @OptIn(DomainLayerRestricted::class)
-    fun getProject(projectId: Long) : Flow<Project> {
+    fun getProject(projectId: Long): Flow<Project> {
         val initialProject = runBlocking {
             projectRepository.getProjectMetaDataByID(projectId).map {
                 Project(
@@ -53,7 +56,6 @@ class DisplayProjectOverview @Inject constructor(
                 )
             }.first()
         }
-
         val metaDataFlow = projectRepository.getProjectMetaDataByID(projectId)
         val mealFlow = projectRepository.getMealsByProjectID(projectId)
         val allergenPersonFlow = allergenRepository.getAllergenPersonsByProjectID(projectId)
@@ -87,6 +89,11 @@ class DisplayProjectOverview @Inject constructor(
             }
             .combine(numberChangeFlow) { project, numberChanges ->
                 project.withNumberChanges(numberChanges)
+            }.onStart {
+                projectRepository.updateProjectShown(
+                    projectId, userRepository.getCurrentUser(),
+                    Date()
+                )
             }
     }
 
@@ -95,7 +102,7 @@ class DisplayProjectOverview @Inject constructor(
     }
 
     suspend fun leaveProject(project: Project) {
-        val currentUser = User("Arne") // TODO - get current user from datastore
+        val currentUser = userRepository.getCurrentUser()
         projectRepository.leaveProject(currentUser, project.id)
     }
 }

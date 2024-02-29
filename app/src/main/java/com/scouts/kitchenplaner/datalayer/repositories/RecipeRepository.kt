@@ -90,7 +90,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    suspend fun createRecipe(recipe: Recipe) : Long {
+    suspend fun createRecipe(recipe: Recipe): Long {
 
         val ingredients: MutableList<IngredientEntity> = mutableListOf()
         recipe.ingredientGroups.forEach {
@@ -144,7 +144,8 @@ class RecipeRepository @Inject constructor(
         recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))
     }
 
-    fun getLastShownRecipeIdsForUser(user: User, limit: Int): List<Long> {
-        return recipeDAO.getLatestRecipesForUser(user.username, limit).map { it -> it.recipe }
+    fun getLastShownRecipeIdsForUser(user: User, limit: Int): Flow<List<Long>> {
+        return recipeDAO.getLatestRecipesForUser(user.username, limit)
+            .map { it.map { entity -> entity.recipe } }
     }
 }

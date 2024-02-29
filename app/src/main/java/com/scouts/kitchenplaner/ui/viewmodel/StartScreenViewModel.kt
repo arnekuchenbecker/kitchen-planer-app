@@ -14,26 +14,23 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.ui.viewmodel
 
-import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.entities.ProjectStub
-import com.scouts.kitchenplaner.model.entities.User
+import com.scouts.kitchenplaner.model.usecases.ShowPersonalStartScreen
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ProjectSelection @Inject constructor(
-    private val projectRepository: ProjectRepository,
-    private val userRepository: KitchenAppDataStore
-) {
-    fun getProjectsForCurrentUser(): Flow<List<ProjectStub>> {
-        val currentUser: User
-        runBlocking {
-            currentUser = userRepository.getCurrentUser()
-        }
-        return projectRepository.getProjectOverview(currentUser)
-    }
-    //TODO delete project
+@HiltViewModel
+class StartScreenViewModel @Inject constructor(
+    private val startScreen: ShowPersonalStartScreen
+) : ViewModel() {
+
+    val latestProjects = startScreen.getLatestProjectsForCurrentUser()
+    val latestRecipes = startScreen.getLatestRecipesForCurrentUser()
 }
