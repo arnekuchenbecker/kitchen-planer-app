@@ -14,13 +14,46 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.ui.state
 
-import java.util.Date
+enum class ProjectDialogValues {
+    /**
+     * Display no dialog
+     */
+    NONE,
 
-data class ProjectMetaData(
-    val stub: ProjectStub,
-    val startDate: Date,
-    val endDate: Date
-) {
+    /**
+     * Display the name change dialog
+     */
+    NAME_CHANGE,
+
+    /**
+     * Display the image change dialog
+     */
+    IMAGE_CHANGE,
+
+    /**
+     * Display the date change dialog
+     */
+    DATE_CHANGE,
+
+    /**
+     * Display the number change dialog
+     */
+    NUMBER_CHANGE,
+
+    /**
+     * Display the dialog for inviting people to the project
+     */
+    INVITE,
+
+    /**
+     * Display the dialog for editing intolerant persons
+     */
+    ALLERGENS,
+
+    /**
+     * Display the dialog for editing meals
+     */
+    MEALS
 }

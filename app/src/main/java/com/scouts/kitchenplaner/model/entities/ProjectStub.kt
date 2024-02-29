@@ -18,7 +18,7 @@ package com.scouts.kitchenplaner.model.entities
 
 import android.net.Uri
 
-class ProjectStub(
+data class ProjectStub(
     val name: String,
     val id: Long,
     val imageUri: Uri

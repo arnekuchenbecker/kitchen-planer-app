@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class ShoppingListItem (
+data class ShoppingListItem (
     val name: String,
     val amount: Int,
     val unit: String
