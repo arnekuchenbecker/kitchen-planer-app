@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.repositories
 
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
+import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.model.entities.ShoppingList
 import com.scouts.kitchenplaner.model.entities.ShoppingListItem
@@ -32,6 +33,10 @@ class ShoppingListRepository @Inject constructor(
     suspend fun createShoppingList(list: ShoppingList, projectId: Long) {
         val entities = list.toDataLayerEntity(projectId)
         shoppingListDAO.createShoppingList(entities.first, entities.second)
+    }
+
+    suspend fun deleteShoppingList(shoppingList: ShoppingListStub, projectId: Long) {
+        shoppingListDAO.deleteShoppingList(ShoppingListEntity(shoppingList.id, shoppingList.name, projectId))
     }
 
     fun getShoppingListsForProject(projectId: Long) : Flow<List<ShoppingList>> {
