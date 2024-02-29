@@ -181,10 +181,10 @@ class ProjectRepository @Inject constructor(
         projectDAO.updateLastShownProjectForUser(UserProjectEntity(projectId, user.username, time))
     }
 
-    fun getLastShownProjectIds(user: User, limit: Int): List<Long> {
+    fun getLastShownProjectIds(user: User, limit: Int): Flow<List<Long>>{
         val projects = projectDAO.getLatestShownProjectsForUser(user.username, limit)
-            .map { project ->
-                project.projectId
+            .map { it.map{ project ->
+                project.projectId}
             }
         return projects
     }

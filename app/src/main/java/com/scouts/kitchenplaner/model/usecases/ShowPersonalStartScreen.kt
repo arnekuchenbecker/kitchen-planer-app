@@ -21,8 +21,12 @@ import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import kotlinx.coroutines.flow.first
+import com.scouts.kitchenplaner.model.entities.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 private const val AMOUNT_PROJECTS = 3
@@ -35,22 +39,34 @@ class ShowPersonalStartScreen @Inject constructor(
 ) {
 
 
-    suspend fun getLatestProjectsForCurrentUser(): List<ProjectStub> {
-        val currentUser = dataStore.getCurrentUser()
-        return projectRepository.getLastShownProjectIds(user = currentUser, limit = AMOUNT_PROJECTS)
-            .map {
-                projectRepository.getProjectMetaDataByID(it).map { metadata ->
-                    metadata.stub
-                }.first()
+    fun getLatestProjectsForCurrentUser(): Flow<List<ProjectStub>> {
+        var currentUser: User
+        runBlocking {
+            currentUser = dataStore.getCurrentUser()
+        }
+        return projectRepository.getLastShownProjectIds(currentUser, AMOUNT_PROJECTS)
+            .flatMapLatest { ids ->
+                val helper = ids.map { id ->
+                    projectRepository.getProjectMetaDataByID(id).map { it.stub }
+                }
+                combine(helper) {
+                    it.toList()
+                }
             }
-
     }
 
-    suspend fun getLatestRecipesForCurrentUser(): List<RecipeStub> {
-        val currentUser = dataStore.getCurrentUser()
+    fun getLatestRecipesForCurrentUser(): Flow<List<RecipeStub>> {
+        var currentUser: User;
+        runBlocking {
+            currentUser = dataStore.getCurrentUser()
+        }
         return recipeRepository.getLastShownRecipeIdsForUser(
             user = currentUser, limit = AMOUNT_RECIPES
-        ).map { recipeRepository.getRecipeStubById(it).first() }
+        ).flatMapLatest { ids ->
+            val helper = ids.map { id ->
+                recipeRepository.getRecipeStubById(id)
+            }
+            combine(helper) { it.toList() }
+        }
     }
-
 }

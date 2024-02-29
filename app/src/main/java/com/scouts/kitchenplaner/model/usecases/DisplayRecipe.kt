@@ -31,7 +31,7 @@ class DisplayRecipe @Inject constructor(
     private val userDataStore: KitchenAppDataStore
 ) {
     fun showRecipeById(id: Long): Flow<Recipe> {
-        return recipeRepository.getRecipeById(id).onEach {
+        return recipeRepository.getRecipeById(id).onStart {
             recipeRepository.updateLastShownRecipeForUser(
                 userDataStore.getCurrentUser(),
                 id,

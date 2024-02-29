@@ -39,8 +39,10 @@ class KitchenAppDataStore (private val context: Context) {
     }
 
     suspend fun getCurrentUser() : User {
-        return User(context.dataStore.data.map {
+
+       /*return */  User(context.dataStore.data.map {
             it[USERNAME] ?: ""
         }.first())
+        return User("Arne") // TODO: if there is a current user really get it
     }
 }

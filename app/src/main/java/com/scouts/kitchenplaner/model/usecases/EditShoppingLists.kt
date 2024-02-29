@@ -1,7 +1,7 @@
 /*
  * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
  * to cooperatively plan a meal plan for a campout.
- * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming, Anton Kadelbach, Sandra Lanz
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,12 +14,17 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.model.usecases
 
-import android.net.Uri
+import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
+import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.ShoppingListStub
+import javax.inject.Inject
 
-data class RecipeStub(
-    val id: Long = 0,
-    val name: String = "",
-    val imageURI: Uri
-)
+class EditShoppingLists @Inject constructor(
+    private val shoppingListRepository: ShoppingListRepository
+) {
+    suspend fun deleteShoppingList(project: Project, list: ShoppingListStub) {
+        shoppingListRepository.deleteShoppingList(list, project.id)
+    }
+}

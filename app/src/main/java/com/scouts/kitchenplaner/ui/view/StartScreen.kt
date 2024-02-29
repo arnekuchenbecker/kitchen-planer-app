@@ -16,18 +16,33 @@
 
 package com.scouts.kitchenplaner.ui.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.viewmodel.StartScreenViewModel
 
 @Composable
 fun StartScreen(
@@ -35,45 +50,95 @@ fun StartScreen(
     onNavigateToDetailedProject: (Long) -> Unit,
     onNavigateToProjectCreation: () -> Unit,
     onNavigateToCreateRecipe: () -> Unit,
-    onNavigateToRecipeDetail: (Long) -> Unit
+    onNavigateToRecipeDetail: (Long) -> Unit,
+    viewModel: StartScreenViewModel = hiltViewModel()
 ) {
-    var projectId by remember { mutableStateOf(0f) }
-    var recipeID by remember { mutableStateOf(0f) }
-    Column(modifier = modifier) {
-        Text(text = "This is the start screen, where recipes etc are displayed")
-        Text(text = "available Links to other sides are: ")
-        Row {
-            Text("ProjectDetails")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = projectId,
-                onValueChange = { projectId = it },
-                valueRange = 1f..10f,
-                steps = 1
+    val projects by viewModel.latestProjects.collectAsState(initial = listOf())
+    val recipes by viewModel.latestRecipes.collectAsState(initial = listOf())
+    Scaffold(topBar = {
+        HeaderWithButton(
+            title = "Übersicht",
+            buttonClick = { /*Logout*/ }
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Logout,
+                contentDescription = "Logout button"
             )
-            Button(onClick = { onNavigateToDetailedProject(projectId.toLong()) }) {}
-
         }
-        Row {
-            Text("ProjectCreation")
-            Button(onClick = onNavigateToProjectCreation) {}
-        }
-        Row {
-            Text("RecipeCreation")
-            Button(onClick = onNavigateToCreateRecipe) {}
-        }
-        Row {
-            Text("RecipeDetails")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = recipeID,
-                onValueChange = { recipeID = it },
-                valueRange = 1f..15f,
-                steps = 15
+    })
+    {
+        Column(modifier = modifier.padding(it)) {
+            ScreenHeader(
+                buttonClick = onNavigateToProjectCreation,
+                buttonText = "Neues Projekt",
+                fieldText = "Meine Projekte"
             )
-            Button(onClick = { onNavigateToRecipeDetail(recipeID.toLong()) }) {
+            LazyColumnWrapper(content = projects, DisplayContent = { project, _ ->
+                OverviewField(
+                    onClick = { onNavigateToDetailedProject(project.id) },
+                    imageUri = project.imageUri,
+                    imageDescription = "Project Picture for project ${project.name}",
+                    text = project.name
+                )
+            }, DisplayEmpty = {
+                Text("Noch keine Projekte")
+            })
 
-            }
+            ScreenHeader(
+                buttonClick = onNavigateToCreateRecipe,
+                buttonText = "Neues Rezept",
+                fieldText = "Meine Rezepte"
+            )
+
+            LazyColumnWrapper(content = recipes, DisplayContent = { recipe, _ ->
+                OverviewField(
+                    onClick = { onNavigateToRecipeDetail(recipe.id) },
+                    imageUri = recipe.imageURI,
+                    imageDescription = "Recipe Picture for recipe ${recipe.name}",
+                    text = recipe.name
+                )
+            }, DisplayEmpty = {
+                Text("Noch keine Rezepte angeschaut")
+            })
+        }
+    }
+}
+
+@Composable
+fun ScreenHeader(buttonClick: () -> Unit, buttonText: String, fieldText: String) {
+    Row(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .fillMaxWidth()
+            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Text(
+            text = fieldText,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .weight(2f, true),
+            textAlign = TextAlign.Center,
+            fontSize = TextUnit(5f, TextUnitType.Em),
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+
+        Button(
+            onClick = buttonClick,
+            shape = RoundedCornerShape(20.dp),
+            colors = ButtonColors(
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add new Projekt",
+            )
+            Text(buttonText)
         }
     }
 }

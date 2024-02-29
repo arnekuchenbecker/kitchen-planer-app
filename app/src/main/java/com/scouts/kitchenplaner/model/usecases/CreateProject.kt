@@ -16,18 +16,21 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.User
 import javax.inject.Inject
 
 class CreateProject @Inject constructor(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val userRepository: KitchenAppDataStore
 ) {
     /**
      * @return The project id of the newly created project or null if project wasn't a valid project.
      */
-    suspend fun createProject(project: Project) : Long? {
+    suspend fun createProject(
+        project: Project
+    ): Long? {
         /*
         * TODO: Check that project is actually valid to be a new project, i.e:
         *       - There shouldn't be any recipes added yet
@@ -36,7 +39,7 @@ class CreateProject @Inject constructor(
         if (project.endDate.before(project.startDate)) {
             return null
         }
-        val currentUser = User("Arne") // TODO - get current user from datastore
+        val currentUser = userRepository.getCurrentUser()
         return projectRepository.insertProject(project, currentUser)
     }
 }

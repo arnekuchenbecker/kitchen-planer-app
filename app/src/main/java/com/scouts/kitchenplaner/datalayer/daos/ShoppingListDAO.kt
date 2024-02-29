@@ -67,6 +67,9 @@ interface ShoppingListDAO {
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
 
+    @Delete
+    suspend fun deleteShoppingList(entity: ShoppingListEntity)
+
     //Methods for archiving Projects
     @Delete(ShoppingListEntity::class)
     suspend fun deleteShoppingListsByProjectId(projectId: ProjectIdDTO)
