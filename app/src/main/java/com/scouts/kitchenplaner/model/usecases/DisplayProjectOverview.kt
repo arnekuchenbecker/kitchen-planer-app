@@ -31,7 +31,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 import javax.inject.Inject
 
 class DisplayProjectOverview @Inject constructor(
@@ -87,6 +89,11 @@ class DisplayProjectOverview @Inject constructor(
             }
             .combine(numberChangeFlow) { project, numberChanges ->
                 project.withNumberChanges(numberChanges)
+            }.onStart {
+                projectRepository.updateProjectShown(
+                    projectId, userRepository.getCurrentUser(),
+                    Date()
+                )
             }
     }
 
