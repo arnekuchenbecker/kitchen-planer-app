@@ -18,6 +18,8 @@ package com.scouts.kitchenplaner.model
 
 import android.net.Uri
 import app.cash.turbine.test
+import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenMealCover
@@ -39,9 +41,11 @@ import java.util.Date
 
 class AllergenCheckTest {
     private val recipeRepository = mockk<RecipeRepository>(relaxed = true)
+    private val recipeManagementRepository = mockk<RecipeManagementRepository>(relaxed = true)
+    private val allergenRepository = mockk<AllergenRepository>(relaxed = true)
     private val project = mockk<Project>(relaxed = true)
     private val uri = mockk<Uri>(relaxed = true)
-    private val checkAllergens = CheckAllergens(recipeRepository)
+    private val checkAllergens = CheckAllergens(recipeRepository, recipeManagementRepository, allergenRepository)
     private val mealSlots = listOf(
         MealSlot(Date(0), "Frühstück"),
         MealSlot(Date(0), "Mittagessen"),
@@ -89,19 +93,18 @@ class AllergenCheckTest {
         coEvery { project.meals } returns listOf("Frühstück", "Mittagessen")
         coEvery { project.mealSlots } returns mealSlots
         coEvery { project.allergenPersons } returns allergenPersons
-        coEvery { project.mealPlan[mealSlots[0]] } returns Pair(Pair(breakfastStub, listOf()), 5)
-        coEvery { project.mealPlan[mealSlots[1]] } returns Pair(Pair(lunchStub, listOf()), 5)
-        coEvery { project.mealPlan[mealSlots[2]] } returns Pair(Pair(breakfastStub, listOf()), 5)
+        coEvery { recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlots[0]) } returns flowOf(listOf(1))
+        coEvery { recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlots[1]) } returns flowOf(listOf(2))
+        coEvery { recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlots[2]) } returns flowOf(listOf(1))
+        coEvery { allergenRepository.getAllergenPersonsByProjectID(project.id) } returns flowOf(allergenPersons)
+        coEvery { recipeRepository.getRecipeStubById(1) } returns flowOf(breakfastStub)
+        coEvery { recipeRepository.getRecipeStubById(2) } returns flowOf(lunchStub)
         coEvery { recipeRepository.getAllergensForRecipe(1) } returns flowOf(breakfastDietaries)
         coEvery { recipeRepository.getAllergensForRecipe(2) } returns flowOf(lunchDietaries)
 
-        val projectFlow = flowOf(project)
-
         val results = mealSlots.associateWith {
-            checkAllergens.getAllergenCheck(projectFlow, it)
+            checkAllergens.getAllergenCheck(project, it)
         }
-
-        //projectFlow.emit(project)
 
         results[mealSlots[0]]?.test { // first breakfast
             val check = awaitItem()

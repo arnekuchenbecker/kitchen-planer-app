@@ -22,7 +22,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -45,7 +44,7 @@ fun PicturePicker(modifier: Modifier = Modifier, onPathSelected: (Uri?) -> Unit,
                 launcher.launch(arrayOf("image/*"))
             }
     ) {
-        if (path != null) {
+        if (path != null && path != Uri.EMPTY) {
             AsyncImage(
                 model = path,
                 contentDescription = "Project Image",

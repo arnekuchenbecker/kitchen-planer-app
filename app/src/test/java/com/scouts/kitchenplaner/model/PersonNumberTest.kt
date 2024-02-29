@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.model
 
 import android.net.Uri
+import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import io.mockk.mockk
@@ -29,10 +30,12 @@ class PersonNumberTest {
     private val project = Project(
         1,
         "Test Projekt",
-        Date(0),
-        Date(72*60*60*1000),
         listOf(),
-        listOf("Frühstück", "Mittagessen", "Abendessen"),
+        MealPlan(
+            Date(0),
+            Date(72*60*60*1000),
+            listOf("Frühstück", "Mittagessen", "Abendessen"),
+        ),
         uri
     )
 

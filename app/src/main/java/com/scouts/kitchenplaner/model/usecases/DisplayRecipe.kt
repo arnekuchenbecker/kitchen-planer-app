@@ -16,22 +16,27 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.model.entities.Recipe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import java.util.Date
 import javax.inject.Inject
 
-class EditParticipantNumbers @Inject constructor(
-    private val projectRepository: ProjectRepository
+class DisplayRecipe @Inject constructor(
+    private val recipeRepository: RecipeRepository,
+    private val userDataStore: KitchenAppDataStore
 ) {
-    suspend fun setPersonNumberChange(project: Project, meal: String, date: Date, differenceBefore: Int) {
-        if (differenceBefore == 0) {
-            removePersonNumberChange(project, meal, date)
+    fun showRecipeById(id: Long): Flow<Recipe> {
+        return recipeRepository.getRecipeById(id).onEach {
+            recipeRepository.updateLastShownRecipeForUser(
+                userDataStore.getCurrentUser(),
+                id,
+                Date()
+            )
         }
-        projectRepository.setPersonNumberChange(project.id, meal, date, differenceBefore)
-    }
-
-    suspend fun removePersonNumberChange(project: Project, meal: String, date: Date) {
-        projectRepository.removePersonNumberChange(project.id, meal, date)
     }
 }

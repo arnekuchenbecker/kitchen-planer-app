@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class IngredientGroup(
+data class IngredientGroup(
     val name: String = "",
     val ingredients: List<Ingredient> = listOf()
 ) {

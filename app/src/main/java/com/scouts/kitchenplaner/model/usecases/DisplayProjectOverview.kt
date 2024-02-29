@@ -21,6 +21,7 @@ import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
+import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub
@@ -46,10 +47,8 @@ class DisplayProjectOverview @Inject constructor(
                 Project(
                     it.stub.id,
                     it.stub.name,
-                    it.startDate,
-                    it.endDate,
                     mutableListOf(),
-                    mutableListOf(),
+                    MealPlan(it.startDate, it.endDate, mutableListOf()),
                     it.stub.imageUri
                 )
             }.first()
@@ -75,28 +74,19 @@ class DisplayProjectOverview @Inject constructor(
 
         return flowOf(initialProject)
             .combine(metaDataFlow) { project, metaData ->
-                project.setID(metaData.stub.id)
-                project.setName(metaData.stub.name)
-                project.setStartDate(metaData.startDate)
-                project.setEndDate(metaData.endDate)
-                project.setImageUri(metaData.stub.imageUri)
-                project
+                project.withMetaData(metaData)
             }
             .combine(allergenPersonFlow) { project, allergenPersons ->
-                project.setAllergenPersons(allergenPersons)
-                project
+                project.withAllergenPersons(allergenPersons)
             }
             .combine(mealFlow) { project, meals ->
-                project.mealPlan.setMeals(meals)
-                project
+                project.withMeals(meals)
             }
             .combine(mealPlanFlow) { project, mealPlan ->
-                project.mealPlan.setPlan(mealPlan)
-                project
+                project.withMealPlan(mealPlan)
             }
             .combine(numberChangeFlow) { project, numberChanges ->
-                project.mealPlan.setNumberChanges(numberChanges)
-                project
+                project.withNumberChanges(numberChanges)
             }
     }
 

@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class User (
+data class User (
     val username: String = ""
 ){
 
