@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class ShoppingList (
+data class ShoppingList (
     val id: Long? = null,
     val name: String,
     private val shoppingItems: MutableList<ShoppingListItem>

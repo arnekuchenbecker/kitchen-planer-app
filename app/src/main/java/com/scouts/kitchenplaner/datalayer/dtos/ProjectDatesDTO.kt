@@ -14,16 +14,12 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import android.net.Uri
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.model.entities.Project
+import java.util.Date
 
-class EditProjectPicture (
-    private val projectRepository: ProjectRepository
-) {
-    suspend fun setProjectPicture(project: Project, image: Uri) {
-        projectRepository.changeProjectPicture(project.id, image)
-    }
-}
+data class ProjectDatesDTO(
+    val id: Long,
+    val startDate: Date,
+    val endDate: Date
+)

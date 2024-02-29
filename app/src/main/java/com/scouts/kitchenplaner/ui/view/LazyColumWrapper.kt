@@ -18,22 +18,31 @@ package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun <T> LazyColumnWrapper(
+fun <T : Any> LazyColumnWrapper(
     modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: List<T>,
     DisplayContent: @Composable (T, Int) -> Unit,
     DisplayLast: @Composable (T, Int) -> Unit = DisplayContent,
     DisplayEmpty: @Composable () -> Unit
 ) {
-    LazyColumn (modifier = modifier) {
+    LazyColumn(
+        modifier = modifier,
+        horizontalAlignment = horizontalAlignment
+    ) {
         if (content.isNotEmpty()) {
-            items(content.size - 1) {
+            items(
+                count = content.size - 1
+            ) {
                 DisplayContent(content[it], it)
             }
-            item { DisplayLast(content[content.lastIndex], content.lastIndex) }
+            item {
+                DisplayLast(content[content.lastIndex], content.lastIndex)
+            }
         } else {
             item { DisplayEmpty() }
         }

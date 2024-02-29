@@ -50,4 +50,11 @@ class IngredientList {
         _ingredients[slot] = newSet
         return newSet
     }
+
+    override fun equals(other: Any?): Boolean = (other is IngredientList)
+            && _ingredients == other._ingredients
+
+    override fun hashCode(): Int {
+        return _ingredients.hashCode()
+    }
 }

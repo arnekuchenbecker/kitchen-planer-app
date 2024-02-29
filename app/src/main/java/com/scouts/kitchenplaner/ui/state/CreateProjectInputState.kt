@@ -72,7 +72,9 @@ class CreateProjectInputState {
             val newPerson = AllergenPersonState()
             newPerson.name = allergenAdderState.name
             newPerson.arrivalDateMillis = allergenAdderState.arrivalDate.selectedDateMillis
+            newPerson.arrivalMeal = allergenAdderState.arrivalMeal
             newPerson.departureDateMillis = allergenAdderState.departureDate.selectedDateMillis
+            newPerson.departureMeal = allergenAdderState.departureMeal
             allergenAdderState.allergens.forEach { (allergen, traces) ->
                 newPerson.addAllergen(allergen, traces)
             }

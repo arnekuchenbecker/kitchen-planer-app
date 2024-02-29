@@ -112,6 +112,7 @@ fun ExpandableCard(
                 CardTitle(
                     modifier = Modifier.weight(1.0f),
                     title = cardState.title,
+                    TitleIcon = cardState.titleInteractions,
                     color = contentColor,
                     onTitleClick = onTitleClick
                 )
@@ -130,7 +131,11 @@ fun ExpandableCard(
             }
         }
 
-        ExpandableContent(visible = expanded && !cardState.toBeDeleted, Content = cardState.content)
+        ExpandableContent(
+            visible = expanded && !cardState.toBeDeleted,
+            Content = cardState.content,
+            contentModifier = cardState.contentModifier
+        )
     }
 }
 
@@ -156,24 +161,36 @@ fun CardArrow(
 }
 
 @Composable
-fun CardTitle(modifier: Modifier = Modifier, title: String, color: Color, onTitleClick: () -> Unit) {
-    Text(
-        text = title,
-        modifier = modifier
-            .padding(16.dp)
-            .clickable {
-                onTitleClick()
-            },
-        textAlign = TextAlign.Center,
-        color = color
-    )
+fun CardTitle(
+    modifier: Modifier = Modifier,
+    title: String,
+    TitleIcon: @Composable () -> Unit,
+    color: Color,
+    onTitleClick: () -> Unit
+) {
+    Row (modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        TitleIcon()
+        Spacer(modifier = Modifier.weight(0.5f))
+        Text(
+            text = title,
+            modifier = Modifier
+                .padding(16.dp)
+                .clickable {
+                    onTitleClick()
+                },
+            textAlign = TextAlign.Center,
+            color = color
+        )
+        Spacer(modifier = Modifier.weight(0.5f))
+    }
 }
 
 @Composable
 fun ExpandableContent(
     visible: Boolean = true,
     initialVisibility: Boolean = false,
-    Content: @Composable () -> Unit
+    Content: @Composable () -> Unit,
+    contentModifier: Modifier
 ) {
     val enterTransition = remember {
         expandVertically(
@@ -204,9 +221,9 @@ fun ExpandableContent(
         enter = enterTransition,
         exit = exitTransition
     ) {
-        Column(modifier = Modifier
+        Column(modifier = contentModifier
             .padding(8.dp)
-            .heightIn(max = 100.dp)) {
+        ) {
             Spacer(modifier = Modifier.heightIn(max = 100.dp))
             Content()
         }

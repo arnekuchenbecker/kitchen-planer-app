@@ -27,6 +27,7 @@ import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.runBlocking
@@ -74,7 +75,13 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testInsertProject(): Unit = runBlocking {
-        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
+        val project = Project(
+            _name = "Test",
+            _mealPlan = MealPlan(
+                _startDate = Date(0),
+                _endDate = Date(1)
+            )
+        )
         repo.insertProject(project, User("Arne"))
         val retValue = repo.getProjectByProjectName("Test")
         assertEquals("Test", retValue.stub.name)
@@ -85,8 +92,20 @@ class ProjectDatabaseTest {
     @Test
     @Throws(Exception::class)
     fun testGetAllProjects(): Unit = runTest {
-        val project = Project(_name = "Test", initialStartDate = Date(0), initialEndDate = Date(1))
-        val project2 = Project(_name = "Test2", initialStartDate = Date(0), initialEndDate = Date(1))
+        val project = Project(
+            _name = "Test",
+            _mealPlan = MealPlan(
+                _startDate = Date(0),
+                _endDate = Date(1)
+            )
+        )
+        val project2 = Project(
+            _name = "Test2",
+            _mealPlan = MealPlan(
+                _startDate = Date(0),
+                _endDate = Date(1)
+            )
+        )
 
         repo.getAllProjectsOverview().test {
             awaitItem()

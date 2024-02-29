@@ -38,9 +38,17 @@ class RecipeManagementRepository @Inject constructor(
     }
 
     suspend fun addAlternativeRecipeForMealSlot(projectId: Long, recipeId: Long, mealSlot: MealSlot) {
-        recipeManagementDAO.addSingleAlternativeRecipeToProjectMeal(
-            AlternativeRecipeProjectMealEntity(projectId, mealSlot.meal, mealSlot.date, recipeId)
-        )
+        val mainRecipe = recipeManagementDAO.getMainRecipeIdForMealSlotImmediate(projectId, mealSlot.meal, mealSlot.date)
+        if (mainRecipe != recipeId) {
+            recipeManagementDAO.addSingleAlternativeRecipeToProjectMeal(
+                AlternativeRecipeProjectMealEntity(
+                    projectId,
+                    mealSlot.meal,
+                    mealSlot.date,
+                    recipeId
+                )
+            )
+        }
     }
 
     suspend fun swapRecipes(projectId: Long, firstMealSlot: MealSlot, secondMealSlot: MealSlot) {
@@ -76,5 +84,12 @@ class RecipeManagementRepository @Inject constructor(
                 }.map { it.recipeId }))
             }
         }
+    }
+
+    fun getRecipesForMealSlot(projectId: Long, mealSlot: MealSlot) : Flow<List<Long>> {
+        return recipeManagementDAO.getMainRecipeIdForMealSlot(projectId, mealSlot.meal, mealSlot.date)
+            .combine(recipeManagementDAO.getAlternativeRecipeIdsForMealSlot(projectId, mealSlot.meal, mealSlot.date)) { main, alternatives ->
+                alternatives + main
+            }
     }
 }

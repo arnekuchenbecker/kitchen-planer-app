@@ -18,7 +18,7 @@ package com.scouts.kitchenplaner.model.entities
 
 import java.util.Date
 
-class ProjectMetaData(
+data class ProjectMetaData(
     val stub: ProjectStub,
     val startDate: Date,
     val endDate: Date

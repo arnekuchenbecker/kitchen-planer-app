@@ -26,6 +26,7 @@ import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectDatesDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
@@ -76,6 +77,11 @@ interface ProjectDAO {
     )
     suspend fun decreaseMealOrder(projectId: Long, index: Int)
 
+    @Query("UPDATE projects " +
+            "SET name = :name " +
+            "WHERE id = :projectId")
+    suspend fun changeProjectName(projectId: Long, name: String)
+
     @Delete(MealEntity::class)
     suspend fun deleteMeal(meal: MealIdentifierDTO)
 
@@ -118,6 +124,9 @@ interface ProjectDAO {
 
     @Update(entity = ProjectEntity::class)
     suspend fun updateImage(image: ProjectImageDTO)
+
+    @Update(entity = ProjectEntity::class)
+    suspend fun updateDates(dates: ProjectDatesDTO)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPersonNumberChange(entity: PersonNumberChangeEntity)

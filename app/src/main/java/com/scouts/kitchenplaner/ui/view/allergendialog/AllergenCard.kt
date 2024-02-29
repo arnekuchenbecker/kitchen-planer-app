@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.createproject
+package com.scouts.kitchenplaner.ui.view.allergendialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,18 +33,36 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.scouts.kitchenplaner.toDateString
 import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.ExpandableCard
 
 @Composable
-fun AllergenCard(name: String, allergens: List<Pair<String, Boolean>>, onTitleClick: () -> Unit, onDelete: () -> Unit, onItemDelete: (Pair<String, Boolean>) -> Unit, toBeDeleted: Boolean) {
-    var expand by remember { mutableStateOf(false) }
+fun AllergenCard(
+    name: String,
+    allergens: List<Pair<String, Boolean>>,
+    arrivalDate: Long?,
+    arrivalMeal: String,
+    departureDate: Long?,
+    departureMeal: String,
+    onTitleClick: () -> Unit,
+    onDelete: () -> Unit,
+    onItemDelete: (Pair<String, Boolean>) -> Unit,
+    toBeDeleted: Boolean,
+    toggleExpand: () -> Unit,
+    expand: Boolean
+) {
+    val dateString = if (arrivalDate != null && departureDate != null) {
+        "\n${arrivalDate.toDateString()} ($arrivalMeal) - ${departureDate.toDateString()} ($departureMeal)"
+    } else {
+        ""
+    }
     ExpandableCard(
         expanded = expand,
-        onCardArrowClick = { expand = !expand },
+        onCardArrowClick = toggleExpand,
         onTitleClick = onTitleClick,
-        cardState = CardState("$name (${allergens.size} EBs)", onDelete, toBeDeleted) {
+        cardState = CardState(title = "$name\n(${allergens.size} EBs)$dateString", onDelete = onDelete, toBeDeleted = toBeDeleted) {
             LazyColumn {
                 items(allergens) { (allergen, traces) ->
                     var itemToBeDeleted by remember { mutableStateOf(false) }

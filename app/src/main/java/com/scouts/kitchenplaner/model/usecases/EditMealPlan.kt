@@ -18,21 +18,37 @@ package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.Recipe
+import com.scouts.kitchenplaner.model.entities.RecipeStub
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class EditMealPlan @Inject constructor(
     private val recipeManagementRepository: RecipeManagementRepository,
+    private val recipeRepository: RecipeRepository,
     private val projectRepository: ProjectRepository
 ) {
-    suspend fun selectRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: Recipe) {
+    suspend fun selectMainRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
         recipeManagementRepository.chooseMainRecipeForMealSlot(
             project.id,
-            recipe.id,
+            recipe.id ?: return,
             mealSlot
         )
+    }
+
+    suspend fun addAlternativeRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
+        recipeManagementRepository.addAlternativeRecipeForMealSlot(project.id, recipe.id ?: return, mealSlot)
+    }
+
+    suspend fun removeAlternativeRecipeFromMeal(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
+        recipeManagementRepository.removeAlternativeRecipeFromMealSlot(project.id, mealSlot, recipe.id ?: 0)
+    }
+
+    suspend fun removeMainRecipeFromMeal(project: Project, mealSlot: MealSlot) {
+        recipeManagementRepository.removeMainRecipeFromMealSlot(project.id, mealSlot)
     }
 
 
@@ -44,11 +60,20 @@ class EditMealPlan @Inject constructor(
         recipeManagementRepository.swapRecipes(project.id, first, second)
     }
 
-    suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size + 1) {
+    suspend fun addMeal(project: Project, meal: String, index: Int = project.meals.size) {
         projectRepository.addMealToProject(meal, index, project.id)
     }
 
     suspend fun removeMeal(project: Project, meal: String) {
         projectRepository.deleteMealFromProject(meal, project.id)
+    }
+
+    fun findRecipesForQuery(project: Project, mealSlot: MealSlot, query: String) : Flow<List<RecipeStub>> {
+        return recipeRepository.getRecipesForQueryByName(query)
+            .combine(recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlot)) { suggestions, recipes ->
+                suggestions.filter {
+                    !recipes.any { id -> it.id == id }
+                }
+            }
     }
 }

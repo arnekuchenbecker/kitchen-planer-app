@@ -16,48 +16,79 @@
 
 package com.scouts.kitchenplaner.ui.view.projectdetails
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.ui.viewmodel.MealPlanViewModel
 
 @Composable
 fun ProjectDetails(
-    projectID: Long,
+    project: Project,
     onNavigateToRecipeToCook: (Long) -> Unit,
-    onNavigateToRecipeCreation: () -> Unit
+    onNavigateToRecipeCreation: () -> Unit,
+    viewModel: MealPlanViewModel = hiltViewModel()
 ) {
-    Column {
+    var selectionDialogForSlot by remember { mutableStateOf<MealSlot?>(null) }
 
-        Text(text = "This is the screen, where all information to one specific project are displayed displayed")
-        Text(text = "The projectID is $projectID", color = Color.Red)
-        Text(text = "available Links to other sides are: ")
-        var listID by remember { mutableStateOf(1f) }
-
-        Row {
-            Text(text = "Recipe To Cook")
-            Slider(
-                modifier = Modifier.fillMaxWidth(0.3f),
-                value = listID,
-                onValueChange = { listID = it },
-                valueRange = 1f..20f,
-                steps = 5
-            )
-            Button(onClick = { onNavigateToRecipeToCook(listID.toLong()) }) {}
+    DisplayMealPlan(
+        mealSlots = project.mealSlots,
+        mealPlan = project.mealPlan,
+        getAllergenCheck = { slot ->
+            viewModel.getAllergenCheck(project, slot)
+        },
+        onSwap = { first, second ->
+            viewModel.swapMeals(project, first, second)
+        },
+        onShowRecipe = {
+            onNavigateToRecipeToCook(it.id ?: 0)
+        },
+        onDeleteRecipe = { slot, recipe ->
+            if (recipe == null) {
+                viewModel.onDeleteMainRecipe(project, slot)
+            } else {
+                viewModel.onDeleteAlternativeRecipe(project, slot, recipe)
+            }
+        },
+        displayRecipeSelectionDialog = { slot, exchange ->
+            selectionDialogForSlot = slot
+            viewModel.recipeToExchange = Pair(slot, exchange)
         }
-        Row {
-            Text(text = "Create recipe screen")
-            Button(onClick = onNavigateToRecipeCreation) {}
-        }
+    )
 
+    if (selectionDialogForSlot != null) {
+        val suggestions by remember {
+            viewModel.getRecipeSuggestions(project, selectionDialogForSlot!!)
+        }.collectAsState()
+        RecipeSelectionDialog(
+            onDismissRequest = { selectionDialogForSlot = null },
+            onNavigateToRecipeCreation = onNavigateToRecipeCreation,
+            onSelection = { newRecipe ->
+                val oldRecipe = viewModel.recipeToExchange.second
+                if (oldRecipe != null) {
+                    viewModel.exchangeRecipe(
+                        project,
+                        viewModel.recipeToExchange.first,
+                        oldRecipe,
+                        newRecipe
+                    )
+                } else {
+                    viewModel.addRecipe(
+                        project,
+                        viewModel.recipeToExchange.first,
+                        newRecipe
+                    )
+                }
+                selectionDialogForSlot = null
+            },
+            onQueryChange = viewModel::onRecipeQueryChanged,
+            recipeQuery = viewModel.recipeQuery,
+            searchResults = suggestions
+        )
     }
 }

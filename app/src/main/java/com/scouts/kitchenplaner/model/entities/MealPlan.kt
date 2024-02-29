@@ -87,4 +87,20 @@ class MealPlan (
             meals.contains(slot.meal) && slot.date.between(startDate, endDate)
         }
     }
+
+    override fun equals(other: Any?): Boolean = (other is MealPlan)
+            && _startDate == other._startDate
+            && _endDate == other._endDate
+            && _meals == other._meals
+            && _plan == other._plan
+            && _numberChanges == other._numberChanges
+
+    override fun hashCode(): Int {
+        var result = _startDate.hashCode()
+        result = 31 * result + _endDate.hashCode()
+        result = 31 * result + _plan.hashCode()
+        result = 31 * result + _meals.hashCode()
+        result = 31 * result + _numberChanges.hashCode()
+        return result
+    }
 }

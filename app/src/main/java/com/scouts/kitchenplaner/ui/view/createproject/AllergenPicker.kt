@@ -35,6 +35,7 @@ import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
 import com.scouts.kitchenplaner.ui.state.AllergenPersonState
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.view.ListEditHeader
+import com.scouts.kitchenplaner.ui.view.allergendialog.EditAllergensDialog
 import kotlin.math.min
 
 

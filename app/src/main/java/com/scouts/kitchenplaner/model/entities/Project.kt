@@ -24,13 +24,17 @@ import java.util.Date
 class Project(
     private var _id: Long? = null,
     private var _name: String = "",
-    initialStartDate: Date,
-    initialEndDate: Date,
     private var _allergenPersons: List<AllergenPerson> = listOf(),
-    initialMeals: List<String> = listOf(),
+    private var _mealPlan: MealPlan,
     private var _projectImage: Uri = Uri.EMPTY
 ){
-    private var _mealPlan = MealPlan(initialStartDate, initialEndDate, initialMeals)
+    constructor(project: Project) : this(
+        project.id,
+        project.name,
+        project.allergenPersons,
+        project.mealPlan,
+        project.projectImage
+    )
     val mealPlan: MealPlan
         get() = _mealPlan
     val id: Long
@@ -60,32 +64,41 @@ class Project(
         }.flatten()
 
     @DomainLayerRestricted
-    fun setID(id: Long) {
-        _id = id
+    fun withMetaData(metaData: ProjectMetaData) : Project {
+        val newProject = Project(this)
+        newProject._id = metaData.stub.id
+        newProject._name = metaData.stub.name
+        newProject._projectImage = metaData.stub.imageUri
+        newProject._mealPlan.setStartDate(metaData.startDate)
+        newProject._mealPlan.setEndDate(metaData.endDate)
+        return newProject
     }
 
     @DomainLayerRestricted
-    fun setName(name: String) {
-        _name = name
+    fun withAllergenPersons(allergenPersons: List<AllergenPerson>) : Project {
+        val newProject = Project(this)
+        newProject._allergenPersons = allergenPersons
+        return newProject
     }
 
     @DomainLayerRestricted
-    fun setStartDate(startDate: Date) {
-        _mealPlan.setStartDate(startDate)
+    fun withMeals(meals: List<String>) : Project {
+        val newProject = Project(this)
+        newProject._mealPlan.setMeals(meals)
+        return newProject
     }
 
     @DomainLayerRestricted
-    fun setEndDate(endDate: Date) {
-        _mealPlan.setEndDate(endDate)
+    fun withMealPlan(plan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>>) : Project {
+        val newProject = Project(this)
+        newProject._mealPlan.setPlan(plan)
+        return newProject
     }
 
     @DomainLayerRestricted
-    fun setImageUri(uri: Uri) {
-        _projectImage = uri
-    }
-
-    @DomainLayerRestricted
-    fun setAllergenPersons(allergenPersons: List<AllergenPerson>) {
-        _allergenPersons = allergenPersons
+    fun withNumberChanges(numberChanges: Map<MealSlot, Int>) : Project {
+        val newProject = Project(this)
+        newProject._mealPlan.setNumberChanges(numberChanges)
+        return newProject
     }
 }

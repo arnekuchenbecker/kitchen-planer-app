@@ -121,7 +121,8 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             onValueChange = { state.name = it },
             modifier = columnItemModifier
                 .height(70.dp),
-            label = { Text("Project Name") }
+            label = { Text("Project Name") },
+            singleLine = true
         )
 
         DockedDatePicker(

@@ -51,7 +51,7 @@ fun RecipeOverview(
         ExtendedFloatingActionButton(onClick = onNavigationCreateRecipe,
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            text = { Text("neues Rezept") },
+            text = { Text("Neues Rezept") },
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Add,

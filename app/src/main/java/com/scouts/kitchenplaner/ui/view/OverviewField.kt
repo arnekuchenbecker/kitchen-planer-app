@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.ui.view
 
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,19 +39,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OverviewField(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     imageUri: Uri = Uri.EMPTY,
     imageDescription: String = "",
     text: String,
     additionalContent: @Composable () -> Unit = {}
 ) {
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .clickable { onClick() }
         .fillMaxWidth()
         .padding(5.dp)
@@ -88,9 +92,11 @@ fun OverviewField(
             }
 
             Text(
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(horizontal = 10.dp),
                 text = text,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
             additionalContent()
         }
@@ -100,7 +106,7 @@ fun OverviewField(
 
 @Preview(showBackground = true)
 @Composable
-fun prevOverviewField() {
+fun PrevOverviewField() {
     OverviewField(text = "Test", additionalContent = {
         Icon(
             imageVector = Icons.Filled.HideImage, contentDescription = "Projektplatzhalter"
