@@ -24,6 +24,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.IngredientIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
@@ -105,6 +106,9 @@ interface RecipeDAO {
 
     @Insert
     suspend fun insertIngredient(entity: IngredientEntity): Long
+
+    @Delete(IngredientEntity::class)
+    suspend fun deleteIngredient(entity: IngredientIdentifierDTO)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long

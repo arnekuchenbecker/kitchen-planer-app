@@ -19,8 +19,10 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.IngredientIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
@@ -50,13 +52,13 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeStubById(id: Long) : Flow<RecipeStub> {
+    fun getRecipeStubById(id: Long): Flow<RecipeStub> {
         return recipeDAO.getRecipeById(id).map {
             RecipeStub(it.id, it.title, Uri.parse(it.imageURI))
         }
     }
 
-    fun getRecipeById(id: Long) : Flow<Recipe> {
+    fun getRecipeById(id: Long): Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
@@ -134,7 +136,7 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeStub>> {
+    fun getRecipesForQueryByName(query: String): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesForQueryByName("%$query%").map {
             it.map { entity ->
                 RecipeStub(entity.id, entity.title, Uri.parse(entity.imageURI))
@@ -176,7 +178,31 @@ class RecipeRepository @Inject constructor(
         recipeDAO.deleteDietarySpeciality(DietarySpecialityIdentifierDTO(recipeID, speciality))
     }
 
-    // TODO - ingredients
+    suspend fun insertDietarySpeciality(recipeID: Long, speciality: String, type: DietaryTypes) {
+        recipeDAO.insertDietarySpeciality(DietarySpecialityEntity(recipeID, type, speciality))
+    }
+
+    suspend fun insertIngredient(recipeID: Long, ingredientGroup: String, ingredient: Ingredient) {
+        recipeDAO.insertIngredient(
+            IngredientEntity(
+                recipeID,
+                ingredientGroup,
+                ingredient.name,
+                ingredient.amount,
+                ingredient.unit
+            )
+        )
+    }
+
+    suspend fun deleteIngredient(recipeID: Long, ingredientGroup: String, ingredientName: String) {
+        recipeDAO.deleteIngredient(
+            IngredientIdentifierDTO(
+                recipeID,
+                ingredientGroup,
+                ingredientName
+            )
+        )
+    }
 
     // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
