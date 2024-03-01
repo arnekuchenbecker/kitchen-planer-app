@@ -62,6 +62,8 @@ interface RecipeDAO {
         return recipeId
     }
 
+    @Query("UPDATE recipeEntity SET title = :newTitle WHERE id = :id")
+    suspend fun updateRecipeName(id: Long, newTitle: String)
 
     @Insert
     suspend fun insertInstructionStep(entity: InstructionEntity): Long

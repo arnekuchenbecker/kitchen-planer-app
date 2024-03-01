@@ -141,6 +141,10 @@ class RecipeRepository @Inject constructor(
         }
     }
 
+    suspend fun setRecipeName(recipeID: Long, name: String) {
+        recipeDAO.updateRecipeName(recipeID, name)
+    }
+
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
         recipeDAO.increaseInstructionStepOrder(recipeID, index)
         recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
