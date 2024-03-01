@@ -62,6 +62,14 @@ interface RecipeDAO {
     @Insert
     suspend fun insertInstructionStep(entity: InstructionEntity): Long
 
+    @Query(
+        "UPDATE instructionentity " +
+                "SET `order` = `order` + 1 " +
+                "WHERE recipe = :recipeID " +
+                "AND `order` >= :index"
+    )
+    suspend fun increaseInstructionStepOrder(recipeID: Long, index: Int)
+
     @Insert
     suspend fun insertRecipe(entity: RecipeEntity): Long
 
