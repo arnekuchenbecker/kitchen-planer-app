@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.repositories
 
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
+import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
@@ -152,6 +153,10 @@ class RecipeRepository @Inject constructor(
 
     suspend fun updateInstruction(recipeID: Long, index: Int, newInstruction: String) {
         recipeDAO.updateInstructionStep(InstructionEntity(index, recipeID, newInstruction))
+    }
+
+    suspend fun deleteDietarySpeciality(recipeID: Long, speciality: String) {
+        recipeDAO.deleteDietarySpeciality(DietarySpecialityIdentifierDTO(recipeID, speciality))
     }
 
     // TODO has to be used every time a user sees a recipe

@@ -23,6 +23,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
@@ -95,6 +96,9 @@ interface RecipeDAO {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
+
+    @Delete(DietarySpecialityEntity::class)
+    suspend fun deleteDietarySpeciality(entity: DietarySpecialityIdentifierDTO)
 
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
     fun getRecipeById(id: Long): Flow<RecipeEntity>
