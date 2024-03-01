@@ -25,6 +25,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
@@ -64,6 +65,15 @@ interface RecipeDAO {
 
     @Query("UPDATE recipeEntity SET title = :newTitle WHERE id = :id")
     suspend fun updateRecipeName(id: Long, newTitle: String)
+
+    @Query("UPDATE recipeEntity SET description = :newDesc WHERE id = :id")
+    suspend fun updateRecipeDescription(id: Long, newDesc: String)
+
+    @Update(RecipeEntity::class)
+    suspend fun updateRecipeImage(entity: RecipeImageDTO)
+
+    @Query("UPDATE recipeEntity SET numberOfPeople = :newPeople WHERE id = :id")
+    suspend fun updateNumberOfPeople(id: Long, newPeople: Int)
 
     @Insert
     suspend fun insertInstructionStep(entity: InstructionEntity): Long

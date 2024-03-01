@@ -20,6 +20,7 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
@@ -145,6 +146,18 @@ class RecipeRepository @Inject constructor(
         recipeDAO.updateRecipeName(recipeID, name)
     }
 
+    suspend fun setRecipeImage(recipeID: Long, image: Uri) {
+        recipeDAO.updateRecipeImage(RecipeImageDTO(recipeID, image.toString()))
+    }
+
+    suspend fun setRecipeDescription(recipeID: Long, description: String) {
+        recipeDAO.updateRecipeDescription(recipeID, description)
+    }
+
+    suspend fun setNumberOfPeople(recipeID: Long, numberOfPeople: Int) {
+        recipeDAO.updateNumberOfPeople(recipeID, numberOfPeople)
+    }
+
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
         recipeDAO.increaseInstructionStepOrder(recipeID, index)
         recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
@@ -162,6 +175,8 @@ class RecipeRepository @Inject constructor(
     suspend fun deleteDietarySpeciality(recipeID: Long, speciality: String) {
         recipeDAO.deleteDietarySpeciality(DietarySpecialityIdentifierDTO(recipeID, speciality))
     }
+
+    // TODO - ingredients
 
     // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
