@@ -204,6 +204,18 @@ class RecipeRepository @Inject constructor(
         )
     }
 
+    suspend fun updateIngredientName(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newName: String) {
+        recipeDAO.updateIngredientName(newName, ingredient.name, recipeID, ingredientGroup)
+    }
+
+    suspend fun updateIngredientAmount(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Int) {
+        recipeDAO.updateIngredientAmount(newAmount, ingredient.name, recipeID, ingredientGroup)
+    }
+
+    suspend fun updateIngredientUnit(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newUnit: String) {
+        recipeDAO.updateIngredientUnit(newUnit, ingredient.name, recipeID, ingredientGroup)
+    }
+
     // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
         recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))

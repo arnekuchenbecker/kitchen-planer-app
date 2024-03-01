@@ -110,6 +110,24 @@ interface RecipeDAO {
     @Delete(IngredientEntity::class)
     suspend fun deleteIngredient(entity: IngredientIdentifierDTO)
 
+    @Query(
+        "UPDATE ingrediententity SET name = :newName " +
+            "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
+    )
+    suspend fun updateIngredientName(newName: String, oldName: String, recipeID: Long, group: String)
+
+    @Query(
+        "UPDATE ingrediententity SET amount = :newAmount " +
+            "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
+    )
+    suspend fun updateIngredientAmount(newAmount: Int, name: String, recipeID: Long, group: String)
+
+    @Query(
+        "UPDATE ingrediententity SET unit = :newUnit " +
+                "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
+    )
+    suspend fun updateIngredientUnit(newUnit: String, name: String, recipeID: Long, group: String)
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDietarySpeciality(entity: DietarySpecialityEntity): Long
 
