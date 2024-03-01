@@ -65,12 +65,12 @@ fun RecipeOverview(
                     OverviewField(text = stub.name,
                         imageUri = stub.imageURI,
                         imageDescription = "Rezept bild",
-                        onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
+                        onClick = { onNavigateToDetailedRecipe(stub.id) })
                 }, DisplayLast = { stub, _ ->
                     OverviewField(text = stub.name,
                         imageUri = stub.imageURI,
                         imageDescription = "Rezept bild",
-                        onClick = { onNavigateToDetailedRecipe(stub.id ?: 0) })
+                        onClick = { onNavigateToDetailedRecipe(stub.id) })
                     //To allow scrolling stuff from behind the FAB
                     Spacer(modifier = Modifier.height(75.dp))
                 }, DisplayEmpty = { Text("Keine Rezepte") })
