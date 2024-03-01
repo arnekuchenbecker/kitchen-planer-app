@@ -150,6 +150,10 @@ class RecipeRepository @Inject constructor(
         recipeDAO.decreaseInstructionStepOrder(recipeID, index)
     }
 
+    suspend fun updateInstruction(recipeID: Long, index: Int, newInstruction: String) {
+        recipeDAO.updateInstructionStep(InstructionEntity(index, recipeID, newInstruction))
+    }
+
     // TODO has to be used every time a user sees a recipe
     suspend fun updateLastShownRecipeForUser(user: User, recipeId: Long, time: Date) {
         recipeDAO.insertUserRecipeUse(UserRecipeEntity(recipeId, user.username, time))

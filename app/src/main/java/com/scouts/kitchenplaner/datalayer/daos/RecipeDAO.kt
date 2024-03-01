@@ -22,6 +22,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
@@ -66,6 +67,9 @@ interface RecipeDAO {
 
     @Delete(InstructionEntity::class)
     suspend fun deleteInstructionStep(entity: InstructionStepIdentifierDTO)
+
+    @Update
+    suspend fun updateInstructionStep(entity: InstructionEntity)
 
     @Query(
         "UPDATE instructionentity " +
