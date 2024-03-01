@@ -17,10 +17,12 @@
 package com.scouts.kitchenplaner.datalayer.daos
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
@@ -62,6 +64,9 @@ interface RecipeDAO {
     @Insert
     suspend fun insertInstructionStep(entity: InstructionEntity): Long
 
+    @Delete(InstructionEntity::class)
+    suspend fun deleteInstructionStep(entity: InstructionStepIdentifierDTO)
+
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` + 1 " +
@@ -69,6 +74,14 @@ interface RecipeDAO {
                 "AND `order` >= :index"
     )
     suspend fun increaseInstructionStepOrder(recipeID: Long, index: Int)
+
+    @Query(
+        "UPDATE instructionentity " +
+                "SET `order` = `order` - 1 " +
+                "WHERE recipe = :recipeID " +
+                "AND `order` >= :index"
+    )
+    suspend fun decreaseInstructionStepOrder(recipeID: Long, index: Int)
 
     @Insert
     suspend fun insertRecipe(entity: RecipeEntity): Long
