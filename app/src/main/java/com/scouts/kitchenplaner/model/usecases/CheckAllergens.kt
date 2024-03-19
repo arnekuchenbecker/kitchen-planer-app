@@ -103,11 +103,7 @@ class CheckAllergens @Inject constructor(
     }
 
     private fun checkRecipe(stub: RecipeStub, person: AllergenPerson): Flow<AllergenMealCover> {
-        val dietarySpecialities = recipeRepository.getAllergensForRecipe(
-            stub.id ?: return flowOf(
-                AllergenMealCover.UNKNOWN
-            )
-        )
+        val dietarySpecialities = recipeRepository.getAllergensForRecipe(stub.id)
 
         return dietarySpecialities.map { specialities ->
             return@map person.allergens.fold(AllergenMealCover.COVERED) { acc, newValue ->

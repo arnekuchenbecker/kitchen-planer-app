@@ -35,10 +35,10 @@ class DisplayIngredientList (
             val recipes = mealPlanSlot.first
             val numberOfPeople = mealPlanSlot.second
             if (recipes != null) {
-                val recipe = recipeRepository.getRecipeById(recipes.first.id ?: -1).first()
+                val recipe = recipeRepository.getRecipeById(recipes.first.id).first()
                 addIngredients(result, recipe, numberOfPeople, slot)
                 recipes.second.forEach {
-                    val alternative = recipeRepository.getRecipeById(it.id ?: -1).first()
+                    val alternative = recipeRepository.getRecipeById(it.id).first()
                     addIngredients(result, alternative, 1, slot) //TODO - figure out how many people are actually eating
                 }
             }

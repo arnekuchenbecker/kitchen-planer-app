@@ -46,7 +46,7 @@ fun ProjectDetails(
             viewModel.swapMeals(project, first, second)
         },
         onShowRecipe = {
-            onNavigateToRecipeToCook(it.id ?: 0)
+            onNavigateToRecipeToCook(it.id)
         },
         onDeleteRecipe = { slot, recipe ->
             if (recipe == null) {
