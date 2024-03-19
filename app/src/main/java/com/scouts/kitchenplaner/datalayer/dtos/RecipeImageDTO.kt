@@ -18,5 +18,5 @@ package com.scouts.kitchenplaner.datalayer.dtos
 
 data class RecipeImageDTO(
     val id: Long,
-    val imageUri: String
+    val imageURI: String
 )
