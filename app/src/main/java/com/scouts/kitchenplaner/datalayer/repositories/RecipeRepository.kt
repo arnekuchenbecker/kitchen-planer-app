@@ -170,7 +170,7 @@ class RecipeRepository @Inject constructor(
         recipeDAO.decreaseInstructionStepOrder(recipeID, index)
     }
 
-    suspend fun updateInstruction(recipeID: Long, index: Int, newInstruction: String) {
+    suspend fun updateInstructionStep(recipeID: Long, index: Int, newInstruction: String) {
         recipeDAO.updateInstructionStep(InstructionEntity(index, recipeID, newInstruction))
     }
 
