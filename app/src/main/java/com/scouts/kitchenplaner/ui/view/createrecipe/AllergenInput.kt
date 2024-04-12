@@ -43,6 +43,12 @@ import com.scouts.kitchenplaner.ui.Headline
 import com.scouts.kitchenplaner.ui.state.RecipeAllergenState
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 
+/**
+ * Display UI Elements for entering allergens when creating a recipe.
+ *
+ * @param modifier Any composable modifiers that should be applied to this Composable
+ * @param allergens State object containing allergens added so far
+ */
 @Composable
 fun AllergenInput(
     modifier: Modifier = Modifier,
@@ -79,6 +85,14 @@ fun AllergenInput(
     }
 }
 
+/**
+ * Display UI elements for adding or removing allergens to a specific category
+ *
+ * @param title A Composable describing the category the allergens should be added to
+ * @param content The allergens added to this category so far
+ * @param onAdd Callback function for adding a new allergen
+ * @param onDelete Callback function for deleting an existing allergen
+ */
 @Composable
 fun AllergenCategoryInput(
     title: @Composable () -> Unit,
