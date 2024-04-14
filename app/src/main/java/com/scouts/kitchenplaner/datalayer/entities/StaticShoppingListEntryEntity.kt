@@ -20,6 +20,15 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+/**
+ * Entity class for static shopping list entries
+ *
+ * @param listId The ID of the shopping list this entry belongs to
+ * @param projectId The ID of the project the shopping list this entry belong to belongs to
+ * @param ingredientName The name of the ingredient that should be purchased
+ * @param amount The amount that should be purchased
+ * @param unit The unit of measure
+ */
 @Entity(
     tableName = "staticShoppingListEntries",
     primaryKeys = ["listId", "ingredientName", "unit"],
