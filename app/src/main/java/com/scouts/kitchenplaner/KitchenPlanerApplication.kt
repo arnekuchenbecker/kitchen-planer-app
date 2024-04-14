@@ -19,6 +19,9 @@ package com.scouts.kitchenplaner
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
+/**
+ * Hilt requires this to do black magic
+ */
 @HiltAndroidApp
 class KitchenPlanerApplication : Application() {
 }

@@ -21,6 +21,9 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Formats this Long to represent a date in dd.MM.yyyy format
+ */
 fun Long.toDateString() : String {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
     return dateFormat.format(this)
@@ -38,6 +41,13 @@ fun Date.between(start: Date, end: Date) : Boolean {
     }
 }
 
+/**
+ * Constructs a list with all dates between this and the given end date
+ *
+ * @param endInclusive The (inclusive) end date
+ *
+ * @return A list containing all dates between this Date and endInclusive (inclusive)
+ */
 fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
     var date = this
     val result = mutableListOf<Date>()
@@ -49,6 +59,13 @@ fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
     return result
 }
 
+/**
+ * Adds one day to the given date
+ *
+ * @param date The date to add a day to
+ *
+ * @return A date object representing the point in Time exactly one day after date
+ */
 private fun incrementDate(date: Date) : Date {
     val cal = Calendar.getInstance()
     cal.time = date
