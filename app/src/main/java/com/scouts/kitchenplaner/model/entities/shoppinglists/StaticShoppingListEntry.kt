@@ -16,7 +16,14 @@
 
 package com.scouts.kitchenplaner.model.entities.shoppinglists
 
-data class ShoppingListStub(
-    val id: Long,
-    val name: String
-)
+import com.scouts.kitchenplaner.model.entities.MealPlan
+
+class StaticShoppingListEntry (
+    override val name: String,
+    override val unit: String,
+    private val _amount: Int
+) : ShoppingListEntry {
+    override fun getAmount(mealPlan: MealPlan): Int {
+        return _amount
+    }
+}

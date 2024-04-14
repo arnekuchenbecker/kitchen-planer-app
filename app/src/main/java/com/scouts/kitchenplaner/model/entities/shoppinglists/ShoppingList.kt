@@ -14,15 +14,10 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.model.entities.shoppinglists
 
 data class ShoppingList (
     val id: Long? = null,
     val name: String,
-    private val shoppingItems: MutableList<ShoppingListItem>
-) {
-    val items: List<ShoppingListItem>
-        get() = shoppingItems
-
-    fun addItem(item: ShoppingListItem) = shoppingItems.add(item)
-}
+    val items: List<ShoppingListEntry>
+)

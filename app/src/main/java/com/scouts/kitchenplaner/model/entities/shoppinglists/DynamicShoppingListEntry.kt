@@ -16,7 +16,17 @@
 
 package com.scouts.kitchenplaner.model.entities.shoppinglists
 
-data class ShoppingListStub(
-    val id: Long,
-    val name: String
-)
+import com.scouts.kitchenplaner.model.entities.MealPlan
+import com.scouts.kitchenplaner.model.entities.MealSlot
+
+class DynamicShoppingListEntry(
+    override val name: String,
+    override val unit: String,
+    private val baseAmount: Int,
+    private val peopleBase: Int,
+    private val mealSlot: MealSlot
+) : ShoppingListEntry {
+    override fun getAmount(mealPlan: MealPlan) : Int {
+        return (baseAmount * ((mealPlan[mealSlot].second) / (peopleBase.toDouble()))).toInt()
+    }
+}

@@ -16,7 +16,11 @@
 
 package com.scouts.kitchenplaner.model.entities.shoppinglists
 
-data class ShoppingListStub(
-    val id: Long,
+import com.scouts.kitchenplaner.model.entities.MealPlan
+
+interface ShoppingListEntry {
     val name: String
-)
+    val unit: String
+
+    fun getAmount(mealPlan: MealPlan) : Int
+}
