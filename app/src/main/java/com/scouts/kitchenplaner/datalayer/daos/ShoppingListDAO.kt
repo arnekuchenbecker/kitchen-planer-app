@@ -97,12 +97,13 @@ interface ShoppingListDAO {
             "ON recipeProjectMeal.recipeId = recipeEntity.id " +
         "JOIN ingrediententity " +
             "ON ingrediententity.recipe = recipeEntity.id " +
-            "AND ingrediententity.name = dynamicShoppingListEntries.ingredientName "
+            "AND ingrediententity.name = dynamicShoppingListEntries.ingredientName " +
+        "WHERE dynamicShoppingListEntries.listId = :listID"
     )
-    fun getDynamicShoppingListEntriesByListID(listID: Long): List<DynamicShoppingListEntryDTO>
+    fun getDynamicShoppingListEntriesByListID(listID: Long): Flow<List<DynamicShoppingListEntryDTO>>
 
     @Query("SELECT * FROM staticShoppingListEntries WHERE listId = :listID")
-    fun getStaticShoppingListEntriesByListID(listID: Long): List<StaticShoppingListEntryEntity>
+    fun getStaticShoppingListEntriesByListID(listID: Long): Flow<List<StaticShoppingListEntryEntity>>
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
