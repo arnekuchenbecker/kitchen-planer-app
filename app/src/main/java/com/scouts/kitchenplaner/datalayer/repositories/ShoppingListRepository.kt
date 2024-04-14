@@ -34,9 +34,17 @@ import javax.inject.Inject
 class ShoppingListRepository @Inject constructor(
     private val shoppingListDAO: ShoppingListDAO
 ) {
-    suspend fun createShoppingList(list: ShoppingList, projectId: Long) {
+    /**
+     * Create the given Shopping List for the specified project
+     *
+     * @param list The shopping list to be created
+     * @param projectId The ID of the project for which to create the shopping List
+     *
+     * @return The ID of the newly created shopping list for future reference
+     */
+    suspend fun createShoppingList(list: ShoppingList, projectId: Long) : Long {
         val entities = list.toDataLayerEntity(projectId)
-        shoppingListDAO.createShoppingList(entities.first, entities.second)
+        return shoppingListDAO.createShoppingList(entities.first, entities.second, entities.third)
     }
 
     suspend fun deleteShoppingList(shoppingList: ShoppingListStub, projectId: Long) {
@@ -66,6 +74,13 @@ class ShoppingListRepository @Inject constructor(
         )
     }
 
+    /**
+     * Retrieve the Shopping List with the given ID
+     *
+     * @param listID The ID of the shopping list to be read from the database
+     *
+     * @return A flow containing the shopping list with the given ID
+     */
     fun getShoppingList(listID: Long): Flow<ShoppingList> {
         val shoppingListFlow = shoppingListDAO.getShoppingListByID(listID)
         val staticEntriesFlow = shoppingListDAO.getStaticShoppingListEntriesByListID(listID)

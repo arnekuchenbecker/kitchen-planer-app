@@ -31,12 +31,22 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShoppingListDAO {
+    /**
+     * Creates the given entities, inserting the listId of the newly created shopping list into all
+     * entries before they are created
+     *
+     * @param shoppingList Entity containing the shopping list's metadata
+     * @param dynamicEntries List of all dynamic entries of the shopping list
+     * @param staticEntries List of all static entries of the shopping list
+     *
+     * @return The ID of the newly created shopping list for later reference
+     */
     @Transaction
     suspend fun createShoppingList(
         shoppingList: ShoppingListEntity,
         dynamicEntries: List<DynamicShoppingListEntryEntity>,
         staticEntries: List<StaticShoppingListEntryEntity>
-    ) {
+    ) : Long {
         val rowId = insertShoppingList(shoppingList)
         val listId = getShoppingListIdFromRowId(rowId)
 
@@ -50,14 +60,26 @@ interface ShoppingListDAO {
 
         insertDynamicShoppingListEntries(dynamicEntries)
         insertStaticShoppingListEntries(staticEntries)
+
+        return listId
     }
 
     @Insert
     suspend fun insertShoppingList(list: ShoppingListEntity) : Long
 
+    /**
+     * Create dynamic shopping list entries
+     *
+     * @param items The entities that should be created in the database
+     */
     @Insert
     suspend fun insertDynamicShoppingListEntries(items: List<DynamicShoppingListEntryEntity>)
 
+    /**
+     * Create static shopping list entries
+     *
+     * @param items The entities that should be created in the database
+     */
     @Insert
     suspend fun insertStaticShoppingListEntries(items: List<StaticShoppingListEntryEntity>)
 
@@ -67,6 +89,11 @@ interface ShoppingListDAO {
     @Query("SELECT * FROM shoppingLists WHERE id = :id")
     fun getShoppingListByID(id: Long) : Flow<ShoppingListEntity>
 
+    /**
+     * Retrieve all dynamic entries of a specific shopping list
+     *
+     * @param listID The ID of the shopping list for which to get the entries
+     */
     @Query(
         "SELECT " +
             "recipeEntity.numberOfPeople AS peopleBase, " +
@@ -89,6 +116,11 @@ interface ShoppingListDAO {
     )
     fun getDynamicShoppingListEntriesByListID(listID: Long): Flow<List<DynamicShoppingListEntryDTO>>
 
+    /**
+     * Retrieve all static entries of a specific shopping list
+     *
+     * @param listID The ID of the shopping list for which to get the entries
+     */
     @Query("SELECT * FROM staticShoppingListEntries WHERE listId = :listID")
     fun getStaticShoppingListEntriesByListID(listID: Long): Flow<List<StaticShoppingListEntryEntity>>
 
