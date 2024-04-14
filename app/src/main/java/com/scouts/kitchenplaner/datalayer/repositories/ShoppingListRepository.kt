@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.datalayer.repositories
 
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
+import com.scouts.kitchenplaner.datalayer.dtos.ShoppingListMealSlotIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.model.entities.MealSlot
@@ -44,6 +45,23 @@ class ShoppingListRepository @Inject constructor(
                 shoppingList.id,
                 shoppingList.name,
                 projectId
+            )
+        )
+    }
+
+    /**
+     * Delete all ingredients relevant for the specified MealSlot in all shopping lists of the
+     * specified project
+     *
+     * @param projectID The project from which to delete the entries
+     * @param slot The meal slot for which relevant entries should be deleted
+     */
+    suspend fun deleteEntriesForMealSlot(projectID: Long, slot: MealSlot) {
+        shoppingListDAO.deleteDynamicEntriesForMealSlot(
+            ShoppingListMealSlotIdentifierDTO(
+                projectID,
+                slot.meal,
+                slot.date
             )
         )
     }

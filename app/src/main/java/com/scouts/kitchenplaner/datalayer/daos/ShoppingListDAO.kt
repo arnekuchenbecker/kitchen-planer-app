@@ -23,6 +23,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.dtos.DynamicShoppingListEntryDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ShoppingListMealSlotIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
@@ -107,6 +108,15 @@ interface ShoppingListDAO {
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
+
+    /**
+     * Delete all dynamic shopping list entries relevant for a specific meal slot in a given project
+     *
+     * @param identifier DTO containing the project ID and meal slot the entities that should be
+     *                   deleted have to contain
+     */
+    @Delete(DynamicShoppingListEntryEntity::class)
+    suspend fun deleteDynamicEntriesForMealSlot(identifier: ShoppingListMealSlotIdentifierDTO)
 
     @Delete
     suspend fun deleteShoppingList(entity: ShoppingListEntity)
