@@ -16,6 +16,8 @@
 
 package com.scouts.kitchenplaner.model.entities.shoppinglists
 
+import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 
@@ -28,5 +30,19 @@ class DynamicShoppingListEntry(
 ) : ShoppingListEntry {
     override fun getAmount(mealPlan: MealPlan) : Int {
         return (baseAmount * ((mealPlan[mealSlot].second) / (peopleBase.toDouble()))).toInt()
+    }
+
+    override fun toDynamicEntity(listID: Long, projectID: Long): DynamicShoppingListEntryEntity {
+        return DynamicShoppingListEntryEntity(
+            listID,
+            projectID,
+            mealSlot.date,
+            mealSlot.meal,
+            name
+        )
+    }
+
+    override fun toStaticEntity(listID: Long, projectID: Long): StaticShoppingListEntryEntity? {
+        return null
     }
 }
