@@ -38,8 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.scouts.kitchenplaner.ui.ContentBox
-import com.scouts.kitchenplaner.ui.Headline
+import com.scouts.kitchenplaner.ui.view.ContentBox
+import com.scouts.kitchenplaner.ui.view.Headline
 import com.scouts.kitchenplaner.ui.state.RecipeAllergenState
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 
