@@ -21,17 +21,20 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.scouts.kitchenplaner.datalayer.dtos.DynamicShoppingListEntryDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
+import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
-import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface ShoppingListDAO {
     @Transaction
     suspend fun createShoppingList(
         shoppingList: ShoppingListEntity,
-        entries: List<ShoppingListEntryEntity>
+        entries: List<DynamicShoppingListEntryEntity>
     ) {
         val rowId = insertShoppingList(shoppingList)
         val listId = getShoppingListIdFromRowId(rowId)
@@ -47,7 +50,7 @@ interface ShoppingListDAO {
     suspend fun insertShoppingList(list: ShoppingListEntity) : Long
 
     @Insert
-    suspend fun insertShoppingListItems(items: List<ShoppingListEntryEntity>)
+    suspend fun insertShoppingListItems(items: List<DynamicShoppingListEntryEntity>)
 
     @Query("SELECT * FROM shoppingLists WHERE projectId = :projectId")
     fun getShoppingListsByProjectID(projectId: Long) : Flow<List<ShoppingListEntity>>
@@ -55,14 +58,51 @@ interface ShoppingListDAO {
     @Query("SELECT * FROM shoppingLists WHERE id = :id")
     fun getShoppingListByID(id: Long) : Flow<ShoppingListEntity>
 
-    @Query("SELECT shoppingListEntries.listId AS listId, " +
-            "shoppingListEntries.amount AS amount, " +
-            "shoppingListEntries.itemName AS itemName, " +
-            "shoppingListEntries.unit AS unit " +
-            "FROM shoppingLists " +
-            "JOIN shoppingListEntries ON shoppingLists.id = shoppingListEntries.listId " +
-            "WHERE shoppingLists.projectId = :projectId")
-    fun getShoppingListEntriesByProjectID(projectId: Long) : Flow<List<ShoppingListEntryEntity>>
+    //@Query("SELECT shoppingListEntries.listId AS listId, " +
+    //        "shoppingListEntries.amount AS amount, " +
+    //        "shoppingListEntries.itemName AS itemName, " +
+    //        "shoppingListEntries.unit AS unit " +
+    //        "FROM shoppingLists " +
+    //        "JOIN shoppingListEntries ON shoppingLists.id = shoppingListEntries.listId " +
+    //        "WHERE shoppingLists.projectId = :projectId")
+    //fun getShoppingListEntriesByProjectID(projectId: Long) : Flow<List<ShoppingListQuantityDTO>>
+
+    @Query(
+        "SELECT SUM(personNumberChanges.differenceBefore) AS numberOfPeople " +
+            "FROM personNumberChanges " +
+            "JOIN meals ON personNumberChanges.projectId = meals.projectId " +
+            "AND personNumberChanges.meal = meals.name " +
+            "WHERE meals.projectId = :id " +
+            "AND (personNumberChanges.date <= :mealDate " +
+            "OR (personNumberChanges.date = :mealDate " +
+            "AND meals.`order` <= (" +
+            "SELECT `order` FROM meals WHERE projectId = :id AND meal = :meal)))"
+    )
+    fun test(id: Long, mealDate: Date, meal: String) : Long
+
+    @Query(
+        "SELECT " +
+            "recipeEntity.numberOfPeople AS peopleBase, " +
+            "ingredientEntity.name AS ingredient, " +
+            "ingredientEntity.amount AS amount, " +
+            "ingredientEntity.unit AS unit, " +
+            "dynamicShoppingListEntries.mealDate AS date, " +
+            "dynamicShoppingListEntries.meal AS meal " +
+        "FROM dynamicShoppingListEntries " +
+        "JOIN recipeProjectMeal " +
+            "ON dynamicShoppingListEntries.projectId = recipeProjectMeal.projectId " +
+            "AND dynamicShoppingListEntries.meal = recipeProjectMeal.meal " +
+            "AND dynamicShoppingListEntries.mealDate = recipeProjectMeal.date " +
+        "JOIN recipeEntity " +
+            "ON recipeProjectMeal.recipeId = recipeEntity.id " +
+        "JOIN ingrediententity " +
+            "ON ingrediententity.recipe = recipeEntity.id " +
+            "AND ingrediententity.name = dynamicShoppingListEntries.ingredientName "
+    )
+    fun getDynamicShoppingListEntriesByListID(listID: Long): List<DynamicShoppingListEntryDTO>
+
+    @Query("SELECT * FROM staticShoppingListEntries WHERE listId = :listID")
+    fun getStaticShoppingListEntriesByListID(listID: Long): List<StaticShoppingListEntryEntity>
 
     @Query("SELECT id FROM shoppingLists WHERE rowId = :rowId")
     suspend fun getShoppingListIdFromRowId(rowId: Long) : Long
