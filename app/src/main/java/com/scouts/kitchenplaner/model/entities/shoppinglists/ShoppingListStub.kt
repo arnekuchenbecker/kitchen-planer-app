@@ -16,6 +16,12 @@
 
 package com.scouts.kitchenplaner.model.entities.shoppinglists
 
+/**
+ * Stub containing meta data for a shopping list
+ *
+ * @param id The ID of the shopping list
+ * @param name The name of the shopping list
+ */
 data class ShoppingListStub(
     val id: Long,
     val name: String

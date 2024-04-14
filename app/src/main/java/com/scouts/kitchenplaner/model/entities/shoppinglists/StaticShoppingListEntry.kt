@@ -20,6 +20,13 @@ import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntit
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.MealPlan
 
+/**
+ * A static entry of a shopping list
+ *
+ * @param name The name of the ingredient
+ * @param unit The unit of measure
+ * @param _amount The amount that should be purchased
+ */
 class StaticShoppingListEntry (
     override val name: String,
     override val unit: String,

@@ -21,6 +21,15 @@ import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 
+/**
+ * A dynamic entry of a shopping list
+ *
+ * @param name The name of the ingredient
+ * @param unit The unit of measure
+ * @param baseAmount The amount required per peopleBase people
+ * @param peopleBase The number of people baseAmount should be purchased for
+ * @param mealSlot The meal slot this entry is relevant for
+ */
 class DynamicShoppingListEntry(
     override val name: String,
     override val unit: String,
