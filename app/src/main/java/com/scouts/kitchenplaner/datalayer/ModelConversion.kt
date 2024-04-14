@@ -120,8 +120,8 @@ fun IngredientGroup.toDataLayerEntity(recipeID: Long): List<IngredientEntity> {
 fun ShoppingList.toDataLayerEntity(projectId: Long): Triple<ShoppingListEntity, List<DynamicShoppingListEntryEntity>, List<StaticShoppingListEntryEntity>> {
     return Triple(
         ShoppingListEntity(id = id ?: 0, name = name, projectId = projectId),
-        items.mapNotNull { it.toDynamicEntity() },
-        items.mapNotNull { it.toStaticEntity() }
+        items.mapNotNull { it.toDynamicEntity(id ?: 0, projectId) },
+        items.mapNotNull { it.toStaticEntity(id ?: 0, projectId) }
     )
 }
 
