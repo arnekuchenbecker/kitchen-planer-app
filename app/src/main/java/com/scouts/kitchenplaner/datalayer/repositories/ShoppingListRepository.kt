@@ -19,9 +19,12 @@ package com.scouts.kitchenplaner.datalayer.repositories
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
-import com.scouts.kitchenplaner.model.entities.ShoppingList
-import com.scouts.kitchenplaner.model.entities.ShoppingListItem
-import com.scouts.kitchenplaner.model.entities.ShoppingListStub
+import com.scouts.kitchenplaner.model.entities.MealSlot
+import com.scouts.kitchenplaner.model.entities.shoppinglists.DynamicShoppingListEntry
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListEntry
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
+import com.scouts.kitchenplaner.model.entities.shoppinglists.StaticShoppingListEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -36,28 +39,51 @@ class ShoppingListRepository @Inject constructor(
     }
 
     suspend fun deleteShoppingList(shoppingList: ShoppingListStub, projectId: Long) {
-        shoppingListDAO.deleteShoppingList(ShoppingListEntity(shoppingList.id, shoppingList.name, projectId))
+        shoppingListDAO.deleteShoppingList(
+            ShoppingListEntity(
+                shoppingList.id,
+                shoppingList.name,
+                projectId
+            )
+        )
     }
 
-    fun getShoppingListsForProject(projectId: Long) : Flow<List<ShoppingList>> {
-        val shoppingLists = shoppingListDAO.getShoppingListsByProjectID(projectId)
-        val shoppingListEntries = shoppingListDAO.getShoppingListEntriesByProjectID(projectId)
-        return shoppingLists.combine(shoppingListEntries) { lists, entries ->
-            val entryGroups = entries.groupBy { it.listId }
-            lists.map { list ->
-                ShoppingList(
-                    list.id,
-                    list.name,
-                    entryGroups[list.id]
-                        ?.map {
-                            ShoppingListItem(it.itemName, it.amount, it.unit)
-                        }?.toMutableList() ?: mutableListOf()
-                )
-            }
+    fun getShoppingList(listID: Long): Flow<ShoppingList> {
+        val shoppingListFlow = shoppingListDAO.getShoppingListByID(listID)
+        val staticEntriesFlow = shoppingListDAO.getStaticShoppingListEntriesByListID(listID)
+        val dynamicEntriesFlow = shoppingListDAO.getDynamicShoppingListEntriesByListID(listID)
+        return combine(
+            shoppingListFlow,
+            staticEntriesFlow,
+            dynamicEntriesFlow
+        ) { stub, statics, dynamics ->
+            val staticEntries: List<ShoppingListEntry> =
+                statics.map {
+                    StaticShoppingListEntry(
+                        it.ingredientName,
+                        it.unit,
+                        it.amount
+                    )
+                }
+            val dynamicEntries: List<ShoppingListEntry> =
+                dynamics.map {
+                    DynamicShoppingListEntry(
+                        it.ingredient,
+                        it.unit,
+                        it.amount,
+                        it.peopleBase,
+                        MealSlot(it.date, it.meal)
+                    )
+                }
+            ShoppingList(
+                id = listID,
+                name = stub.name,
+                items = staticEntries + dynamicEntries
+            )
         }
     }
 
-    fun getShoppingListStubsForProject(projectId: Long) : Flow<List<ShoppingListStub>> {
+    fun getShoppingListStubsForProject(projectId: Long): Flow<List<ShoppingListStub>> {
         val shoppingLists = shoppingListDAO.getShoppingListsByProjectID(projectId)
         return shoppingLists.map {
             it.map { entity -> ShoppingListStub(entity.id, entity.name) }
