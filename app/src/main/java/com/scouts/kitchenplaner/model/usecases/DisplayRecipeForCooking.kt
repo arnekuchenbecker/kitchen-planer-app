@@ -27,10 +27,25 @@ import com.scouts.kitchenplaner.model.entities.RecipeForCooking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
+/**
+ * Usecase for displaying a recipe for cooking
+ *
+ * @param recipeRepository Repository class to retrieve information about recipes
+ * @param allergenRepository Repository class to retrieve information about allergen persons
+ */
 class DisplayRecipeForCooking(
     private val recipeRepository: RecipeRepository,
     private val allergenRepository: AllergenRepository
 ) {
+    /**
+     * Retrieve information about a recipe for cooking
+     *
+     * @param project The project in which the recipe is cooked
+     * @param mealSlot The meal slot for which the recipe is cooked
+     * @param recipeID The ID of the recipe being cooked
+     *
+     * @return A flow containing information on how to cook the recipe
+     */
     fun showRecipeForCooking(
         project: Project,
         mealSlot: MealSlot,
