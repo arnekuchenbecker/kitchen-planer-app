@@ -22,6 +22,7 @@ import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.entities.User
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -39,6 +40,7 @@ class ShowPersonalStartScreen @Inject constructor(
 ) {
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getLatestProjectsForCurrentUser(): Flow<List<ProjectStub>> {
         var currentUser: User
         runBlocking {
@@ -55,6 +57,7 @@ class ShowPersonalStartScreen @Inject constructor(
             }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getLatestRecipesForCurrentUser(): Flow<List<RecipeStub>> {
         var currentUser: User;
         runBlocking {
