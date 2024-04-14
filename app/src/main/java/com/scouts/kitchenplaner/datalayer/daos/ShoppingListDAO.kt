@@ -28,58 +28,44 @@ import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntit
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 @Dao
 interface ShoppingListDAO {
     @Transaction
     suspend fun createShoppingList(
         shoppingList: ShoppingListEntity,
-        entries: List<DynamicShoppingListEntryEntity>
+        dynamicEntries: List<DynamicShoppingListEntryEntity>,
+        staticEntries: List<StaticShoppingListEntryEntity>
     ) {
         val rowId = insertShoppingList(shoppingList)
         val listId = getShoppingListIdFromRowId(rowId)
 
-        entries.forEach {
+        dynamicEntries.forEach {
             it.listId = listId
         }
 
-        insertShoppingListItems(entries)
+        staticEntries.forEach {
+            it.listId = listId
+        }
+
+        insertDynamicShoppingListEntries(dynamicEntries)
+        insertStaticShoppingListEntries(staticEntries)
     }
 
     @Insert
     suspend fun insertShoppingList(list: ShoppingListEntity) : Long
 
     @Insert
-    suspend fun insertShoppingListItems(items: List<DynamicShoppingListEntryEntity>)
+    suspend fun insertDynamicShoppingListEntries(items: List<DynamicShoppingListEntryEntity>)
+
+    @Insert
+    suspend fun insertStaticShoppingListEntries(items: List<StaticShoppingListEntryEntity>)
 
     @Query("SELECT * FROM shoppingLists WHERE projectId = :projectId")
     fun getShoppingListsByProjectID(projectId: Long) : Flow<List<ShoppingListEntity>>
 
     @Query("SELECT * FROM shoppingLists WHERE id = :id")
     fun getShoppingListByID(id: Long) : Flow<ShoppingListEntity>
-
-    //@Query("SELECT shoppingListEntries.listId AS listId, " +
-    //        "shoppingListEntries.amount AS amount, " +
-    //        "shoppingListEntries.itemName AS itemName, " +
-    //        "shoppingListEntries.unit AS unit " +
-    //        "FROM shoppingLists " +
-    //        "JOIN shoppingListEntries ON shoppingLists.id = shoppingListEntries.listId " +
-    //        "WHERE shoppingLists.projectId = :projectId")
-    //fun getShoppingListEntriesByProjectID(projectId: Long) : Flow<List<ShoppingListQuantityDTO>>
-
-    @Query(
-        "SELECT SUM(personNumberChanges.differenceBefore) AS numberOfPeople " +
-            "FROM personNumberChanges " +
-            "JOIN meals ON personNumberChanges.projectId = meals.projectId " +
-            "AND personNumberChanges.meal = meals.name " +
-            "WHERE meals.projectId = :id " +
-            "AND (personNumberChanges.date <= :mealDate " +
-            "OR (personNumberChanges.date = :mealDate " +
-            "AND meals.`order` <= (" +
-            "SELECT `order` FROM meals WHERE projectId = :id AND meal = :meal)))"
-    )
-    fun test(id: Long, mealDate: Date, meal: String) : Long
 
     @Query(
         "SELECT " +
