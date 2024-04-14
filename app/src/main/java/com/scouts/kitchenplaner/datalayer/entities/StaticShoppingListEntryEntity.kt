@@ -38,7 +38,7 @@ import androidx.room.Index
 data class StaticShoppingListEntryEntity(
     var listId: Long,
     val projectId: Long,
-    val ingredient: String,
+    val ingredientName: String,
     val amount: Int,
     val unit: String
 )
