@@ -43,7 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.Ingredient
-import com.scouts.kitchenplaner.ui.ContentBox
+import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
