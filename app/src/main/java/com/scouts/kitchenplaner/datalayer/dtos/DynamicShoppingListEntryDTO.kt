@@ -18,6 +18,16 @@ package com.scouts.kitchenplaner.datalayer.dtos
 
 import java.util.Date
 
+/**
+ * DTO for transferring dynamic shopping lists out of the database
+ *
+ * @param ingredient The name of the referenced Ingredient
+ * @param amount The amount specified in the recipe
+ * @param unit The unit of measure
+ * @param peopleBase The amount of people the recipe was written for
+ * @param date The date of the MealSlot the entry is relevant for
+ * @param meal The meal of the MealSlot the entry is relevant for
+ */
 data class DynamicShoppingListEntryDTO(
     val ingredient: String,
     val amount: Int,
