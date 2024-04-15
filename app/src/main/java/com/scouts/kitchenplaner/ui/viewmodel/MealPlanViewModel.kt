@@ -92,6 +92,7 @@ class MealPlanViewModel @Inject constructor(
     /**
      * deletes the main recipe for a meal slot.
      * Note that this method deletes the main recipe in a coroutine
+     * This method can be used as a callback
      *
      * @param project The project where the meal slot is in
      * @param slot The meal slot from which the main recipe should be deleted
@@ -105,6 +106,7 @@ class MealPlanViewModel @Inject constructor(
     /**
      * Deletes a given alternative recipe from a meal slot
      * Note that this method deletes the recipe in a coroutine
+     * This method can be used as a callback
      *
      * @param project The project to which the meal slot belongs
      * @param slot The meal slot where the alternative recipe should be deleted on
@@ -118,6 +120,8 @@ class MealPlanViewModel @Inject constructor(
 
     /**
      * If the recipe query changes it is going to be updated here.
+     * This method can be used as a callback
+     *
      * @param newQuery The new recipe Query
      */
     fun onRecipeQueryChanged(newQuery: String) {
