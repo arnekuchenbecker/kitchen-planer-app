@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+/**
+ * This view model contains all data and functions to select a project in the overview and archive them
+ */
 @HiltViewModel
 class ProjectSelectionViewModel @Inject constructor(
     private val projectSelection: ProjectSelection
@@ -50,12 +53,20 @@ class ProjectSelectionViewModel @Inject constructor(
     var showArchiveDialog by mutableStateOf(false)
 
 
+    /**
+     * Updates whether a project is currently selected.
+     * @param projectId id of the project of interest
+     * @param selected whether the project is selected
+     */
     fun toggleSelection(projectId: Long, selected: Boolean) {
         selectedFlow.update {
             it + Pair(projectId, selected)
         }
     }
 
+    /**
+     * deletes all selections of all projects
+     */
     fun clearSelection() {
         selectedFlow.update { mutableStateMapOf() }
     }

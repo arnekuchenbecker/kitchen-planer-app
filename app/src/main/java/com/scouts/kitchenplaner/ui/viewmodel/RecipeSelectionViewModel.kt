@@ -21,6 +21,9 @@ import com.scouts.kitchenplaner.model.usecases.RecipeSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * This view model provides methods to get all recipe stubs to display them
+ */
 @HiltViewModel
 class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :
     ViewModel() {

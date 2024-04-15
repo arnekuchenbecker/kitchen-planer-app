@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * This view model provides the latest projects and recipes for a user.
+ */
 @HiltViewModel
 class StartScreenViewModel @Inject constructor(
     private val startScreen: ShowPersonalStartScreen
