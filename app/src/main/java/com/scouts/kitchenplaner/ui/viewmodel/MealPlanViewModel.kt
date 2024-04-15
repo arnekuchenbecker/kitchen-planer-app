@@ -38,52 +38,103 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * View model that handles a meal plan. It handles the allergen check and adding, swapping and deleting of recipes in meal slots.
+ */
 @HiltViewModel
 class MealPlanViewModel @Inject constructor(
-    private val checkAllergens: CheckAllergens,
-    private val editMealPlan: EditMealPlan
+    private val checkAllergens: CheckAllergens, private val editMealPlan: EditMealPlan
 ) : ViewModel() {
     var recipeQuery by mutableStateOf("")
         private set
 
     var recipeToExchange = Pair<MealSlot, RecipeStub?>(MealSlot(Date(0), ""), null)
 
+    /**
+     * Gets all recipes that names matches the recipe query but it does not include the recipes which are already in the meal slot.
+     *
+     * @param project The project for which the recipes should be looked for.
+     * @param mealSlot The meal slot for which the recipe should be looked for.
+     * @return a flow of all the possible recipes.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getRecipeSuggestions(project: Project, mealSlot: MealSlot) = snapshotFlow { recipeQuery }.flatMapLatest {
-        editMealPlan.findRecipesForQuery(project, mealSlot, it)
-    }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
+    fun getRecipeSuggestions(project: Project, mealSlot: MealSlot) =
+        snapshotFlow { recipeQuery }.flatMapLatest {
+            editMealPlan.findRecipesForQuery(project, mealSlot, it)
+        }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
+    /**
+     * Provides which allergens are covered or not for a meal slot.
+     *
+     * @param project The project in which the meal slot is.
+     * @param slot The meal slot for which the allergen cover is meant for.
+     * @return which allergens are covered, not covered or undecided.
+     */
     fun getAllergenCheck(project: Project, slot: MealSlot): StateFlow<AllergenCheck> {
         return checkAllergens.getAllergenCheck(project, slot).stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = AllergenCheck()
+            scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = AllergenCheck()
         )
     }
 
+    /**
+     * Swaps all recipes which are contained in two meal slots
+     *
+     * @param project the project which contains the meal slot
+     * @param first the first meal slot which contains all the first recipes
+     * @param second the second meal slot which contains all the second recipes.
+     */
     fun swapMeals(project: Project, first: MealSlot, second: MealSlot) {
         viewModelScope.launch {
             editMealPlan.swapMealSlots(project, first, second)
         }
     }
 
+    /**
+     * deletes the main recipe for a meal slot.
+     * Note that this method deletes the main recipe in a coroutine
+     *
+     * @param project The project where the meal slot is in
+     * @param slot The meal slot from which the main recipe should be deleted
+     */
     fun onDeleteMainRecipe(project: Project, slot: MealSlot) {
         viewModelScope.launch {
             editMealPlan.removeMainRecipeFromMeal(project, slot)
         }
     }
 
+    /**
+     * Deletes a given alternative recipe from a meal slot
+     * Note that this method deletes the recipe in a coroutine
+     *
+     * @param project The project to which the meal slot belongs
+     * @param slot The meal slot where the alternative recipe should be deleted on
+     * @param recipeStub The recipe which should be deleted.
+     */
     fun onDeleteAlternativeRecipe(project: Project, slot: MealSlot, recipeStub: RecipeStub) {
         viewModelScope.launch {
             editMealPlan.removeAlternativeRecipeFromMeal(project, slot, recipeStub)
         }
     }
 
+    /**
+     * If the recipe query changes it is going to be updated here.
+     * @param newQuery The new recipe Query
+     */
     fun onRecipeQueryChanged(newQuery: String) {
         recipeQuery = newQuery
     }
 
-    fun exchangeRecipe(project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newRecipe: RecipeStub) {
+    /**
+     * Exchanges a recipe by another recipe
+     *
+     * @param project The project where the recipes should be exchanged
+     * @param mealSlot The meal slot where this recipe is in
+     * @param oldRecipe The recipe that is currently in the meal slot and should be exchanged
+     * @param newRecipe The recipe that is the replacement
+     */
+    fun exchangeRecipe(
+        project: Project, mealSlot: MealSlot, oldRecipe: RecipeStub, newRecipe: RecipeStub
+    ) {
         viewModelScope.launch {
             if (project.mealPlan[mealSlot].first?.first?.id == oldRecipe.id) {
                 editMealPlan.removeMainRecipeFromMeal(project, mealSlot)
@@ -95,6 +146,12 @@ class MealPlanViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Adds a new recipe to a meal slot. If this is the first recipe in the meal slot, The recipe is going to be the main recipe
+     * @param project The project where the meal slot is in
+     * @param mealSlot The meal slot where the recipe should added to
+     * @param newRecipe recipe that should added
+     */
     fun addRecipe(project: Project, mealSlot: MealSlot, newRecipe: RecipeStub) {
         viewModelScope.launch {
             if (project.mealPlan[mealSlot].first != null) {
