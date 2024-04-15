@@ -14,34 +14,25 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui
+package com.scouts.kitchenplaner.ui.view
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+
 @Composable
-fun ContentBox(
-    modifier: Modifier = Modifier,
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column (
-        modifier = modifier
-            .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-            .padding(15.dp)
-    ) {
-        Headline(title)
-
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
-
-        this.content()
-    }
+fun ColumnScope.Headline(text: String) {
+    Text(
+        text = text,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(bottom = 10.dp)
+    )
 }

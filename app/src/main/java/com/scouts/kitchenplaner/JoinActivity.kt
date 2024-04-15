@@ -27,6 +27,9 @@ import androidx.compose.ui.Modifier
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Activity for joining a project
+ */
 @AndroidEntryPoint
 class JoinActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

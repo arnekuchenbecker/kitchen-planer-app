@@ -28,7 +28,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ImportExport
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -52,7 +51,13 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.viewmodel.CreateRecipeViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Display UI Elements for creating a new Recipe
+ *
+ * @param onNavigationToRecipeDetails Callback function for navigating to the recipe details page of
+ *                                    the newly created recipe after successful creation.
+ * @param viewModel ViewModel used for creating the recipe
+ */
 @Composable
 fun CreateRecipe(
     onNavigationToRecipeDetails: (Long) -> Unit,
