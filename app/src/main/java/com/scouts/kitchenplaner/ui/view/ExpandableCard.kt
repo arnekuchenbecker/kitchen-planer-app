@@ -61,6 +61,16 @@ import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 
 private const val EXPAND_ANIMATION_DURATION = 300
 
+/**
+ * Card with title and possibility to expand the card.
+ * When the card is expanded the title background changes color and a new expanded part is visible, where new content can be displayed
+ * It is possible to click on the title and the arrow/icon.
+ *
+ * @param expanded whether the card is expanded
+ * @param onCardArrowClick action what happens when clicking on the arrow/icon
+ * @param onTitleClick action what happens when clicking on the title.
+ * @param cardState persistent information about the status and how a card looks like.
+ */
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ExpandableCard(

@@ -21,6 +21,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Persists the state of a Expandable Card
+ *
+ * @param title Title of the card, which is visible the whole time
+ * @param titleInteractions
+ * @param onDelete
+ * @param toBeDeleted
+ * @param contentModifier customized modifier (not required)
+ * @param content content visible, when the card is expanded
+ */
 data class CardState(val title: String,
                      val titleInteractions: @Composable () -> Unit = {},
                      val onDelete: () -> Unit,
