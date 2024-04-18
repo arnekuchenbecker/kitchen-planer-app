@@ -17,11 +17,15 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import android.net.Uri
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
 import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onStart
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -30,8 +34,25 @@ import javax.inject.Inject
  * @param recipeRepository The repository to be used to access the data layer
  */
 class EditRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
+    private val recipeRepository: RecipeRepository,
+    private val userDataStore: KitchenAppDataStore
 ) {
+    /**
+     * Get a recipe by its ID
+     *
+     * @param id The ID of the requested recipe
+     * @return A flow containing the requested recipe
+     */
+    fun getRecipe(id: Long): Flow<Recipe> {
+        return recipeRepository.getRecipeById(id).onStart {
+            recipeRepository.updateLastShownRecipeForUser(
+                userDataStore.getCurrentUser(),
+                id,
+                Date()
+            )
+        }
+    }
+
     /**
      * Set a recipe's name to a new value
      *
