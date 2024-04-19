@@ -44,7 +44,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * A field which is used at the overview screens.
+ * It can have a image on the left side of the title and additional content (as another icon) on the right side.
+ *
+ * @param modifier additional modifier
+ * @param onClick action what happens when clicking on the field
+ * @param imageUri uri to the image displayed on the left side from the title
+ * @param imageDescription description what the image shows
+ * @param text text displayed in the middle of the field
+ * @param additionalContent possible content displayed on the right side on the field
+ */
 @Composable
 fun OverviewField(
     modifier: Modifier = Modifier,
