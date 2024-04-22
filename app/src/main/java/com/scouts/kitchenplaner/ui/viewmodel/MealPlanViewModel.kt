@@ -66,7 +66,7 @@ class MealPlanViewModel @Inject constructor(
         }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = listOf())
 
     /**
-     * Provides which allergens are covered or not for a meal slot.
+     * Provides which allergens are covered or not for a meal slot
      *
      * @param project The project in which the meal slot is.
      * @param slot The meal slot for which the allergen cover is meant for.
@@ -92,7 +92,7 @@ class MealPlanViewModel @Inject constructor(
     }
 
     /**
-     * deletes the main recipe for a meal slot.
+     * Deletes the main recipe for a meal slot
      *
      * @param project The project where the meal slot is in
      * @param slot The meal slot from which the main recipe should be deleted
@@ -127,7 +127,7 @@ class MealPlanViewModel @Inject constructor(
     }
 
     /**
-     * Exchanges a recipe by another recipe
+     * Exchanges a recipe for another recipe
      *
      * @param project The project where the recipes should be exchanged
      * @param mealSlot The meal slot where this recipe is in

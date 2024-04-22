@@ -36,10 +36,10 @@ import javax.inject.Inject
 
 /**
  * The view model that contains all data and function to display a project and do edit the project.
- * @param displayProjectOverview use case that provides all data for a specified project
- * @param projectSettings use case to edit the settings for the project
- * @param editAllergens use case to add, change or delete allergens for allergen persons
- * @param editMealPlan use case to add, change or delete a recipe in a meal slot or meals
+ * @param displayProjectOverview Use case that provides all data for a specified project
+ * @param projectSettings Use case to edit the settings for the project
+ * @param editAllergens Use case to add, change or delete allergens for allergen persons
+ * @param editMealPlan Use case to add, change or delete a recipe in a meal slot or meals
  */
 @HiltViewModel
 class ProjectDetailsViewModel @Inject constructor(
@@ -52,16 +52,16 @@ class ProjectDetailsViewModel @Inject constructor(
 
     /**
      * Provides the project to the corresponding project id
-     * @param projectId id of the project (can be online id or local id)
+     * @param projectId Id of the project (can be online id or local id)
      */
     suspend fun getProject(projectId: Long) {
         projectFlow = displayProjectOverview.getProject(projectId).stateIn(viewModelScope)
     }
 
     /**
-     * sets the name for a given project
-     * @param project the project
-     * @param name the new name for the project
+     * Sets the name for a given project
+     * @param project The project
+     * @param name The new name for the project
      */
     fun setProjectName(project: Project, name: String) {
         viewModelScope.launch {
@@ -70,9 +70,9 @@ class ProjectDetailsViewModel @Inject constructor(
     }
 
     /**
-     * sets an image for the a project by saving the uri to the image
+     * Sets an image for the a project by saving the uri to the image
      * @param project The project which gets a new image
-     * @param uri the uri which points to the image
+     * @param uri The uri which points to the image
      */
     fun setProjectImage(project: Project, uri: Uri) {
         viewModelScope.launch {
@@ -82,9 +82,9 @@ class ProjectDetailsViewModel @Inject constructor(
 
     /**
      * Sets the start and the end date of a project
-     * @param project the project which gets the dates
-     * @param start the date when the project starts
-     * @param end the date when the project ends (inclusive)
+     * @param project The project which gets the dates
+     * @param start The date when the project starts
+     * @param end The date when the project ends (inclusive)
      */
     fun setProjectDates(project: Project, start: Date, end: Date) {
         viewModelScope.launch {
@@ -93,10 +93,10 @@ class ProjectDetailsViewModel @Inject constructor(
     }
 
     /**
-     * Sets whether person leave of arrive before a specified meal slot
+     * Sets how many persons leave of arrive before a specified meal slot
      *
      * @param project The project where the change belongs to
-     * @param changes the meal slot (first) to which a number of people (second) arrive or leave
+     * @param changes The meal slot (first) to which a number of people (second) arrive or leave
      */
     fun setNumberChanges(project: Project, changes: Map<MealSlot, Int>) {
         viewModelScope.launch {
@@ -105,7 +105,7 @@ class ProjectDetailsViewModel @Inject constructor(
     }
 
     /**
-     * Removes a allergen person from a project
+     * Removes an allergen person from a project
      * @param project The project from which the person should be removed
      * @param person The person who is removed
      */
@@ -129,8 +129,8 @@ class ProjectDetailsViewModel @Inject constructor(
 
     /**
      * Add a new allergen person to a project
-     * @param project to which the person gets added
-     * @param person new allergen person
+     * @param project Project to which the person gets added
+     * @param person New allergen person
      */
     fun addAllergenPerson(project: Project, person: AllergenPerson) {
         viewModelScope.launch {
@@ -139,10 +139,10 @@ class ProjectDetailsViewModel @Inject constructor(
     }
 
     /**
-     * Adds a new meal to the project at a specified point
-     * @param project to which the meal is added
-     * @param meal name of the new meal
-     * @param addBefore the position before which it should be added. Negative values adds the meal as first meal
+     * Adds a new meal to the project at a specified index
+     * @param project Project to which the meal is added
+     * @param meal Name of the new meal
+     * @param addBefore The position before which it should be added. Negative values adds the meal as first meal
      */
     fun addMeal(project: Project, meal: String, addBefore: Int) {
         if (!project.meals.contains(meal)) {
