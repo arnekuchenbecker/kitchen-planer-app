@@ -41,6 +41,8 @@ import javax.inject.Inject
 /**
  * View model that contains all information which should be stored when creating a new recipe and creates a new recipe.
  * It also handles the import from chefkoch recipes.
+ * @param createRecipe use case to create a new recipe
+ * @param importRecipe use case to import a chefkoch recipe
  */
 @HiltViewModel
 class CreateRecipeViewModel @Inject constructor(

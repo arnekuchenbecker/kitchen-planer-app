@@ -38,6 +38,7 @@ import javax.inject.Inject
 
 /**
  * The view model that covers the creation of a project.
+ * @param createProject usecase which creates a new project
  */
 @HiltViewModel
 class CreateProjectViewModel @Inject constructor(

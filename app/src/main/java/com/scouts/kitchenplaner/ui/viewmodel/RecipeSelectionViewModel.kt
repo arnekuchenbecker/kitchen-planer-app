@@ -23,6 +23,7 @@ import javax.inject.Inject
 
 /**
  * This view model provides methods to get all recipe stubs to display them
+ * @param recipeSelection use case that provides all recipe stubs
  */
 @HiltViewModel
 class RecipeSelectionViewModel @Inject constructor(private val recipeSelection: RecipeSelection) :

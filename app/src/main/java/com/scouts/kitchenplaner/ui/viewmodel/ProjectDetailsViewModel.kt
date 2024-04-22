@@ -36,6 +36,10 @@ import javax.inject.Inject
 
 /**
  * The view model that contains all data and function to display a project and do edit the project.
+ * @param displayProjectOverview use case that provides all data for a specified project
+ * @param projectSettings use case to edit the settings for the project
+ * @param editAllergens use case to add, change or delete allergens for allergen persons
+ * @param editMealPlan use case to add, change or delete a recipe in a meal slot or meals
  */
 @HiltViewModel
 class ProjectDetailsViewModel @Inject constructor(

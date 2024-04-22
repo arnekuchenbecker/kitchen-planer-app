@@ -28,6 +28,7 @@ import javax.inject.Inject
 
 /**
  * This view model provides the latest projects and recipes for a user.
+ * @param startScreen use case that provides the last recently used projects and recipes from a user
  */
 @HiltViewModel
 class StartScreenViewModel @Inject constructor(

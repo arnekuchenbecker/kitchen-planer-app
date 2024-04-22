@@ -31,6 +31,8 @@ import javax.inject.Inject
 
 /**
  * This view model provides functions to work with the shopping list overview and edit them.
+ * @param displayShoppingListOverview  use case that provides stubs of shopping list for a specified project
+ * @param editShoppingLists use case that provides methods to delete shopping lists
  */
 @HiltViewModel
 class ShoppingListsViewModel @Inject constructor(

@@ -32,6 +32,7 @@ import javax.inject.Inject
 
 /**
  * This view model contains all data and functions to select a project in the overview and archive them
+ * @param projectSelection use case that provides stubs for all projects of the current user
  */
 @HiltViewModel
 class ProjectSelectionViewModel @Inject constructor(

@@ -40,6 +40,8 @@ import javax.inject.Inject
 
 /**
  * View model that handles a meal plan. It handles the allergen check and adding, swapping and deleting of recipes in meal slots.
+ * @param checkAllergens use case to check if all allergens for a meal slot are covered
+ * @param editMealPlan use case to edit the meal plan by adding, deleting or altering recipes or adding new meals
  */
 @HiltViewModel
 class MealPlanViewModel @Inject constructor(
