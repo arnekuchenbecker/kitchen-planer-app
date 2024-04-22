@@ -52,7 +52,6 @@ class CreateProjectViewModel @Inject constructor(
     /**
      * Method that creates a new project, hands it to the domain layer and navigates further to the project.
      * It also makes some sanity checks e.g. whether the dates could be reasonable.
-     * Note that the project creation is going to be in a coroutine.
      */
     @OptIn(ExperimentalMaterial3Api::class)
     fun onProjectCreate() {

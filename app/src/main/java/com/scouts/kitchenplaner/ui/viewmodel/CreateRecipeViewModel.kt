@@ -65,7 +65,6 @@ class CreateRecipeViewModel @Inject constructor(
 
     /**
      * Creates a recipe and stores it. It also does some sanity checks.
-     * Note that the recipe creation is going to be in a coroutine.
      */
     fun createRecipe() {
         if (recipeName.isBlank() || ingredients.isEmpty() || ingredients.any { (_, ingredients) -> ingredients.isEmpty() }) {
