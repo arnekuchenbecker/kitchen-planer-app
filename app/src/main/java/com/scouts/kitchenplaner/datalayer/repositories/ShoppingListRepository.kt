@@ -47,6 +47,12 @@ class ShoppingListRepository @Inject constructor(
         return shoppingListDAO.createShoppingList(entities.first, entities.second, entities.third)
     }
 
+    /**
+     * Deletes a shopping list
+     *
+     * @param shoppingList A ShoppingListStub identifying the shopping list that should be deleted
+     * @param projectId The ID of the project the shopping list belongs to
+     */
     suspend fun deleteShoppingList(shoppingList: ShoppingListStub, projectId: Long) {
         shoppingListDAO.deleteShoppingList(
             ShoppingListEntity(
