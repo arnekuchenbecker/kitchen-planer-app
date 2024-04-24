@@ -16,17 +16,42 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-class RecipeForCooking(private val recipe: Recipe, val people: Int, val alternatives: List<RecipeAlternative>) {
+/**
+ * A recipe with amounts calculated for the correct number of people
+ *
+ * @param recipe The recipe this calculation is based on
+ * @param people The number of people the amounts are calculated for
+ * @param alternatives The recipes that are planned as an alternative for this recipe
+ */
+class RecipeForCooking(
+    private val recipe: Recipe,
+    val people: Int,
+    val alternatives: List<RecipeAlternative>
+) {
+    /**
+     * The name of the recipe
+     */
     val name = recipe.name
 
+    /**
+     * The ingredient groups of the recipe. Ingredients in the groups are calculated to contain the
+     * correct amounts to cook for [people] people
+     */
     val ingredientGroups = recipe.ingredientGroups.map {
-        it.ingredients.map { ingredient ->
-            Ingredient(
-                ingredient.name,
-                (ingredient.amount * people / recipe.numberOfPeople.toDouble()).toFloat(),
-                ingredient.unit)
-        }
+        IngredientGroup(
+            it.name,
+            it.ingredients.map { ingredient ->
+                Ingredient(
+                    ingredient.name,
+                    (ingredient.amount * people / recipe.numberOfPeople.toDouble()).toFloat(),
+                    ingredient.unit
+                )
+            }
+        )
     }
 
+    /**
+     * The instructions for cooking this recipe
+     */
     val instructions = recipe.instructions
 }

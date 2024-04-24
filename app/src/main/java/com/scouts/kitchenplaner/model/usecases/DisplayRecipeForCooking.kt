@@ -54,11 +54,14 @@ class DisplayRecipeForCooking(
         val allergenPersonsFlow = allergenRepository.getAllergenPersonsByProjectID(project.id)
         val allergensFlow = recipeRepository.getAllergensForRecipe(recipeID)
         val alternativeRecipes =
-            project.mealPlan[mealSlot].first?.second?.map { recipeRepository.getRecipeById(it.id) }
+            project.mealPlan[mealSlot].first?.second
+                ?.filter { it.id != recipeID }
+                ?.map { recipeRepository.getRecipeById(it.id) }
                 ?: listOf()
 
         val combinedAlternatives = combine(alternativeRecipes) { it.toList() }
 
+        // Calculate the dietary specialities each alternative recipe actually covers
         val allergensForAlternatives = combine(
             combinedAlternatives,
             allergensFlow,
@@ -66,6 +69,8 @@ class DisplayRecipeForCooking(
         ) { alternatives, allergens, allergenPersons ->
             val allergenMap = mutableMapOf<Long, List<DietarySpeciality>>()
             alternatives.forEach {
+                // A trace allergen is relevant iff the recipe that is currently being cooked con-
+                // tains it in large amounts
                 val relevantTraces = it.traces
                     .filter { trace ->
                         allergens.any { speciality ->
@@ -74,6 +79,8 @@ class DisplayRecipeForCooking(
                     }
                     .map { name -> Pair(name, DietaryTypes.TRACE) }
 
+                // A free allergen is relevant iff the recipe that is currently being cooked con-
+                // tains it at all
                 val relevantFrees = it.freeOfAllergen
                     .filter { free ->
                         allergens.any { speciality ->
@@ -81,6 +88,9 @@ class DisplayRecipeForCooking(
                         }
                     }
                     .map { name -> Pair(name, DietaryTypes.FREE_OF) }
+
+                // An allergen is relevant iff it is either a relevant trace allergen or a relevant
+                // free allergen and some person is allergic to it
                 val relevantAllergens = (relevantTraces + relevantFrees).filter { (name, type) ->
                     allergenPersons.any { person ->
                         person.allergens.any { allergen ->
