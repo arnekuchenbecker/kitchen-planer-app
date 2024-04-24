@@ -18,6 +18,11 @@ package com.scouts.kitchenplaner.datalayer.repositories
 
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
+import com.scouts.kitchenplaner.datalayer.dtos.DietarySpecialityIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.IngredientIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
+import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
+import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
@@ -47,13 +52,13 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipeStubById(id: Long) : Flow<RecipeStub> {
+    fun getRecipeStubById(id: Long): Flow<RecipeStub> {
         return recipeDAO.getRecipeById(id).map {
             RecipeStub(it.id, it.title, Uri.parse(it.imageURI))
         }
     }
 
-    fun getRecipeById(id: Long) : Flow<Recipe> {
+    fun getRecipeById(id: Long): Flow<Recipe> {
         val recipeFlow = recipeDAO.getRecipeById(id)
         val ingredientFlow = recipeDAO.getIngredientsByRecipeId(id)
         val instructionsFlow = recipeDAO.getInstructionsByRecipeId(id)
@@ -131,12 +136,84 @@ class RecipeRepository @Inject constructor(
         }
     }
 
-    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeStub>> {
+    fun getRecipesForQueryByName(query: String): Flow<List<RecipeStub>> {
         return recipeDAO.getRecipesForQueryByName("%$query%").map {
             it.map { entity ->
                 RecipeStub(entity.id, entity.title, Uri.parse(entity.imageURI))
             }
         }
+    }
+
+    suspend fun setRecipeName(recipeID: Long, name: String) {
+        recipeDAO.updateRecipeName(recipeID, name)
+    }
+
+    suspend fun setRecipeImage(recipeID: Long, image: Uri) {
+        recipeDAO.updateRecipeImage(RecipeImageDTO(recipeID, image.toString()))
+    }
+
+    suspend fun setRecipeDescription(recipeID: Long, description: String) {
+        recipeDAO.updateRecipeDescription(recipeID, description)
+    }
+
+    suspend fun setNumberOfPeople(recipeID: Long, numberOfPeople: Int) {
+        recipeDAO.updateNumberOfPeople(recipeID, numberOfPeople)
+    }
+
+    suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
+        recipeDAO.increaseInstructionStepOrder(recipeID, index)
+        recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
+    }
+
+    suspend fun deleteInstructionStep(recipeID: Long, index: Int) {
+        recipeDAO.deleteInstructionStep(InstructionStepIdentifierDTO(recipeID, index))
+        recipeDAO.decreaseInstructionStepOrder(recipeID, index)
+    }
+
+    suspend fun updateInstructionStep(recipeID: Long, index: Int, newInstruction: String) {
+        recipeDAO.updateInstructionStep(InstructionEntity(index, recipeID, newInstruction))
+    }
+
+    suspend fun deleteDietarySpeciality(recipeID: Long, speciality: String) {
+        recipeDAO.deleteDietarySpeciality(DietarySpecialityIdentifierDTO(recipeID, speciality))
+    }
+
+    suspend fun insertDietarySpeciality(recipeID: Long, speciality: String, type: DietaryTypes) {
+        recipeDAO.insertDietarySpeciality(DietarySpecialityEntity(recipeID, type, speciality))
+    }
+
+    suspend fun insertIngredient(recipeID: Long, ingredientGroup: String, ingredient: Ingredient) {
+        recipeDAO.insertIngredient(
+            IngredientEntity(
+                recipeID,
+                ingredientGroup,
+                ingredient.name,
+                ingredient.amount,
+                ingredient.unit
+            )
+        )
+    }
+
+    suspend fun deleteIngredient(recipeID: Long, ingredientGroup: String, ingredientName: String) {
+        recipeDAO.deleteIngredient(
+            IngredientIdentifierDTO(
+                recipeID,
+                ingredientGroup,
+                ingredientName
+            )
+        )
+    }
+
+    suspend fun updateIngredientName(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newName: String) {
+        recipeDAO.updateIngredientName(newName, ingredient.name, recipeID, ingredientGroup)
+    }
+
+    suspend fun updateIngredientAmount(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Int) {
+        recipeDAO.updateIngredientAmount(newAmount, ingredient.name, recipeID, ingredientGroup)
+    }
+
+    suspend fun updateIngredientUnit(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newUnit: String) {
+        recipeDAO.updateIngredientUnit(newUnit, ingredient.name, recipeID, ingredientGroup)
     }
 
     // TODO has to be used every time a user sees a recipe

@@ -43,10 +43,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.Ingredient
-import com.scouts.kitchenplaner.ui.ContentBox
+import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
+/**
+ * Display UI elements for editing the ingredients while creating a new recipe
+ *
+ * @param modifier Any composable modifiers that should be applied to this composable
+ * @param ingredientGroups IngredientGroups created so far
+ * @param onGroupAdd Callback function for creating a new IngredientGroup
+ * @param onIngredientAdd Callback function for adding a new Ingredient (second argument) to the
+ *                        IngredientGroup with the specified name (first argument)
+ * @param onIngredientDelete Callback function for deleting an Ingredient (second argument) from the
+ *                           IngredientGroup with the specified name (first argument)
+ * @param onDeleteIngredientGroup Callback function for deleting an entire IngredientGroup
+ */
 @Composable
 fun IngredientsInput(
     modifier: Modifier = Modifier,
@@ -119,6 +131,13 @@ fun IngredientsInput(
     }
 }
 
+/**
+ * UI elements for displaying a single ingredient inside an IngredientGroup while creating a new
+ * recipe
+ *
+ * @param onDeleteClick Callback function for deleting the ingredient
+ * @param ingredient The ingredient to be displayed
+ */
 @Composable
 fun DisplayIngredient(
     onDeleteClick: () -> Unit,
@@ -135,12 +154,19 @@ fun DisplayIngredient(
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Edit ingredient"
+                contentDescription = "Delete ingredient"
             )
         }
     }
 }
 
+
+/**
+ * Dialog for adding a new Ingredient
+ *
+ * @param onDismissRequest Callback function to close the dialog when requested by the user
+ * @param onIngredientAdd Callback function for creating the ingredient
+ */
 @Composable
 fun IngredientAdderDialog(
     onDismissRequest: () -> Unit,

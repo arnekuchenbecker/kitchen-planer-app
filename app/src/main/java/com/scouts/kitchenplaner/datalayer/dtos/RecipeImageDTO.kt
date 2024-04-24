@@ -14,25 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-
-
-@Composable
-fun ColumnScope.Headline(text: String) {
-    Text(
-        text = text,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(bottom = 10.dp)
-    )
-}
+data class RecipeImageDTO(
+    val id: Long,
+    val imageURI: String
+)

@@ -14,14 +14,25 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner
+package com.scouts.kitchenplaner.ui.view
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 
-/**
- * Hilt requires this to do black magic
- */
-@HiltAndroidApp
-class KitchenPlanerApplication : Application() {
+
+@Composable
+fun ColumnScope.Headline(text: String) {
+    Text(
+        text = text,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(bottom = 10.dp)
+    )
 }

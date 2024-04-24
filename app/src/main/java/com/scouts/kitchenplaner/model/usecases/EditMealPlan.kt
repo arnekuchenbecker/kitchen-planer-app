@@ -34,17 +34,21 @@ class EditMealPlan @Inject constructor(
     suspend fun selectMainRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
         recipeManagementRepository.chooseMainRecipeForMealSlot(
             project.id,
-            recipe.id ?: return,
+            recipe.id,
             mealSlot
         )
     }
 
     suspend fun addAlternativeRecipeForMealSlot(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
-        recipeManagementRepository.addAlternativeRecipeForMealSlot(project.id, recipe.id ?: return, mealSlot)
+        recipeManagementRepository.addAlternativeRecipeForMealSlot(project.id, recipe.id, mealSlot)
     }
 
     suspend fun removeAlternativeRecipeFromMeal(project: Project, mealSlot: MealSlot, recipe: RecipeStub) {
-        recipeManagementRepository.removeAlternativeRecipeFromMealSlot(project.id, mealSlot, recipe.id ?: 0)
+        recipeManagementRepository.removeAlternativeRecipeFromMealSlot(
+            project.id,
+            mealSlot,
+            recipe.id
+        )
     }
 
     suspend fun removeMainRecipeFromMeal(project: Project, mealSlot: MealSlot) {
