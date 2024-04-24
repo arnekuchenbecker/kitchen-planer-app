@@ -32,6 +32,7 @@ import javax.inject.Inject
  * Usecase for editing a recipe
  *
  * @param recipeRepository The repository to be used to access the data layer
+ * @param userDataStore The data store to be used to query the current user
  */
 class EditRecipe @Inject constructor(
     private val recipeRepository: RecipeRepository,
@@ -147,7 +148,8 @@ class EditRecipe @Inject constructor(
     }
 
     /**
-     * Remove an ingredient from a recipe
+     * Remove an ingredient from a recipe (Note that if this was the last ingredient in its group,
+     * the ingredient group will also be deleted)
      *
      * @param recipe The recipe from which to remove the ingredient
      * @param group The ingredient group from which to remove the ingredient
