@@ -14,14 +14,10 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-
-/**
- * Hilt requires this to do black magic
- */
-@HiltAndroidApp
-class KitchenPlanerApplication : Application() {
-}
+data class IngredientIdentifierDTO(
+    val recipe: Long,
+    val ingredientGroup: String,
+    val name: String
+)

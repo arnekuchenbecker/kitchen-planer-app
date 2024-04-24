@@ -27,6 +27,9 @@ import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.view.KitchenPlannerLayout
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Main entry point for the application
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

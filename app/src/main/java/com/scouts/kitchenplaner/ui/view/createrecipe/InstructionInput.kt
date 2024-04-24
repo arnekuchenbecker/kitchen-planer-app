@@ -41,11 +41,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.scouts.kitchenplaner.ui.ContentBox
+import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
-
+/**
+ * UI elements for adding instructions when creating a new recipe
+ *
+ * @param modifier Any composable modifiers that should be applied to this Composable
+ * @param instructions The instructions added so far
+ * @param onAddInstruction Callback function for adding a new instruction at the specified index (or
+ *                         at the end if Null is passed)
+ */
 @Composable
 fun InstructionInput(
     modifier: Modifier = Modifier,
@@ -88,6 +95,13 @@ fun InstructionInput(
     }
 }
 
+/**
+ * Dialog for adding a new instruction
+ *
+ * @param onDismissRequest Callback function for closing the dialog when requested by the user
+ * @param onAddInstruction Callback function for adding the new instruction at the specified index
+ *                         (or at the end if no index is specified, by passing Null)
+ */
 @Composable
 fun InstructionAdderDialog(
     onDismissRequest: () -> Unit,

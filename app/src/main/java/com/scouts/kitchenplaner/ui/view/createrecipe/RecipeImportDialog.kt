@@ -33,6 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
+/**
+ * Dialog for importing a recipe from Chefkoch.de
+ *
+ * @param onDismissRequest Callback function to close the dialog when requested by the user
+ * @param importRecipe Callback function to import the recipe specified by the given source (either
+ *                     a chefkoch URL or the ID of a chefkoch recipe)
+ */
 @Composable
 fun RecipeImportDialog(
     onDismissRequest: () -> Unit,
