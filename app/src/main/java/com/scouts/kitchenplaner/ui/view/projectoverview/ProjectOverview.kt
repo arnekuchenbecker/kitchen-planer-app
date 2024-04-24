@@ -42,7 +42,7 @@ import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
 /**
- * Screen that gives an overview over all project the current user is part of.
+ * Screen that gives an overview over all projects the current user is part of.
  * Here it is possible to archive or delete projects, select a project or create a new project
  * @param onNavigateToCreateProject Action to navigate to the screen to create a new project
  * @param onNavigateToDetailedProject Action to navigate to the screen where the selected project is displayed
