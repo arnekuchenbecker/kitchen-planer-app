@@ -34,7 +34,8 @@ fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
     ) {
         composable(PROJECT_DETAILS) {
             ProjectLayout(
-                it.arguments?.getLong(Destinations.ProjectId) ?: -1, navController
+                it.arguments?.getLong(Destinations.ProjectId) ?: -1,
+                navController
             )
         }
     }

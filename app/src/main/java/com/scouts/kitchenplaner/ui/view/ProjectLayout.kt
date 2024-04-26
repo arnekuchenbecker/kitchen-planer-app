@@ -62,7 +62,7 @@ fun ProjectLayout(
         val projectNavController: NavHostController = rememberNavController()
 
         val sites = listOf(
-            Pair("Übersicht", Destinations.ProjectsStart),
+            Pair("Essensplan", Destinations.ProjectsStart),
             Pair("Einkaufsliste", Destinations.ShoppingListGraph)
         )
 
@@ -91,7 +91,9 @@ fun ProjectLayout(
                     },
                 projectNavController = projectNavController,
                 project = project,
-                onNavigateToRecipe = { navController.navigate(Destinations.RecipeCreationGraph) }
+                onNavigateToRecipe = {
+                    navController.navigate(Destinations.RecipeCreationGraph)
+                }
             )
 
             ProjectSettingsSideDrawer(
@@ -100,7 +102,10 @@ fun ProjectLayout(
                     displaySettingsDialog = dialog
                     showSideBar = false
                 },
-                showSideBar = showSideBar
+                showSideBar = showSideBar,
+                onDismissSideBar = {
+                    showSideBar = false
+                }
             )
         }
 
