@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.viewmodel.StartScreenViewModel
 
 /**
- * The individual start screen of a user where their recent used projects and recipes are displayed.
+ * The individual start screen of a user where their recently used projects and recipes are displayed.
  *
  * @param modifier additional modifier
  * @param onNavigateToCreateRecipe navigation to the recipe creation screen

@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
- * Customizes the header used for editing a or list anything else.
+ * Header for a list when it should be able to edit it.
  * A title is displayed on the left and a "edit" button is displayed on the right.
  * How the list looks like is not specified here.
  *

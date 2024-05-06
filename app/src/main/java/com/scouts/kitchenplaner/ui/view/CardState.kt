@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.dp
  *
  * @param title Title of the card, which is visible the whole time
  * @param titleInteractions The icon which is displayed on the left side of the title
- * @param onDelete action what happens when clicking on the delete button
- * @param toBeDeleted weather the card is in the deletion mode (a delete button is displayed instead of a expandable arrow)
- * @param contentModifier customized modifier (not required)
- * @param content content visible, when the card is expanded
+ * @param onDelete Action what happens when clicking on the delete button
+ * @param toBeDeleted Whether the card is in the deletion mode (a delete button is displayed instead of a expandable arrow)
+ * @param contentModifier Customized modifier (not required)
+ * @param content Content that should be visible, when the card is expanded
  */
 data class CardState(val title: String,
                      val titleInteractions: @Composable () -> Unit = {},
