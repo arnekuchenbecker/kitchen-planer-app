@@ -38,6 +38,16 @@ import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.view.OverviewField
 import com.scouts.kitchenplaner.ui.viewmodel.RecipeSelectionViewModel
 
+/**
+ * The recipe overview screen. Here, all recipes are displayed. The user can either navigate to the
+ * detailed view of one of these recipes or they can create a new one
+ *
+ * @param onNavigationCreateRecipe Callback function for navigating to the screen for creating a
+ *                                 new recipe
+ * @param onNavigateToDetailedRecipe Callback function for navigating to the detailed view of the
+ *                                   recipe specified by the parameter
+ * @param viewModel The viewModel responsible for passing information to and from the Domain Layer
+ */
 @Composable
 fun RecipeOverview(
     onNavigationCreateRecipe: () -> Unit,
