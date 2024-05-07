@@ -127,7 +127,7 @@ class EditRecipe @Inject constructor(
     }
 
     /**
-     * Remove an IngredientGroup from a recipe
+     * Remove an IngredientGroup and all ingredients it contains from a recipe
      *
      * @param recipe The recipe from which to remove the ingredient group
      * @param group The ingredient group that should be removed
