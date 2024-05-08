@@ -28,6 +28,7 @@ import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.AlternativeRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
+import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
@@ -36,7 +37,7 @@ import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
-import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
@@ -59,10 +60,11 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         AlternativeRecipeProjectMealEntity::class,
         PersonNumberChangeEntity::class,
         ShoppingListEntity::class,
-        ShoppingListEntryEntity::class,
+        DynamicShoppingListEntryEntity::class,
+        StaticShoppingListEntryEntity::class,
         UserRecipeEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, DietaryTypeConverter::class)
