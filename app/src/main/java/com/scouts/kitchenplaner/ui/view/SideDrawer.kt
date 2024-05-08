@@ -40,6 +40,13 @@ import androidx.compose.ui.unit.dp
 
 private const val EXPAND_ANIMATION_DURATION = 300
 
+/**
+ * Customized side drawer, usable for edition options.
+ *
+ * @param modifier additional modifier
+ * @param expand whether the drawer is expanded
+ * @param content The content which is displayed while the drawer is expanded
+ */
 @Composable
 fun SideDrawer(
     modifier: Modifier = Modifier,

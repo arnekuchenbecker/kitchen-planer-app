@@ -40,6 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 
+/**
+ * Screen content for displaying and sharing a link to join a project.
+ * This screen contains the link displayed and a button below to share the link directly.
+ * @param projectId Id of the project where the invitation is for
+ */
 @Composable
 fun InvitationElements(
     projectId: Long

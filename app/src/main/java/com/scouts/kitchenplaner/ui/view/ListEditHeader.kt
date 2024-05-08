@@ -30,6 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Header for a list of items that is modifiable by the user.
+ * A title is displayed on the left and a "edit" button is displayed on the right.
+ * How the list looks like is not specified here.
+ *
+ * @param onClick action what happens when clicking the edit button
+ * @param title Title displayed on the left
+ */
 @Composable
 fun ListEditHeader(
     onClick: () -> Unit,
