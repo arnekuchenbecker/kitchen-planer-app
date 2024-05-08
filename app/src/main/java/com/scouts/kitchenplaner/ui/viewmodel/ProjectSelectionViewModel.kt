@@ -41,6 +41,9 @@ class ProjectSelectionViewModel @Inject constructor(
     private val projects = projectSelection.getProjectsForCurrentUser()
     private val selectedFlow = MutableStateFlow<Map<Long, Boolean>>(mapOf())
 
+    /**
+     * This flow contains all available project stubs and whether they are selected.
+     */
     val projectSelected: Flow<List<Pair<ProjectStub, Boolean>>> =
         projects.combine(selectedFlow) { project, selected ->
             project.map { stub ->
@@ -50,7 +53,16 @@ class ProjectSelectionViewModel @Inject constructor(
                 )
             }
         }
+
+    /**
+     * Indicates if the selection of a project means that it can be archived (true)
+     * or the details of the project  should be shown (false)
+     */
     var archive by mutableStateOf(false)
+
+    /**
+     * Indicates whether the dialog tho archive projects is shown
+     */
     var showArchiveDialog by mutableStateOf(false)
 
 

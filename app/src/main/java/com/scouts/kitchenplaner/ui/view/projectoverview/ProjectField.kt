@@ -30,13 +30,15 @@ import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.ui.view.OverviewField
 
 /**
- * If clicking a project should select it to be archived or trigger navigation to the detailed project screen
- *
+ * A representation of a project in a project overview.
+ * This field can be in two states depending if the project can be selected to archive it
+ * or to show its details.
  * @param project A stub of the project to be displayed
  * @param selected Whether the project is selected
  * @param onNavigateToDetailedProject action which leads to the detailed screen of the project
  * @param toggleSelection action that toggles the selection of the project
- * @param archive If the selection of a project means to archive it or go to the detailed screen
+ * @param archive If clicking a project it should be archived (true) or go to the detailed screen (false)
+ *
  */
 @Composable
 fun ProjectField(
