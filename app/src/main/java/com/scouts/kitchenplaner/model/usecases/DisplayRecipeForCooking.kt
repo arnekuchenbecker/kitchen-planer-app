@@ -26,6 +26,7 @@ import com.scouts.kitchenplaner.model.entities.RecipeAlternative
 import com.scouts.kitchenplaner.model.entities.RecipeForCooking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import javax.inject.Inject
 
 /**
  * Usecase for displaying a recipe for cooking
@@ -33,7 +34,7 @@ import kotlinx.coroutines.flow.combine
  * @param recipeRepository Repository class to retrieve information about recipes
  * @param allergenRepository Repository class to retrieve information about allergen persons
  */
-class DisplayRecipeForCooking(
+class DisplayRecipeForCooking @Inject constructor(
     private val recipeRepository: RecipeRepository,
     private val allergenRepository: AllergenRepository
 ) {
