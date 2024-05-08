@@ -16,7 +16,17 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-data class ShoppingListStub(
+/**
+ * Represents an alternative to a specific recipe, including which DietarySpecialities of the other
+ * recipe are covered in the alternative
+ *
+ * @param id The ID of the alternative recipe
+ * @param name The name of the alternative recipe
+ * @param coveredAllergens All allergens of the original recipe that are covered by the alternative
+ *                         recipe
+ */
+data class RecipeAlternative(
     val id: Long,
-    val name: String
+    val name: String,
+    val coveredAllergens: List<DietarySpeciality>
 )

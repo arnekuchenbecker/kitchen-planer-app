@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import java.util.Date
 
 
@@ -32,8 +33,11 @@ import java.util.Date
         parentColumns = ["id"],
         childColumns = ["recipe"]
     )],
-    primaryKeys = ["recipe", "user"]
+    primaryKeys = ["recipe", "user"],
+    indices = [Index("user")]
 )
 data class UserRecipeEntity(
-    val recipe: Long, val user: String, val lastShown: Date
+    val recipe: Long,
+    val user: String,
+    val lastShown: Date
 )
