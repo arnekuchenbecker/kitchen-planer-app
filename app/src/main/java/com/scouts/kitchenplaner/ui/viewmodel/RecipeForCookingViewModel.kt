@@ -27,12 +27,29 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * ViewModel for displaying a recipe for cooking
+ *
+ * @param displayRecipeForCooking The domain layer access via which to load recipes
+ */
 @HiltViewModel
 class RecipeForCookingViewModel @Inject constructor(
     private val displayRecipeForCooking: DisplayRecipeForCooking
 ) : ViewModel() {
+    /**
+     * A flow containing the latest information for cooking a recipe that has been loaded by a call
+     * to [getRecipe]. If no such call has been made yet, this property is not initialized and must
+     * not be used.
+     */
     lateinit var recipeForCooking: StateFlow<RecipeForCooking>
 
+    /**
+     * Loads a recipe for cooking into [recipeForCooking] where it can then be observed.
+     *
+     * @param project The project from which to obtain calculation information
+     * @param mealSlot The meal slot the recipe is cooked at
+     * @param recipeID The ID of the recipe being cooked
+     */
     suspend fun getRecipe(project: Project, mealSlot: MealSlot, recipeID: Long) {
         recipeForCooking = displayRecipeForCooking
             .showRecipeForCooking(project, mealSlot, recipeID)
