@@ -14,11 +14,20 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-data class ShoppingListItem (
-    val name: String,
-    val amount: Int,
-    val unit: String
-) {
-}
+import java.util.Date
+
+/**
+ * Identifier DTO to describe DynamicShoppingListEntryEntities belonging a given project and meal
+ * slot
+ *
+ * @param projectId The id of the project the entities should belong to
+ * @param meal The meal of the meal slot the entities should be relevant for
+ * @param mealDate The date of the meal slot the entities should be relevant for
+ */
+data class ShoppingListMealSlotIdentifierDTO(
+    val projectId: Long,
+    val meal: String,
+    val mealDate: Date
+)

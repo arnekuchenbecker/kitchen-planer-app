@@ -14,17 +14,25 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
-import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
-import javax.inject.Inject
+import java.util.Date
 
-class EditShoppingLists @Inject constructor(
-    private val shoppingListRepository: ShoppingListRepository
-) {
-    suspend fun deleteShoppingList(project: Project, list: ShoppingListStub) {
-        shoppingListRepository.deleteShoppingList(list, project.id)
-    }
-}
+/**
+ * DTO for transferring dynamic shopping lists out of the database
+ *
+ * @param ingredient The name of the referenced Ingredient
+ * @param amount The amount specified in the recipe
+ * @param unit The unit of measure
+ * @param peopleBase The amount of people the recipe was written for
+ * @param date The date of the MealSlot the entry is relevant for
+ * @param meal The meal of the MealSlot the entry is relevant for
+ */
+data class DynamicShoppingListEntryDTO(
+    val ingredient: String,
+    val amount: Int,
+    val unit: String,
+    val peopleBase: Int,
+    val date: Date,
+    val meal: String
+)

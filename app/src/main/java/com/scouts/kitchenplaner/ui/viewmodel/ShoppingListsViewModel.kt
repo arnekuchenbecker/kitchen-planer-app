@@ -19,7 +19,7 @@ package com.scouts.kitchenplaner.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.ShoppingListStub
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
 import com.scouts.kitchenplaner.model.usecases.DisplayShoppingListOverview
 import com.scouts.kitchenplaner.model.usecases.EditShoppingLists
 import dagger.hilt.android.lifecycle.HiltViewModel
