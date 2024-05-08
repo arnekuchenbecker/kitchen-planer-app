@@ -61,6 +61,17 @@ import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 
 private const val EXPAND_ANIMATION_DURATION = 300
 
+/**
+ * Card with title and possibility to expand the card.
+ * When the card is expanded the title background changes color and a new expanded part is visible, where new content can be displayed
+ * It is possible to click on the title and the arrow/icon.
+ * The card can also be in a "to be deleted" mode, where a delete button is displayed instead of the arrow/icon.
+ *
+ * @param expanded whether the card is expanded
+ * @param onCardArrowClick action what happens when clicking on the arrow/icon
+ * @param onTitleClick action what happens when clicking on the title.
+ * @param cardState persistent information about the status of the card and how a card looks like.
+ */
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun ExpandableCard(
@@ -112,7 +123,7 @@ fun ExpandableCard(
                 CardTitle(
                     modifier = Modifier.weight(1.0f),
                     title = cardState.title,
-                    TitleIcon = cardState.titleInteractions,
+                    titleIcon = cardState.titleInteractions,
                     color = contentColor,
                     onTitleClick = onTitleClick
                 )
@@ -133,12 +144,19 @@ fun ExpandableCard(
 
         ExpandableContent(
             visible = expanded && !cardState.toBeDeleted,
-            Content = cardState.content,
+            content = cardState.content,
             contentModifier = cardState.contentModifier
         )
     }
 }
 
+/**
+ * A  button with a rotatable arrow for expanding a card
+ * @param modifier additional modifier (not required)
+ * @param degrees how much the arrow should be turned
+ * @param onClick action, what happens when clicking on the arrow
+ * @param color Color of the arrow
+ */
 @Composable
 fun CardArrow(
     modifier: Modifier = Modifier,
@@ -160,16 +178,24 @@ fun CardArrow(
     )
 }
 
+/**
+ * The title of the card with icon and action
+ * @param modifier additional modifier (not required)
+ * @param title text of the title
+ * @param titleIcon icon which can be displayed on the left side of the title
+ * @param color text color
+ * @param onTitleClick action, what happens when clicking on the title
+ */
 @Composable
 fun CardTitle(
     modifier: Modifier = Modifier,
     title: String,
-    TitleIcon: @Composable () -> Unit,
+    titleIcon: @Composable () -> Unit,
     color: Color,
     onTitleClick: () -> Unit
 ) {
     Row (modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        TitleIcon()
+        titleIcon()
         Spacer(modifier = Modifier.weight(0.5f))
         Text(
             text = title,
@@ -185,11 +211,18 @@ fun CardTitle(
     }
 }
 
+/**
+ * The content of the expandable card if it is expanded
+ * @param visible whether the content is visible at the moment
+ * @param initialVisibility whether the content was visible at the beginning. if initialVisibility and visible are different there is an animation
+ * @param content what is displayed
+ * @param contentModifier additional modifier
+ */
 @Composable
 fun ExpandableContent(
     visible: Boolean = true,
     initialVisibility: Boolean = false,
-    Content: @Composable () -> Unit,
+    content: @Composable () -> Unit,
     contentModifier: Modifier
 ) {
     val enterTransition = remember {
@@ -225,10 +258,11 @@ fun ExpandableContent(
             .padding(8.dp)
         ) {
             Spacer(modifier = Modifier.heightIn(max = 100.dp))
-            Content()
+            content()
         }
     }
 }
+
 
 @Composable
 @Preview(showBackground = true)

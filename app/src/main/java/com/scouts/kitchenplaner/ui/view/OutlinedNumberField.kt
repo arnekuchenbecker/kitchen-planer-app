@@ -23,6 +23,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 
+/**
+ * A number field which supports adding integer, non negative integers and float values
+ *
+ * @param modifier additional modifier (not required)
+ * @param value  current displayed value at the field
+ * @param onValueChange action, what happens when a new number (String) is entered in the field
+ * @param label Content description, what should be entered in this text field
+ * @param type Type of valid inputs
+ */
 @Composable
 fun OutlinedNumberField(
     modifier: Modifier = Modifier,
@@ -52,8 +61,22 @@ fun OutlinedNumberField(
     )
 }
 
+/**
+ * Specification of valid inputs for the number field
+ */
 enum class NumberFieldType {
+    /**
+     * represents non negative integers
+     */
     POSITIVE,
+
+    /**
+     * represents an integer
+     */
     INTEGER,
+
+    /**
+     * represents a float
+     */
     FLOAT
 }

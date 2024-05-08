@@ -24,6 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 
+/**
+ * A delete button, with predefined colors, size and text
+ * @param modifier customized modifier (not required)
+ * @param onClick callback function which defines the action when the button gets clicked.
+ */
 @Composable
 fun DeleteButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(
