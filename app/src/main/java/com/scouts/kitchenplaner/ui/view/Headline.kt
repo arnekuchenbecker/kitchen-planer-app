@@ -26,6 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 
+/**
+ * Customized headline for secondary headlines
+ * @param text the content of the headline
+ */
 @Composable
 fun ColumnScope.Headline(text: String) {
     Text(

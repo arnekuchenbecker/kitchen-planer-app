@@ -30,6 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Customized item for the side drawer.
+ *
+ * @param modifier additional modifier
+ * @param content The content displayed at the side bar.
+ * @param onClick action what happens when clicking on the item
+ */
 @Composable
 fun SideDrawerItem(
     modifier: Modifier = Modifier,

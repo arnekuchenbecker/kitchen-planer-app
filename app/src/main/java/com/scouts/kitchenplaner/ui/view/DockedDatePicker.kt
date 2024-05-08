@@ -43,7 +43,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-
+/**
+ * A description text and a box next to each other. When clicking on the box a date picker appears.
+ *
+ * @param modifier additional modifier (not required)
+ * @param dateState The state of the date picker, which saves the selected date.
+ * @param displayText description text for the use of the date picker
+ * @param label The alternative text if no date is selected.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DockedDatePicker(
@@ -77,6 +84,14 @@ fun DockedDatePicker(
     }
 }
 
+/**
+ * Alignment of a description text and a clickable box.
+ *
+ * @param modifier customized modifier (not required)
+ * @param label alternative text which is displayed in the box
+ * @param displayText description text next to the box
+ * @param onClick action, what happens when clicking in the box
+ */
 @Composable
 fun DatePickerDisplay(modifier: Modifier = Modifier, label: String, displayText: String, onClick: () -> Unit) {
     Row (modifier = modifier, horizontalArrangement = Arrangement.SpaceBetween) {

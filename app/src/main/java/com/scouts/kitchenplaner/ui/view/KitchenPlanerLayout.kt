@@ -37,7 +37,10 @@ import androidx.navigation.compose.rememberNavController
 import com.scouts.kitchenplaner.ui.navigation.Destinations
 import com.scouts.kitchenplaner.ui.navigation.NavHostGeneral
 
-
+/**
+ * Initial composable for the app.
+ * The navigation start here and the general layout (including the bottom bar) is defined here.
+ */
 @Composable
 fun KitchenPlannerLayout(
 ) {

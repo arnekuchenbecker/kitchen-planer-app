@@ -19,35 +19,35 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.PrimaryKey
 
 /**
- * Database Entity for a shopping list
+ * Entity class for static shopping list entries
  *
- * @param id Primary Key
- * @param name Name of the shopping list. Does not have to be unique as it is not used as primary
- *             key.
- * @param projectId Foreign Key pointing to the project this shopping list was created for
+ * @param listId The ID of the shopping list this entry belongs to
+ * @param projectId The ID of the project the shopping list this entry belong to belongs to
+ * @param ingredientName The name of the ingredient that should be purchased
+ * @param amount The amount that should be purchased
+ * @param unit The unit of measure
  */
 @Entity(
-    tableName = "shoppingLists",
+    tableName = "staticShoppingListEntries",
+    primaryKeys = ["listId", "ingredientName", "unit"],
     foreignKeys = [
         ForeignKey(
-            entity = ProjectEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["projectId"]
+            entity = ShoppingListEntity::class,
+            parentColumns = ["id", "projectId"],
+            childColumns = ["listId", "projectId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index("projectId"),
-        Index(
-            value = ["id", "projectId"],
-            unique = true
-        )
+        Index("listId", "projectId")
     ]
 )
-data class ShoppingListEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val name: String,
-    val projectId: Long
+data class StaticShoppingListEntryEntity(
+    var listId: Long,
+    val projectId: Long,
+    val ingredientName: String,
+    val amount: Int,
+    val unit: String
 )

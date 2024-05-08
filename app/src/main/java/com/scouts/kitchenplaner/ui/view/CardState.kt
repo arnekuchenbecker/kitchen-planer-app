@@ -21,6 +21,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Persists the state and the action for clicking on the deletion button of a Expandable Card.
+ *
+ * @param title Title of the card, which is visible the whole time
+ * @param titleInteractions The icon which is displayed on the left side of the title
+ * @param onDelete Action what happens when clicking on the delete button
+ * @param toBeDeleted Whether the card is in the deletion mode (a delete button is displayed instead of a expandable arrow)
+ * @param contentModifier Customized modifier (not required)
+ * @param content Content that should be visible, when the card is expanded
+ */
 data class CardState(val title: String,
                      val titleInteractions: @Composable () -> Unit = {},
                      val onDelete: () -> Unit,
