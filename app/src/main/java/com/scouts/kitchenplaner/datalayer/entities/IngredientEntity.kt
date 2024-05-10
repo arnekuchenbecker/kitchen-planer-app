@@ -25,6 +25,6 @@ data class IngredientEntity(
     var recipe: Long,
     val ingredientGroup: String,
     val name: String,
-    val amount: Float,
+    val amount: Double,
     val unit: String //TODO maybe change for calculation
 )

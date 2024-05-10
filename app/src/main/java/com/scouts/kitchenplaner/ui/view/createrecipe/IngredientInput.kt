@@ -206,7 +206,7 @@ fun IngredientAdderDialog(
                         .padding(vertical = 5.dp),
                     onClick = {
                         onIngredientAdd(
-                            Ingredient(name, amount.toFloatOrNull() ?: 0f, unit)
+                            Ingredient(name, amount.toDoubleOrNull() ?: 0.0, unit)
                         )
                         name = ""
                         amount = ""
