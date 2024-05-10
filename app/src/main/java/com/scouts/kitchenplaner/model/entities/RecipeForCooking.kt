@@ -43,7 +43,7 @@ class RecipeForCooking(
             it.ingredients.map { ingredient ->
                 Ingredient(
                     ingredient.name,
-                    (ingredient.amount * people / recipe.numberOfPeople.toDouble()).toFloat(),
+                    (ingredient.amount * people / recipe.numberOfPeople.toDouble()),
                     ingredient.unit
                 )
             }

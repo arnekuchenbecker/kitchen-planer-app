@@ -20,6 +20,7 @@ import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.ShoppingListMealSlotIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
+import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.shoppinglists.DynamicShoppingListEntry
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
@@ -87,6 +88,7 @@ class ShoppingListRepository @Inject constructor(
      *
      * @return A flow containing the shopping list with the given ID
      */
+    @OptIn(DomainLayerRestricted::class)
     fun getShoppingList(listID: Long): Flow<ShoppingList> {
         val shoppingListFlow = shoppingListDAO.getShoppingListByID(listID)
         val staticEntriesFlow = shoppingListDAO.getStaticShoppingListEntriesByListID(listID)

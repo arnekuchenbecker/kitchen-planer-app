@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.model.entities.shoppinglists
 
 import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
+import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealPlan
 
 /**
@@ -27,12 +28,12 @@ import com.scouts.kitchenplaner.model.entities.MealPlan
  * @param unit The unit of measure
  * @param _amount The amount that should be purchased
  */
-class StaticShoppingListEntry (
+class StaticShoppingListEntry @DomainLayerRestricted constructor(
     override val name: String,
     override val unit: String,
-    private val _amount: Int
+    private val _amount: Double
 ) : ShoppingListEntry {
-    override fun getAmount(mealPlan: MealPlan): Int {
+    override fun getAmount(mealPlan: MealPlan): Double {
         return _amount
     }
 
