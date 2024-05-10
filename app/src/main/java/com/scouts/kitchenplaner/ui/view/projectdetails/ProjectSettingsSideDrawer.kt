@@ -42,10 +42,12 @@ import com.scouts.kitchenplaner.ui.view.SideDrawerItem
 fun ProjectSettingsSideDrawer(
     modifier: Modifier = Modifier,
     displayDialog: (ProjectDialogValues) -> Unit,
-    showSideBar: Boolean
+    showSideBar: Boolean,
+    onDismissSideBar: () -> Unit
 ) {
     SideDrawer(
         expand = showSideBar,
+        onBackPress = onDismissSideBar,
         modifier = modifier
     ) {
         Text(

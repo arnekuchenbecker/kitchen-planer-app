@@ -28,20 +28,26 @@ import com.scouts.kitchenplaner.ui.view.StartScreen
 fun NavHostGeneral(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Destinations.home
+    startDestination: String = Destinations.Home
 ) {
     NavHost(
         modifier = modifier, navController = navController, startDestination = startDestination
     ) {
-        composable(Destinations.home) {
-            StartScreen(onNavigateToDetailedProject = { projectID ->
-                navController.navigate(Destinations.ProjectDetailsGraph + "/$projectID")
-            },
+        composable(Destinations.Home) {
+            StartScreen(
+                onNavigateToDetailedProject = { projectID ->
+                    navController.navigate(Destinations.ProjectDetailsGraph + "/$projectID")
+                },
                 onNavigateToProjectCreation = {
                     navController.navigate(Destinations.ProjectCreationGraph)
                 },
-                onNavigateToCreateRecipe = { navController.navigate(Destinations.RecipeCreationGraph) },
-                onNavigateToRecipeDetail = { recipeID -> navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID") })
+                onNavigateToCreateRecipe = {
+                    navController.navigate(Destinations.RecipeCreationGraph)
+                },
+                onNavigateToRecipeDetail = { recipeID ->
+                    navController.navigate("${Destinations.RecipeDetailsGraph}/$recipeID")
+                }
+            )
 
         }
         projectsNav(navController = navController)
