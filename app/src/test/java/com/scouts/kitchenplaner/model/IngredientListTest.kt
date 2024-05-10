@@ -43,9 +43,9 @@ class IngredientListTest {
     private val breakfastIngredients = IngredientGroup(
         "Frühstück",
         listOf(
-            Ingredient("Brot", 3f, "kg"),
-            Ingredient("Nutella", 0.75f, "kg"),
-            Ingredient("Nougat Bits", 600f, "g")
+            Ingredient("Brot", 3.0, "kg"),
+            Ingredient("Nutella", 0.75, "kg"),
+            Ingredient("Nougat Bits", 600.0, "g")
         )
     )
 
@@ -54,16 +54,16 @@ class IngredientListTest {
     private val lunchIngredients1 = IngredientGroup(
         "Mittagessen1",
         listOf(
-            Ingredient("Nudeln", 1f, "kg"),
-            Ingredient("Pesto", 0.5f, "kg"),
-            Ingredient("Tomatensauce", 450f, "g"),
-            Ingredient("Paprika", 2f, "Stk")
+            Ingredient("Nudeln", 1.0, "kg"),
+            Ingredient("Pesto", 0.5, "kg"),
+            Ingredient("Tomatensauce", 450.0, "g"),
+            Ingredient("Paprika", 2.0, "Stk")
         )
     )
     private val lunchIngredients2 = IngredientGroup(
         "Mittagessen2",
         listOf(
-            Ingredient("Nudeln", 1000f, "g")
+            Ingredient("Nudeln", 1000.0, "g")
         )
     )
 
@@ -72,9 +72,9 @@ class IngredientListTest {
     private val dinnerIngredients = IngredientGroup(
         "Abendessen",
         listOf(
-            Ingredient("Spätzle", 2f, "kg"),
-            Ingredient("Käse", 1f, "kg"),
-            Ingredient("Zwiebeln", 600f, "g")
+            Ingredient("Spätzle", 2.0, "kg"),
+            Ingredient("Käse", 1.0, "kg"),
+            Ingredient("Zwiebeln", 600.0, "g")
         )
     )
 
@@ -111,18 +111,18 @@ class IngredientListTest {
 
         Assertions.assertEquals(3, result.size)
         Assertions.assertEquals(3, result[0].second.size)
-        Assertions.assertTrue(result[0].second.any { it.name == "Brot" && it.amount == 1.5f && it.unit == "kg" }, "Brot")
-        Assertions.assertTrue(result[0].second.any { it.name == "Nutella" && it.amount == 0.75f / 2 && it.unit == "kg" }, "Nutella")
-        Assertions.assertTrue(result[0].second.any { it.name == "Nougat Bits" && it.amount == 300f && it.unit == "g" }, "Nougat Bits")
+        Assertions.assertTrue(result[0].second.any { it.name == "Brot" && it.amount == 1.5&& it.unit == "kg" }, "Brot")
+        Assertions.assertTrue(result[0].second.any { it.name == "Nutella" && it.amount == 0.75 / 2 && it.unit == "kg" }, "Nutella")
+        Assertions.assertTrue(result[0].second.any { it.name == "Nougat Bits" && it.amount == 300.0 && it.unit == "g" }, "Nougat Bits")
         Assertions.assertEquals(5, result[1].second.size)
-        Assertions.assertTrue(result[1].second.any { it.name == "Nudeln" && it.amount == 6f && it.unit == "kg" }, "Nudeln, kg")
-        Assertions.assertTrue(result[1].second.any { it.name == "Nudeln" && it.amount == 6000f && it.unit == "g" }, "Nudeln, g")
-        Assertions.assertTrue(result[1].second.any { it.name == "Pesto" && it.amount == 6 * 0.5f && it.unit == "kg" }, "Pesto")
-        Assertions.assertTrue(result[1].second.any { it.name == "Tomatensauce" && it.amount == 6 * 450f && it.unit == "g" }, "Tomatensauce")
-        Assertions.assertTrue(result[1].second.any { it.name == "Paprika" && it.amount == 6 * 2f && it.unit == "Stk" }, "Paprika")
+        Assertions.assertTrue(result[1].second.any { it.name == "Nudeln" && it.amount == 6.0 && it.unit == "kg" }, "Nudeln, kg")
+        Assertions.assertTrue(result[1].second.any { it.name == "Nudeln" && it.amount == 6000.0 && it.unit == "g" }, "Nudeln, g")
+        Assertions.assertTrue(result[1].second.any { it.name == "Pesto" && it.amount == 6 * 0.5 && it.unit == "kg" }, "Pesto")
+        Assertions.assertTrue(result[1].second.any { it.name == "Tomatensauce" && it.amount == 6 * 450.0 && it.unit == "g" }, "Tomatensauce")
+        Assertions.assertTrue(result[1].second.any { it.name == "Paprika" && it.amount == 6 * 2.0 && it.unit == "Stk" }, "Paprika")
         Assertions.assertEquals(3, result[2].second.size)
-        Assertions.assertTrue(result[2].second.any { it.name == "Spätzle" && it.amount == 12f && it.unit == "kg" }, "Spätzle")
-        Assertions.assertTrue(result[2].second.any { it.name == "Käse" && it.amount == 6f && it.unit == "kg" }, "Käse")
-        Assertions.assertTrue(result[2].second.any { it.name == "Zwiebeln" && it.amount == 600f * 6 && it.unit == "g" }, "Zwiebeln")
+        Assertions.assertTrue(result[2].second.any { it.name == "Spätzle" && it.amount == 12.0 && it.unit == "kg" }, "Spätzle")
+        Assertions.assertTrue(result[2].second.any { it.name == "Käse" && it.amount == 6.0 && it.unit == "kg" }, "Käse")
+        Assertions.assertTrue(result[2].second.any { it.name == "Zwiebeln" && it.amount == 600.0 * 6 && it.unit == "g" }, "Zwiebeln")
     }
 }
