@@ -88,7 +88,7 @@ class ShoppingListRepository @Inject constructor(
      *
      * @return A flow containing the shopping list with the given ID
      */
-    @OptIn(DomainLayerRestricted::class)
+    @DomainLayerRestricted
     fun getShoppingList(listID: Long): Flow<ShoppingList> {
         val shoppingListFlow = shoppingListDAO.getShoppingListByID(listID)
         val staticEntriesFlow = shoppingListDAO.getStaticShoppingListEntriesByListID(listID)
