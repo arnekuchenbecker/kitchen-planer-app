@@ -46,6 +46,16 @@ import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.view.OverviewField
 
+/**
+ * Dialog for selecting a recipe for a meal slot
+ *
+ * @param onDismissRequest Callback function to close the dialog
+ * @param onNavigateToRecipeCreation Callback function to navigate to the recipe creation screen
+ * @param onQueryChange Callback function to change the current query
+ * @param onSelection Callback function for selecting a recipe
+ * @param recipeQuery The current query string
+ * @param searchResults All recipes matching the current query
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeSelectionDialog(

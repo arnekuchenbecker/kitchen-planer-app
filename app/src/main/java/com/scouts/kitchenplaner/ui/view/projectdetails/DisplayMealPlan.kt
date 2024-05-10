@@ -73,6 +73,20 @@ import com.scouts.kitchenplaner.ui.view.ExpandableCard
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
 
+/**
+ * Composable displaying a meal plan to the user
+ *
+ * @param mealSlots List of all meal slots that should be displayed
+ * @param mealPlan Meal plan containing which recipe(s) should be cooked and how many persons are
+ *                 present for each meal slot
+ * @param getAllergenCheck Callback function to obtain an allergen check for a specified meal slot
+ * @param onShowRecipe Callback function to show a specified recipe for cooking
+ * @param displayRecipeSelectionDialog Callback function to display the dialog for selecting a
+ *                                     recipe
+ * @param onDeleteRecipe Callback function for removing a recipe from a meal slot
+ * @param modifier Compose modifier object that should be applied to the outermost container of this
+ *                 composable
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DisplayMealPlan(
@@ -151,19 +165,27 @@ fun DisplayMealPlan(
     }
 }
 
-@Composable
-fun NoRecipesSelected(
-    onClick: () -> Unit
-) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Dieser Mahlzeit wurden noch keine Rezepte zugeordnet.")
-        HorizontalDivider()
-        IconButton(onClick = onClick) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add main recipe")
-        }
-    }
-}
-
+/**
+ * Composable for displaying information about a specific meal slot. Can be expanded to show more
+ * detailed information (e.g. which recipes are selected)
+ *
+ * @param persons The number of persons present a the meal slot
+ * @param recipes A Pair containing the main recipe and a list of alternative recipes selected for
+ *                the meal slot or null if no recipes have been selected yet
+ * @param slot The meal slot for which the information is displayed
+ * @param cover Information on whether all allergens are covered by the selected recipes
+ * @param expanded Whether the expandable content should be displayed
+ * @param toggleExpanded Callback function to toggle displaying the expandable content
+ * @param onSwap Callback function for clicks on the swap button
+ * @param toBeSwapped Whether the meal slot is selected to be swapped with another
+ * @param onDeleteRecipe Callback function to remove a recipe from the meal slot
+ * @param displayRecipeSelectionDialog Callback function to display the recipe selection dialog. If
+ *                                     a recipe stub is passed to the function, the chosen recipe
+ *                                     should replace that recipe, otherwise (i.e. if null is
+ *                                     passed), the chosen recipe should be added to recipes of the
+ *                                     meal slot
+ * @param onShowRecipe Callback function for displaying the given recipe for cooking
+ */
 @Composable
 fun MealDisplayItem(
     persons: Int,
@@ -257,6 +279,36 @@ fun MealDisplayItem(
     )
 }
 
+/**
+ * UI Element that should be displayed if no recipe has yet been selected for a meal slot.
+ *
+ * @param onClick Callback function for displaying the recipe selection dialog in order to select a
+ *                main recipe for this slot
+ */
+@Composable
+fun NoRecipesSelected(
+    onClick: () -> Unit
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Dieser Mahlzeit wurden noch keine Rezepte zugeordnet.")
+        HorizontalDivider()
+        IconButton(onClick = onClick) {
+            Icon(imageVector = Icons.Filled.Add, contentDescription = "Add main recipe")
+        }
+    }
+}
+
+/**
+ * UI Element displaying the recipes assigned to a meal slot
+ *
+ * @param recipes Pair containing the main recipe and a list of alternative recipes assigned to the
+ *                meal slot
+ * @param onExchange Callback function to exchange a recipe for another
+ * @param onDelete Callback function to remove a recipe from the meal slot
+ * @param onAddAlternative Callback function to display the recipe selection dialog in order to
+ *                         add an alternative recipe
+ * @param onShowRecipe Callback function to display the given recipe for cooking
+ */
 @Composable
 fun DisplayRecipesForMeal(
     recipes: Pair<RecipeStub, List<RecipeStub>>,
@@ -301,6 +353,16 @@ fun DisplayRecipesForMeal(
     }
 }
 
+/**
+ * Composable for displaying a recipe in the meal plan
+ *
+ * @param recipe Information about the displayed recipe
+ * @param editing Whether to display UI elements to edit this recipe
+ * @param onExchange Callback function to exchange this recipe for another
+ * @param onDelete Callback function to remove this recipe from its meal slot
+ * @param onDisplayRecipe Callback function to display this recipe for cooking
+ * @param onClick Callback function to toggle editing this recipe
+ */
 @Composable
 fun DisplayRecipe(
     recipe: RecipeStub,
@@ -351,6 +413,14 @@ fun DisplayRecipe(
     }
 }
 
+/**
+ * UI Elements to interact with a recipe in a meal plan. Contains buttons for showing a recipe for
+ * cooking, exchanging the recipe and removing the recipe from the meal slot.
+ * 
+ * @param onDisplayRecipe Callback function for displaying the recipe for cooking
+ * @param onExchange Callback function for exchanging the recipe for another
+ * @param onDelete Callback function for removing the recipe from the meal slot
+ */
 @Composable
 fun RecipeInteractions(
     onDisplayRecipe: () -> Unit,

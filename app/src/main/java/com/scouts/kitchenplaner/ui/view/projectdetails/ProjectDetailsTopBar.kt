@@ -49,6 +49,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.Project
 
+/**
+ * Top bar for the project details screen
+ *
+ * @param project The project being displayed
+ * @param showSideBar If the side bar for the project settings should be shown
+ * @param toggleSideBar Callback function to toggle side bar visibility
+ * @param selectedItem Index for navigating the project details view
+ * @param onSelectItem Callback function for navigation
+ * @param sites List of destinations in the project details view
+ * @param projectNavController The NavController to be used for navigation
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectDetailsTopBar(

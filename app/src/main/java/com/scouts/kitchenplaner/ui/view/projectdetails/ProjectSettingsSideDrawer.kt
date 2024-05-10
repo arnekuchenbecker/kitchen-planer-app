@@ -38,6 +38,14 @@ import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
 import com.scouts.kitchenplaner.ui.view.SideDrawer
 import com.scouts.kitchenplaner.ui.view.SideDrawerItem
 
+/**
+ * Side drawer for displaying project settings
+ *
+ * @param modifier Compose modifier object to be applied to the outermost container of this
+ *                 composable
+ * @param displayDialog Callback function to display one of the settings dialogs
+ * @param showSideBar Whether the side bar should be visible
+ */
 @Composable
 fun ProjectSettingsSideDrawer(
     modifier: Modifier = Modifier,
