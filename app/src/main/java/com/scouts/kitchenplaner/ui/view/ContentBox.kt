@@ -27,13 +27,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * A framed box which contains a header and the content below, so that it is clear that the headline belongs to the content.
+ *
+ * @param modifier special modifier (not required)
+ * @param title Title for the content
+ * @param content Which should be displayed
+ */
 @Composable
 fun ContentBox(
     modifier: Modifier = Modifier,
     title: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column (
+    Column(
         modifier = modifier
             .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
             .padding(15.dp)

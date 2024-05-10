@@ -34,6 +34,7 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
     ) {
         composable(PROJECT_CREATION) {
             CreateProject(onNavigateToInvitePeople = { projectId ->
+                navController.popBackStack()
                 navController.navigate("$INVITE_SCREEN/$projectId")
             })
         }
@@ -47,14 +48,8 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
             InviteToProject (
                 projectId = projectId,
                 onNavigateToProject = {
-                    navController.navigate(
-                        route = "${Destinations.ProjectDetailsGraph}/$projectId",
-                        builder = {
-                            popUpTo(PROJECT_CREATION) {
-                                inclusive = true
-                            }
-                        }
-                    )
+                    navController.popBackStack()
+                    navController.navigate("${Destinations.ProjectDetailsGraph}/$projectId")
                 }
             )
         }

@@ -47,11 +47,11 @@ fun NavHostProjects(
         ) {
             ProjectDetails(
                 project = project,
-                onNavigateToRecipeToCook = { recipeID -> projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID") },
+                onNavigateToRecipeToCook = { recipeID ->
+                    projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID")
+                },
                 onNavigateToRecipeCreation = onNavigateToRecipe
             )
-
-
         }
         composable(
             "${RECIPE_TO_COOK}/{$RECIPE_ID}",
@@ -62,6 +62,5 @@ fun NavHostProjects(
             )
         }
         shoppingListGraph(navController = projectNavController, projectId = project.id)
-
     }
 }

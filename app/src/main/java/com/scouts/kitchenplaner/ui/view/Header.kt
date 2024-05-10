@@ -25,11 +25,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 
+/**
+ * A generic header for the app, which only contains a title
+ * @param title title of the section
+ */
 @Composable
 fun Header(title: String) {
     HeaderWithButton(title = title, {}, {});
 }
 
+/**
+ * Generic header for the app with a button on the right. The button can have a image like an icon
+ * @param title title of the section
+ * @param buttonClick action, what happens when clicking on the button
+ * @param buttonImage image/icon which represents the button.
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HeaderWithButton(

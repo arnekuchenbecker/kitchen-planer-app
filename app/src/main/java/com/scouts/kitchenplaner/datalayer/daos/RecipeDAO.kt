@@ -110,6 +110,15 @@ interface RecipeDAO {
     @Delete(IngredientEntity::class)
     suspend fun deleteIngredient(entity: IngredientIdentifierDTO)
 
+    /**
+     * Deletes an ingredient group from a recipe by deleting all associated ingredients
+     *
+     * @param recipeID The ID of the recipe from which to delete the ingredient group
+     * @param group The name of the group that should be deleted
+     */
+    @Query("DELETE FROM ingrediententity WHERE recipe = :recipeID AND ingredientGroup = :group")
+    suspend fun deleteIngredientGroup(recipeID: Long, group: String)
+
     @Query(
         "UPDATE ingrediententity SET name = :newName " +
             "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
@@ -120,7 +129,7 @@ interface RecipeDAO {
         "UPDATE ingrediententity SET amount = :newAmount " +
             "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
     )
-    suspend fun updateIngredientAmount(newAmount: Int, name: String, recipeID: Long, group: String)
+    suspend fun updateIngredientAmount(newAmount: Float, name: String, recipeID: Long, group: String)
 
     @Query(
         "UPDATE ingrediententity SET unit = :newUnit " +

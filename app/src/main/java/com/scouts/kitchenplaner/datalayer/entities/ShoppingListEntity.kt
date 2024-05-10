@@ -21,6 +21,14 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Database Entity for a shopping list
+ *
+ * @param id Primary Key
+ * @param name Name of the shopping list. Does not have to be unique as it is not used as primary
+ *             key.
+ * @param projectId Foreign Key pointing to the project this shopping list was created for
+ */
 @Entity(
     tableName = "shoppingLists",
     foreignKeys = [
@@ -30,7 +38,13 @@ import androidx.room.PrimaryKey
             childColumns = ["projectId"]
         )
     ],
-    indices = [Index("projectId")]
+    indices = [
+        Index("projectId"),
+        Index(
+            value = ["id", "projectId"],
+            unique = true
+        )
+    ]
 )
 data class ShoppingListEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,

@@ -20,11 +20,12 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.entities.AllergenEntity
 import com.scouts.kitchenplaner.datalayer.entities.AllergenPersonEntity
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
+import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
-import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
@@ -34,7 +35,7 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.Recipe
-import com.scouts.kitchenplaner.model.entities.ShoppingList
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
 
 fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
@@ -107,12 +108,21 @@ fun IngredientGroup.toDataLayerEntity(recipeID: Long): List<IngredientEntity> {
     }
 }
 
-fun ShoppingList.toDataLayerEntity(projectId: Long): Pair<ShoppingListEntity, List<ShoppingListEntryEntity>> {
-    return Pair(ShoppingListEntity(
-        id = id ?: 0, name = name, projectId = projectId
-    ), items.map {
-        ShoppingListEntryEntity(id ?: 0, it.name, it.amount, it.unit)
-    })
+/**
+ * Converts this shopping list to data layer entities, inserting the given project ID
+ *
+ * @param projectId The ID of the project this shopping list belongs to
+ *
+ * @return A Triple consisting of the ShoppingListEntity representing the metadata of this shopping
+ *         list, a list containing entities for all dynamic entries and a list containing all static
+ *         entries of this shopping list
+ */
+fun ShoppingList.toDataLayerEntity(projectId: Long): Triple<ShoppingListEntity, List<DynamicShoppingListEntryEntity>, List<StaticShoppingListEntryEntity>> {
+    return Triple(
+        ShoppingListEntity(id = id ?: 0, name = name, projectId = projectId),
+        items.mapNotNull { it.toDynamicEntity(id ?: 0, projectId) },
+        items.mapNotNull { it.toStaticEntity(id ?: 0, projectId) }
+    )
 }
 
 fun DietarySpecialityEntity.toModelEntity(): DietarySpeciality {
