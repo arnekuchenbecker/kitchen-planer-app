@@ -47,7 +47,7 @@ fun KitchenPlannerLayout(
     val navController: NavHostController = rememberNavController()
 
     val sites = listOf(
-        Triple("Start", Destinations.home, Icons.Filled.Home),
+        Triple("Start", Destinations.Home, Icons.Filled.Home),
         Triple("Projekte", Destinations.ProjectsGraph, Icons.Filled.Build),
         Triple("Rezepte", Destinations.RecipesGraph, Icons.Filled.AccountBox)
     )
@@ -56,28 +56,29 @@ fun KitchenPlannerLayout(
 
 
 
-    Scaffold(bottomBar = {
-        NavigationBar {
-            sites.forEach { item ->
-                NavigationBarItem(
-                    selected = backStackEntry?.destination?.hierarchy?.any { it.route == item.second }
-                        ?: false,
-                    onClick = {
-                        navController.navigate(item.second) {
-                            launchSingleTop = true
-                        }
-                    },
-                    label = { Text(item.first) },
-                    icon = { Icon(imageVector = item.third, contentDescription = item.first) })
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                sites.forEach { item ->
+                    NavigationBarItem(
+                        selected = backStackEntry?.destination?.hierarchy?.any { it.route == item.second }
+                            ?: false,
+                        onClick = {
+                            navController.navigate(item.second) {
+                                popUpTo(Destinations.Home)
+                                launchSingleTop = true
+                            }
+                        },
+                        label = { Text(item.first) },
+                        icon = { Icon(imageVector = item.third, contentDescription = item.first) })
+                }
             }
         }
-    }) {
-
-
+    ) {
         NavHostGeneral(
             modifier = Modifier.padding(it),
             navController = navController,
-            startDestination = Destinations.home
+            startDestination = Destinations.Home
         )
     }
 }

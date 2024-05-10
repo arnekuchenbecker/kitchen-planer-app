@@ -129,6 +129,7 @@ fun ProjectDetailsTopBar(
                 }
                 Tab(selected = selectedItem == index, onClick = {
                     projectNavController.navigate(site.second) {
+                        popUpTo(sites[0].second)
                         launchSingleTop = true
                     }
                 }, text = { Text(site.first) })

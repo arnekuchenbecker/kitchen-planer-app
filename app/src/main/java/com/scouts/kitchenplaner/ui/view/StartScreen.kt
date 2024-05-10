@@ -65,18 +65,19 @@ fun StartScreen(
 ) {
     val projects by viewModel.latestProjects.collectAsState(initial = listOf())
     val recipes by viewModel.latestRecipes.collectAsState(initial = listOf())
-    Scaffold(topBar = {
-        HeaderWithButton(
-            title = "Übersicht",
-            buttonClick = { /*Logout*/ }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Logout,
-                contentDescription = "Logout button"
-            )
+    Scaffold(
+        topBar = {
+            HeaderWithButton(
+                title = "Übersicht",
+                buttonClick = { /*Logout*/ }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "Logout button"
+                )
+            }
         }
-    })
-    {
+    ) {
         Column(modifier = modifier.padding(it)) {
             ScreenHeader(
                 buttonClick = onNavigateToProjectCreation,

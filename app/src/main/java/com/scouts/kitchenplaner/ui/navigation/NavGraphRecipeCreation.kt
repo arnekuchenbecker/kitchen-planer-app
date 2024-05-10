@@ -28,11 +28,14 @@ private const val RECIPE_CREATION = "createrecipe"
 fun NavGraphBuilder.recipeCreationNav(navController: NavHostController) {
     navigation(startDestination = RECIPE_CREATION, route = Destinations.RecipeCreationGraph) {
         composable(RECIPE_CREATION) {
-            CreateRecipe(onNavigationToRecipeDetails = { recipeID ->
-                navController.navigate(
-                    "${Destinations.RecipeDetailsGraph}/$recipeID"
-                )
-            })
+            CreateRecipe(
+                onNavigationToRecipeDetails = { recipeID ->
+                    navController.popBackStack()
+                    navController.navigate(
+                        "${Destinations.RecipeDetailsGraph}/$recipeID"
+                    )
+                }
+            )
         }
     }
 }

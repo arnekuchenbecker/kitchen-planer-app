@@ -78,7 +78,7 @@ fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
             } else {
                 Text(
                     modifier = Modifier.padding(5.dp),
-                    text = "Möchtest du andere Personen zu dem Projekt einladen?")
+                    text = "Dein Projekt wurde erstellt. Möchtest du andere Personen zu dem Projekt einladen?")
 
                 Button(
                     modifier = Modifier.padding(5.dp),

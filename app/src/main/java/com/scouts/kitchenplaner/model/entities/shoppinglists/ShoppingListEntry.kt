@@ -43,7 +43,7 @@ interface ShoppingListEntry {
      *
      * @return The amount that should be purchased
      */
-    fun getAmount(mealPlan: MealPlan) : Int
+    fun getAmount(mealPlan: MealPlan) : Double
 
     /**
      * Converts this entry to a data layer entity representing a dynamic shopping list entry if
