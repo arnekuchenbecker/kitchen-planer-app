@@ -37,7 +37,7 @@ import com.scouts.kitchenplaner.ui.view.OverviewField
  * @param selected Whether the project is selected
  * @param onNavigateToDetailedProject action which leads to the detailed screen of the project
  * @param toggleSelection action that toggles the selection of the project
- * @param archive If clicking a project it should be archived (true) or go to the detailed screen (false)
+ * @param archive If clicking a project should select it to be archived or trigger navigation to the detailed project screen
  *
  */
 @Composable
