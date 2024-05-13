@@ -16,6 +16,7 @@
 
 package com.scouts.kitchenplaner.ui.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -40,10 +41,18 @@ import androidx.compose.ui.unit.dp
 
 private const val EXPAND_ANIMATION_DURATION = 300
 
+/**
+ * Customized side drawer, usable for edition options.
+ *
+ * @param modifier additional modifier
+ * @param expand whether the drawer is expanded
+ * @param content The content which is displayed while the drawer is expanded
+ */
 @Composable
 fun SideDrawer(
     modifier: Modifier = Modifier,
     expand: Boolean,
+    onBackPress: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val enterTransition = remember {
@@ -66,9 +75,13 @@ fun SideDrawer(
         )
     }
 
+    BackHandler(enabled = expand) {
+        onBackPress()
+    }
+
     Box(modifier = modifier
         .fillMaxSize()
-    ){
+    ) {
         AnimatedVisibility(
             visibleState = remember {
                 MutableTransitionState(false)

@@ -95,7 +95,7 @@ class CreateRecipeViewModel @Inject constructor(
      * @param ingredient The ingredient which should be added
      */
     fun addIngredient(group: String, ingredient: Ingredient) {
-        if (ingredient.name.isNotBlank() && ingredient.amount != 0f && ingredient.unit.isNotBlank()) {
+        if (ingredient.name.isNotBlank() && ingredient.amount != 0.0 && ingredient.unit.isNotBlank()) {
             _ingredients[group]?.add(ingredient)
         }
     }

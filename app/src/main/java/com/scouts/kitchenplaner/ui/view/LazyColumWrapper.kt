@@ -21,6 +21,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/**
+ * A lazy column where the last item can be displayed differently and what is shown if the column is empty can be customized.
+ *
+ * @param modifier additional modifier (not required)
+ * @param horizontalAlignment horizontal alignment of the content
+ * @param content the content which should be displayed
+ * @param DisplayContent How the content is displayed (except the last item)
+ * @param DisplayLast How the last item is displayed
+ * @param DisplayEmpty How the column is displayed if there is no content
+ */
 @Composable
 fun <T : Any> LazyColumnWrapper(
     modifier: Modifier = Modifier,

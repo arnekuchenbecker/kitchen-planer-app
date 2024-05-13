@@ -204,11 +204,21 @@ class RecipeRepository @Inject constructor(
         )
     }
 
+    /**
+     * Deletes an ingredient group from a recipe by deleting all associated ingredients
+     *
+     * @param recipeID The ID of the recipe from which to delete the ingredient group
+     * @param ingredientGroup The name of the group that should be deleted
+     */
+    suspend fun deleteIngredientGroup(recipeID: Long, ingredientGroup: String) {
+        recipeDAO.deleteIngredientGroup(recipeID, ingredientGroup)
+    }
+
     suspend fun updateIngredientName(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newName: String) {
         recipeDAO.updateIngredientName(newName, ingredient.name, recipeID, ingredientGroup)
     }
 
-    suspend fun updateIngredientAmount(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Int) {
+    suspend fun updateIngredientAmount(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Float) {
         recipeDAO.updateIngredientAmount(newAmount, ingredient.name, recipeID, ingredientGroup)
     }
 

@@ -14,15 +14,25 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-data class ShoppingList (
-    val id: Long? = null,
-    val name: String,
-    private val shoppingItems: MutableList<ShoppingListItem>
-) {
-    val items: List<ShoppingListItem>
-        get() = shoppingItems
+import java.util.Date
 
-    fun addItem(item: ShoppingListItem) = shoppingItems.add(item)
-}
+/**
+ * DTO for transferring dynamic shopping lists out of the database
+ *
+ * @param ingredient The name of the referenced Ingredient
+ * @param amount The amount specified in the recipe
+ * @param unit The unit of measure
+ * @param peopleBase The amount of people the recipe was written for
+ * @param date The date of the MealSlot the entry is relevant for
+ * @param meal The meal of the MealSlot the entry is relevant for
+ */
+data class DynamicShoppingListEntryDTO(
+    val ingredient: String,
+    val amount: Double,
+    val unit: String,
+    val peopleBase: Int,
+    val date: Date,
+    val meal: String
+)

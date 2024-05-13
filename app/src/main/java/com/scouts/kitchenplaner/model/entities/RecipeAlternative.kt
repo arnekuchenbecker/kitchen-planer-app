@@ -14,28 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.entities
+package com.scouts.kitchenplaner.model.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-
-@Entity(
-    tableName = "shoppingListEntries",
-    primaryKeys = ["listId", "itemName"],
-    foreignKeys = [
-        ForeignKey(
-            entity = ShoppingListEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["listId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("listId")]
-)
-data class ShoppingListEntryEntity(
-    var listId: Long,
-    val itemName: String,
-    val amount: Int,
-    val unit: String
+/**
+ * Represents an alternative to a specific recipe, including which DietarySpecialities of the other
+ * recipe are covered in the alternative
+ *
+ * @param id The ID of the alternative recipe
+ * @param name The name of the alternative recipe
+ * @param coveredAllergens All allergens of the original recipe that are covered by the alternative
+ *                         recipe
+ */
+data class RecipeAlternative(
+    val id: Long,
+    val name: String,
+    val coveredAllergens: List<DietarySpeciality>
 )

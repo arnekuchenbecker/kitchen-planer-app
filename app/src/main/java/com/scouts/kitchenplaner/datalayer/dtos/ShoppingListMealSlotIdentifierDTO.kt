@@ -14,29 +14,20 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.datalayer.dtos
 
-class Ingredient(
-    val name: String,
-    private var _amount: Double,
-    val unit: String
-) {
-    val amount: Double
-        get() = _amount
+import java.util.Date
 
-    fun setAmount(newAmount: Double) {
-        _amount = newAmount
-    }
-
-    override fun equals(other: Any?): Boolean = (other is Ingredient)
-            && name == other.name
-            && _amount == other._amount
-            && unit == other.unit
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + _amount.hashCode()
-        result = 31 * result + unit.hashCode()
-        return result
-    }
-}
+/**
+ * Identifier DTO to describe DynamicShoppingListEntryEntities belonging a given project and meal
+ * slot
+ *
+ * @param projectId The id of the project the entities should belong to
+ * @param meal The meal of the meal slot the entities should be relevant for
+ * @param mealDate The date of the meal slot the entities should be relevant for
+ */
+data class ShoppingListMealSlotIdentifierDTO(
+    val projectId: Long,
+    val meal: String,
+    val mealDate: Date
+)

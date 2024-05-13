@@ -14,11 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities
+package com.scouts.kitchenplaner.model.entities.shoppinglists
 
-data class ShoppingListItem (
-    val name: String,
-    val amount: Int,
-    val unit: String
-) {
-}
+/**
+ * Stub containing meta data for a shopping list
+ *
+ * @param id The ID of the shopping list
+ * @param name The name of the shopping list
+ */
+data class ShoppingListStub(
+    val id: Long,
+    val name: String
+)

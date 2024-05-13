@@ -41,6 +41,14 @@ import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectSettingsSideDrawer
 import com.scouts.kitchenplaner.ui.view.projectsettingsdialogs.ProjectSettingsDialogs
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectDetailsViewModel
 
+/**
+ * The general layout of the project tab, including the navigation there, the top bar for the overview and shopping list
+ * and the sidebar for editing the project
+ *
+ * @param id id of the current project
+ * @param navController navigation interface
+ * @param viewModel view model to persist relevant data and provide access to stored data
+ */
 @Composable
 fun ProjectLayout(
     id: Long,
@@ -62,7 +70,7 @@ fun ProjectLayout(
         val projectNavController: NavHostController = rememberNavController()
 
         val sites = listOf(
-            Pair("Übersicht", Destinations.ProjectsStart),
+            Pair("Essensplan", Destinations.ProjectsStart),
             Pair("Einkaufsliste", Destinations.ShoppingListGraph)
         )
 
@@ -91,7 +99,9 @@ fun ProjectLayout(
                     },
                 projectNavController = projectNavController,
                 project = project,
-                onNavigateToRecipe = { navController.navigate(Destinations.RecipeCreationGraph) }
+                onNavigateToRecipe = {
+                    navController.navigate(Destinations.RecipeCreationGraph)
+                }
             )
 
             ProjectSettingsSideDrawer(
@@ -100,7 +110,10 @@ fun ProjectLayout(
                     displaySettingsDialog = dialog
                     showSideBar = false
                 },
-                showSideBar = showSideBar
+                showSideBar = showSideBar,
+                onDismissSideBar = {
+                    showSideBar = false
+                }
             )
         }
 

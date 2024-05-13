@@ -35,7 +35,10 @@ fun NavGraphBuilder.projectsNav(
                         Destinations.ProjectDetailsGraph + "/$projectID"
                     )
                 },
-                onNavigateToCreateProject = { navController.navigate(Destinations.ProjectCreationGraph) })
+                onNavigateToCreateProject = {
+                    navController.navigate(Destinations.ProjectCreationGraph)
+                }
+            )
         }
 
         projectsDetailsNav(navController = navController)

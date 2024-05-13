@@ -31,6 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 
+/**
+ * A button with dialog to select an image. Clicking on the image makes it possible to select a new image.
+ *
+ * @param modifier additional modifier
+ * @param onPathSelected action, if a new image is selected
+ * @param path path of the selected image
+ */
 @Composable
 fun PicturePicker(modifier: Modifier = Modifier, onPathSelected: (Uri?) -> Unit, path: Uri?) {
     val launcher = rememberLauncherForActivityResult(

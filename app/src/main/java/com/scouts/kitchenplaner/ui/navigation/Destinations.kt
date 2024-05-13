@@ -20,7 +20,7 @@ sealed class Destinations {
     companion object {
 
         const val ShoppingListGraph = "shoppingList_Graph"
-        const val home = "start"
+        const val Home = "start"
         const val ProjectDetailsGraph = "projectDetails"
         const val ProjectsGraph = "projects"
         const val RecipesGraph = "recipes"

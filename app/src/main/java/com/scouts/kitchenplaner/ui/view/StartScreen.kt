@@ -44,29 +44,40 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.viewmodel.StartScreenViewModel
 
+/**
+ * The individual start screen of a user where their recently used projects and recipes are displayed.
+ *
+ * @param modifier additional modifier
+ * @param onNavigateToCreateRecipe navigation to the recipe creation screen
+ * @param onNavigateToDetailedProject navigation to the details of the selected project identified by its id (long)
+ * @param onNavigateToProjectCreation navigation to the project creation screen
+ * @param onNavigateToRecipeDetail navigation to the details of the selected recipe identified by its id (long)
+ * @param viewModel view model that stores the relevant data.
+ */
 @Composable
 fun StartScreen(
     modifier: Modifier = Modifier,
     onNavigateToDetailedProject: (Long) -> Unit,
-    onNavigateToProjectCreation: () -> Unit,
+    onNavigateToProjectCreation:() -> Unit,
     onNavigateToCreateRecipe: () -> Unit,
     onNavigateToRecipeDetail: (Long) -> Unit,
     viewModel: StartScreenViewModel = hiltViewModel()
 ) {
     val projects by viewModel.latestProjects.collectAsState(initial = listOf())
     val recipes by viewModel.latestRecipes.collectAsState(initial = listOf())
-    Scaffold(topBar = {
-        HeaderWithButton(
-            title = "Übersicht",
-            buttonClick = { /*Logout*/ }
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Logout,
-                contentDescription = "Logout button"
-            )
+    Scaffold(
+        topBar = {
+            HeaderWithButton(
+                title = "Übersicht",
+                buttonClick = { /*Logout*/ }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "Logout button"
+                )
+            }
         }
-    })
-    {
+    ) {
         Column(modifier = modifier.padding(it)) {
             ScreenHeader(
                 buttonClick = onNavigateToProjectCreation,
@@ -104,6 +115,13 @@ fun StartScreen(
     }
 }
 
+/**
+ * Header for different segments of the screen including a button with a plus sign
+ *
+ * @param buttonClick action what happens when clicking on the button
+ * @param buttonText text displayed on the button on the right to the plus sign
+ * @param fieldText text displayed as headline for the section
+ */
 @Composable
 fun ScreenHeader(buttonClick: () -> Unit, buttonText: String, fieldText: String) {
     Row(
