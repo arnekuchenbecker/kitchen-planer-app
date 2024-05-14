@@ -28,6 +28,14 @@ import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Dialog for changing the start and end date of a project
+ *
+ * @param onDismissRequest Callback function to close the dialog
+ * @param onDateChange Callback function to change start and end date of a project to new values
+ * @param startDate The current start date
+ * @param endDate The current end date
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateChangeDialog(

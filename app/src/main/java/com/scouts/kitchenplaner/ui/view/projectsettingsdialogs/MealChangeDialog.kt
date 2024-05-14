@@ -43,7 +43,14 @@ import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Dialog for changing the meals of a project
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param meals Current List of meals
+ * @param onMealAdd Callback function for adding a meal at the specified index
+ * @param onMealRemove Callback function for removing a meal
+ */
 @Composable
 fun MealChangeDialog(
     onDismissRequest: () -> Unit,
@@ -70,10 +77,10 @@ fun MealChangeDialog(
             DisplayContent = { meal, index ->
                 Surface(
                     onClick = {
-                        if (toDelete == index) {
-                            toDelete = -1
+                        toDelete = if (toDelete == index) {
+                            -1
                         } else {
-                            toDelete = index
+                            index
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
