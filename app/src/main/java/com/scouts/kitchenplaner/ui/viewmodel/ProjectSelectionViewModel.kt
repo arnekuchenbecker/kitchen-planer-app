@@ -30,6 +30,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+/**
+ * This view model contains all data and functions to select a project in the overview and archive them
+ * @param projectSelection use case that provides stubs for all projects of the current user
+ */
 @HiltViewModel
 class ProjectSelectionViewModel @Inject constructor(
     private val projectSelection: ProjectSelection
@@ -37,6 +41,9 @@ class ProjectSelectionViewModel @Inject constructor(
     private val projects = projectSelection.getProjectsForCurrentUser()
     private val selectedFlow = MutableStateFlow<Map<Long, Boolean>>(mapOf())
 
+    /**
+     * This flow contains all available project stubs and whether they are selected.
+     */
     val projectSelected: Flow<List<Pair<ProjectStub, Boolean>>> =
         projects.combine(selectedFlow) { project, selected ->
             project.map { stub ->
@@ -46,16 +53,33 @@ class ProjectSelectionViewModel @Inject constructor(
                 )
             }
         }
+
+    /**
+     * Indicates if the selection of a project means that it can be archived (true)
+     * or the details of the project  should be shown (false)
+     */
     var archive by mutableStateOf(false)
+
+    /**
+     * Indicates whether the dialog tho archive projects is shown
+     */
     var showArchiveDialog by mutableStateOf(false)
 
 
+    /**
+     * Updates whether a project is currently selected.
+     * @param projectId id of the project of interest
+     * @param selected whether the project is selected
+     */
     fun toggleSelection(projectId: Long, selected: Boolean) {
         selectedFlow.update {
             it + Pair(projectId, selected)
         }
     }
 
+    /**
+     * deletes all selections of all projects
+     */
     fun clearSelection() {
         selectedFlow.update { mutableStateMapOf() }
     }

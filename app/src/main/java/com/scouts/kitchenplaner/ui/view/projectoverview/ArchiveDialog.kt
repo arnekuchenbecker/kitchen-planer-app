@@ -33,6 +33,13 @@ import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.ui.viewmodel.ProjectSelectionViewModel
 
+/**
+ * A dialog where selected projects are going to be archived, so that only the project stub is still available offline.
+ * Offline projects are going to be deleted.
+ *
+ * @param projects List of all project (first) and whether the project should be archived (second)
+ * @param onCloseDialog action what happens when closing the dialog without archiving projects.
+ */
 @Composable
 fun ArchiveDialog(
     projects: List<Pair<ProjectStub, Boolean>>,

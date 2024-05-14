@@ -29,6 +29,13 @@ import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 
+/**
+ * Dialog for changing a project's image
+ *
+ * @param currentImage The current image of the project
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param onImageChange Callback function for changing the project image
+ */
 @Composable
 fun ImageChangeDialog(
     currentImage: Uri,
