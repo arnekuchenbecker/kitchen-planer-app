@@ -80,6 +80,7 @@ import java.util.Date
  * @param mealPlan Meal plan containing which recipe(s) should be cooked and how many persons are
  *                 present for each meal slot
  * @param getAllergenCheck Callback function to obtain an allergen check for a specified meal slot
+ * @param onSwap Callback function to swap the recipes of two meal slots
  * @param onShowRecipe Callback function to show a specified recipe for cooking
  * @param displayRecipeSelectionDialog Callback function to display the dialog for selecting a
  *                                     recipe
@@ -169,7 +170,7 @@ fun DisplayMealPlan(
  * Composable for displaying information about a specific meal slot. Can be expanded to show more
  * detailed information (e.g. which recipes are selected)
  *
- * @param persons The number of persons present a the meal slot
+ * @param persons The number of persons present at the meal slot
  * @param recipes A Pair containing the main recipe and a list of alternative recipes selected for
  *                the meal slot or null if no recipes have been selected yet
  * @param slot The meal slot for which the information is displayed

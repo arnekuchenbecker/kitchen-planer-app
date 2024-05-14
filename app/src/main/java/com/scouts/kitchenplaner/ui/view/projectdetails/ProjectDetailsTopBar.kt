@@ -58,7 +58,7 @@ import com.scouts.kitchenplaner.model.entities.Project
  * @param selectedItem Index for navigating the project details view
  * @param onSelectItem Callback function for navigation
  * @param sites List of destinations in the project details view
- * @param projectNavController The NavController to be used for navigation
+ * @param projectNavController The NavController to be used for navigation within the project
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
