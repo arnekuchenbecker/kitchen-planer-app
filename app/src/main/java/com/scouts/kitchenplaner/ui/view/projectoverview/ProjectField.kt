@@ -29,6 +29,17 @@ import androidx.compose.ui.Modifier
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.ui.view.OverviewField
 
+/**
+ * A representation of a project in a project overview.
+ * This field can be in two states depending if the project can be selected to archive it
+ * or to show its details.
+ * @param project A stub of the project to be displayed
+ * @param selected Whether the project is selected
+ * @param onNavigateToDetailedProject action which leads to the detailed screen of the project
+ * @param toggleSelection action that toggles the selection of the project
+ * @param archive If clicking a project should select it to be archived or trigger navigation to the detailed project screen
+ *
+ */
 @Composable
 fun ProjectField(
     project: ProjectStub,

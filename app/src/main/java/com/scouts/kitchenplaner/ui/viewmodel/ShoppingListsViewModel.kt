@@ -29,17 +29,32 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * This view model provides functions to work with the shopping list overview and edit them.
+ * @param displayShoppingListOverview  use case that provides stubs of shopping list for a specified project
+ * @param editShoppingLists use case that provides methods to delete shopping lists
+ */
 @HiltViewModel
 class ShoppingListsViewModel @Inject constructor(
     private val displayShoppingListOverview: DisplayShoppingListOverview,
     private val editShoppingLists: EditShoppingLists
 ) : ViewModel() {
+    /**
+     * Provides all shopping lists that belong to the given project
+     * @param project The project for which the shopping lists are requested
+     * @return a flow of all requested shopping lists
+     */
     fun getShoppingLists(project: Project) : StateFlow<List<ShoppingListStub>> {
         return displayShoppingListOverview
             .getShoppingListStubsForProject(project)
             .stateIn(viewModelScope, SharingStarted.Eagerly, listOf())
     }
 
+    /**
+     * deletes a specified shopping list for a project
+     * @param project The project which contains the shopping list
+     * @param list The shopping list to be deleted
+     */
     fun deleteShoppingList(project: Project, list: ShoppingListStub) {
         viewModelScope.launch {
             editShoppingLists.deleteShoppingList(project, list)
