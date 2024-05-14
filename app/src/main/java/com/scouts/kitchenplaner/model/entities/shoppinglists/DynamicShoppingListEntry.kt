@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.model.entities.shoppinglists
 
 import com.scouts.kitchenplaner.datalayer.entities.DynamicShoppingListEntryEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
+import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 
@@ -30,15 +31,15 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
  * @param peopleBase The number of people baseAmount should be purchased for
  * @param mealSlot The meal slot this entry is relevant for
  */
-class DynamicShoppingListEntry(
+class DynamicShoppingListEntry @DomainLayerRestricted constructor(
     override val name: String,
     override val unit: String,
-    private val baseAmount: Int,
+    private val baseAmount: Double,
     private val peopleBase: Int,
     private val mealSlot: MealSlot
 ) : ShoppingListEntry {
-    override fun getAmount(mealPlan: MealPlan) : Int {
-        return (baseAmount * ((mealPlan[mealSlot].second) / (peopleBase.toDouble()))).toInt()
+    override fun getAmount(mealPlan: MealPlan) : Double {
+        return (baseAmount * ((mealPlan[mealSlot].second) / (peopleBase.toDouble())))
     }
 
     override fun toDynamicEntity(listID: Long, projectID: Long): DynamicShoppingListEntryEntity {

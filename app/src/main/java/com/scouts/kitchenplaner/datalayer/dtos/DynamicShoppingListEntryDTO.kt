@@ -30,7 +30,7 @@ import java.util.Date
  */
 data class DynamicShoppingListEntryDTO(
     val ingredient: String,
-    val amount: Int,
+    val amount: Double,
     val unit: String,
     val peopleBase: Int,
     val date: Date,

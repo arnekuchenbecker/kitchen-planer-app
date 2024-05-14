@@ -19,5 +19,5 @@ package com.scouts.kitchenplaner.networklayer.dtos
 data class ChefkochIngredient(
     val name: String,
     val unit: String,
-    val amount: Float
+    val amount: Double
 )

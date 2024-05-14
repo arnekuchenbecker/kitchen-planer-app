@@ -48,6 +48,6 @@ data class StaticShoppingListEntryEntity(
     var listId: Long,
     val projectId: Long,
     val ingredientName: String,
-    val amount: Int,
+    val amount: Double,
     val unit: String
 )
