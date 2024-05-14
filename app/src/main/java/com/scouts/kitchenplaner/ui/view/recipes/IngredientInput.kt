@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.createrecipe
+package com.scouts.kitchenplaner.ui.view.recipes
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
@@ -62,11 +63,12 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 @Composable
 fun IngredientsInput(
     modifier: Modifier = Modifier,
-    ingredientGroups: Map<String, List<Ingredient>>,
-    onGroupAdd: (String) -> Unit,
-    onIngredientAdd: (String, Ingredient) -> Unit,
-    onIngredientDelete: (String, Ingredient) -> Unit,
-    onDeleteIngredientGroup: (String) -> Unit
+    ingredientGroups: List<IngredientGroup>,
+    onGroupAdd: (String) -> Unit = {},
+    onIngredientAdd: (String, Ingredient) -> Unit = { _, _ -> },
+    onIngredientDelete: (String, Ingredient) -> Unit = { _, _ ->},
+    onDeleteIngredientGroup: (String) -> Unit = {},
+    editable: Boolean = true
 ) {
     var addIngredientToGroup by remember { mutableStateOf("") }
     var newGroupName by remember { mutableStateOf("") }
@@ -80,47 +82,55 @@ fun IngredientsInput(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = name, fontWeight = FontWeight.Black)
-                Spacer(modifier = Modifier.weight(1.0f))
-                IconButton(
-                    onClick = {
-                        addIngredientToGroup = name
+                if (editable) {
+                    Spacer(modifier = Modifier.weight(1.0f))
+                    IconButton(
+                        onClick = {
+                            addIngredientToGroup = name
+                        }
+                    ) {
+                        Icon(Icons.Filled.Add, "Add ingredient to group")
                     }
-                ) {
-                    Icon(Icons.Filled.Add, "Add ingredient to group")
-                }
-                IconButton(
-                    onClick = {
-                        onDeleteIngredientGroup(name)
+                    IconButton(
+                        onClick = {
+                            onDeleteIngredientGroup(name)
+                        }
+                    ) {
+                        Icon(Icons.Filled.Delete, "Delete ingredient group")
                     }
-                ) {
-                    Icon(Icons.Filled.Delete, "Delete ingredient group")
                 }
             }
             ingredients.forEach {
-                DisplayIngredient(onDeleteClick = { onIngredientDelete(name, it) }, ingredient = it)
+                DisplayIngredient(
+                    onDeleteClick = { onIngredientDelete(name, it) },
+                    ingredient = it,
+                    editable = editable
+                )
             }
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
 
-        OutlinedTextField(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            value = newGroupName,
-            onValueChange = { newGroupName = it },
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        onGroupAdd(newGroupName)
-                        newGroupName = ""
+        if (editable) {
+            OutlinedTextField(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                value = newGroupName,
+                onValueChange = { newGroupName = it },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            onGroupAdd(newGroupName)
+                            newGroupName = ""
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Create new ingredient group"
+                        )
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Create new ingredient group"
-                    )
-                }
-            },
-            label = { Text("Gruppe hinzufügen") }
-        )
+                },
+                label = { Text("Gruppe hinzufügen") }
+            )
+        }
     }
 
     if (addIngredientToGroup.isNotEmpty()) {
@@ -140,8 +150,9 @@ fun IngredientsInput(
  */
 @Composable
 fun DisplayIngredient(
-    onDeleteClick: () -> Unit,
-    ingredient: Ingredient
+    onDeleteClick: () -> Unit = {},
+    ingredient: Ingredient,
+    editable: Boolean
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -149,13 +160,15 @@ fun DisplayIngredient(
         Text(text = ingredient.name)
         Spacer(modifier = Modifier.weight(1.0f))
         Text(text = "${ingredient.amount} ${ingredient.unit}")
-        IconButton(
-            onClick = onDeleteClick
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Delete ingredient"
-            )
+        if (editable) {
+            IconButton(
+                onClick = onDeleteClick
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Delete ingredient"
+                )
+            }
         }
     }
 }
