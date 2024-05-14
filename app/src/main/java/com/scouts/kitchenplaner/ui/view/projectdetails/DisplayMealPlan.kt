@@ -80,7 +80,7 @@ fun DisplayMealPlan(
     mealPlan: MealPlan,
     getAllergenCheck: (MealSlot) -> StateFlow<AllergenCheck>,
     onSwap: (MealSlot, MealSlot) -> Unit,
-    onShowRecipe: (RecipeStub) -> Unit,
+    onShowRecipe: (RecipeStub, MealSlot) -> Unit,
     displayRecipeSelectionDialog: (MealSlot, RecipeStub?) -> Unit,
     onDeleteRecipe: (MealSlot, RecipeStub?) -> Unit,
     modifier: Modifier = Modifier
@@ -176,7 +176,7 @@ fun MealDisplayItem(
     toBeSwapped: Boolean,
     onDeleteRecipe: (RecipeStub?) -> Unit,
     displayRecipeSelectionDialog: (RecipeStub?) -> Unit,
-    onShowRecipe: (RecipeStub) -> Unit
+    onShowRecipe: (RecipeStub, MealSlot) -> Unit
 ) {
     ExpandableCard(
         expanded = expanded,
@@ -250,7 +250,7 @@ fun MealDisplayItem(
                     onAddAlternative = {
                         displayRecipeSelectionDialog(null)
                     },
-                    onShowRecipe = onShowRecipe
+                    onShowRecipe = { onShowRecipe(it, slot) }
                 )
             }
         }
@@ -386,7 +386,7 @@ fun MealDisplayItemPreview() {
             toggleExpanded = {},
             onSwap = {},
             onDeleteRecipe = {},
-            onShowRecipe = {},
+            onShowRecipe = { _, _ -> },
             displayRecipeSelectionDialog = {},
             toBeSwapped = true
         )
