@@ -36,6 +36,10 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * The view model that covers the creation of a project.
+ * @param createProject Use case which creates a new project
+ */
 @HiltViewModel
 class CreateProjectViewModel @Inject constructor(
     private val createProject: CreateProject
@@ -46,6 +50,10 @@ class CreateProjectViewModel @Inject constructor(
     val navigateTo: StateFlow<Long?>
         get() = navigateFlow
 
+    /**
+     * Method that creates a new project, hands it to the domain layer and navigates further to the project.
+     * It also makes some sanity checks e.g. whether the dates could be reasonable.
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun onProjectCreate() {
         viewModelScope.launch {
@@ -64,7 +72,10 @@ class CreateProjectViewModel @Inject constructor(
 
             val project = Project(
                 _name = inputState.name,
-                _mealPlan = MealPlan(startDate, endDate, mutableListOf<String>().apply{ addAll(inputState.meals) }),
+                _mealPlan = MealPlan(
+                    startDate,
+                    endDate,
+                    mutableListOf<String>().apply { addAll(inputState.meals) }),
                 _allergenPersons = mutableListOf<AllergenPerson>().apply {
                     addAll(inputState.allergens.map { person ->
                         AllergenPerson(
