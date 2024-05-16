@@ -27,6 +27,16 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.viewmodel.MealPlanViewModel
 
+/**
+ * Top-Level composable for the meal plan section of the project details screen. Displays general
+ * information such as what recipe is planned for which meal slot to the user.
+ *
+ * @param project The project for which the meal plan is displayed
+ * @param onNavigateToRecipeToCook Callback function to navigate to the screen for displaying the
+ *                                 specified recipe for cooking
+ * @param onNavigateToRecipeCreation Callback function to navigate to the recipe creation screen
+ * @param viewModel The ViewModel storing the data for this composable
+ */
 @Composable
 fun ProjectDetails(
     project: Project,

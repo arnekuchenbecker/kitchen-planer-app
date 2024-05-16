@@ -30,6 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.ui.view.InvitationElements
 
+/**
+ * Dialog for inviting people to a project
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param projectPublished Whether the project is currently published
+ * @param projectId The project's id
+ */
 @Composable
 fun InvitationDialog(
     onDismissRequest: () -> Unit,

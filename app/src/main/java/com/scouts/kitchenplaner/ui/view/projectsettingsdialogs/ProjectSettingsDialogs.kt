@@ -26,6 +26,24 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.state.ProjectDialogValues
 import java.util.Date
 
+/**
+ * Wrapper for the different project settings dialogs. Displays different dialogs depending on the
+ * [displayDialog] parameter.
+ *
+ * @param displayDialog Which dialog to display (or ProjectSettingsDialogs.NONE to not display
+ *                      any)
+ * @param onDismissRequest Callback function for closing the currently displayed dialog
+ * @param onNameChange Callback function for changing a project's name
+ * @param onPictureChange Callback function for change a project's image
+ * @param onDateChange Callback function for changing a project's start and end date
+ * @param onNumbersChange Callback function for changing arrivals and departures
+ * @param onRemovePerson Callback function for removing an allergen person from the project
+ * @param onRemoveAllergen Callback function for removing an allergen from a person
+ * @param onAddAllergenPerson Callback function for adding a new allergen person to a project
+ * @param onMealAdd Callback function for adding a meal at the specified index to a project
+ * @param onMealRemove Callback function for removing a meal from a project
+ * @param project The project the settings dialogs are displayed for
+ */
 @Composable
 fun ProjectSettingsDialogs(
     displayDialog: ProjectDialogValues,
