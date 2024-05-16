@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -39,13 +38,20 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.toDateString
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
+/**
+ * Dialog for changing arrivals and departures for a project
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param onConfirm Callback function to set the number of persons to new values
+ * @param presentPersons Current present persons per meal slot
+ * @param mealSlots Current meal slots of the project
+ */
 @Composable
 fun NumberChangeDialog(
     onDismissRequest: () -> Unit,
@@ -136,8 +142,7 @@ fun NumberChangeDialog(
                     } else {
                         println("Didn't match regex :(")
                     }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                }
             )
         }
     }

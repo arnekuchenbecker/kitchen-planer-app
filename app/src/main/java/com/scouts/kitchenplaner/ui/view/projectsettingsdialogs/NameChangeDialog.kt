@@ -27,6 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Dialog for changing a project's name
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param onNameChange Callback function for setting the project's name to the specified value
+ */
 @Composable
 fun NameChangeDialog(
     onDismissRequest: () -> Unit,

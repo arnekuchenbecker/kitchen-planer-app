@@ -34,6 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.Dialog
 
+/**
+ * Generic settings dialog. Comes wih a confirm button and general infrastructure for displaying a
+ * dialog.
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param title The title of the dialog
+ * @param onConfirm Callback function for stuff that should happen upon clicking the confirm button
+ * @param content The individual content of the dialog
+ */
 @Composable
 fun SettingDialog(
     onDismissRequest: () -> Unit,

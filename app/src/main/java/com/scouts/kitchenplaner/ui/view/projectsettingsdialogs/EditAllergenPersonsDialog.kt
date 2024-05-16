@@ -33,6 +33,15 @@ import com.scouts.kitchenplaner.ui.view.allergendialog.AllergenCard
 import com.scouts.kitchenplaner.ui.view.allergendialog.AllergenPersonAdder
 import java.util.Date
 
+/**
+ * Dialog to edit allergen persons of a project
+ *
+ * @param onDismissRequest Callback function for closing the dialog
+ * @param onRemovePerson Callback function for removing a person from the project
+ * @param onRemoveAllergen Callback function for removing an allergen from a person
+ * @param onAddAllergenPerson Callback function for adding an allergen Person
+ * @param allergenPersons List of current allergen persons
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditAllergenPersonsDialog(
