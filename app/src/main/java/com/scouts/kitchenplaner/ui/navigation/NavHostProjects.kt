@@ -39,7 +39,8 @@ fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
     project: Project,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipeCreation: () -> Unit,
+    onNavigateToRecipeDetails: (Long) -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -54,7 +55,7 @@ fun NavHostProjects(
                 onNavigateToRecipeToCook = { recipeID, mealSlot ->
                     projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID/${mealSlot.date.time}/${mealSlot.meal}")
                 },
-                onNavigateToRecipeCreation = onNavigateToRecipe
+                onNavigateToRecipeCreation = onNavigateToRecipeCreation
             )
         }
         composable(
@@ -65,15 +66,23 @@ fun NavHostProjects(
                 navArgument(MEAL) { type = NavType.StringType }
             )
         ) {
+            val mealSlot = MealSlot(
+                Date(projectNavController.currentBackStackEntry?.arguments?.getLong(DATE) ?: 0),
+                projectNavController.currentBackStackEntry?.arguments?.getString(MEAL) ?: ""
+            )
+
             RecipeForProjectScreen(
                 project = project,
-                mealSlot = MealSlot(
-                    Date(projectNavController.currentBackStackEntry?.arguments?.getLong(DATE) ?: 0),
-                    projectNavController.currentBackStackEntry?.arguments?.getString(MEAL) ?: ""
-                ),
+                mealSlot = mealSlot,
                 recipeID = projectNavController.currentBackStackEntry?.arguments?.getLong(RECIPE_ID) ?: -1,
-                onNavigateToRecipeDetails = { /*TODO*/ },
-                onNavigateToAlternative = { /*TODO*/}
+                onNavigateToRecipeDetails = onNavigateToRecipeDetails,
+                onNavigateToAlternative = {
+                    projectNavController.navigate("$RECIPE_TO_COOK/$it/${mealSlot.date.time}/${mealSlot.meal}") {
+                        popUpTo(Destinations.ProjectsStart) {
+                            inclusive = false
+                        }
+                    }
+                }
             )
         }
         shoppingListGraph(navController = projectNavController, projectId = project.id)
