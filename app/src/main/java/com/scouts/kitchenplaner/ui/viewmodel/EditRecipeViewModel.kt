@@ -130,90 +130,88 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
                 editRecipe.addIngredient(recipe, group, ingredient)
             }
         }
+    }
 
-        /**
-         * Deletes an ingredient group with all its ingredients in it or,
-         * if the ingredient is specified only the ingredient from the group.
-         *
-         * @param recipe The recipe to change
-         * @param group The group to delete or from which the ingredient gets deleted
-         * @param ingredient The ingredient to be deleted ( or null if the ingredient group should be deleted)
-         */
-        fun deleteIngredient(
-            recipe: Recipe, group: IngredientGroup, ingredient: Ingredient? = null
-        ) {
-            viewModelScope.launch {
-                if (ingredient == null) {
-                    editRecipe.deleteIngredientGroup(recipe, group)
-                } else {
-                    editRecipe.deleteIngredient(recipe, group, ingredient)
-                }
+    /**
+     * Deletes an ingredient group with all its ingredients in it or,
+     * if the ingredient is specified only the ingredient from the group.
+     *
+     * @param recipe The recipe to change
+     * @param group The group to delete or from which the ingredient gets deleted
+     * @param ingredient The ingredient to be deleted ( or null if the ingredient group should be deleted)
+     */
+    fun deleteIngredient(
+        recipe: Recipe, group: IngredientGroup, ingredient: Ingredient? = null
+    ) {
+        viewModelScope.launch {
+            if (ingredient == null) {
+                editRecipe.deleteIngredientGroup(recipe, group)
+            } else {
+                editRecipe.deleteIngredient(recipe, group, ingredient)
             }
         }
+    }
 
-        /**
-         * Updates an ingredient with the given values. If a value is not specified the old value stays.
-         *
-         * @param recipe The recipe containing the ingredient
-         * @param group The ingredient group the ingredient belongs to
-         * @param ingredient The ingredient to change
-         * @param newName The new name for the ingredient (or null if the old one stays)
-         * @param newAmount The new amount of the ingredient (or null if the old one stays)
-         * @param newUnit The new unit if the ingredient (or null if the old one stays)
-         */
-        fun editIngredient(
-            recipe: Recipe,
-            group: IngredientGroup,
-            ingredient: Ingredient,
-            newName: String? = null,
-            newAmount: Float? = null,
-            newUnit: String? = null
-        ) {
-            viewModelScope.launch {
-                editRecipe.editIngredient(
-                    recipe, group, ingredient, newName, newAmount, newUnit
-                )
-            }
+    /**
+     * Updates an ingredient with the given values. If a value is not specified the value will not be changed.
+     *
+     * @param recipe The recipe containing the ingredient
+     * @param group The ingredient group the ingredient belongs to
+     * @param ingredient The ingredient to change
+     * @param newName The new name for the ingredient (or null if the name should not be changed)
+     * @param newAmount The new amount of the ingredient (or null if the name should not be changed)
+     * @param newUnit The new unit if the ingredient (or null if the name should not be changed)
+     */
+    fun editIngredient(
+        recipe: Recipe,
+        group: IngredientGroup,
+        ingredient: Ingredient,
+        newName: String? = null,
+        newAmount: Float? = null,
+        newUnit: String? = null
+    ) {
+        viewModelScope.launch {
+            editRecipe.editIngredient(
+                recipe, group, ingredient, newName, newAmount, newUnit
+            )
         }
+    }
 
-        /**
-         * Adds an instruction step before the step with the given index
-         *
-         * @param recipe The recipe to which to add the instruction step
-         * @param step The step to be added
-         * @param index The index of the step in front of the step should be added
-         */
-        fun addInstructionStep(recipe: Recipe, step: String, index: Int) {
-            viewModelScope.launch {
-                editRecipe.addInstructionStep(recipe, step, index)
-            }
+    /**
+     * Adds an instruction step before the step with the given index
+     *
+     * @param recipe The recipe to which to add the instruction step
+     * @param step The step to be added
+     * @param index The index of the step in front of which the step should be added
+     */
+    fun addInstructionStep(recipe: Recipe, step: String, index: Int) {
+        viewModelScope.launch {
+            editRecipe.addInstructionStep(recipe, step, index)
         }
+    }
 
-        /**
-         * Removes the instruction step on the given index.
-         *
-         * @param recipe The recipe where the step should be removed
-         * @param index Index of the step that should be removed
-         */
-        fun removeInstructionStep(recipe: Recipe, index: Int) {
-            viewModelScope.launch {
-                editRecipe.deleteInstructionStep(recipe, index)
-            }
+    /**
+     * Removes the instruction step on the given index.
+     *
+     * @param recipe The recipe where the step should be removed
+     * @param index Index of the step that should be removed
+     */
+    fun removeInstructionStep(recipe: Recipe, index: Int) {
+        viewModelScope.launch {
+            editRecipe.deleteInstructionStep(recipe, index)
         }
+    }
 
-        /**
-         * Updates the content of a instruction step
-         *
-         * @param recipe The recipe to which the step belongs to
-         * @param index The index of the instruction step to change
-         * @param instruction The new content of the instruction step
-         */
-        fun updateInstructionStep(recipe: Recipe, index: Int, instruction: String) {
-            viewModelScope.launch {
-                if (index >= 0) {
-                    editRecipe.updateInstructionStep(recipe, index, instruction)
-                }
-            }
+    /**
+     * Updates the content of a instruction step
+     *
+     * @param recipe The recipe to which the step belongs to
+     * @param index The index of the instruction step to change
+     * @param instruction The new content of the instruction step
+     */
+    fun updateInstructionStep(recipe: Recipe, index: Int, instruction: String) {
+        viewModelScope.launch {
+                editRecipe.updateInstructionStep(recipe, index, instruction)
         }
     }
 }
