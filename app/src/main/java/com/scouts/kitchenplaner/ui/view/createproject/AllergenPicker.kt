@@ -38,7 +38,19 @@ import com.scouts.kitchenplaner.ui.view.ListEditHeader
 import com.scouts.kitchenplaner.ui.view.allergendialog.EditAllergensDialog
 import kotlin.math.min
 
-
+/**
+ * Section for adding new allergen persons to a project.
+ * It contains the title and the a possibility to add new allergen persons, or delete allergens from existing allergen persons.
+ * Under it there is a list containing all already added allergen persons represented by their name.
+ *
+ * @param modifier Customized modifier
+ * @param onAdd Callback function for adding a new allergen person
+ * @param onRemove  Callback function for deleting a already created allergen person
+ * @param onRemoveItem Callback function for deleting an allergen from an allergen person
+ * @param onResetAdderState Callback function that resets the dialog for adding a new allergen person when the person gets not created.
+ * @param allergens All already added allergen persons
+ * @param dialogState The state which contains all current information when adding a new person.
+ */
 @Composable
 fun AllergenPicker(
     modifier: Modifier = Modifier,
@@ -50,7 +62,7 @@ fun AllergenPicker(
     dialogState: AllergenPersonAdderState
 ) {
     var displayDialog by remember { mutableStateOf(false) }
-    Column (
+    Column(
         modifier = modifier.height((90 + 20 * (1 + min(allergens.size, 4))).dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -76,7 +88,8 @@ fun AllergenPicker(
                     Text(
                         modifier = Modifier
                             .padding(0.dp, 5.dp),
-                        text = "Keine Intoleranten Personen")
+                        text = "Keine Intoleranten Personen"
+                    )
                 }
             }
         )
@@ -98,9 +111,14 @@ fun AllergenPicker(
     }
 }
 
+/**
+ * Filed for displaying an allergen person when created. It displays the name of the allergen person and defines modifiers how it is displayed.
+ * @param name The name of the allergen person
+ * @param displayDivider  whether a divider should be displayed under the person's name
+ */
 @Composable
 fun AllergenListElement(name: String, displayDivider: Boolean) {
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth(0.6f),
         horizontalAlignment = Alignment.CenterHorizontally
