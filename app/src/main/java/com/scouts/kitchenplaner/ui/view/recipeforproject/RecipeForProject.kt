@@ -60,6 +60,19 @@ import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
 import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
 import com.scouts.kitchenplaner.ui.viewmodel.RecipeForCookingViewModel
 
+/**
+ * Top-Level Composable for displaying a recipe for Cooking. On this screen all quantities are
+ * calculated for the correct number of people and the recipe's instructions as well as any
+ * alternative recipes are displayed.
+ *
+ * @param project The project for which the recipe is being cooked
+ * @param mealSlot The meal slot at which the recipe is being cooked
+ * @param recipeID The ID of the recipe being cooked
+ * @param onNavigateToAlternative Callback function to navigate to an alternative recipe
+ * @param onNavigateToRecipeDetails Callback function to navigate to the screen for editing this
+ *                                  recipe
+ * @param recipeViewModel The viewmodel for accessing any relevant data
+ */
 @Composable
 fun RecipeForProjectScreen(
     project: Project,
@@ -96,7 +109,8 @@ fun RecipeForProjectScreen(
                     fontSize = 8.em,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
 
                 IconButton(onClick = { onNavigateToRecipeDetails(recipeID) }) {
@@ -141,6 +155,14 @@ fun RecipeForProjectScreen(
     }
 }
 
+/**
+ * Composable for displaying the alternative recipes of a recipe that is being shown for cooking
+ *
+ * @param alternatives The alternative recipes that should be displayed
+ * @param onNavigateToAlternative Callback function to navigate to an alternative recipe
+ * @param modifier Compose modifier object that should be applied to the outermost container of this
+ *                 Composable
+ */
 @Composable
 fun DisplayAlternatives(
     alternatives: List<RecipeAlternative>,
@@ -157,6 +179,14 @@ fun DisplayAlternatives(
     }
 }
 
+/**
+ * Composable for displaying a single alternative recipe as an expandable card. Per default, only
+ * the name is displayed, but the card can be expanded to also show what allergens are covered by
+ * the alternative compared to the main recipe
+ *
+ * @param alternative The alternative recipe that is to be displayed
+ * @param onNavigateToAlternative Callback function for navigating to the alternative recipe
+ */
 @Composable
 fun DisplayAlternativeRecipe(
     alternative: RecipeAlternative,
