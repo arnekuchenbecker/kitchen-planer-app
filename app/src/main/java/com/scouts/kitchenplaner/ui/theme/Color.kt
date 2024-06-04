@@ -18,11 +18,37 @@ package com.scouts.kitchenplaner.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Default Purple Color
+ */
 val Purple80 = Color(0xFFD0BCFF)
+
+/**
+ * Default greyish purple Color
+ */
 val PurpleGrey80 = Color(0xFFCCC2DC)
+
+/**
+ * Default pink Color
+ */
 val Pink80 = Color(0xFFEFB8C8)
 
+/**
+ * VCP Blue
+ */
 val BlueVCP = Color(0xff004287)
+
+/**
+ * Water Blue from VCP CD
+ */
 val BlueWater = Color(0xff00b0eb)
+
+/**
+ * Air Grey from VCP CD
+ */
 val GreyAir = Color(0xffcdd1ca)
+
+/**
+ * Ranger*Rover Red from VCP CD
+ */
 val RedRR = Color(0xff701a32)
