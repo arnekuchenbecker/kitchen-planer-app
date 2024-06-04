@@ -41,7 +41,13 @@ import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.view.InvitationElements
 
-
+/**
+ * Composable to invite people to a project by providing a join link.
+ * Note that the project will be online only if the user indicates that they want to share the project.
+ *
+ * @param projectId project to which people should be invited
+ * @param onNavigateToProject Callback function to navigate to the project
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
