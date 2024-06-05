@@ -16,15 +16,17 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
-import com.scouts.kitchenplaner.model.entities.Recipe
+import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.entities.shoppinglists.DynamicShoppingListEntry
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListEntry
 import com.scouts.kitchenplaner.model.entities.shoppinglists.StaticShoppingListEntry
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 /**
@@ -33,7 +35,8 @@ import javax.inject.Inject
  * @param shoppingListsRepository Repository via which to access the Data Layer
  */
 class CreateShoppingList @Inject constructor(
-    private val shoppingListsRepository: ShoppingListRepository
+    private val shoppingListsRepository: ShoppingListRepository,
+    private val recipeRepository: RecipeRepository
 ) {
     /**
      * Creates a new shopping list for the given project
@@ -63,10 +66,11 @@ class CreateShoppingList @Inject constructor(
      * via [createShoppingList] to do so)
      */
     @OptIn(DomainLayerRestricted::class)
-    fun createShoppingListEntriesFromRecipe(
-        recipe: Recipe,
+    suspend fun createShoppingListEntriesFromRecipe(
+        recipeStub: RecipeStub,
         mealSlot: MealSlot
     ): List<ShoppingListEntry> {
+        val recipe = recipeRepository.getRecipeById(recipeStub.id).first()
         val entries = mutableListOf<ShoppingListEntry>()
         recipe.ingredientGroups.forEach { group ->
             entries.addAll(
