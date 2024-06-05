@@ -18,8 +18,22 @@ package com.scouts.kitchenplaner.ui.state
 
 import androidx.compose.runtime.mutableStateListOf
 
+/**
+ * State object for dietary information of a recipe
+ */
 class RecipeAllergenState {
+    /**
+     * List of allergens that are contained in the recipe
+     */
     val allergens = mutableStateListOf<String>()
+
+    /**
+     * List of allergens of which only traces are contained in the recipe
+     */
     val traces = mutableStateListOf<String>()
+
+    /**
+     * List of allergens that are not contained in the recipe at all (i.e. not even traces)
+     */
     val freeOf = mutableStateListOf<String>()
 }
