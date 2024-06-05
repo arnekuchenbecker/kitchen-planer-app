@@ -24,12 +24,25 @@ import app.cash.turbine.test
 import com.scouts.kitchenplaner.datalayer.KitchenAppDatabase
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
+import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
+import com.scouts.kitchenplaner.model.DomainLayerRestricted
+import com.scouts.kitchenplaner.model.entities.Ingredient
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.MealPlan
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.User
+import com.scouts.kitchenplaner.model.entities.shoppinglists.DynamicShoppingListEntry
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
+import com.scouts.kitchenplaner.model.entities.shoppinglists.StaticShoppingListEntry
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -45,11 +58,14 @@ import java.util.Date
 @RunWith(AndroidJUnit4::class)
 class ProjectDatabaseTest {
 
-    private lateinit var repo: ProjectRepository
+    private lateinit var projectRepository: ProjectRepository
+    private lateinit var shoppingListRepository: ShoppingListRepository
+    private lateinit var recipeRepository: RecipeRepository
     private lateinit var projectDAO: ProjectDAO
     private lateinit var allergenDAO: AllergenDAO
     private lateinit var recipeManagementDAO: RecipeManagementDAO
     private lateinit var shoppingListDAO: ShoppingListDAO
+    private lateinit var recipeDAO: RecipeDAO
     private lateinit var db: KitchenAppDatabase
 
     @Before
@@ -62,7 +78,11 @@ class ProjectDatabaseTest {
         allergenDAO = db.allergenDao()
         recipeManagementDAO = db.recipeManagementDao()
         shoppingListDAO = db.shoppingListDao()
-        repo = ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO)
+        recipeDAO = db.recipeDao()
+        projectRepository =
+            ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO)
+        shoppingListRepository = ShoppingListRepository(shoppingListDAO)
+        recipeRepository = RecipeRepository(recipeDAO)
     }
 
     @After
@@ -82,8 +102,8 @@ class ProjectDatabaseTest {
                 _endDate = Date(1)
             )
         )
-        repo.insertProject(project, User("Arne"))
-        val retValue = repo.getProjectByProjectName("Test")
+        projectRepository.insertProject(project, User("Arne"))
+        val retValue = projectRepository.getProjectByProjectName("Test")
         assertEquals("Test", retValue.stub.name)
         assertNotEquals(null, retValue.stub.id)
     }
@@ -107,26 +127,73 @@ class ProjectDatabaseTest {
             )
         )
 
-        repo.getAllProjectsOverview().test {
+        projectRepository.getAllProjectsOverview().test {
             awaitItem()
-            val projectId = repo.insertProject(project, User("Arne"))
+            val projectId = projectRepository.insertProject(project, User("Arne"))
             val flowContent = awaitItem()
 
             assertEquals("Incorrect number of projects in flow", 1, flowContent.size)
             assertEquals("Incorrect project name", project.name, flowContent[0].name)
             assertEquals("Incorrect project id", projectId, flowContent[0].id)
 
-            val project2Id = repo.insertProject(project2, User("Arne"))
+            val project2Id = projectRepository.insertProject(project2, User("Arne"))
 
             assertNotEquals("Same project id for different projects", projectId, project2Id)
 
             val flowContent2 = awaitItem()
 
             assertEquals("Incorrect number of projects in flow", 2, flowContent2.size)
-            assertTrue("No project with id $projectId found", flowContent2.any { it.id == projectId })
-            assertTrue("No project with id $project2Id found", flowContent2.any { it.id == project2Id })
-            assertTrue("No project with name ${project.name} found", flowContent2.any { it.name == project.name })
-            assertTrue("No project with name ${project2.name} found", flowContent2.any { it.name == project2.name })
+            assertTrue(
+                "No project with id $projectId found",
+                flowContent2.any { it.id == projectId })
+            assertTrue(
+                "No project with id $project2Id found",
+                flowContent2.any { it.id == project2Id })
+            assertTrue(
+                "No project with name ${project.name} found",
+                flowContent2.any { it.name == project.name })
+            assertTrue(
+                "No project with name ${project2.name} found",
+                flowContent2.any { it.name == project2.name })
+        }
+    }
+
+    @OptIn(DomainLayerRestricted::class)
+    @Test
+    fun checkShoppingListDuplicates(): Unit = runTest {
+        val project = Project(
+            _name = "Test",
+            _mealPlan = MealPlan(
+                _startDate = Date(0),
+                _endDate = Date(24 * 60 * 60 * 1000),
+                initialMeals = listOf("Frühstück"),
+                initialNumberChanges = mapOf(MealSlot(Date(0), "Frühstück") to 10)
+            )
+        )
+
+        val recipe = Recipe(
+            ingredientGroups = listOf(IngredientGroup("Test", listOf(Ingredient("Nudeln", 0.5, "kg"))))
+        )
+
+        val shoppingList = ShoppingList(
+            null,
+            "Test",
+            listOf(
+                StaticShoppingListEntry("Nudeln", "kg", 1.0),
+                DynamicShoppingListEntry("Nudeln", "kg", 0.5, 10, MealSlot(Date(0), "Frühstück")),
+            )
+        )
+
+        launch {
+            val projectID = projectRepository.insertProject(project, User("Arne"))
+            val recipeID = recipeRepository.createRecipe(recipe)
+            recipeManagementDAO.addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectID, "Frühstück", Date(0), recipeID))
+            val shoppingListID = shoppingListRepository.createShoppingList(shoppingList, projectID)
+
+            shoppingListRepository.getShoppingList(shoppingListID).test {
+                val list = awaitItem()
+                println(list.items.size)
+            }
         }
     }
 }
