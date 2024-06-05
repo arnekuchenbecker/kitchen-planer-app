@@ -176,7 +176,7 @@ class ProjectDatabaseTest {
         )
 
         val shoppingList = ShoppingList(
-            null,
+            0,
             "Test",
             listOf(
                 StaticShoppingListEntry("Nudeln", "kg", 1.0),

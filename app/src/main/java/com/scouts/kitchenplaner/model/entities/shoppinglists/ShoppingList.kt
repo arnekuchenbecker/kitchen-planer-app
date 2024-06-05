@@ -25,7 +25,7 @@ package com.scouts.kitchenplaner.model.entities.shoppinglists
  * @param items The entries of the shopping list
  */
 data class ShoppingList (
-    val id: Long? = null,
+    val id: Long = 0,
     val name: String,
     val items: List<ShoppingListEntry>
 )
