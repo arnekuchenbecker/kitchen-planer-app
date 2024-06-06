@@ -58,7 +58,7 @@ fun ShoppingListOverview(
         modifier = Modifier.padding(5.dp),
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToCreateShoppingList) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add a new shoppin list")
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add a new shopping list")
             }
         }
     ) {
