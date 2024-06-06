@@ -41,6 +41,20 @@ import com.scouts.kitchenplaner.ui.state.AllergenPersonState
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
 
+/**
+ * Dialog for a detailed view of allergen persons and to edit them.
+ * It contains a button for adding new allergen persons and a list of all already added allergen persons.
+ * For each allergen person their meta data is shown and their allergens can be displayed.
+ * An allergen or a allergen person can be removed.
+ *
+ * @param onDismissRequest Callback function for closing the the dialog
+ * @param onAdd Callback function for adding a new allergen person
+ * @param onRemove Callback function for removing an allergen person
+ * @param onRemoveItem Callback function for removing an allergen defined by its name (2) and if traces are relevant (3) from an allergen person (1)
+ * @param onResetAdderState  Callback function for resetting all information currently saved in the adder state
+ * @param allergens All currently available allergen persons
+ * @param adderState State that contains all information about an allergen person during their creation
+ */
 @Composable
 fun EditAllergensDialog(
     onDismissRequest: () -> Unit,

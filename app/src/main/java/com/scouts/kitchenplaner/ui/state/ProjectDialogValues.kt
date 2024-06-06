@@ -16,6 +16,9 @@
 
 package com.scouts.kitchenplaner.ui.state
 
+/**
+ * Enum class for choosing a project settings dialog
+ */
 enum class ProjectDialogValues {
     /**
      * Display no dialog

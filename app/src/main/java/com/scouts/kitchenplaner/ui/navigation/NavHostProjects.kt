@@ -85,6 +85,6 @@ fun NavHostProjects(
                 }
             )
         }
-        shoppingListGraph(navController = projectNavController, projectId = project.id)
+        shoppingListGraph(navController = projectNavController, project = project)
     }
 }
