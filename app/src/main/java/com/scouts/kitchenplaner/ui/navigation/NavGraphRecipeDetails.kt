@@ -26,6 +26,11 @@ import com.scouts.kitchenplaner.ui.view.recipedetails.RecipeDetails
 
 private const val RECIPE_DETAILS = "details"
 private const val RECIPE_ID = "id"
+
+/**
+ * The subgraph of the navigation graph concerning the project details.
+ * It is not possible to navigate further from the ProjectDetailsScreen
+ */
 fun NavGraphBuilder.recipeDetailsNav() {
     navigation(startDestination = RECIPE_DETAILS,
         route = "${Destinations.RecipeDetailsGraph}/{$RECIPE_ID}",

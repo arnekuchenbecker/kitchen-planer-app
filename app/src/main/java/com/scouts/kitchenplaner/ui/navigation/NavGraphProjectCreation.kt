@@ -27,6 +27,13 @@ import com.scouts.kitchenplaner.ui.view.invitetoproject.InviteToProject
 
 private const val PROJECT_CREATION = "PROJECT_CREATION"
 private const val INVITE_SCREEN = "invite"
+
+/**
+ * Subgraph of the navigation graph concerning the project Creation.
+ * It defines the navigation starting from the projectCreation Screen and from the invitation screen.
+ *
+ * @param navController The navController which performs the navigation
+ */
 fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
 
     navigation(
@@ -45,13 +52,10 @@ fun NavGraphBuilder.projectCreationNav(navController: NavHostController) {
             })
         ) {
             val projectId = it.arguments?.getLong(Destinations.ProjectId) ?: -1
-            InviteToProject (
-                projectId = projectId,
-                onNavigateToProject = {
-                    navController.popBackStack()
-                    navController.navigate("${Destinations.ProjectDetailsGraph}/$projectId")
-                }
-            )
+            InviteToProject(projectId = projectId, onNavigateToProject = {
+                navController.popBackStack()
+                navController.navigate("${Destinations.ProjectDetailsGraph}/$projectId")
+            })
         }
     }
 
