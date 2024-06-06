@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.ui.view
 
 import android.net.Uri
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -61,6 +60,7 @@ fun OverviewField(
     onClick: () -> Unit = {},
     imageUri: Uri = Uri.EMPTY,
     imageDescription: String = "",
+    displayImage: Boolean = true,
     text: String,
     additionalContent: @Composable () -> Unit = {}
 ) {
@@ -80,25 +80,27 @@ fun OverviewField(
                 .fillMaxHeight()
                 .padding(start = 5.dp, end = 15.dp)
         ) {
-            if (imageUri == Uri.EMPTY) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxHeight(0.9f)
-                        .aspectRatio(1.0f)
-                        .padding(start = 5.dp),
-                    imageVector = Icons.Filled.HideImage,
-                    contentDescription = "Projektplatzhalter"
-                )
-            } else {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = imageDescription,
-                    modifier = Modifier
-                        .fillMaxHeight(0.85f)
-                        .aspectRatio(1.0f)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                )
+            if (displayImage) {
+                if (imageUri == Uri.EMPTY) {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxHeight(0.9f)
+                            .aspectRatio(1.0f)
+                            .padding(start = 5.dp),
+                        imageVector = Icons.Filled.HideImage,
+                        contentDescription = "Projektplatzhalter"
+                    )
+                } else {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = imageDescription,
+                        modifier = Modifier
+                            .fillMaxHeight(0.85f)
+                            .aspectRatio(1.0f)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
             }
 
             Text(

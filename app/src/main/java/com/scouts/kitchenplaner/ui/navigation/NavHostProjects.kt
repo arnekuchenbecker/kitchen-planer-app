@@ -61,6 +61,6 @@ fun NavHostProjects(
                 projectNavController.currentBackStackEntry?.arguments?.getLong(RECIPE_ID) ?: -1
             )
         }
-        shoppingListGraph(navController = projectNavController, projectId = project.id)
+        shoppingListGraph(navController = projectNavController, project = project)
     }
 }
