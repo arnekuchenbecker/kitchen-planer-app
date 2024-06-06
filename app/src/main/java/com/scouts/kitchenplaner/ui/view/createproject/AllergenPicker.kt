@@ -45,7 +45,7 @@ import kotlin.math.min
  *
  * @param modifier Customized modifier
  * @param onAdd Callback function for adding a new allergen person
- * @param onRemove  Callback function for deleting a already created allergen person
+ * @param onRemove  Callback function for deleting an already created allergen person
  * @param onRemoveItem Callback function for deleting an allergen from an allergen person
  * @param onResetAdderState Callback function that resets the dialog for adding a new allergen person when the person gets not created.
  * @param allergens All already added allergen persons
@@ -112,7 +112,7 @@ fun AllergenPicker(
 }
 
 /**
- * Filed for displaying an allergen person when created. It displays the name of the allergen person and defines modifiers how it is displayed.
+ * Field for displaying an allergen person when created. It displays the name of the allergen person and defines modifiers how it is displayed.
  * @param name The name of the allergen person
  * @param displayDivider  whether a divider should be displayed under the person's name
  */

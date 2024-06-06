@@ -55,7 +55,7 @@ import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
  * @param onDismissRequest Callback function which gets called if the user dismisses the dialog
  * @param onAdd Callback function for adding a new meal with the new meal as parameter
  * @param onRemove Callback function for removing a meal specified by its index
- * @param meals All current available meals
+ * @param meals All currently available meals
  */
 @Composable
 fun EditMealsDialog(
@@ -149,7 +149,7 @@ fun EditMealsDialog(
 }
 
 /**
- * Represents a already added meal in the edit meal dialog. It can have a delete button on the right side and  is clickable.
+ * Represents an already added meal in the edit meal dialog. It can have a delete button on the right side and  is clickable.
  * A divider can be displayed under the name of the meal.
  * @param mealName The name of the meal
  * @param toBeDeleted Whether the delete button should be displayed

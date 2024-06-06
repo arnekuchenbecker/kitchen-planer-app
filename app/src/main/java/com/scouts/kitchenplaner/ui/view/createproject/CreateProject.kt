@@ -98,7 +98,7 @@ fun CreateProject(
 }
 
 /**
- * Input fields for creating a new project including save them in the state.
+ * Input fields for creating a new project. These fields save the input in the given state.
  *
  * @param state The state which contains all current added information for the project
  * @param modifier Compose modifier to apply custom modifier
