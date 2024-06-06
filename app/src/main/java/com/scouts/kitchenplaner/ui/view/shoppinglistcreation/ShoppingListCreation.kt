@@ -14,18 +14,24 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities.shoppinglists
+package com.scouts.kitchenplaner.ui.view.shoppinglistcreation
 
-/**
- * A shopping list
- *
- * @param id A way to identify this shopping list. Can be null if it isn't known (e.g. if the
- *           shopping list hasn't been created in the database yet)
- * @param name The name of the shopping list. Doesn't have to be unique.
- * @param items The entries of the shopping list
- */
-data class ShoppingList (
-    val id: Long = 0,
-    val name: String,
-    val items: List<ShoppingListEntry>
-)
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+
+@Composable
+fun ShoppingListCreation(
+    onNavigateToShoppingList: (Long) -> Unit
+) {
+    Column {
+        Text(text = "Screen for creating a shopping list")
+
+        Text(text = "Links to other places:")
+
+        Button(onClick = { onNavigateToShoppingList(1) }) {
+            Text("Shopping List 1")
+        }
+    }
+}

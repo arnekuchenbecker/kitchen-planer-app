@@ -35,7 +35,7 @@ import javax.inject.Inject
  * @param editShoppingLists use case that provides methods to delete shopping lists
  */
 @HiltViewModel
-class ShoppingListsViewModel @Inject constructor(
+class ShoppingListsOverviewViewModel @Inject constructor(
     private val displayShoppingListOverview: DisplayShoppingListOverview,
     private val editShoppingLists: EditShoppingLists
 ) : ViewModel() {

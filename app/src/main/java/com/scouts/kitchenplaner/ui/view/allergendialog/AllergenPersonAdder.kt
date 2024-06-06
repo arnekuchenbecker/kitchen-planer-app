@@ -51,6 +51,15 @@ import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
 import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 
+/**
+ * Dialog for adding a new allergen person. It defines the layout of the dialog and checks if all relevant information are added.
+ * The name, start and end date and meal have to be added and at least one allergen.
+ *  Under the field for adding new allergens all current added allergens are displayed including if they are a trace.
+ *
+ *  @param state All current information over the allergen person to add
+ *  @param onAdd Callback function to add a new allergen person  (This function doesn't have to close the dialog)
+ *  @param onDismiss Callback function when the dialog is closed without adding the allergen person (This function should close the dialog)
+ */
 @Composable
 fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
@@ -117,6 +126,13 @@ fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDi
     }
 }
 
+/**
+ * Represents all input field for adding the meta data for a new allergen person.
+ * These meta data contain the name, the arrival and departure date of the person and their start and departure meal.
+ *
+ * @param state The state which saves all already added inputs
+ * @param modifier customisable modifier
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllergenPersonInputs (
@@ -168,6 +184,13 @@ fun AllergenPersonInputs (
     }
 }
 
+/**
+ * Represents the block for adding new allergens.
+ * It contains a field to add the new allergen and a checkbox to mark whether traces are relevant too.
+ *
+ * @param onAdd Callback function to add a new allergen (String) and whether traces are relevant
+ * @param modifier customisable modifier
+ */
 @Composable
 fun AllergenAddInputs(onAdd: (String, Boolean) -> Unit, modifier: Modifier = Modifier) {
     var allergen by remember { mutableStateOf("") }
