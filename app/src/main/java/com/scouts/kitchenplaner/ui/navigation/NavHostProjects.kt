@@ -30,12 +30,21 @@ import com.scouts.kitchenplaner.ui.view.recipeforproject.RecipeForProjectScreen
 private const val RECIPE_ID = "recipeID"
 private const val RECIPE_TO_COOK = "recipeToCook"
 
+/**
+ * The navHost which is in charge of the navigation through the given project.
+ * The navigation starts at the StartDestination.
+ *
+ * @param modifier A customized modifier which is used in for the whole layout of the project
+ * @param projectNavController The controller which performs the navigation
+ * @param project The project within the navigation takes place
+ * @param onNavigateToRecipeCreation Callback function to create a new recipe
+ */
 @Composable
 fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
     project: Project,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipeCreation: () -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -50,7 +59,7 @@ fun NavHostProjects(
                 onNavigateToRecipeToCook = { recipeID ->
                     projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID")
                 },
-                onNavigateToRecipeCreation = onNavigateToRecipe
+                onNavigateToRecipeCreation = onNavigateToRecipeCreation
             )
         }
         composable(
