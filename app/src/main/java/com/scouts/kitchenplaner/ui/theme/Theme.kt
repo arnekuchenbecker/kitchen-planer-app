@@ -31,12 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+/**
+ * Color scheme to be used when the app is configured for dark mode
+ */
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
+/**
+ * Color scheme to be used when the app is configured for light mode
+ */
 private val LightColorScheme = lightColorScheme(
     primary = BlueVCP,
     secondary = BlueWater,
@@ -59,6 +65,10 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+/**
+ * Composable applying one of the color schemes to its content. Should be used to wrap any
+ * Composable invocations that draw UI elements to ensure a consistent color scheme.
+ */
 @Composable
 fun KitchenPlanerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
