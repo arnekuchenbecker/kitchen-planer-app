@@ -58,7 +58,7 @@ class AllergenPersonState {
         get() = allergenList
 
     /**
-     * Adds an allergen to the person, overwriting any existing one
+     * Adds an allergen to the person
      *
      * @param allergen The name of the allergen
      * @param traces Whether traces are an issue
