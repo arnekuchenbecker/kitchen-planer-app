@@ -14,18 +14,26 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.entities.shoppinglists
+package com.scouts.kitchenplaner.ui.state
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListEntry
 
 /**
- * A shopping list
+ * Wrapper class for shopping list entries, allowing them to be enabled or disabled during shopping
+ * list creation.
  *
- * @param id A way to identify this shopping list. Can be null if it isn't known (e.g. if the
- *           shopping list hasn't been created in the database yet)
- * @param name The name of the shopping list. Doesn't have to be unique.
- * @param items The entries of the shopping list
+ * @param item The wrapped shopping list entry
+ * @param _enabled Whether the entry should initially be
  */
-data class ShoppingList (
-    val id: Long = 0,
-    val name: String,
-    val items: List<ShoppingListEntry>
-)
+class ShoppingListEntryState (
+    val item: ShoppingListEntry,
+    _enabled: Boolean = true
+) {
+    /**
+     * Whether the entry is enabled
+     */
+    var enabled by mutableStateOf(_enabled)
+}
