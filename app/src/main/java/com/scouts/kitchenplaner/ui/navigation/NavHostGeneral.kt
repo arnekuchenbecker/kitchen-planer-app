@@ -24,14 +24,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.scouts.kitchenplaner.ui.view.StartScreen
 
-/**
- * Defines the Nav host which performs the navigation and provides the nav controller.
- * It starts the navigation through the app at the given startDestionation
- *
- * @param modifier Custom modifier which are used in the start screen
- * @param navController The used navController for the navigation
- * @param startDestination The destination which should be reached when ne controller starts.
- */
 @Composable
 fun NavHostGeneral(
     modifier: Modifier = Modifier,

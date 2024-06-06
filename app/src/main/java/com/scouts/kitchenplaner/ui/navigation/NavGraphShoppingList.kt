@@ -28,14 +28,6 @@ import com.scouts.kitchenplaner.ui.view.shoppinglistoverview.ShoppingListOvervie
 private const val SHOPPING_OVERVIEW: String = "OverviewShopping"
 private const val SHOPPING_LIST_DETAIL: String = "ShoppingList"
 private const val SHOPPING_LIST_ID = "shoppingListId"
-
-/**
- * The subgraph of the navigation graph concerning the shopping lists.
- * It defines all navigation which is reachable from the ShoppingListOverview and the detailed shopping lists.
- *
- * @param navController The controller which performs the navigation
- * @param projectId THe id of the project the shopping lists belong to
- */
 fun NavGraphBuilder.shoppingListGraph(
     navController: NavController,
     projectId: Long

@@ -26,12 +26,6 @@ import com.scouts.kitchenplaner.ui.view.ProjectLayout
 
 private const val PROJECT_DETAILS = "details"
 
-/**
- * The subgraph of the navigation graph concerning the project details.
- * It defines all navigation which is reachable from the projectDetailsScreen.
- *
- * @param navController The controller which performs the navigation
- */
 fun NavGraphBuilder.projectsDetailsNav(navController: NavHostController) {
     navigation(
         startDestination = PROJECT_DETAILS,

@@ -99,7 +99,7 @@ fun ProjectLayout(
                     },
                 projectNavController = projectNavController,
                 project = project,
-                onNavigateToRecipeCreation = {
+                onNavigateToRecipe = {
                     navController.navigate(Destinations.RecipeCreationGraph)
                 }
             )

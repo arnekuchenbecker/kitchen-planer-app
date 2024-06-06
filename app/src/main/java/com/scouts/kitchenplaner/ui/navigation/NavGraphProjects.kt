@@ -24,12 +24,6 @@ import com.scouts.kitchenplaner.ui.view.projectoverview.ProjectOverview
 
 private const val PROJECT_OVERVIEW = "projectOverview"
 
-/**
- * The subgraph of the navigation graph concerning the project overview.
- * It defines all navigation which is reachable from the projectOverviewScreen.
- *
- * @param navController The controller which performs the navigation
- */
 fun NavGraphBuilder.projectsNav(
     navController: NavHostController,
 ) {
