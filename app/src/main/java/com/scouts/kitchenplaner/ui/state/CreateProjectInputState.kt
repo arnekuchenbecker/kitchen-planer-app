@@ -28,18 +28,42 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.scouts.kitchenplaner.toDateString
 import java.util.Locale
 
+/**
+ * State object for the CreateProject Composable. Contains information about a project that is being created
+ */
 class CreateProjectInputState {
+    /**
+     * The name of the project
+     */
     var name by mutableStateOf("")
+
+    /**
+     * The URI of the project's image
+     */
     var image by mutableStateOf<Uri?>(null)
 
+    /**
+     * DatePickerState for the start date of the project
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     var startDate: DatePickerState = DatePickerState(Locale.GERMAN)
+
+    /**
+     * Textual representation of the start date of the project
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     val startDateString: String
         get() = (startDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
+    /**
+     * DatePickerState for the end date of the project
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     var endDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
+
+    /**
+     * Textual representation of the end date of the project
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     val endDateString: String
         get() = (endDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
@@ -49,23 +73,45 @@ class CreateProjectInputState {
 
     private var mutableAllergenAdderState by mutableStateOf(AllergenPersonAdderState())
 
+    /**
+     * State object for adding allergen persons
+     */
     val allergenAdderState: AllergenPersonAdderState
         get() = mutableAllergenAdderState
 
+    /**
+     * List of all meals added to the project so far
+     */
     val meals: List<String>
         get() = mealList
 
+    /**
+     * List of all allergens persons added to the project so far
+     */
     val allergens: List<AllergenPersonState>
         get() = allergenList
 
+    /**
+     * Adds the given meal to the project
+     *
+     * @param mealName The name of the meal
+     */
     fun addMeal(mealName: String) {
         mealList.add(mealName)
     }
 
+    /**
+     * Removes the meal at the given index from the project
+     *
+     * @param index The index from which to remove the meal
+     */
     fun removeMeal(index: Int) {
         mealList.removeAt(index)
     }
 
+    /**
+     * Adds the allergen person configured in [allergenAdderState] to [allergens]
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     fun addIntolerantPerson() {
         if (!allergenList.any { it.name == allergenAdderState.name }) {
@@ -82,14 +128,29 @@ class CreateProjectInputState {
         }
     }
 
+    /**
+     * Resets the state of [allergenAdderState]
+     */
     fun resetAllergenPersonAdderState() {
         mutableAllergenAdderState = AllergenPersonAdderState()
     }
 
+    /**
+     * Removes all allergen persons with the given name from the project
+     *
+     * @param name The name of the person to be removed
+     */
     fun removeIntolerantPerson(name: String) {
         allergenList.removeAll { it.name == name }
     }
 
+    /**
+     * Removes an allergen from an allergen person
+     *
+     * @param name The name of the allergen person from which the allergen should be removed
+     * @param toRemove The name of the allergen that should be removed
+     * @param tracesRemove Whether traces are an issue for the allergen that is being removed
+     */
     fun removeIntolerancy(name: String, toRemove: String, tracesRemove: Boolean) {
         val person = allergenList.find { it.name == name }
 
