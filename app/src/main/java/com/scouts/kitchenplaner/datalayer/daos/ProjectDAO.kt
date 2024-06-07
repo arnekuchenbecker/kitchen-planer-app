@@ -142,7 +142,7 @@ interface ProjectDAO {
     suspend fun deleteUnitConversion(entity: UnitConversionEntity)
 
     @Query("SELECT * FROM unitConversions WHERE projectID = :projectID")
-    fun getUnitConversionsByProjectID(projectID: Long)
+    fun getUnitConversionsByProjectID(projectID: Long) : Flow<List<UnitConversionEntity>>
 
     @Insert
     suspend fun addUserToProject(user: UserProjectEntity)

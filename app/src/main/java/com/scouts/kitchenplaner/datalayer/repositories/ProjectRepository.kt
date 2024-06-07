@@ -38,6 +38,7 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -166,6 +167,22 @@ class ProjectRepository @Inject constructor(
 
     suspend fun leaveProject(user: User, projectId: Long) {
         projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username, Date()))
+    }
+
+    suspend fun createUnitConversion(conversion: UnitConversion, projectID: Long) {
+        projectDAO.insertUnitConversion(conversion.toDataLayerEntity(projectID))
+    }
+
+    suspend fun deleteUnitConversion(conversion: UnitConversion, projectID: Long) {
+        projectDAO.deleteUnitConversion(conversion.toDataLayerEntity(projectID))
+    }
+
+    fun getUnitConversionsForProject(projectID: Long) : Flow<List<UnitConversion>> {
+        return projectDAO.getUnitConversionsByProjectID(projectID).map {
+            it.map { conversion ->
+                conversion.toModelEntity()
+            }
+        }
     }
 
     suspend fun archiveProject(projectId: Long) {
