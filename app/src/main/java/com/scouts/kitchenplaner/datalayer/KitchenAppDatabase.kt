@@ -38,6 +38,7 @@ import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.UnitConversionEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
@@ -62,9 +63,10 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         ShoppingListEntity::class,
         DynamicShoppingListEntryEntity::class,
         StaticShoppingListEntryEntity::class,
-        UserRecipeEntity::class
+        UserRecipeEntity::class,
+        UnitConversionEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, DietaryTypeConverter::class)
