@@ -55,6 +55,12 @@ import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 
+/**
+ * Top-level composable for creating a new project. This contains the outlines.
+ *
+ * @param createProjectViewModel View model which stores and provides data for this composable
+ * @param onNavigateToInvitePeople After finishing the project it is redirecting to the invite to people screen
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProject(
@@ -91,6 +97,12 @@ fun CreateProject(
     }
 }
 
+/**
+ * Input fields for creating a new project. These fields save the input in the given state.
+ *
+ * @param state The state which contains all current added information for the project
+ * @param modifier Compose modifier to apply custom modifier
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modifier) {
