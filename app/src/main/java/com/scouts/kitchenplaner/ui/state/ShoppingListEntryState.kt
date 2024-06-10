@@ -16,24 +16,24 @@
 
 package com.scouts.kitchenplaner.ui.state
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListEntry
 
 /**
- * State object for dietary information of a recipe
+ * Wrapper class for shopping list entries, allowing them to be enabled or disabled during shopping
+ * list creation.
+ *
+ * @param item The wrapped shopping list entry
+ * @param _enabled Whether the entry should initially be
  */
-class RecipeAllergenState {
+class ShoppingListEntryState (
+    val item: ShoppingListEntry,
+    _enabled: Boolean = true
+) {
     /**
-     * List of allergens that are contained in the recipe
+     * Whether the entry is enabled
      */
-    val allergens = mutableStateListOf<String>()
-
-    /**
-     * List of allergens of which only traces are contained in the recipe
-     */
-    val traces = mutableStateListOf<String>()
-
-    /**
-     * List of allergens that are not contained in the recipe at all (i.e. not even traces)
-     */
-    val freeOf = mutableStateListOf<String>()
+    var enabled by mutableStateOf(_enabled)
 }

@@ -38,6 +38,25 @@ import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.ExpandableCard
 
+/**
+ * Card in a list which represents an allergen person.
+ * It contains the name, amount of allergens and interval of presence of the allergen person.
+ * The title can be clicked and the allergen person can be deleted.
+ * When expanded all allergens are presented. When clicking on an allergen it can be deleted.
+ *
+ * @param name Name of the allergen person
+ * @param allergens All allergens of the allergen person including if traces are important
+ * @param arrivalDate The date when the allergen person arrives
+ * @param arrivalMeal The first meal of the allergen person
+ * @param departureDate The date when the allergen person leaves
+ * @param departureMeal The last meal of the allergen person
+ * @param onTitleClick Callback function when clicking on the title
+ * @param onDelete Callback function when deleting the allergen person
+ * @param onItemDelete Callback function when deleting an allergen
+ * @param toBeDeleted Whether the delete button for deleting the allergen person is present
+ * @param toggleExpand Callback function to toggle whether the card is expanded
+ * @param expand Whether the card is expanded
+ */
 @Composable
 fun AllergenCard(
     name: String,

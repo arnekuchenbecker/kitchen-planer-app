@@ -23,11 +23,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.ui.view.projectdetails.ProjectDetails
 import com.scouts.kitchenplaner.ui.view.recipeforproject.RecipeForProjectScreen
+import java.util.Date
 
 private const val RECIPE_ID = "recipeID"
+private const val DATE = "date"
+private const val MEAL = "meal"
 private const val RECIPE_TO_COOK = "recipeToCook"
 
 @Composable
@@ -35,7 +39,8 @@ fun NavHostProjects(
     modifier: Modifier = Modifier,
     projectNavController: NavHostController,
     project: Project,
-    onNavigateToRecipe: () -> Unit
+    onNavigateToRecipeCreation: () -> Unit,
+    onNavigateToRecipeDetails: (Long) -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -47,20 +52,39 @@ fun NavHostProjects(
         ) {
             ProjectDetails(
                 project = project,
-                onNavigateToRecipeToCook = { recipeID ->
-                    projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID")
+                onNavigateToRecipeToCook = { recipeID, mealSlot ->
+                    projectNavController.navigate("${RECIPE_TO_COOK}/$recipeID/${mealSlot.date.time}/${mealSlot.meal}")
                 },
-                onNavigateToRecipeCreation = onNavigateToRecipe
+                onNavigateToRecipeCreation = onNavigateToRecipeCreation
             )
         }
         composable(
-            "${RECIPE_TO_COOK}/{$RECIPE_ID}",
-            arguments = listOf(navArgument(RECIPE_ID) { type = NavType.LongType })
+            "${RECIPE_TO_COOK}/{$RECIPE_ID}/{$DATE}/{$MEAL}",
+            arguments = listOf(
+                navArgument(RECIPE_ID) { type = NavType.LongType },
+                navArgument(DATE) { type = NavType.LongType },
+                navArgument(MEAL) { type = NavType.StringType }
+            )
         ) {
+            val mealSlot = MealSlot(
+                Date(projectNavController.currentBackStackEntry?.arguments?.getLong(DATE) ?: 0),
+                projectNavController.currentBackStackEntry?.arguments?.getString(MEAL) ?: ""
+            )
+
             RecipeForProjectScreen(
-                projectNavController.currentBackStackEntry?.arguments?.getLong(RECIPE_ID) ?: -1
+                project = project,
+                mealSlot = mealSlot,
+                recipeID = projectNavController.currentBackStackEntry?.arguments?.getLong(RECIPE_ID) ?: -1,
+                onNavigateToRecipeDetails = onNavigateToRecipeDetails,
+                onNavigateToAlternative = {
+                    projectNavController.navigate("$RECIPE_TO_COOK/$it/${mealSlot.date.time}/${mealSlot.meal}") {
+                        popUpTo(Destinations.ProjectsStart) {
+                            inclusive = false
+                        }
+                    }
+                }
             )
         }
-        shoppingListGraph(navController = projectNavController, projectId = project.id)
+        shoppingListGraph(navController = projectNavController, project = project)
     }
 }
