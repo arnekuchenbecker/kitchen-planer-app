@@ -30,7 +30,7 @@ import com.scouts.kitchenplaner.ui.view.StartScreen
  *
  * @param modifier Custom modifier which are used in the start screen
  * @param navController The used navController for the navigation
- * @param startDestination The destination which should be reached when ne controller starts.
+ * @param startDestination The destination which should be reached when the controller starts.
  */
 @Composable
 fun NavHostGeneral(

@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.ui.navigation
 
 /**
- * This class contains constant to use for paths within the navigation. They define the used navGraph and screens
+ * This class contains constants to use for paths within the navigation. They define the used navGraph and screens
  */
 sealed class Destinations {
     companion object {

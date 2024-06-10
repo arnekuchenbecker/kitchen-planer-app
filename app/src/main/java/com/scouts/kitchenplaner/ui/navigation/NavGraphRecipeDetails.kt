@@ -28,8 +28,8 @@ private const val RECIPE_DETAILS = "details"
 private const val RECIPE_ID = "id"
 
 /**
- * The subgraph of the navigation graph concerning the project details.
- * It is not possible to navigate further from the ProjectDetailsScreen
+ * The subgraph of the navigation graph concerning the recipe details.
+ * It is not possible to navigate further from the EditRecipeScreen
  */
 fun NavGraphBuilder.recipeDetailsNav() {
     navigation(startDestination = RECIPE_DETAILS,

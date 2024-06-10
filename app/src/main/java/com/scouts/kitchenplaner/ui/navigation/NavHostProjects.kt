@@ -36,7 +36,7 @@ private const val RECIPE_TO_COOK = "recipeToCook"
  *
  * @param modifier A customized modifier which is used in for the whole layout of the project
  * @param projectNavController The controller which performs the navigation
- * @param project The project within the navigation takes place
+ * @param project The project within which the navigation takes places
  * @param onNavigateToRecipeCreation Callback function to create a new recipe
  */
 @Composable

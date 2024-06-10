@@ -34,7 +34,7 @@ private const val SHOPPING_LIST_ID = "shoppingListId"
  * It defines all navigation which is reachable from the ShoppingListOverview and the detailed shopping lists.
  *
  * @param navController The controller which performs the navigation
- * @param projectId THe id of the project the shopping lists belong to
+ * @param projectId The id of the project the shopping lists belong to
  */
 fun NavGraphBuilder.shoppingListGraph(
     navController: NavController,
