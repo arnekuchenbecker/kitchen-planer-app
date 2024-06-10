@@ -26,6 +26,7 @@ import com.scouts.kitchenplaner.model.entities.RecipeAlternative
 import com.scouts.kitchenplaner.model.entities.RecipeForCooking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 /**
@@ -60,7 +61,12 @@ class DisplayRecipeForCooking @Inject constructor(
                 ?.map { recipeRepository.getRecipeById(it.id) }
                 ?: listOf()
 
-        val combinedAlternatives = combine(alternativeRecipes) { it.toList() }
+        val combinedAlternatives =
+            if (alternativeRecipes.isNotEmpty()) {
+                combine(alternativeRecipes) { it.toList() }
+            } else {
+                flowOf(listOf())
+            }
 
         // Calculate the dietary specialities each alternative recipe actually covers
         val allergensForAlternatives = combine(

@@ -45,10 +45,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.ui.view.HeaderWithButton
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
+import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
+import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
 import com.scouts.kitchenplaner.ui.viewmodel.CreateRecipeViewModel
 
 /**
@@ -152,7 +155,7 @@ fun CreateRecipe(
 
             IngredientsInput(
                 modifier = columnItemModifier,
-                ingredientGroups = viewModel.ingredients,
+                ingredientGroups = viewModel.ingredients.map { (name, ingredients) -> IngredientGroup(name, ingredients) },
                 onGroupAdd = viewModel::addIngredientGroup,
                 onIngredientAdd = viewModel::addIngredient,
                 onIngredientDelete = viewModel::deleteIngredient,
