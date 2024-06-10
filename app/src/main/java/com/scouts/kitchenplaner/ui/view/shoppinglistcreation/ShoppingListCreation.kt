@@ -14,26 +14,24 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.state
+package com.scouts.kitchenplaner.ui.view.shoppinglistcreation
 
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 
-/**
- * State object for dietary information of a recipe
- */
-class RecipeAllergenState {
-    /**
-     * List of allergens that are contained in the recipe
-     */
-    val allergens = mutableStateListOf<String>()
+@Composable
+fun ShoppingListCreation(
+    onNavigateToShoppingList: (Long) -> Unit
+) {
+    Column {
+        Text(text = "Screen for creating a shopping list")
 
-    /**
-     * List of allergens of which only traces are contained in the recipe
-     */
-    val traces = mutableStateListOf<String>()
+        Text(text = "Links to other places:")
 
-    /**
-     * List of allergens that are not contained in the recipe at all (i.e. not even traces)
-     */
-    val freeOf = mutableStateListOf<String>()
+        Button(onClick = { onNavigateToShoppingList(1) }) {
+            Text("Shopping List 1")
+        }
+    }
 }

@@ -27,26 +27,67 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.scouts.kitchenplaner.toDateString
 import java.util.Locale
 
+/**
+ * State object for the AllergenPersonAdder Composable. Contains information about a single person
+ * that is to be added.
+ */
 class AllergenPersonAdderState {
+    /**
+     * The name of the person
+     */
     var name by mutableStateOf("")
+
+    /**
+     * Which meal is the first meal the person will be present for
+     */
     var arrivalMeal by mutableStateOf("")
+
+    /**
+     * Which meal is the last meal the person will be present for
+     */
     var departureMeal by mutableStateOf("")
+
+    /**
+     * DatePickerState for the date the person is arriving
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     var arrivalDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
+
+    /**
+     * Textual representation of the date the person is arriving
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     val arrivalDateString: String
         get() = (arrivalDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
+    /**
+     * DatePickerState for the date the person is leaving
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     var departureDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
+
+    /**
+     * Textual representation of the date the person is leaving
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     val departureDateString: String
         get() = (departureDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
 
     private val allergenCollection: SnapshotStateMap<String, Boolean> = mutableStateMapOf()
+
+    /**
+     * The allergens the person is allergic to and whether traces are an issue as well
+     */
     val allergens: List<Pair<String, Boolean>>
         get() = allergenCollection.toList()
 
+    /**
+     * Adds an allergen to the person, overwriting an existing allergen if the new one is more
+     * strict (i.e. traces are now an issue)
+     *
+     * @param allergen The allergen to be added
+     * @param traces Whether traces are an issue
+     */
     fun addAllergen(allergen: String, traces: Boolean) {
         if(allergenCollection.containsKey(allergen)) {
             if (traces) {
