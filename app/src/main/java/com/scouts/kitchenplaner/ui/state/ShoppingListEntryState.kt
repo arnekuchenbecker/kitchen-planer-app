@@ -36,4 +36,14 @@ class ShoppingListEntryState (
      * Whether the entry is enabled
      */
     var enabled by mutableStateOf(initialEnabled)
+
+    /**
+     * Destructuring function
+     */
+    operator fun component1() = item
+
+    /**
+     * Destructuring function
+     */
+    operator fun component2() = enabled
 }
