@@ -49,16 +49,28 @@ import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
-
+/**
+ * Dialog for adding new meals.
+ * It contains a field to add new meals and displays all current meals under the add button.
+ * @param onDismissRequest Callback function which gets called if the user dismisses the dialog
+ * @param onAdd Callback function for adding a new meal with the new meal as parameter
+ * @param onRemove Callback function for removing a meal specified by its index
+ * @param meals All currently available meals
+ */
 @Composable
-fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRemove: (Int) -> Unit, meals: List<String>) {
+fun EditMealsDialog(
+    onDismissRequest: () -> Unit,
+    onAdd: (String) -> Unit,
+    onRemove: (Int) -> Unit,
+    meals: List<String>
+) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column (modifier = Modifier.padding(20.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 var removingIndex by remember { mutableIntStateOf(-1) }
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     var newMeal by remember { mutableStateOf("") }
@@ -66,7 +78,8 @@ fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRem
                         modifier = Modifier.fillMaxWidth(),
                         value = newMeal,
                         onValueChange = {
-                            newMeal = it },
+                            newMeal = it
+                        },
                         trailingIcon = {
                             Button(
                                 onClick = {
@@ -77,7 +90,8 @@ fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRem
                                 }
                             ) {
                                 Icon(imageVector = Icons.Filled.Add, "Add Meal")
-                            } },
+                            }
+                        },
                         singleLine = true
                     )
                 }
@@ -95,11 +109,13 @@ fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRem
                                     -1
                                 } else {
                                     index
-                                } },
+                                }
+                            },
                             onCancelDelete = {
                                 removingIndex = -1
                             }
-                        ) },
+                        )
+                    },
                     DisplayLast = { meal, index ->
                         EditMealDialogListItem(
                             mealName = meal,
@@ -111,11 +127,13 @@ fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRem
                                     -1
                                 } else {
                                     index
-                                } },
+                                }
+                            },
                             onCancelDelete = {
                                 removingIndex = -1
                             }
-                        ) },
+                        )
+                    },
                     DisplayEmpty = {
                         Box(
                             modifier = Modifier
@@ -130,11 +148,30 @@ fun EditMealsDialog(onDismissRequest: () -> Unit, onAdd: (String) -> Unit, onRem
     }
 }
 
+/**
+ * Represents an already added meal in the edit meal dialog. It can have a delete button on the right side and  is clickable.
+ * A divider can be displayed under the name of the meal.
+ * @param mealName The name of the meal
+ * @param toBeDeleted Whether the delete button should be displayed
+ * @param displayDivider Whether a divider should be displayed
+ * @param onDelete Callback function which defines what happens when then clicking on the delete button
+ * @param onCancelDelete Callback function which defines what happens when the delete button is not clicked
+ */
 @Composable
-fun EditMealDialogListItem(mealName: String, toBeDeleted: Boolean, displayDivider: Boolean, onDelete: () -> Unit, onCancelDelete: () -> Unit) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+fun EditMealDialogListItem(
+    mealName: String,
+    toBeDeleted: Boolean,
+    displayDivider: Boolean,
+    onDelete: () -> Unit,
+    onCancelDelete: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         val boxModifier = if (toBeDeleted) {
             Modifier
                 .padding(0.dp, 10.dp)
@@ -155,9 +192,11 @@ fun EditMealDialogListItem(mealName: String, toBeDeleted: Boolean, displayDivide
             Text(mealName)
         }
         if (toBeDeleted) {
-            DeleteButton (modifier = Modifier
-                .fillMaxHeight(0.7f)
-                .padding(horizontal = 5.dp)) {
+            DeleteButton(
+                modifier = Modifier
+                    .fillMaxHeight(0.7f)
+                    .padding(horizontal = 5.dp)
+            ) {
                 onDelete()
             }
         }

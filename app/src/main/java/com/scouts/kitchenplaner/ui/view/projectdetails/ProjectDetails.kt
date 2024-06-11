@@ -40,7 +40,7 @@ import com.scouts.kitchenplaner.ui.viewmodel.MealPlanViewModel
 @Composable
 fun ProjectDetails(
     project: Project,
-    onNavigateToRecipeToCook: (Long) -> Unit,
+    onNavigateToRecipeToCook: (Long, MealSlot) -> Unit,
     onNavigateToRecipeCreation: () -> Unit,
     viewModel: MealPlanViewModel = hiltViewModel()
 ) {
@@ -55,8 +55,8 @@ fun ProjectDetails(
         onSwap = { first, second ->
             viewModel.swapMeals(project, first, second)
         },
-        onShowRecipe = {
-            onNavigateToRecipeToCook(it.id)
+        onShowRecipe = { stub, mealSlot ->
+            onNavigateToRecipeToCook(stub.id, mealSlot)
         },
         onDeleteRecipe = { slot, recipe ->
             if (recipe == null) {

@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.createrecipe
+package com.scouts.kitchenplaner.ui.view.recipes
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,26 +57,29 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 fun InstructionInput(
     modifier: Modifier = Modifier,
     instructions: List<String>,
-    onAddInstruction: (String, Int?) -> Unit
+    onAddInstruction: (String, Int?) -> Unit = { _, _ -> },
+    editable: Boolean = true
 ) {
     var showAddInstructionDialog by remember { mutableStateOf(false) }
     ContentBox(
         title = "Kochanweisungen",
         modifier = modifier
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Weiteren Schritt hinzufügen...", modifier = Modifier.padding(end = 15.dp))
-            OutlinedIconButton(onClick = { showAddInstructionDialog = true }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Open dialog to add a new instruction"
-                )
+        if (editable) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Weiteren Schritt hinzufügen...", modifier = Modifier.padding(end = 15.dp))
+                OutlinedIconButton(onClick = { showAddInstructionDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Open dialog to add a new instruction"
+                    )
+                }
             }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
         }
-        HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))
         instructions.forEachIndexed { index, instruction ->
             Row {
                 Box(modifier = Modifier.width(30.dp)) {
