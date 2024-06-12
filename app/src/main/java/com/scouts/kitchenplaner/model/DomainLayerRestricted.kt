@@ -16,6 +16,10 @@
 
 package com.scouts.kitchenplaner.model
 
+/**
+ * Signals that the annotated object should not be used outside the domain layer as doing so might
+ * lead to inconsistencies between domain layer objects and the data base
+ */
 @RequiresOptIn("This should only be used inside the domain layer. Changes made might not be reflected to the UI automatically")
 @Retention(AnnotationRetention.BINARY)
 annotation class DomainLayerRestricted()
