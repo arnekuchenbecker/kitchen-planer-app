@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.datalayer.daos
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.scouts.kitchenplaner.datalayer.dtos.DynamicShoppingListEntryDTO
@@ -72,7 +73,7 @@ interface ShoppingListDAO {
      *
      * @param items The entities that should be created in the database
      */
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDynamicShoppingListEntries(items: List<DynamicShoppingListEntryEntity>)
 
     /**

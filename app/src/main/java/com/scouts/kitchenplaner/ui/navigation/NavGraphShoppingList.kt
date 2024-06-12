@@ -69,6 +69,7 @@ fun NavGraphBuilder.shoppingListGraph(
         }
         composable(SHOPPING_CREATE) {
             ShoppingListCreation(
+                project = project,
                 onNavigateToShoppingList = { listID ->
                     navController.navigate("${SHOPPING_LIST_DETAIL}/$listID") {
                         popUpTo(SHOPPING_CREATE) {

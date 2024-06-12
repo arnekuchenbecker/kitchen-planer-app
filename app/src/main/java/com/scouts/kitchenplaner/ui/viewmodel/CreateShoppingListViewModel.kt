@@ -25,6 +25,8 @@ import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
 import com.scouts.kitchenplaner.model.usecases.CreateShoppingList
 import com.scouts.kitchenplaner.ui.state.CreateShoppingListState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,6 +43,15 @@ class CreateShoppingListViewModel @Inject constructor(
      * Object holding the state of the creation of a shopping list
      */
     val state = CreateShoppingListState()
+
+    private var navigateFlow = MutableStateFlow<Long?>(null)
+
+    /**
+     * Flow where the ID of the shopping list is stored after creation so the UI can navigate
+     * correctly.
+     */
+    val navigateTo: StateFlow<Long?>
+        get() = navigateFlow
 
     /**
      * Resets the dynamic shopping list entries in [state]: All existing dynamic entries are removed
@@ -83,7 +94,8 @@ class CreateShoppingListViewModel @Inject constructor(
         val shoppingList = ShoppingList(0, state.name, items)
 
         viewModelScope.launch {
-            createShoppingList.createShoppingList(project, shoppingList)
+            val listID = createShoppingList.createShoppingList(project, shoppingList)
+            navigateFlow.emit(listID)
         }
     }
 }

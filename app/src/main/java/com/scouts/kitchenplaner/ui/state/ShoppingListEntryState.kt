@@ -26,14 +26,14 @@ import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListEntry
  * list creation.
  *
  * @param item The wrapped shopping list entry
- * @param _enabled Whether the entry should initially be
+ * @param initialEnabled Whether the entry should initially be
  */
 class ShoppingListEntryState (
     val item: ShoppingListEntry,
-    _enabled: Boolean = true
+    initialEnabled: Boolean = true
 ) {
     /**
      * Whether the entry is enabled
      */
-    var enabled by mutableStateOf(_enabled)
+    var enabled by mutableStateOf(initialEnabled)
 }
