@@ -25,6 +25,7 @@ class Project(
     private var _id: Long? = null,
     private var _name: String = "",
     private var _allergenPersons: List<AllergenPerson> = listOf(),
+    private var _unitConversions: List<UnitConversion> = listOf(),
     private var _mealPlan: MealPlan,
     private var _projectImage: Uri = Uri.EMPTY
 ){
@@ -32,6 +33,7 @@ class Project(
         project.id,
         project.name,
         project.allergenPersons,
+        project.unitConversions,
         project.mealPlan,
         project.projectImage
     )
@@ -54,6 +56,12 @@ class Project(
 
     val allergenPersons: List<AllergenPerson>
         get() = _allergenPersons
+
+    /**
+     * Collection of all unit Conversions available for this project
+     */
+    val unitConversions: List<UnitConversion>
+        get() = _unitConversions
 
     val projectImage: Uri
         get() = _projectImage
@@ -78,6 +86,22 @@ class Project(
     fun withAllergenPersons(allergenPersons: List<AllergenPerson>) : Project {
         val newProject = Project(this)
         newProject._allergenPersons = allergenPersons
+        return newProject
+    }
+
+    /**
+     * Returns a project that has the same properties as this project but contains the specified
+     * unitConversions.
+     *
+     * @param unitConversions The modified UnitConversions
+     *
+     * @return A project with the specified UnitConversion and otherwise the same properties as this
+     * project
+     */
+    @DomainLayerRestricted
+    fun withUnitConversions(unitConversions: List<UnitConversion>) : Project {
+        val newProject = Project(this)
+        newProject._unitConversions = unitConversions
         return newProject
     }
 

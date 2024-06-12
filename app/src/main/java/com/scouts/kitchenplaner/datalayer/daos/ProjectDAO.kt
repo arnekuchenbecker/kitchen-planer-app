@@ -33,6 +33,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.ProjectStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.MealEntity
 import com.scouts.kitchenplaner.datalayer.entities.PersonNumberChangeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
+import com.scouts.kitchenplaner.datalayer.entities.UnitConversionEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserProjectEntity
 import kotlinx.coroutines.flow.Flow
@@ -133,6 +134,15 @@ interface ProjectDAO {
 
     @Delete(PersonNumberChangeEntity::class)
     suspend fun deletePersonNumberChange(identifierDTO: PersonNumberChangeIdentifierDTO)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUnitConversion(entity: UnitConversionEntity)
+
+    @Delete
+    suspend fun deleteUnitConversion(entity: UnitConversionEntity)
+
+    @Query("SELECT * FROM unitConversions WHERE projectID = :projectID")
+    fun getUnitConversionsByProjectID(projectID: Long) : Flow<List<UnitConversionEntity>>
 
     @Insert
     suspend fun addUserToProject(user: UserProjectEntity)
