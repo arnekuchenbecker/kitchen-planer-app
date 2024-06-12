@@ -34,6 +34,15 @@ private const val DATE = "date"
 private const val MEAL = "meal"
 private const val RECIPE_TO_COOK = "recipeToCook"
 
+/**
+ * The navHost which is in charge of the navigation through the given project.
+ * The navigation starts at the StartDestination.
+ *
+ * @param modifier A customized modifier which is used in for the whole layout of the project
+ * @param projectNavController The controller which performs the navigation
+ * @param project The project within which the navigation takes places
+ * @param onNavigateToRecipeCreation Callback function to create a new recipe
+ */
 @Composable
 fun NavHostProjects(
     modifier: Modifier = Modifier,

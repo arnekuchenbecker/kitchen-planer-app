@@ -24,7 +24,12 @@ import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.createrecipe.CreateRecipe
 
 private const val RECIPE_CREATION = "createrecipe"
-
+/**
+ * The subgraph of the navigation graph concerning the recipe creation
+ * It defines all navigation which is reachable from the recipeCreationScreen.
+ *
+ * @param navController The controller which performs the navigation
+ */
 fun NavGraphBuilder.recipeCreationNav(navController: NavHostController) {
     navigation(startDestination = RECIPE_CREATION, route = Destinations.RecipeCreationGraph) {
         composable(RECIPE_CREATION) {
