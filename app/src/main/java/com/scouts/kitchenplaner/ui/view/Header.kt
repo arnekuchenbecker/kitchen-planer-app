@@ -41,14 +41,34 @@ fun Header(title: String) {
  * @param buttonImage image/icon which represents the button.
  */
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun HeaderWithButton(
     title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
+) {
+    EditableHeader(
+        titleField = { Text(title) },
+        buttonClick = buttonClick,
+        buttonImage = buttonImage
+    )
+}
+
+
+/**
+ *
+ * @param titleField A field that is displayed as the title of the section
+ * @param buttonClick Action, what happens when clicking the button
+ * @param buttonImage Image/Icon which represents the button
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditableHeader(
+    titleField: @Composable () -> Unit,
+    buttonClick: () -> Unit,
+    buttonImage: @Composable (() -> Unit)
 ) {
     TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ), title = { Text(title) }, actions = {
+    ), title = titleField, actions = {
         if (buttonClick != {}) {
             IconButton(
                 colors = IconButtonColors(
@@ -60,4 +80,6 @@ fun HeaderWithButton(
             )
         }
     })
+
+
 }

@@ -17,6 +17,10 @@
 package com.scouts.kitchenplaner.ui.viewmodel
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
@@ -36,6 +40,12 @@ import javax.inject.Inject
 @HiltViewModel
 class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe) : ViewModel() {
     lateinit var recipeFlow: StateFlow<Recipe>
+    private var editMode by mutableStateOf(false)
+    var expandedAllergen by mutableStateOf(false)
+    var expandedFreeOf by mutableStateOf(false)
+    var expandedTraces by mutableStateOf(false)
+
+
 
     /**
      * Gets the recipe from the data base and saves it, such that the [recipeFlow] can be used
@@ -43,6 +53,13 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      */
     suspend fun getRecipe(recipeID: Long) {
         recipeFlow = editRecipe.getRecipe(recipeID).stateIn(viewModelScope)
+    }
+
+    fun isEditable(): Boolean {
+        return editMode;
+    }
+    fun toggleEditMode() {
+        editMode = !editMode
     }
 
     /**
@@ -211,7 +228,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      */
     fun updateInstructionStep(recipe: Recipe, index: Int, instruction: String) {
         viewModelScope.launch {
-                editRecipe.updateInstructionStep(recipe, index, instruction)
+            editRecipe.updateInstructionStep(recipe, index, instruction)
         }
     }
 }

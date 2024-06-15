@@ -20,14 +20,22 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,17 +45,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.scouts.kitchenplaner.model.entities.DietarySpeciality
+import com.scouts.kitchenplaner.model.entities.DietaryTypes
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
+import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.ContentBox
-import com.scouts.kitchenplaner.ui.view.Header
+import com.scouts.kitchenplaner.ui.view.EditableHeader
+import com.scouts.kitchenplaner.ui.view.ExpandableCard
+import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
+import com.scouts.kitchenplaner.ui.view.NumberFieldType
+import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
+import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
 import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
 import com.scouts.kitchenplaner.ui.viewmodel.EditRecipeViewModel
@@ -57,7 +71,7 @@ import com.scouts.kitchenplaner.ui.viewmodel.EditRecipeViewModel
 fun RecipeDetails(
     recipeID: Long, viewModel: EditRecipeViewModel = hiltViewModel()
 ) {
-
+//TODO: add to database when not in focus
     var recipeInitialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = null) {
@@ -68,61 +82,264 @@ fun RecipeDetails(
         val recipe by viewModel.recipeFlow.collectAsState()
 
         Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
-            Header(title = recipe.name)
+            EditableHeader(titleField = {
+                if (viewModel.isEditable()) {
+                    TextField(
+                        value = recipe.name,
+                        onValueChange = { viewModel.setRecipeName(recipe, it) })
+                } else {
+                    Text(recipe.name)
+                }
+            },
+                { viewModel.toggleEditMode() },
+                buttonImage = {
+                    if (viewModel.isEditable()) {
+                        Icon(imageVector = Icons.Filled.Check, contentDescription = "save changes")
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = "Edit recipe"
+                        )
+                    }
+                })
 
 
-            Row(modifier = Modifier.padding(5.dp).fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth(), verticalAlignment = Alignment.Bottom
+            ) {
 
                 Column(Modifier.fillMaxWidth(0.5f)) {
-                    Text(
-                        "Für " + recipe.numberOfPeople + " Person(en)",
-                        modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-                    )
+                    if (viewModel.isEditable()) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Für ")
+                            OutlinedNumberField(
+                                modifier = Modifier.fillMaxWidth(0.3f),
+                                value = recipe.numberOfPeople.toString(),
+                                onValueChange = {
+                                    viewModel.setNumberOfPeople(recipe, it.toInt())
+                                },
+                                label = { },
+                                type = NumberFieldType.POSITIVE
+                            )
+                            Text("Person(en)")
+                        }
+                    } else {
+                        Text(
+                            "Für " + recipe.numberOfPeople + " Person(en)",
+                            modifier = Modifier
+                                .align(alignment = Alignment.CenterHorizontally)
+                                .border(
+                                    2.dp,
+                                    shape = RectangleShape, color = Color.Red
+                                )
+                        )
+                    }
                     HorizontalDivider()
-                    Text(
-                        text = recipe.description,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Left,
-                        maxLines = 7,
+                    TextField(
+                        value = recipe.description,
+                        readOnly = !viewModel.isEditable(),
+                        onValueChange = { new ->
+                            viewModel.setDescription(
+                                recipe,
+                                description = new
+                            )
+                        },
+                        maxLines = 4
                     )
                 }
-                AsyncImage(
-                    model = recipe.imageURI,
-                    contentDescription = "Recipe picture",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                if (viewModel.isEditable()) {
+                    PicturePicker(onPathSelected = { uri ->
+                        if (uri != null) {
+                            viewModel.setRecipePicture(
+                                recipe = recipe,
+                                uri = uri
+                            )
+                        }
+                    }, path = recipe.imageURI)
+                } else {
+                    AsyncImage(
+                        model = recipe.imageURI,
+                        contentDescription = "Recipe picture",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
 
             }
-            ContentBox(title = "Allergene", modifier = Modifier.padding(10 .dp)) {
+            ContentBox(title = "Allergene", modifier = Modifier.padding(10.dp)) {
                 Column {
-                    Text("Frei von: ")
-                    recipe.freeOfAllergen.forEach { name ->
-                        Text(name);
-                    }
-                    HorizontalDivider()
-                    Text("Enthält: ")
-                    recipe.allergens.forEach { name -> Text(name) }
-                    HorizontalDivider()
-                    Text("Enthält Spuren von: ")
-                    recipe.traces.forEach { Text(it) }
+                    ExpandableCard(
+                        expanded = viewModel.expandedFreeOf,
+                        onCardArrowClick = { viewModel.expandedFreeOf = !viewModel.expandedFreeOf },
+                        onTitleClick = { /*TODO*/ },
+                        cardState = CardState(
+                            title = "Frei von: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
+                        ) {
+                            DisplayAllergenLists(
+                                editable = { viewModel.isEditable() },
+                                allergenList = recipe.freeOfAllergen,
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(
+                                            allergen,
+                                            DietaryTypes.FREE_OF
+                                        )
+                                    )
+                                })
+                        }
+                    )
+                    ExpandableCard(
+                        expanded = viewModel.expandedAllergen,
+                        onCardArrowClick = {
+                            viewModel.expandedAllergen = !viewModel.expandedAllergen
+                        },
+                        onTitleClick = { /*TODO*/ },
+                        cardState = CardState(
+                            title = "Enthält: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
+
+                        ) {
+                            DisplayAllergenLists(
+                                editable = viewModel::isEditable,
+                                allergenList = recipe.allergens,
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(
+                                            allergen,
+                                            DietaryTypes.ALLERGEN
+                                        )
+                                    )
+                                })
+                        }
+                    )
+                    ExpandableCard(
+                        expanded = viewModel.expandedTraces,
+                        onCardArrowClick = { viewModel.expandedTraces = !viewModel.expandedTraces },
+                        onTitleClick = { /*TODO*/ },
+                        cardState = CardState(
+                            title = "Enthält Spuren von: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
+
+                        ) {
+                            DisplayAllergenLists(
+                                editable = { viewModel.isEditable() },
+                                allergenList = recipe.traces,
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(
+                                            allergen,
+                                            DietaryTypes.TRACE
+                                        )
+                                    )
+                                })
+                        })
                 }
 
 
             }
             IngredientsInput(
-                modifier = Modifier.padding(10 .dp),
+                //TODO
+                modifier = Modifier.padding(10.dp),
                 ingredientGroups = recipe.ingredientGroups,
-                editable = false
-            )
+                editable = viewModel.isEditable(),
+                onGroupAdd = { group ->
+                    viewModel.addIngredient(
+                        recipe,
+                        IngredientGroup(group),
+                        null
+                    )
+                },
+
+
+                )
             InstructionInput(
-                modifier = Modifier.padding(10 .dp),
+                modifier = Modifier.padding(10.dp),
                 instructions = recipe.instructions,
-                editable = false,
+                editable = viewModel.isEditable(),
+                onAddInstruction = { instruction, index ->
+                    if (index == null) {
+                        viewModel.addInstructionStep(recipe, instruction, 0)
+                    } else {
+                        viewModel.addInstructionStep(recipe, instruction, index)
+                    }
+                }
             )
 
         }
+    }
+}
 
+
+@Composable
+fun DisplayAllergenLists(
+    editable: () -> Boolean,
+    allergenList: List<String>,
+    delete: (String) -> Unit
+) {
+    Column() {
+        if (editable()) {
+            TextField(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                value = "Need for save method", onValueChange = {},
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            //TODO
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add new allergen"
+                        )
+                    }
+                },
+            )
+            HorizontalDivider()
+        }
+        LazyColumnWrapper(
+            content = allergenList, DisplayContent = { allergen, _ ->
+                if (editable()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(allergen)
+                        IconButton(
+                            onClick = {
+                                delete(allergen)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Delete Allergen"
+                            )
+                        }
+                    }
+                } else {
+                    Text(allergen)
+                }
+            },
+            DisplayEmpty = { Text("Noch nichts eingetragen") }
+        )
     }
 }
