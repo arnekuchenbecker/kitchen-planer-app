@@ -14,9 +14,17 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer.dtos
+package com.scouts.kitchenplaner.networklayer.chefkoch.services
 
-data class ChefkochIngredientGroup(
-    val header: String,
-    val ingredients: List<ChefkochIngredient>
-)
+import com.scouts.kitchenplaner.networklayer.chefkoch.dtos.ChefkochRecipe
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+/**
+ * retrofit service for making requests to chefkoch's API
+ */
+interface ChefkochAPIService {
+    @GET("recipes/{id}")
+    suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
+}

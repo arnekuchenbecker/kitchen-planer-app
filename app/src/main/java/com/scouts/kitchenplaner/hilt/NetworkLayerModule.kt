@@ -16,8 +16,8 @@
 
 package com.scouts.kitchenplaner.hilt
 
-import com.scouts.kitchenplaner.networklayer.CHEFKOCH_BASE_URL
-import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
+import com.scouts.kitchenplaner.networklayer.chefkoch.CHEFKOCH_BASE_URL
+import com.scouts.kitchenplaner.networklayer.chefkoch.services.ChefkochAPIService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
