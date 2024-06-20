@@ -19,4 +19,4 @@ package com.scouts.kitchenplaner.networklayer.chefkoch
 /**
  * Base URL for chefkoch's API
  */
-const val CHEFKOCH_BASE_URL = "https://api.chefkoch.de/v2/"
+const val CHEFKOCH_BASE_URL = "https://api.chefkoch.de/v2"

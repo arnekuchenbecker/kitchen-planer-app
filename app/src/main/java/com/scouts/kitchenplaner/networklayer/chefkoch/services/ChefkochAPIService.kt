@@ -25,6 +25,6 @@ import retrofit2.http.Path
  * retrofit service for making requests to chefkoch's API
  */
 interface ChefkochAPIService {
-    @GET("recipes/{id}")
+    @GET("/recipes/{id}")
     suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
 }
