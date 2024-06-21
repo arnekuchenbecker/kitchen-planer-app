@@ -26,14 +26,16 @@ class Project(
     private var _name: String = "",
     private var _allergenPersons: List<AllergenPerson> = listOf(),
     private var _mealPlan: MealPlan,
-    private var _projectImage: Uri = Uri.EMPTY
+    private var _projectImage: Uri = Uri.EMPTY,
+    private var _isOnline: Boolean = false
 ){
     constructor(project: Project) : this(
         project.id,
         project.name,
         project.allergenPersons,
         project.mealPlan,
-        project.projectImage
+        project.projectImage,
+        project.isOnline
     )
     val mealPlan: MealPlan
         get() = _mealPlan
@@ -62,6 +64,9 @@ class Project(
         get() = startDate.listDatesUntil(endDate).map { date ->
             meals.map { MealSlot(date, it) }
         }.flatten()
+
+    val isOnline: Boolean
+        get() = _isOnline
 
     @DomainLayerRestricted
     fun withMetaData(metaData: ProjectMetaData) : Project {
