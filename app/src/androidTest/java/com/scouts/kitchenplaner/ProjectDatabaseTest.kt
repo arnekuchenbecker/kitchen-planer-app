@@ -28,9 +28,9 @@ import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
-import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.ShoppingListRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
