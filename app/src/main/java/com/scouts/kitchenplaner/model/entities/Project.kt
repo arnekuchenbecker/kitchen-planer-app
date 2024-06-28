@@ -28,7 +28,7 @@ class Project(
     private var _mealPlan: MealPlan,
     private var _projectImage: Uri = Uri.EMPTY,
     private var _isOnline: Boolean = false
-){
+) {
     constructor(project: Project) : this(
         project.id,
         project.name,
@@ -69,7 +69,7 @@ class Project(
         get() = _isOnline
 
     @DomainLayerRestricted
-    fun withMetaData(metaData: ProjectMetaData) : Project {
+    fun withMetaData(metaData: ProjectMetaData): Project {
         val newProject = Project(this)
         newProject._id = metaData.stub.id
         newProject._name = metaData.stub.name
@@ -80,28 +80,28 @@ class Project(
     }
 
     @DomainLayerRestricted
-    fun withAllergenPersons(allergenPersons: List<AllergenPerson>) : Project {
+    fun withAllergenPersons(allergenPersons: List<AllergenPerson>): Project {
         val newProject = Project(this)
         newProject._allergenPersons = allergenPersons
         return newProject
     }
 
     @DomainLayerRestricted
-    fun withMeals(meals: List<String>) : Project {
+    fun withMeals(meals: List<String>): Project {
         val newProject = Project(this)
         newProject._mealPlan.setMeals(meals)
         return newProject
     }
 
     @DomainLayerRestricted
-    fun withMealPlan(plan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>>) : Project {
+    fun withMealPlan(plan: Map<MealSlot, Pair<RecipeStub, List<RecipeStub>>>): Project {
         val newProject = Project(this)
         newProject._mealPlan.setPlan(plan)
         return newProject
     }
 
     @DomainLayerRestricted
-    fun withNumberChanges(numberChanges: Map<MealSlot, Int>) : Project {
+    fun withNumberChanges(numberChanges: Map<MealSlot, Int>): Project {
         val newProject = Project(this)
         newProject._mealPlan.setNumberChanges(numberChanges)
         return newProject
