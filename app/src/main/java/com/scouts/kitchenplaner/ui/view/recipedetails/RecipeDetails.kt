@@ -135,10 +135,6 @@ fun RecipeDetails(
                             "Für " + recipe.numberOfPeople + " Person(en)",
                             modifier = Modifier
                                 .align(alignment = Alignment.CenterHorizontally)
-                                .border(
-                                    2.dp,
-                                    shape = RectangleShape, color = Color.Red
-                                )
                         )
                     }
                     HorizontalDivider()
@@ -174,6 +170,7 @@ fun RecipeDetails(
 
 
             }
+
             ContentBox(title = "Allergene", modifier = Modifier.padding(10.dp)) {
                 Column {
                     ExpandableCard(
@@ -189,7 +186,13 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = { viewModel.isEditable() },
                                 allergenList = recipe.freeOfAllergen,
-                                delete = { allergen ->
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(allergen = allergen, DietaryTypes.FREE_OF)
+                                    )
+                                },
+                                        delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         recipe,
                                         DietarySpeciality(
@@ -216,6 +219,14 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = viewModel::isEditable,
                                 allergenList = recipe.allergens,
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(
+                                            allergen,
+                                            DietaryTypes.ALLERGEN
+                                        )
+                                    )},
                                 delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         recipe,
@@ -241,6 +252,14 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = { viewModel.isEditable() },
                                 allergenList = recipe.traces,
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        recipe,
+                                        DietarySpeciality(
+                                            allergen,
+                                            DietaryTypes.TRACE
+                                        )
+                                    )},
                                 delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         recipe,
@@ -256,7 +275,6 @@ fun RecipeDetails(
 
             }
             IngredientsInput(
-                //TODO
                 modifier = Modifier.padding(10.dp),
                 ingredientGroups = recipe.ingredientGroups,
                 editable = viewModel.isEditable(),
@@ -267,9 +285,19 @@ fun RecipeDetails(
                         null
                     )
                 },
+                onIngredientDelete = { group, ingredient ->
+                    viewModel.deleteIngredient(
+                        recipe,
+                        group = IngredientGroup(group),
+                        ingredient = ingredient
+                    )
+                },
+                onDeleteIngredientGroup = { group ->
+                    viewModel.deleteIngredient(recipe, IngredientGroup(group))
+                }
 
 
-                )
+            )
             InstructionInput(
                 modifier = Modifier.padding(10.dp),
                 instructions = recipe.instructions,
@@ -292,18 +320,21 @@ fun RecipeDetails(
 fun DisplayAllergenLists(
     editable: () -> Boolean,
     allergenList: List<String>,
-    delete: (String) -> Unit
+    add: (String) -> Unit,
+    delete: (String) -> Unit,
 ) {
+
+    var text = "new allergen"
     Column() {
         if (editable()) {
             TextField(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                value = "Need for save method", onValueChange = {},
+                value = text, onValueChange = { },
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            //TODO
+                            add(text);
                         }
                     ) {
                         Icon(
