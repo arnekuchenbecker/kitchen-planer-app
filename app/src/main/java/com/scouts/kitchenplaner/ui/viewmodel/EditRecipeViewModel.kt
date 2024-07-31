@@ -28,6 +28,7 @@ import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
+import com.scouts.kitchenplaner.ui.state.EditRecipeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -44,6 +45,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     var expandedAllergen by mutableStateOf(false)
     var expandedFreeOf by mutableStateOf(false)
     var expandedTraces by mutableStateOf(false)
+    var changeState by mutableStateOf(EditRecipeState())
 
 
 
@@ -58,7 +60,15 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     fun isEditable(): Boolean {
         return editMode;
     }
-    fun toggleEditMode() {
+    fun toggleEditMode(recipe: Recipe) {
+        if(!editMode){
+            changeState.initState(recipe = recipe);
+        }else{
+            setRecipeName(recipe,changeState.name)
+            setDescription(recipe,changeState.description)
+            setNumberOfPeople(recipe,changeState.amount)
+
+        }
         editMode = !editMode
     }
 
