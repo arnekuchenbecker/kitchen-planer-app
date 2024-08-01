@@ -97,33 +97,14 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
 
             }
 
+            changeState.instructionChanges.forEach { (index, step, added) ->
+                if (added) {
+                    editRecipe.addInstructionStep(recipe, step, index)
+                } else {
+                    editRecipe.deleteInstructionStep(recipe, index)
+                }
+            }
 
-
-
-        }
-    }
-
-    /**
-     * Updates a recipe's name
-     *
-     * @param recipe The recipe to change
-     * @param name The new name
-     */
-    fun setRecipeName(recipe: Recipe, name: String) {
-        viewModelScope.launch {
-            editRecipe.setRecipeName(recipe, name)
-        }
-    }
-
-    /**
-     * Updates the recipe's description
-     *
-     * @param recipe The recipe to change
-     * @param description The new description
-     */
-    fun setDescription(recipe: Recipe, description: String) {
-        viewModelScope.launch {
-            editRecipe.setRecipeDescription(recipe, description)
         }
     }
 
@@ -139,17 +120,6 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         }
     }
 
-    /**
-     * Updates the number of people the recipe is designed for
-     *
-     * @param recipe The recipe to change
-     * @param numberOfPeople New number of people
-     */
-    fun setNumberOfPeople(recipe: Recipe, numberOfPeople: Int) {
-        viewModelScope.launch {
-            editRecipe.setNumberOfPeople(recipe, numberOfPeople)
-        }
-    }
 
     /**
      * Adds a dietary speciality to the recipe
@@ -186,26 +156,6 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
                 editRecipe.addIngredientGroup(recipe, group)
             } else {
                 editRecipe.addIngredient(recipe, group, ingredient)
-            }
-        }
-    }
-
-    /**
-     * Deletes an ingredient group with all its ingredients in it or,
-     * if the ingredient is specified only the ingredient from the group.
-     *
-     * @param recipe The recipe to change
-     * @param group The group to delete or from which the ingredient gets deleted
-     * @param ingredient The ingredient to be deleted ( or null if the ingredient group should be deleted)
-     */
-    fun deleteIngredient(
-        recipe: Recipe, group: IngredientGroup, ingredient: Ingredient? = null
-    ) {
-        viewModelScope.launch {
-            if (ingredient == null) {
-                editRecipe.deleteIngredientGroup(recipe, group)
-            } else {
-                editRecipe.deleteIngredient(recipe, group, ingredient)
             }
         }
     }
