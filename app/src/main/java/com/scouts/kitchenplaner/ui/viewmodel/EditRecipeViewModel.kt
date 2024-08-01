@@ -19,7 +19,6 @@ package com.scouts.kitchenplaner.ui.viewmodel
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,7 +47,6 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     var changeState by mutableStateOf(EditRecipeState())
 
 
-
     /**
      * Gets the recipe from the data base and saves it, such that the [recipeFlow] can be used
      * @param recipeID id of the recipe
@@ -60,16 +58,49 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     fun isEditable(): Boolean {
         return editMode;
     }
-    fun toggleEditMode(recipe: Recipe) {
-        if(!editMode){
-            changeState.initState(recipe = recipe);
-        }else{
-            setRecipeName(recipe,changeState.name)
-            setDescription(recipe,changeState.description)
-            setNumberOfPeople(recipe,changeState.amount)
 
+    fun toggleEditMode(recipe: Recipe) {
+        if (!editMode) {
+            changeState.initState(recipe = recipe);
+        } else {
+            updateRecipe(recipe)
         }
         editMode = !editMode
+    }
+
+    private fun updateRecipe(recipe: Recipe) {
+        viewModelScope.launch {
+            editRecipe.setRecipeName(recipe, changeState.name)
+            editRecipe.setRecipeDescription(recipe, changeState.description)
+            editRecipe.setNumberOfPeople(recipe, changeState.amount)
+
+
+            changeState.getAddedIngredients().forEach { (group, ingredients) ->
+                editRecipe.addIngredientGroup(
+                    recipe,
+                    IngredientGroup(group, ingredients)
+                )
+            }
+
+            val deleted = changeState.getDeletedIngredientsAndGroups()
+
+            deleted.first.forEach { group ->
+                editRecipe.deleteIngredientGroup(recipe, IngredientGroup(group))
+            }
+            deleted.second.forEach { (group, ingredientList) ->
+                ingredientList.forEach { ingredient ->
+                    editRecipe.deleteIngredient(
+                        recipe,
+                        IngredientGroup(group), ingredient
+                    )
+                }
+
+            }
+
+
+
+
+        }
     }
 
     /**

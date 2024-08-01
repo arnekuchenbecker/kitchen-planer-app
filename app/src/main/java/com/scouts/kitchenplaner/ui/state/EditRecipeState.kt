@@ -56,7 +56,9 @@ class EditRecipeState {
     private val _addedIngredientGroup: SnapshotStateList<String> = mutableStateListOf()
     private val _deletedIngredientGroup: SnapshotStateList<String> = mutableStateListOf()
 
-    private var _instruction: SnapshotStateList<String> = mutableStateListOf<String>()
+    private val _instruction: SnapshotStateList<String> = mutableStateListOf<String>()
+
+    private val _instructionChanges: SnapshotStateList<Triple<Int, String, Boolean>> = mutableStateListOf()
 
     val allergen: List<String>
         get() = _allergen
@@ -73,6 +75,29 @@ class EditRecipeState {
             }
         }.map { (group, ingredients) -> IngredientGroup(group, ingredients) }
 
+    val instruction: List<String>
+        get() = _instruction
+
+    val instructionChanges: List<Triple<Int,String,Boolean>>
+        get() = _instructionChanges
+
+    fun addInstructionStep(index: Int, step: String){
+        _instruction.add(index, step)
+        _instructionChanges.add(Triple(index, step, true))
+    }
+
+    fun deleteInstructionStep(index: Int, step: String){
+        _instruction.add(index, step)
+        _instructionChanges.add(Triple(index, step,false))
+
+    }
+
+    fun getAddedIngredients():  Map<String, MutableList<Ingredient>> {
+        return  _addedIngredients
+    }
+    fun getDeletedIngredientsAndGroups(): Pair<List<String>, Map<String, MutableList<Ingredient>>> {
+        return Pair(_deletedIngredientGroup, _deletedIngredients)
+    }
 
     fun initState(recipe: Recipe) {
         name = recipe.name
