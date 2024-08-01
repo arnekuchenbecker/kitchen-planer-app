@@ -104,7 +104,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
                     editRecipe.deleteInstructionStep(recipe, index)
                 }
             }
-
+            changeState = EditRecipeState()
         }
     }
 

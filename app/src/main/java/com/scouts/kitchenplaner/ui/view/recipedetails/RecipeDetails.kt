@@ -297,13 +297,13 @@ fun RecipeDetails(
             )
             InstructionInput(
                 modifier = Modifier.padding(10.dp),
-                instructions = recipe.instructions,
+                instructions = if(viewModel.isEditable()){viewModel.changeState.instruction} else{recipe.instructions},
                 editable = viewModel.isEditable(),
                 onAddInstruction = { instruction, index ->
                     if (index == null) {
-                        viewModel.addInstructionStep(recipe, instruction, 0)
+                        viewModel.changeState.addInstructionStep(0, instruction)
                     } else {
-                        viewModel.addInstructionStep(recipe, instruction, index)
+                        viewModel.changeState.addInstructionStep(index, instruction)
                     }
                 }
             )

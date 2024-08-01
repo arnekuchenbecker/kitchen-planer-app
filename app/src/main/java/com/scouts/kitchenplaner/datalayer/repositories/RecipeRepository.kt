@@ -161,13 +161,17 @@ class RecipeRepository @Inject constructor(
     }
 
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
-        recipeDAO.increaseInstructionStepOrder(recipeID, index)
+        val highestOrder = recipeDAO.getHighestOrder(recipeID)
+        for ( i in highestOrder downTo index )
+            recipeDAO.increaseInstructionStepOrder(recipeID, i)
         recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
     }
 
     suspend fun deleteInstructionStep(recipeID: Long, index: Int) {
         recipeDAO.deleteInstructionStep(InstructionStepIdentifierDTO(recipeID, index))
-        recipeDAO.decreaseInstructionStepOrder(recipeID, index)
+        val highestOrder = recipeDAO.getHighestOrder(recipeID)
+        for(i in index..highestOrder)
+            recipeDAO.decreaseInstructionStepOrder(recipeID, i)
     }
 
     suspend fun updateInstructionStep(recipeID: Long, index: Int, newInstruction: String) {
