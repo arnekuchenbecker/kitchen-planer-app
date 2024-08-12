@@ -73,7 +73,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
             editRecipe.setRecipeName(recipe, changeState.name)
             editRecipe.setRecipeDescription(recipe, changeState.description)
             editRecipe.setNumberOfPeople(recipe, changeState.amount)
-
+            editRecipe.setRecipePicture(recipe, changeState.imageURI)
 
             changeState.getAddedIngredients().forEach { (group, ingredients) ->
                 editRecipe.addIngredientGroup(
@@ -104,6 +104,9 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
                     editRecipe.deleteInstructionStep(recipe, index)
                 }
             }
+
+            changeState.getDeletedSpecialities().forEach { speciality -> editRecipe.deleteDietarySpeciality(recipe,speciality) }
+            changeState.getAddedSpecialities().forEach { dietarySpeciality -> editRecipe.addDietarySpeciality(recipe,dietarySpeciality) }
             changeState = EditRecipeState()
         }
     }
