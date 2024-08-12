@@ -16,6 +16,8 @@
 
 package com.scouts.kitchenplaner.ui.view.recipedetails
 
+import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +46,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,6 +66,7 @@ import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
 import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
 import com.scouts.kitchenplaner.ui.viewmodel.EditRecipeViewModel
+import java.net.URI
 
 
 @Composable
@@ -105,12 +110,13 @@ fun RecipeDetails(
 
 
             Row(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(), verticalAlignment = Alignment.Bottom
+                modifier =
+                        Modifier.padding(5.dp)
+                        .fillMaxWidth()
+                , verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Column(Modifier.fillMaxWidth(0.5f)) {
+                Column(if((recipe.imageURI != Uri.EMPTY && !viewModel.isEditable()) || viewModel.isEditable()){Modifier.fillMaxWidth(0.5f)}else{Modifier} ) {
                     if (viewModel.isEditable()) {
                         Row(
                             Modifier
@@ -142,20 +148,7 @@ fun RecipeDetails(
                                 .align(alignment = Alignment.CenterHorizontally)
                         )
                     }
-                    HorizontalDivider()
-                    TextField(
-                        value =
-                        if (viewModel.isEditable()) {
-                            viewModel.changeState.description
-                        } else {
-                            recipe.description
-                        },
-                        readOnly = !viewModel.isEditable(),
-                        onValueChange = { new ->
-                            viewModel.changeState.description = new
-                        },
-                        maxLines = 4
-                    )
+
                 }
                 if (viewModel.isEditable()) {
                     PicturePicker(onPathSelected = { uri ->
@@ -164,16 +157,32 @@ fun RecipeDetails(
                         }
                     }, path = viewModel.changeState.imageURI)
                 } else {
-                    AsyncImage(
-                        model = recipe.imageURI,
-                        contentDescription = "Recipe picture",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    if (recipe.imageURI != Uri.EMPTY) {
+                        AsyncImage(
+                            model = recipe.imageURI,
+                            contentDescription = "Recipe picture",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
 
             }
+            HorizontalDivider()
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value =
+                if (viewModel.isEditable()) {
+                    viewModel.changeState.description
+                } else {
+                    recipe.description
+                },
+                readOnly = !viewModel.isEditable(),
+                onValueChange = { new ->
+                    viewModel.changeState.description = new
+                },
+            )
 
             ContentBox(title = "Allergene", modifier = Modifier.padding(10.dp)) {
                 Column {
