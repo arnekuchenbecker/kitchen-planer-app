@@ -318,6 +318,12 @@ fun RecipeDetails(
                     } else {
                         viewModel.changeState.addInstructionStep(index, instruction)
                     }
+                },
+                onDeleteInstruction = { instruction, index ->
+                    viewModel.changeState.deleteInstructionStep(
+                        index,
+                        instruction
+                    )
                 }
             )
 

@@ -19,14 +19,17 @@ package com.scouts.kitchenplaner.ui.view.recipes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
@@ -42,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.view.ContentBox
+import com.scouts.kitchenplaner.ui.view.DeleteButton
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 
@@ -58,6 +62,7 @@ fun InstructionInput(
     modifier: Modifier = Modifier,
     instructions: List<String>,
     onAddInstruction: (String, Int?) -> Unit = { _, _ -> },
+    onDeleteInstruction: (String, Int) -> Unit = { _, _ -> },
     editable: Boolean = true
 ) {
     var showAddInstructionDialog by remember { mutableStateOf(false) }
@@ -70,7 +75,10 @@ fun InstructionInput(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Weiteren Schritt hinzufügen...", modifier = Modifier.padding(end = 15.dp))
+                Text(
+                    text = "Weiteren Schritt hinzufügen...",
+                    modifier = Modifier.padding(end = 15.dp)
+                )
                 OutlinedIconButton(onClick = { showAddInstructionDialog = true }) {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -86,6 +94,12 @@ fun InstructionInput(
                     Text("${index + 1}.")
                 }
                 Text(instruction)
+                Spacer(modifier = Modifier.weight(1.0f))
+                IconButton(onClick = { onDeleteInstruction(instruction, index) }) {
+                    Icon(Icons.Filled.Delete, "Delete instruction step")
+
+                }
+
             }
         }
     }

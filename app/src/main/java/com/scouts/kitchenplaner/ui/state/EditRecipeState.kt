@@ -118,7 +118,7 @@ class EditRecipeState {
     }
 
     fun deleteInstructionStep(index: Int, step: String) {
-        _instruction.add(index, step)
+        _instruction.remove(step)
         _instructionChanges.add(Triple(index, step, false))
 
     }
