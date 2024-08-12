@@ -102,7 +102,7 @@ interface RecipeDAO {
         "UPDATE instructionentity " +
                 "SET `order` = `order` - 1 " +
                 "WHERE recipe = :recipeID " +
-                "AND `order` >= :index"
+                "AND `order` == :index"
     )
     suspend fun decreaseInstructionStepOrder(recipeID: Long, index: Int)
 
