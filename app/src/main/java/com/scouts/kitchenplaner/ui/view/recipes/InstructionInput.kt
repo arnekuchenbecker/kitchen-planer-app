@@ -93,8 +93,7 @@ fun InstructionInput(
                 Box(modifier = Modifier.width(30.dp)) {
                     Text("${index + 1}.")
                 }
-                Text(instruction)
-                Spacer(modifier = Modifier.weight(1.0f))
+                Text(instruction, modifier = Modifier.fillMaxWidth(0.85f))
                 IconButton(onClick = { onDeleteInstruction(instruction, index) }) {
                     Icon(Icons.Filled.Delete, "Delete instruction step")
 

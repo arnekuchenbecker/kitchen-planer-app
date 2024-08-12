@@ -19,6 +19,7 @@ package com.scouts.kitchenplaner.ui.view.recipes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.model.entities.Ingredient
@@ -157,9 +160,9 @@ fun DisplayIngredient(
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = ingredient.name)
+        Text(text = ingredient.name, modifier = Modifier.fillMaxWidth(0.5f))
         Spacer(modifier = Modifier.weight(1.0f))
-        Text(text = "${ingredient.amount} ${ingredient.unit}")
+        Text(text = "${ingredient.amount} ${ingredient.unit}", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth(0.85f))
         if (editable) {
             IconButton(
                 onClick = onDeleteClick
