@@ -43,7 +43,7 @@ class EditIngredientCommand(
             recipe,
             group = IngredientGroup(group, listOf()),
             ingredient = ingredient,
-            newName = newName, newAmount = newAmount?.toFloat(), newUnit = newUnit
+            newName = newName, newAmount = newAmount, newUnit = newUnit
         )
     }
 }

@@ -65,10 +65,7 @@ class RecipeRepository @Inject constructor(
         val dietaryFlow = recipeDAO.getAllergensByRecipeId(id)
 
         return combine(
-            recipeFlow,
-            ingredientFlow,
-            instructionsFlow,
-            dietaryFlow
+            recipeFlow, ingredientFlow, instructionsFlow, dietaryFlow
         ) { recipe, ingredients, instructions, dietaries ->
             val groups = ingredients.groupBy { it.ingredientGroup }.map { (name, ingredients) ->
                 IngredientGroup(name, ingredients.map { ingredient ->
@@ -104,8 +101,7 @@ class RecipeRepository @Inject constructor(
         }
 
         val dataLayerEntity = recipe.toDataLayerEntity()
-        return recipeDAO.createRecipe(
-            recipe = dataLayerEntity.first,
+        return recipeDAO.createRecipe(recipe = dataLayerEntity.first,
             speciality = dataLayerEntity.second,
             ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
@@ -128,9 +124,7 @@ class RecipeRepository @Inject constructor(
         return recipeDAO.getAllRecipeStubs().map {
             it.map { stub ->
                 RecipeStub(
-                    id = stub.id,
-                    name = stub.title,
-                    imageURI = Uri.parse(stub.imageURI)
+                    id = stub.id, name = stub.title, imageURI = Uri.parse(stub.imageURI)
                 )
             }
         }
@@ -162,16 +156,14 @@ class RecipeRepository @Inject constructor(
 
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
         val highestOrder = recipeDAO.getHighestOrder(recipeID)
-        for ( i in highestOrder downTo index )
-            recipeDAO.increaseInstructionStepOrder(recipeID, i)
+        for (i in highestOrder downTo index) recipeDAO.increaseInstructionStepOrder(recipeID, i)
         recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
     }
 
     suspend fun deleteInstructionStep(recipeID: Long, index: Int) {
         recipeDAO.deleteInstructionStep(InstructionStepIdentifierDTO(recipeID, index))
         val highestOrder = recipeDAO.getHighestOrder(recipeID)
-        for(i in index..highestOrder)
-            recipeDAO.decreaseInstructionStepOrder(recipeID, i)
+        for (i in index..highestOrder) recipeDAO.decreaseInstructionStepOrder(recipeID, i)
     }
 
     suspend fun updateInstructionStep(recipeID: Long, index: Int, newInstruction: String) {
@@ -189,11 +181,7 @@ class RecipeRepository @Inject constructor(
     suspend fun insertIngredient(recipeID: Long, ingredientGroup: String, ingredient: Ingredient) {
         recipeDAO.insertIngredient(
             IngredientEntity(
-                recipeID,
-                ingredientGroup,
-                ingredient.name,
-                ingredient.amount,
-                ingredient.unit
+                recipeID, ingredientGroup, ingredient.name, ingredient.amount, ingredient.unit
             )
         )
     }
@@ -201,9 +189,7 @@ class RecipeRepository @Inject constructor(
     suspend fun deleteIngredient(recipeID: Long, ingredientGroup: String, ingredientName: String) {
         recipeDAO.deleteIngredient(
             IngredientIdentifierDTO(
-                recipeID,
-                ingredientGroup,
-                ingredientName
+                recipeID, ingredientGroup, ingredientName
             )
         )
     }
@@ -218,15 +204,21 @@ class RecipeRepository @Inject constructor(
         recipeDAO.deleteIngredientGroup(recipeID, ingredientGroup)
     }
 
-    suspend fun updateIngredientName(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newName: String) {
+    suspend fun updateIngredientName(
+        recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newName: String
+    ) {
         recipeDAO.updateIngredientName(newName, ingredient.name, recipeID, ingredientGroup)
     }
 
-    suspend fun updateIngredientAmount(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Float) {
+    suspend fun updateIngredientAmount(
+        recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newAmount: Double
+    ) {
         recipeDAO.updateIngredientAmount(newAmount, ingredient.name, recipeID, ingredientGroup)
     }
 
-    suspend fun updateIngredientUnit(recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newUnit: String) {
+    suspend fun updateIngredientUnit(
+        recipeID: Long, ingredientGroup: String, ingredient: Ingredient, newUnit: String
+    ) {
         recipeDAO.updateIngredientUnit(newUnit, ingredient.name, recipeID, ingredientGroup)
     }
 

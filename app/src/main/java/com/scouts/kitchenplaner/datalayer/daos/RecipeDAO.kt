@@ -134,7 +134,7 @@ interface RecipeDAO {
         "UPDATE ingrediententity SET amount = :newAmount " +
             "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
     )
-    suspend fun updateIngredientAmount(newAmount: Float, name: String, recipeID: Long, group: String)
+    suspend fun updateIngredientAmount(newAmount: Double, name: String, recipeID: Long, group: String)
 
     @Query(
         "UPDATE ingrediententity SET unit = :newUnit " +

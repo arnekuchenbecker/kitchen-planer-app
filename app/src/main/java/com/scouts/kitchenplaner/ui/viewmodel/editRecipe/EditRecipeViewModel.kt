@@ -166,14 +166,14 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         group: IngredientGroup,
         ingredient: Ingredient,
         newName: String? = null,
-        newAmount: Float? = null,
+        newAmount: Double? = null,
         newUnit: String? = null
     ) {
         val command = EditIngredientCommand(
             group = group.name,
             ingredient,
             newName = newName,
-            newAmount = newAmount?.toDouble(),
+            newAmount = newAmount,
             newUnit = newUnit,
             recipe = recipe
         )

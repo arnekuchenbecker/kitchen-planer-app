@@ -210,7 +210,7 @@ fun RecipeDetails(
                     Column {
                         ExpandableCard(expanded = viewModel.expandedFreeOf, onCardArrowClick = {
                             viewModel.expandedFreeOf = !viewModel.expandedFreeOf
-                        }, onTitleClick = { /*TODO*/ }, cardState = CardState(
+                        }, onTitleClick = { }, cardState = CardState(
                             title = "Frei von: ",
                             onDelete = {},
                             toBeDeleted = false,
@@ -328,7 +328,7 @@ fun RecipeDetails(
                             ingredient = ingredient,
                             newUnit = newUnit,
                             newName = newName,
-                            newAmount = newAmount?.toFloat(),
+                            newAmount = newAmount,
                             group = IngredientGroup(group)
                         )
                     }
