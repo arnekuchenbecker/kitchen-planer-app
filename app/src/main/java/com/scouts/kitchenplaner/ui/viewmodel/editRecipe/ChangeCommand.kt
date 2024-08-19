@@ -20,8 +20,8 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-abstract class ChangeCommand {
+abstract class ChangeCommand(protected open val recipe: Recipe) {
 
     abstract fun applyOnState(state: EditRecipeState)
-    abstract suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe)
+    abstract suspend fun applyOnRecipe(editRecipe: EditRecipe)
 }

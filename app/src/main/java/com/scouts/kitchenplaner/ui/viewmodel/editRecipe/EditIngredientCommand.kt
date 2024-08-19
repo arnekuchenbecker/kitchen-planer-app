@@ -27,8 +27,9 @@ class EditIngredientCommand(
     private val ingredient: Ingredient,
     private val newName: String? = null,
     private val newAmount: Double? = null,
-    private val newUnit: String? = null
-) : ChangeCommand() {
+    private val newUnit: String? = null,
+    override val recipe: Recipe
+) : ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         val name = newName ?: ingredient.name
         val amount = newAmount ?: ingredient.amount
@@ -37,7 +38,7 @@ class EditIngredientCommand(
         state.alterIngredient(group, ingredient, newIngredient)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
         editRecipe.editIngredient(
             recipe,
             group = IngredientGroup(group, listOf()),

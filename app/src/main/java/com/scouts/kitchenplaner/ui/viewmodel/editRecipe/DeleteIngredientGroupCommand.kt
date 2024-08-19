@@ -21,12 +21,13 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class DeleteIngredientGroupCommand(private val group: String) : ChangeCommand() {
+class DeleteIngredientGroupCommand(private val group: String, override val recipe: Recipe) :
+    ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.deleteIngredientGroup(group)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
         editRecipe.deleteIngredientGroup(recipe, IngredientGroup(group, listOf()))
     }
 }

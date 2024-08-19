@@ -21,12 +21,13 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class UpdateImageURICommand(private val imageURI: Uri): ChangeCommand() {
+class UpdateImageURICommand(private val imageURI: Uri, override val recipe: Recipe) :
+    ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.imageURI = imageURI
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
-        editRecipe.setRecipePicture(recipe,imageURI)
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+        editRecipe.setRecipePicture(recipe, imageURI)
     }
 }

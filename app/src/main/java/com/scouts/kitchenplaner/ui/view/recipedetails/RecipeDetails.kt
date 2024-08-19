@@ -86,7 +86,7 @@ fun RecipeDetails(
                 if (viewModel.isEditable()) {
                     TextField(
                         value = viewModel.state.name,
-                        onValueChange = { viewModel.setRecipeName(it) },
+                        onValueChange = { viewModel.setRecipeName(it, recipe) },
                     )
 
                 } else {
@@ -112,9 +112,7 @@ fun RecipeDetails(
         }, floatingActionButton = {
             if (viewModel.isEditable()) {
                 ExtendedFloatingActionButton(onClick = {
-                    viewModel.saveChangesAndDeactivateEditMode(
-                        recipe = recipe
-                    )
+                    viewModel.saveChangesAndDeactivateEditMode()
                 }) {
                     Icon(imageVector = Icons.Filled.Check, contentDescription = "save changes")
                 }
@@ -157,9 +155,9 @@ fun RecipeDetails(
 
                                     onValueChange = {
                                         if (it.isEmpty()) {
-                                            viewModel.setAmountOfPeople(0)
+                                            viewModel.setAmountOfPeople(0, recipe = recipe)
                                         } else {
-                                            viewModel.setAmountOfPeople(it.toInt())
+                                            viewModel.setAmountOfPeople(it.toInt(), recipe = recipe)
                                         }
                                     },
                                     label = { },
@@ -178,7 +176,7 @@ fun RecipeDetails(
                     if (viewModel.isEditable()) {
                         PicturePicker(onPathSelected = { uri ->
                             if (uri != null) {
-                                viewModel.setRecipePicture(uri)
+                                viewModel.setRecipePicture(uri, recipe)
                             }
                         }, path = viewModel.state.imageURI)
                     } else {
@@ -204,7 +202,7 @@ fun RecipeDetails(
                     },
                     readOnly = !viewModel.isEditable(),
                     onValueChange = { new ->
-                        viewModel.setRecipeDescription(new)
+                        viewModel.setRecipeDescription(new, recipe)
                     },
                 )
 
@@ -228,14 +226,14 @@ fun RecipeDetails(
                                     viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.FREE_OF
-                                        )
+                                        ), recipe = recipe
                                     )
                                 },
                                 delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.FREE_OF
-                                        )
+                                        ), recipe = recipe
                                     )
                                 })
                         })
@@ -258,14 +256,14 @@ fun RecipeDetails(
                                     viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.ALLERGEN
-                                        )
+                                        ), recipe = recipe
                                     )
                                 },
                                 delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.ALLERGEN
-                                        )
+                                        ), recipe = recipe
                                     )
                                 })
                         })
@@ -288,14 +286,14 @@ fun RecipeDetails(
                                     viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.TRACE
-                                        )
+                                        ), recipe = recipe
                                     )
                                 },
                                 delete = { allergen ->
                                     viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen, DietaryTypes.TRACE
-                                        )
+                                        ), recipe = recipe
                                     )
                                 })
                         })
@@ -311,13 +309,19 @@ fun RecipeDetails(
                     },
                     editable = viewModel.isEditable(),
                     onGroupAdd = { viewModel.addIngredient(recipe, it) },
-                    onIngredientDelete = viewModel::deleteIngredient,
+                    onIngredientDelete = { group, ingredient ->
+                        viewModel.deleteIngredient(
+                            group,
+                            ingredient,
+                            recipe
+                        )
+                    },
                     onIngredientAdd = { group, ingredient ->
                         viewModel.addIngredient(
                             recipe = recipe, group = group, ingredient = ingredient
                         )
                     },
-                    onDeleteIngredientGroup = { viewModel.deleteIngredient(it) },
+                    onDeleteIngredientGroup = { viewModel.deleteIngredient(it, recipe = recipe) },
                     onAlterIngredient = { group, ingredient, newName, newAmount, newUnit ->
                         viewModel.editIngredient(
                             recipe = recipe,
@@ -340,18 +344,26 @@ fun RecipeDetails(
                     editable = viewModel.isEditable(),
                     onAddInstruction = { instruction, index ->
                         if (index == null) {
-                            viewModel.addInstructionStep(step = instruction, index = 0)
+                            viewModel.addInstructionStep(
+                                step = instruction,
+                                index = 0,
+                                recipe = recipe
+                            )
                         } else {
-                            viewModel.addInstructionStep(step = instruction, index = index)
+                            viewModel.addInstructionStep(
+                                step = instruction,
+                                index = index,
+                                recipe = recipe
+                            )
 
                         }
                     },
                     onDeleteInstruction = { index ->
-                        viewModel.removeInstructionStep(index)
+                        viewModel.removeInstructionStep(index, recipe)
                     },
                     onAlterInstruction = { index, instruction ->
                         viewModel.updateInstructionStep(
-                            index, instruction
+                            index, instruction, recipe
                         )
                     })
 

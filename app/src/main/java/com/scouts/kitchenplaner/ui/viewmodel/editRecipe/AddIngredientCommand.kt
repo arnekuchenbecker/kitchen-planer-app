@@ -22,13 +22,17 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class AddIngredientCommand(private val group: String, private val ingredient: Ingredient) :
-    ChangeCommand() {
+class AddIngredientCommand(
+    private val group: String,
+    private val ingredient: Ingredient,
+    override val recipe: Recipe
+) :
+    ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.addIngredient(group, ingredient)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
         editRecipe.addIngredient(recipe, IngredientGroup(group, listOf()), ingredient)
     }
 }

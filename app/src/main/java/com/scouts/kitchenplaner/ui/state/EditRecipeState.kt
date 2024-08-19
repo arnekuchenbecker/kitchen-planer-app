@@ -32,7 +32,7 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 
 class EditRecipeState {
 
-    var name by mutableStateOf("name ")
+    var name by mutableStateOf("name")
     var amount by mutableIntStateOf(0)
     var description by mutableStateOf("meine Beschreibung")
     var imageURI by mutableStateOf(Uri.EMPTY)

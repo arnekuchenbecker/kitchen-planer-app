@@ -21,12 +21,15 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class AddDietarySpecialityCommand(private val speciality: DietarySpeciality) : ChangeCommand() {
+class AddDietarySpecialityCommand(
+    private val speciality: DietarySpeciality,
+    override val recipe: Recipe
+) : ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.addDietarySpeciality(speciality.allergen, speciality.type)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
         editRecipe.addDietarySpeciality(recipe, speciality)
     }
 }

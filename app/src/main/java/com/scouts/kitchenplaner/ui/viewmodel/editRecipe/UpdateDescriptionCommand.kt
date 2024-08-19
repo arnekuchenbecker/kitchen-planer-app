@@ -20,12 +20,13 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class UpdateDescriptionCommand(private val description: String): ChangeCommand() {
+class UpdateDescriptionCommand(private val description: String, override val recipe: Recipe) :
+    ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.description = description
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
-        editRecipe.setRecipeDescription(recipe,description)
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+        editRecipe.setRecipeDescription(recipe, description)
     }
 }

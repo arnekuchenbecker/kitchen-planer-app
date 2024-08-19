@@ -16,7 +16,6 @@
 
 package com.scouts.kitchenplaner.ui.view.recipes
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -188,7 +187,7 @@ fun DisplayIngredient(
 
 
     Row(
-        modifier = Modifier.clickable(enabled = editable){ onChangeIngredient() },
+        modifier = Modifier.clickable(enabled = editable) { onChangeIngredient() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = ingredient.name, modifier = Modifier.fillMaxWidth(0.5f))

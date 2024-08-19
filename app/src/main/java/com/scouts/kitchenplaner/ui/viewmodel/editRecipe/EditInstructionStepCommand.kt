@@ -20,13 +20,17 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class EditInstructionStepCommand(private val index: Int, private val instruction: String) :
-    ChangeCommand() {
+class EditInstructionStepCommand(
+    private val index: Int,
+    private val instruction: String,
+    override val recipe: Recipe
+) :
+    ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.alterInstructionStep(index, instruction)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe, recipe: Recipe) {
+    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
         editRecipe.updateInstructionStep(recipe, index, instruction)
     }
 }
