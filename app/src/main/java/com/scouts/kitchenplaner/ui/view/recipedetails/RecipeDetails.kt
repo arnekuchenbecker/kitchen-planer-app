@@ -17,6 +17,7 @@
 package com.scouts.kitchenplaner.ui.view.recipedetails
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,6 +82,9 @@ fun RecipeDetails(
     if (recipeInitialized) {
         val recipe by viewModel.recipeFlow.collectAsState()
 
+        BackHandler(enabled = viewModel.isEditable()) {
+            viewModel.deactivateEditMode()
+        }
         Scaffold(topBar = {
             EditableHeader(titleField = {
                 if (viewModel.isEditable()) {
