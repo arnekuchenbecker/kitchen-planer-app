@@ -16,6 +16,8 @@
 
 package com.scouts.kitchenplaner.ui.view.recipes
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,12 +37,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -69,12 +71,16 @@ fun IngredientsInput(
     ingredientGroups: List<IngredientGroup>,
     onGroupAdd: (String) -> Unit = {},
     onIngredientAdd: (String, Ingredient) -> Unit = { _, _ -> },
-    onIngredientDelete: (String, Ingredient) -> Unit = { _, _ ->},
+    onIngredientDelete: (String, Ingredient) -> Unit = { _, _ -> },
+    onAlterIngredient: (String, Ingredient, String?, Double?, String?) -> Unit = { _, _, _, _, _ -> },
     onDeleteIngredientGroup: (String) -> Unit = {},
     editable: Boolean = true
 ) {
     var addIngredientToGroup by remember { mutableStateOf("") }
     var newGroupName by remember { mutableStateOf("") }
+    var showIngredientChangeIndex by remember { mutableIntStateOf(-1) }
+    var showIngredientChangeGroup by remember { mutableStateOf("") }
+
 
     ContentBox(
         title = "Zutaten",
@@ -103,12 +109,33 @@ fun IngredientsInput(
                     }
                 }
             }
-            ingredients.forEach {
+            ingredients.forEachIndexed { index, ingredient ->
                 DisplayIngredient(
-                    onDeleteClick = { onIngredientDelete(name, it) },
-                    ingredient = it,
-                    editable = editable
-                )
+                    onDeleteClick = { onIngredientDelete(name, ingredient) },
+                    ingredient = ingredient,
+                    editable = editable,
+                    onChangeIngredient = {
+
+                        showIngredientChangeIndex = index
+                        showIngredientChangeGroup = name
+                    })
+                if (index == showIngredientChangeIndex && showIngredientChangeGroup == name) {
+                    DisplayIngredientChangeDialog(
+                        ingredient = ingredient,
+                        onDismissRequest = {
+                            showIngredientChangeIndex = -1
+                            showIngredientChangeGroup = ""
+                        },
+                        onSaveChanges = { newName, newAmount, newUnit ->
+                            onAlterIngredient(
+                                name,
+                                ingredient,
+                                newName,
+                                newAmount,
+                                newUnit
+                            )
+                        })
+                }
             }
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
@@ -155,14 +182,22 @@ fun IngredientsInput(
 fun DisplayIngredient(
     onDeleteClick: () -> Unit = {},
     ingredient: Ingredient,
-    editable: Boolean
+    editable: Boolean,
+    onChangeIngredient: () -> Unit = {}
 ) {
+
+
     Row(
+        modifier = Modifier.clickable(enabled = editable){ onChangeIngredient() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = ingredient.name, modifier = Modifier.fillMaxWidth(0.5f))
         Spacer(modifier = Modifier.weight(1.0f))
-        Text(text = "${ingredient.amount} ${ingredient.unit}", textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth(0.85f))
+        Text(
+            text = "${ingredient.amount} ${ingredient.unit}",
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(0.85f)
+        )
         if (editable) {
             IconButton(
                 onClick = onDeleteClick
@@ -188,22 +223,55 @@ fun IngredientAdderDialog(
     onDismissRequest: () -> Unit,
     onIngredientAdd: (Ingredient) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-    var unit by remember { mutableStateOf("") }
+    DisplayIngredientChangeDialog(
+        ingredient = Ingredient("", 0.0, ""),
+        onDismissRequest = onDismissRequest,
+        onSaveChanges = { ingredientName, amount, unit ->
+            if (ingredientName == null || amount == null || unit == null) return@DisplayIngredientChangeDialog else onIngredientAdd(
+                Ingredient(
+                    ingredientName,
+                    amount,
+                    unit
+                )
+            )
+        },
+        text = "Zutat hinzufügen"
+    )
+}
+
+@Composable
+fun DisplayIngredientChangeDialog(
+    ingredient: Ingredient,
+    onDismissRequest: () -> Unit,
+    onSaveChanges: (String?, Double?, String?) -> Unit,
+    text: String = "Änderung speichern"
+) {
+    var name by remember { mutableStateOf(ingredient.name) }
+    var nameChange by remember { mutableStateOf(false) }
+    var amount by remember { mutableStateOf(ingredient.amount.toString()) }
+    var amountChange by remember { mutableStateOf(false) }
+    var unit by remember { mutableStateOf(ingredient.unit) }
+    var unitChange by remember { mutableStateOf(false) }
+
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(shape = RoundedCornerShape(15.dp)) {
             Column(modifier = Modifier.padding(20.dp)) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        name = it
+                        nameChange = true
+                    },
                     label = { Text(text = "Zutat") },
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
 
                 OutlinedNumberField(
                     value = amount,
-                    onValueChange = { amount = it },
+                    onValueChange = {
+                        amount = it
+                        amountChange = true
+                    },
                     label = { Text(text = "Menge") },
                     type = NumberFieldType.FLOAT,
                     modifier = Modifier.padding(vertical = 5.dp)
@@ -211,7 +279,10 @@ fun IngredientAdderDialog(
 
                 OutlinedTextField(
                     value = unit,
-                    onValueChange = { unit = it },
+                    onValueChange = {
+                        unit = it
+                        unitChange = true
+                    },
                     label = { Text(text = "Einheit") },
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
@@ -221,8 +292,20 @@ fun IngredientAdderDialog(
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 5.dp),
                     onClick = {
-                        onIngredientAdd(
-                            Ingredient(name, amount.toDoubleOrNull() ?: 0.0, unit)
+                        onSaveChanges(
+                            if (nameChange) {
+                                name
+                            } else {
+                                null
+                            }, if (amountChange) {
+                                amount.toDoubleOrNull()
+                            } else {
+                                null
+                            }, if (unitChange) {
+                                unit
+                            } else {
+                                null
+                            }
                         )
                         name = ""
                         amount = ""
@@ -230,9 +313,10 @@ fun IngredientAdderDialog(
                         onDismissRequest()
                     }
                 ) {
-                    Text(text = "Zutat hinzufügen")
+                    Text(text = text)
                 }
             }
         }
     }
+
 }

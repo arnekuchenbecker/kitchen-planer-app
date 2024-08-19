@@ -54,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
+import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.EditableHeader
@@ -91,27 +92,23 @@ fun RecipeDetails(
                 } else {
                     Text(recipe.name)
                 }
-            },
-                buttonClick = {
-                    if (!viewModel.isEditable()) {
-                        viewModel.activateEditMode(recipe)
-                    } else {
-                        viewModel.deactivateEditMode()
-                    }
-                },
-                buttonImage = {
-                    if (viewModel.isEditable()) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "dismiss changes"
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = "Edit recipe"
-                        )
-                    }
-                })
+            }, buttonClick = {
+                if (!viewModel.isEditable()) {
+                    viewModel.activateEditMode(recipe)
+                } else {
+                    viewModel.deactivateEditMode()
+                }
+            }, buttonImage = {
+                if (viewModel.isEditable()) {
+                    Icon(
+                        imageVector = Icons.Filled.Close, contentDescription = "dismiss changes"
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Filled.Edit, contentDescription = "Edit recipe"
+                    )
+                }
+            })
         }, floatingActionButton = {
             if (viewModel.isEditable()) {
                 ExtendedFloatingActionButton(onClick = {
@@ -130,10 +127,10 @@ fun RecipeDetails(
                     .padding(paddingValues)
             ) {
                 Row(
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .padding(5.dp)
-                        .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Column(
@@ -145,8 +142,7 @@ fun RecipeDetails(
                     ) {
                         if (viewModel.isEditable()) {
                             Row(
-                                Modifier
-                                    .fillMaxWidth(),
+                                Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -174,8 +170,7 @@ fun RecipeDetails(
                         } else {
                             Text(
                                 "Für " + recipe.numberOfPeople + " Person(en)",
-                                modifier = Modifier
-                                    .align(alignment = Alignment.CenterHorizontally)
+                                modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                             )
                         }
 
@@ -202,8 +197,7 @@ fun RecipeDetails(
                 HorizontalDivider()
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value =
-                    if (viewModel.isEditable()) {
+                    value = if (viewModel.isEditable()) {
                         viewModel.state.description
                     } else {
                         recipe.description
@@ -216,124 +210,100 @@ fun RecipeDetails(
 
                 ContentBox(title = "Allergene", modifier = Modifier.padding(10.dp)) {
                     Column {
-                        ExpandableCard(
-                            expanded = viewModel.expandedFreeOf,
-                            onCardArrowClick = {
-                                viewModel.expandedFreeOf = !viewModel.expandedFreeOf
-                            },
-                            onTitleClick = { /*TODO*/ },
-                            cardState = CardState(
-                                title = "Frei von: ",
-                                onDelete = {},
-                                toBeDeleted = false,
-                                contentModifier = Modifier.heightIn(max = 500.dp)
-                            ) {
-                                DisplayAllergenLists(
-                                    editable = { viewModel.isEditable() },
-                                    allergenList = if (viewModel.isEditable()) {
-                                        viewModel.state.freeOf
-                                    } else {
-                                        recipe.freeOfAllergen
-                                    },
-                                    add = { allergen ->
-                                        viewModel.addDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.FREE_OF
-                                            )
+                        ExpandableCard(expanded = viewModel.expandedFreeOf, onCardArrowClick = {
+                            viewModel.expandedFreeOf = !viewModel.expandedFreeOf
+                        }, onTitleClick = { /*TODO*/ }, cardState = CardState(
+                            title = "Frei von: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
+                        ) {
+                            DisplayAllergenLists(editable = { viewModel.isEditable() },
+                                allergenList = if (viewModel.isEditable()) {
+                                    viewModel.state.freeOf
+                                } else {
+                                    recipe.freeOfAllergen
+                                },
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.FREE_OF
                                         )
-                                    },
-                                    delete = { allergen ->
-                                        viewModel.deleteDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.FREE_OF
-                                            )
+                                    )
+                                },
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.FREE_OF
                                         )
-                                    })
-                            }
-                        )
-                        ExpandableCard(
-                            expanded = viewModel.expandedAllergen,
-                            onCardArrowClick = {
-                                viewModel.expandedAllergen = !viewModel.expandedAllergen
-                            },
-                            onTitleClick = { /*TODO*/ },
-                            cardState = CardState(
-                                title = "Enthält: ",
-                                onDelete = {},
-                                toBeDeleted = false,
-                                contentModifier = Modifier.heightIn(max = 500.dp)
+                                    )
+                                })
+                        })
+                        ExpandableCard(expanded = viewModel.expandedAllergen, onCardArrowClick = {
+                            viewModel.expandedAllergen = !viewModel.expandedAllergen
+                        }, onTitleClick = { }, cardState = CardState(
+                            title = "Enthält: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
 
-                            ) {
-                                DisplayAllergenLists(
-                                    editable = viewModel::isEditable,
-                                    allergenList = if (viewModel.isEditable()) {
-                                        viewModel.state.allergens
-                                    } else {
-                                        recipe.allergens
-                                    },
-                                    add = { allergen ->
-                                        viewModel.addDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.ALLERGEN
-                                            )
+                        ) {
+                            DisplayAllergenLists(editable = viewModel::isEditable,
+                                allergenList = if (viewModel.isEditable()) {
+                                    viewModel.state.allergens
+                                } else {
+                                    recipe.allergens
+                                },
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.ALLERGEN
                                         )
-                                    },
-                                    delete = { allergen ->
-                                        viewModel.deleteDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.ALLERGEN
-                                            )
+                                    )
+                                },
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.ALLERGEN
                                         )
-                                    })
-                            }
-                        )
-                        ExpandableCard(
-                            expanded = viewModel.expandedTraces,
-                            onCardArrowClick = {
-                                viewModel.expandedTraces = !viewModel.expandedTraces
-                            },
-                            onTitleClick = { /*TODO*/ },
-                            cardState = CardState(
-                                title = "Enthält Spuren von: ",
-                                onDelete = {},
-                                toBeDeleted = false,
-                                contentModifier = Modifier.heightIn(max = 500.dp)
+                                    )
+                                })
+                        })
+                        ExpandableCard(expanded = viewModel.expandedTraces, onCardArrowClick = {
+                            viewModel.expandedTraces = !viewModel.expandedTraces
+                        }, onTitleClick = { }, cardState = CardState(
+                            title = "Enthält Spuren von: ",
+                            onDelete = {},
+                            toBeDeleted = false,
+                            contentModifier = Modifier.heightIn(max = 500.dp)
 
-                            ) {
-                                DisplayAllergenLists(
-                                    editable = { viewModel.isEditable() },
-                                    allergenList = if (viewModel.isEditable()) {
-                                        viewModel.state.traces
-                                    } else {
-                                        recipe.traces
-                                    },
-                                    add = { allergen ->
-                                        viewModel.addDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.TRACE
-                                            )
+                        ) {
+                            DisplayAllergenLists(editable = { viewModel.isEditable() },
+                                allergenList = if (viewModel.isEditable()) {
+                                    viewModel.state.traces
+                                } else {
+                                    recipe.traces
+                                },
+                                add = { allergen ->
+                                    viewModel.addDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.TRACE
                                         )
-                                    },
-                                    delete = { allergen ->
-                                        viewModel.deleteDietarySpeciality(
-                                            DietarySpeciality(
-                                                allergen,
-                                                DietaryTypes.TRACE
-                                            )
+                                    )
+                                },
+                                delete = { allergen ->
+                                    viewModel.deleteDietarySpeciality(
+                                        DietarySpeciality(
+                                            allergen, DietaryTypes.TRACE
                                         )
-                                    })
-                            })
+                                    )
+                                })
+                        })
                     }
 
 
                 }
-                IngredientsInput(
-                    modifier = Modifier.padding(10.dp),
+                IngredientsInput(modifier = Modifier.padding(10.dp),
                     ingredientGroups = if (viewModel.isEditable()) {
                         viewModel.state.ingredients
                     } else {
@@ -344,17 +314,24 @@ fun RecipeDetails(
                     onIngredientDelete = viewModel::deleteIngredient,
                     onIngredientAdd = { group, ingredient ->
                         viewModel.addIngredient(
-                            recipe = recipe,
-                            group = group,
-                            ingredient = ingredient
+                            recipe = recipe, group = group, ingredient = ingredient
                         )
                     },
-                    onDeleteIngredientGroup = { viewModel.deleteIngredient(it) }
+                    onDeleteIngredientGroup = { viewModel.deleteIngredient(it) },
+                    onAlterIngredient = { group, ingredient, newName, newAmount, newUnit ->
+                        viewModel.editIngredient(
+                            recipe = recipe,
+                            ingredient = ingredient,
+                            newUnit = newUnit,
+                            newName = newName,
+                            newAmount = newAmount?.toFloat(),
+                            group = IngredientGroup(group)
+                        )
+                    }
 
 
                 )
-                InstructionInput(
-                    modifier = Modifier.padding(10.dp),
+                InstructionInput(modifier = Modifier.padding(10.dp),
                     instructions = if (viewModel.isEditable()) {
                         viewModel.state.instructions
                     } else {
@@ -374,11 +351,9 @@ fun RecipeDetails(
                     },
                     onAlterInstruction = { index, instruction ->
                         viewModel.updateInstructionStep(
-                            index,
-                            instruction
+                            index, instruction
                         )
-                    }
-                )
+                    })
 
             }
         }
@@ -397,50 +372,41 @@ fun DisplayAllergenLists(
     Column() {
         if (editable()) {
             TextField(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 value = text, onValueChange = { text = it },
                 trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            add(text);
-                            text = "";
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        add(text);
+                        text = "";
+                    }) {
                         Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add new allergen"
+                            imageVector = Icons.Filled.Add, contentDescription = "Add new allergen"
                         )
                     }
                 },
             )
             HorizontalDivider()
         }
-        LazyColumnWrapper(
-            content = allergenList, DisplayContent = { allergen, _ ->
-                if (editable()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(allergen)
-                        IconButton(
-                            onClick = {
-                                delete(allergen)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Delete,
-                                contentDescription = "Delete Allergen"
-                            )
-                        }
-                    }
-                } else {
+        LazyColumnWrapper(content = allergenList, DisplayContent = { allergen, _ ->
+            if (editable()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(allergen)
+                    IconButton(onClick = {
+                        delete(allergen)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Delete Allergen"
+                        )
+                    }
                 }
-            },
-            DisplayEmpty = { Text("Noch nichts eingetragen") }
-        )
+            } else {
+                Text(allergen)
+            }
+        }, DisplayEmpty = { Text("Noch nichts eingetragen") })
     }
 }

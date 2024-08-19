@@ -96,7 +96,6 @@ class EditRecipeState {
         }
     }
 
-    //TODO everything with ingredients
 
     fun addInstructionStep(index: Int, instruction: String) {
         _instructions.add(index, instruction)

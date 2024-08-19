@@ -60,19 +60,19 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         return editMode;
     }
 
-    fun activateEditMode(recipe: Recipe){
+    fun activateEditMode(recipe: Recipe) {
         editMode = true
         state.init(recipe)
     }
+
     fun deactivateEditMode() {
         editMode = false
         state = EditRecipeState()
     }
 
-    fun saveChangesAndDeactivateEditMode(recipe: Recipe){
+    fun saveChangesAndDeactivateEditMode(recipe: Recipe) {
         updateRecipe(recipe)
         deactivateEditMode()
-
     }
 
 
@@ -118,7 +118,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * @param speciality The speciality to add
      */
     fun addDietarySpeciality(speciality: DietarySpeciality) {
-       val command = AddDietarySpecialityCommand(speciality)
+        val command = AddDietarySpecialityCommand(speciality)
         command.applyOnState(state)
         commandList.add(command)
     }
@@ -128,7 +128,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      *
      * @param speciality The speciality to delete
      */
-    fun deleteDietarySpeciality( speciality: DietarySpeciality) {
+    fun deleteDietarySpeciality(speciality: DietarySpeciality) {
         val command = DeleteSpecialityCommand(speciality)
         command.applyOnState(state)
         commandList.add(command)
@@ -142,12 +142,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * @param ingredient The ingredient to be added ( or null if the ingredient group should be added)
      */
     fun addIngredient(recipe: Recipe, group: String, ingredient: Ingredient? = null) {
-        val command =
-            if (ingredient == null) {
-                 AddIngredientGroupCommand(group)
-            } else {
-                AddIngredientCommand(group, ingredient)
-            }
+        val command = if (ingredient == null) {
+            AddIngredientGroupCommand(group)
+        } else {
+            AddIngredientCommand(group, ingredient)
+        }
         command.applyOnState(state)
         commandList.add(command)
     }
@@ -170,20 +169,23 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         newAmount: Float? = null,
         newUnit: String? = null
     ) {
-        viewModelScope.launch {
-            editRecipe.editIngredient(
-                recipe, group, ingredient, newName, newAmount, newUnit
-            )
-        }
+        val command = EditIngredientCommand(
+            group = group.name,
+            ingredient,
+            newName = newName,
+            newAmount = newAmount?.toDouble(),
+            newUnit = newUnit
+        )
+        command.applyOnState(state)
+        commandList.add(command)
     }
 
-    fun deleteIngredient(group: String, ingredient: Ingredient? = null){
-        val command =
-            if (ingredient == null) {
-                DeleteIngredientGroupCommand(group)
-            } else {
-                DeleteIngredientCommand(group, ingredient)
-            }
+    fun deleteIngredient(group: String, ingredient: Ingredient? = null) {
+        val command = if (ingredient == null) {
+            DeleteIngredientGroupCommand(group)
+        } else {
+            DeleteIngredientCommand(group, ingredient)
+        }
         command.applyOnState(state)
         commandList.add(command)
     }
@@ -219,7 +221,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * @param index The index of the instruction step to change
      * @param instruction The new content of the instruction step
      */
-    fun updateInstructionStep( index: Int, instruction: String) {
+    fun updateInstructionStep(index: Int, instruction: String) {
         val command = EditInstructionStepCommand(index, instruction)
         command.applyOnState(state)
         commandList.add(command)
