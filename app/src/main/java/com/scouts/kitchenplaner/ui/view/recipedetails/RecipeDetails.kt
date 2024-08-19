@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.ui.view.recipedetails
 
 import android.net.Uri
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,15 +45,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
-import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.EditableHeader
@@ -65,8 +61,7 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
 import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
-import com.scouts.kitchenplaner.ui.viewmodel.EditRecipeViewModel
-import java.net.URI
+import com.scouts.kitchenplaner.ui.viewmodel.editRecipe.EditRecipeViewModel
 
 
 @Composable
@@ -86,8 +81,8 @@ fun RecipeDetails(
             EditableHeader(titleField = {
                 if (viewModel.isEditable()) {
                     TextField(
-                        value = viewModel.changeState.name,
-                        onValueChange = { viewModel.changeState.name = it },
+                        value = viewModel.state.name,
+                        onValueChange = { viewModel.setRecipeName(it) },
                     )
 
                 } else {
@@ -111,12 +106,18 @@ fun RecipeDetails(
 
             Row(
                 modifier =
-                        Modifier.padding(5.dp)
-                        .fillMaxWidth()
-                , verticalAlignment = Alignment.CenterVertically
+                Modifier
+                    .padding(5.dp)
+                    .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Column(if((recipe.imageURI != Uri.EMPTY && !viewModel.isEditable()) || viewModel.isEditable()){Modifier.fillMaxWidth(0.5f)}else{Modifier} ) {
+                Column(
+                    if ((recipe.imageURI != Uri.EMPTY && !viewModel.isEditable()) || viewModel.isEditable()) {
+                        Modifier.fillMaxWidth(0.5f)
+                    } else {
+                        Modifier
+                    }
+                ) {
                     if (viewModel.isEditable()) {
                         Row(
                             Modifier
@@ -127,13 +128,17 @@ fun RecipeDetails(
                             Text("Für ")
                             OutlinedNumberField(
                                 modifier = Modifier.fillMaxWidth(0.3f),
-                                value = viewModel.changeState.amount.toString(),
+                                value = if (viewModel.state.amount == 0) {
+                                    ""
+                                } else {
+                                    viewModel.state.amount.toString()
+                                },
 
                                 onValueChange = {
                                     if (it.isEmpty()) {
-                                        viewModel.changeState.amount = 0;
+                                        viewModel.setAmountOfPeople(0)
                                     } else {
-                                        viewModel.changeState.amount = it.toInt()
+                                        viewModel.setAmountOfPeople(it.toInt())
                                     }
                                 },
                                 label = { },
@@ -153,9 +158,9 @@ fun RecipeDetails(
                 if (viewModel.isEditable()) {
                     PicturePicker(onPathSelected = { uri ->
                         if (uri != null) {
-                            viewModel.changeState.imageURI = uri
+                            viewModel.setRecipePicture(uri)
                         }
-                    }, path = viewModel.changeState.imageURI)
+                    }, path = viewModel.state.imageURI)
                 } else {
                     if (recipe.imageURI != Uri.EMPTY) {
                         AsyncImage(
@@ -174,13 +179,13 @@ fun RecipeDetails(
                 modifier = Modifier.fillMaxWidth(),
                 value =
                 if (viewModel.isEditable()) {
-                    viewModel.changeState.description
+                    viewModel.state.description
                 } else {
                     recipe.description
                 },
                 readOnly = !viewModel.isEditable(),
                 onValueChange = { new ->
-                    viewModel.changeState.description = new
+                    viewModel.setRecipeDescription(new)
                 },
             )
 
@@ -199,12 +204,12 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = { viewModel.isEditable() },
                                 allergenList = if (viewModel.isEditable()) {
-                                    viewModel.changeState.freeOf
+                                    viewModel.state.freeOf
                                 } else {
                                     recipe.freeOfAllergen
                                 },
                                 add = { allergen ->
-                                    viewModel.changeState.addDietarySpeciality(
+                                    viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.FREE_OF
@@ -212,7 +217,7 @@ fun RecipeDetails(
                                     )
                                 },
                                 delete = { allergen ->
-                                    viewModel.changeState.removeSpeciality(
+                                    viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.FREE_OF
@@ -237,12 +242,12 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = viewModel::isEditable,
                                 allergenList = if (viewModel.isEditable()) {
-                                    viewModel.changeState.allergen
+                                    viewModel.state.allergens
                                 } else {
                                     recipe.allergens
                                 },
                                 add = { allergen ->
-                                    viewModel.changeState.addDietarySpeciality(
+                                    viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.ALLERGEN
@@ -250,7 +255,7 @@ fun RecipeDetails(
                                     )
                                 },
                                 delete = { allergen ->
-                                    viewModel.changeState.removeSpeciality(
+                                    viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.ALLERGEN
@@ -273,12 +278,12 @@ fun RecipeDetails(
                             DisplayAllergenLists(
                                 editable = { viewModel.isEditable() },
                                 allergenList = if (viewModel.isEditable()) {
-                                    viewModel.changeState.trace
+                                    viewModel.state.traces
                                 } else {
                                     recipe.traces
                                 },
                                 add = { allergen ->
-                                    viewModel.changeState.addDietarySpeciality(
+                                    viewModel.addDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.TRACE
@@ -286,7 +291,7 @@ fun RecipeDetails(
                                     )
                                 },
                                 delete = { allergen ->
-                                    viewModel.changeState.removeSpeciality(
+                                    viewModel.deleteDietarySpeciality(
                                         DietarySpeciality(
                                             allergen,
                                             DietaryTypes.TRACE
@@ -301,35 +306,45 @@ fun RecipeDetails(
             IngredientsInput(
                 modifier = Modifier.padding(10.dp),
                 ingredientGroups = if (viewModel.isEditable()) {
-                    viewModel.changeState.ingredients
+                    viewModel.state.ingredients
                 } else {
                     recipe.ingredientGroups
                 },
                 editable = viewModel.isEditable(),
-                onGroupAdd = viewModel.changeState::addIngredientGroup,
-                onIngredientDelete = viewModel.changeState::deleteIngredient,
-                onIngredientAdd = viewModel.changeState::addIngredient,
-                onDeleteIngredientGroup = viewModel.changeState::deleteGroup
+                onGroupAdd = { viewModel.addIngredient(recipe, it) },
+                onIngredientDelete = viewModel::deleteIngredient,
+                onIngredientAdd = { group, ingredient ->
+                    viewModel.addIngredient(
+                        recipe = recipe,
+                        group = group,
+                        ingredient = ingredient
+                    )
+                },
+                onDeleteIngredientGroup = { viewModel.deleteIngredient(it) }
 
 
             )
             InstructionInput(
                 modifier = Modifier.padding(10.dp),
                 instructions = if (viewModel.isEditable()) {
-                    viewModel.changeState.instruction
+                    viewModel.state.instructions
                 } else {
                     recipe.instructions
                 },
                 editable = viewModel.isEditable(),
                 onAddInstruction = { instruction, index ->
                     if (index == null) {
-                        viewModel.changeState.addInstructionStep(0, instruction)
+                        viewModel.addInstructionStep(step = instruction, index = 0)
                     } else {
-                        viewModel.changeState.addInstructionStep(index, instruction)
+                        viewModel.addInstructionStep(step = instruction, index = index)
+
                     }
                 },
-                onDeleteInstruction = { instruction, index ->
-                    viewModel.changeState.deleteInstructionStep(
+                onDeleteInstruction = { index ->
+                    viewModel.removeInstructionStep(index)
+                },
+                onAlterInstruction = { index, instruction ->
+                    viewModel.updateInstructionStep(
                         index,
                         instruction
                     )

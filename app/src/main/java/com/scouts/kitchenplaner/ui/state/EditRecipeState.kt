@@ -25,8 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.compose.runtime.toMutableStateList
-import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
@@ -35,168 +33,109 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 class EditRecipeState {
 
     var name by mutableStateOf("name ")
-
     var amount by mutableIntStateOf(0)
-
     var description by mutableStateOf("meine Beschreibung")
-
     var imageURI by mutableStateOf(Uri.EMPTY)
 
+    private val _freeOf: SnapshotStateList<String> = mutableStateListOf()
+    private val _allergens: SnapshotStateList<String> = mutableStateListOf()
+    private val _traces: SnapshotStateList<String> = mutableStateListOf()
 
-    private val _originalIngredientGroup: SnapshotStateList<String> = mutableStateListOf<String>()
 
-    private val _originalIngredients: SnapshotStateMap<String, MutableList<Ingredient>> =
+    private val _ingredients: SnapshotStateMap<String, SnapshotStateList<Ingredient>> =
         mutableStateMapOf()
 
-    private val _addedIngredients: SnapshotStateMap<String, MutableList<Ingredient>> =
-        mutableStateMapOf()
-    private val _deletedIngredients: SnapshotStateMap<String, MutableList<Ingredient>> =
-        mutableStateMapOf()
-    private val _addedIngredientGroup: SnapshotStateList<String> = mutableStateListOf()
-    private val _deletedIngredientGroup: SnapshotStateList<String> = mutableStateListOf()
+    private val _instructions: SnapshotStateList<String> = mutableStateListOf()
 
-    private val _instruction: SnapshotStateList<String> = mutableStateListOf<String>()
-    private val _instructionChanges: SnapshotStateList<Triple<Int, String, Boolean>> =
-        mutableStateListOf()
-
-    private val _originalDietarySpecialities: SnapshotStateList<DietarySpeciality> =
-        mutableStateListOf()
-    private val _addedDietarySpecialities: SnapshotStateList<DietarySpeciality> =
-        mutableStateListOf()
-    private val _deletedDietarySpecialities: SnapshotStateList<DietarySpeciality> =
-        mutableStateListOf()
-
-    val allergen: List<String>
-        get() = _originalDietarySpecialities.filter { speciality -> speciality.type == DietaryTypes.ALLERGEN }
-            .map { speciality -> speciality.allergen }
-    val trace: List<String>
-        get() = _originalDietarySpecialities.filter { speciality -> speciality.type == DietaryTypes.TRACE }
-            .map { speciality -> speciality.allergen }
     val freeOf: List<String>
-        get() = _originalDietarySpecialities.filter { speciality -> speciality.type == DietaryTypes.FREE_OF }
-            .map { speciality -> speciality.allergen }
+        get() = _freeOf
+    val allergens: List<String>
+        get() = _allergens
+    val traces: List<String>
+        get() = _traces
 
     val ingredients: List<IngredientGroup>
-        get() = _addedIngredients.mapValues { (key, value) ->
-            if (_originalIngredients.contains(key)) {
-                return@mapValues value + _originalIngredients[key]!!
-            } else {
-                return@mapValues value
-            }
-        }.map { (group, ingredients) -> IngredientGroup(group, ingredients) }
+        get() = _ingredients.map { (group, ingredients) -> IngredientGroup(group, ingredients) }
 
-    val instruction: List<String>
-        get() = _instruction
+    val instructions: List<String>
+        get() = _instructions
 
-    val instructionChanges: List<Triple<Int, String, Boolean>>
-        get() = _instructionChanges
 
-    fun addDietarySpeciality(speciality: DietarySpeciality) {
-        if(!_originalDietarySpecialities.contains(speciality)){
-            _originalDietarySpecialities.add(speciality)
-            _addedDietarySpecialities.add(speciality)
-        }
-    }
-
-    fun removeSpeciality(speciality: DietarySpeciality) {
-        if (_originalDietarySpecialities.contains(speciality)) {
-            if (_addedDietarySpecialities.contains(speciality)) {
-                _addedDietarySpecialities.remove(speciality)
-            } else {
-                _deletedDietarySpecialities.add(speciality)
-            }
-            _originalDietarySpecialities.remove(speciality)
-        }
-    }
-
-    fun getAddedSpecialities(): MutableList<DietarySpeciality> = _addedDietarySpecialities
-    fun getDeletedSpecialities(): MutableList<DietarySpeciality> = _deletedDietarySpecialities
-
-    fun addInstructionStep(index: Int, step: String) {
-        _instruction.add(index, step)
-        _instructionChanges.add(Triple(index, step, true))
-    }
-
-    fun deleteInstructionStep(index: Int, step: String) {
-        _instruction.remove(step)
-        _instructionChanges.add(Triple(index, step, false))
-
-    }
-
-    fun getAddedIngredients(): Map<String, MutableList<Ingredient>> {
-        return _addedIngredients
-    }
-
-    fun getDeletedIngredientsAndGroups(): Pair<List<String>, Map<String, MutableList<Ingredient>>> {
-        return Pair(_deletedIngredientGroup, _deletedIngredients)
-    }
-
-    fun initState(recipe: Recipe) {
+    fun init(recipe: Recipe) {
         name = recipe.name
         amount = recipe.numberOfPeople
         description = recipe.description
         imageURI = recipe.imageURI
-        _originalIngredientGroup.addAll(recipe.ingredientGroups.map { it.name })
-        recipe.ingredientGroups.forEach { group ->
-            _originalIngredients[group.name] = group.ingredients.toMutableStateList()
-            _addedIngredients[group.name] = mutableStateListOf()
-        }
-        _instruction.addAll(recipe.instructions)
-        _originalDietarySpecialities.addAll(recipe.allergens.map { allergen ->
-            DietarySpeciality(
-                allergen,
-                DietaryTypes.ALLERGEN
-            )
-        })
-        _originalDietarySpecialities.addAll(recipe.traces.map { allergen ->
-            DietarySpeciality(
-                allergen,
-                DietaryTypes.TRACE
-            )
-        })
-        _originalDietarySpecialities.addAll(recipe.freeOfAllergen.map { allergen ->
-            DietarySpeciality(
-                allergen,
-                DietaryTypes.FREE_OF
-            )
-        })
 
+        _freeOf.addAll(recipe.freeOfAllergen)
+        _traces.addAll(recipe.traces)
+        _allergens.addAll(recipe.allergens)
+
+        for (group in recipe.ingredientGroups) {
+            val ingredients = mutableStateListOf<Ingredient>()
+            ingredients.addAll(group.ingredients)
+            _ingredients[group.name] = ingredients
+        }
+
+        _instructions.addAll(recipe.instructions)
     }
 
-    fun addIngredientGroup(group: String) {
-        if (!_originalIngredientGroup.contains(group)) {
-            _addedIngredientGroup.add(group)
+    fun addDietarySpeciality(speciality: String, type: DietaryTypes) {
+        when (type) {
+            DietaryTypes.TRACE -> _traces.add(speciality)
+            DietaryTypes.ALLERGEN -> _allergens.add(speciality)
+            DietaryTypes.FREE_OF -> _freeOf.add(speciality)
         }
-        _addedIngredients[group] = mutableStateListOf()
+    }
+
+    fun deleteDietarySpeciality(speciality: String, type: DietaryTypes) {
+        when (type) {
+            DietaryTypes.TRACE -> _traces.remove(speciality)
+            DietaryTypes.ALLERGEN -> _allergens.remove(speciality)
+            DietaryTypes.FREE_OF -> _freeOf.remove(speciality)
+        }
+    }
+
+    //TODO everything with ingredients
+
+    fun addInstructionStep(index: Int, instruction: String) {
+        _instructions.add(index, instruction)
+    }
+
+    fun alterInstructionStep(index: Int, newInstruction: String) {
+        _instructions[index] = newInstruction
+    }
+
+    fun deleteInstructionStep(index: Int) {
+        _instructions.removeAt(index)
+    }
+
+    fun addIngredientGroup(name: String) {
+        if (!_ingredients.containsKey(name)) {
+            _ingredients[name] = mutableStateListOf()
+        }
+    }
+
+    fun deleteIngredientGroup(name: String) {
+        _ingredients.remove(name)
     }
 
     fun addIngredient(group: String, ingredient: Ingredient) {
-        if (_originalIngredientGroup.contains(group) || _addedIngredientGroup.contains(group)) {
-            _addedIngredients[group]?.add(ingredient)
+        if (_ingredients.containsKey(group)) {
+            _ingredients[group]!!.add(ingredient)
         }
-
     }
 
     fun deleteIngredient(group: String, ingredient: Ingredient) {
-        if (_addedIngredients[group]?.contains(ingredient) == true) {
-            _addedIngredients[group]?.remove(ingredient)
-        } else if (_originalIngredientGroup.contains(group)) {
-            _originalIngredients[group]?.remove(ingredient)
-            _deletedIngredients[group]?.add(ingredient)
+        if (_ingredients.containsKey(group)) {
+            _ingredients[group]!!.remove(ingredient)
         }
     }
 
-    fun deleteGroup(group: String) {
-        if (_originalIngredientGroup.contains(group)) {
-            _originalIngredientGroup.remove(group)
-            _deletedIngredientGroup.add(group)
-            _originalIngredients.remove(group)
-
-        } else {
-            _addedIngredientGroup.remove(group)
+    fun alterIngredient(group: String, ingredient: Ingredient, newValues: Ingredient) {
+        if (_ingredients.containsKey(group)) {
+            val index = _ingredients[group]!!.indexOf(ingredient)
+            _ingredients[group]!!.set(index = index, newValues)
         }
-        _addedIngredients.remove(group)
-        _deletedIngredients.remove(group)
     }
-
 }

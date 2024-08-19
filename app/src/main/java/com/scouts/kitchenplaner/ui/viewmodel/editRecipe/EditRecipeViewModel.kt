@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.viewmodel
+package com.scouts.kitchenplaner.ui.viewmodel.editRecipe
 
 import android.net.Uri
 import androidx.compose.runtime.getValue
@@ -44,8 +44,8 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     var expandedAllergen by mutableStateOf(false)
     var expandedFreeOf by mutableStateOf(false)
     var expandedTraces by mutableStateOf(false)
-    var changeState by mutableStateOf(EditRecipeState())
-
+    var state by mutableStateOf(EditRecipeState())
+    private var commandList: MutableList<ChangeCommand> = mutableListOf()
 
 
     /**
@@ -62,7 +62,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
 
     fun toggleEditMode(recipe: Recipe) {
         if (!editMode) {
-            changeState.initState(recipe = recipe);
+            state.init(recipe = recipe)
         } else {
             updateRecipe(recipe)
         }
@@ -71,97 +71,79 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
 
     private fun updateRecipe(recipe: Recipe) {
         viewModelScope.launch {
-            editRecipe.setRecipeName(recipe, changeState.name)
-            editRecipe.setRecipeDescription(recipe, changeState.description)
-            editRecipe.setNumberOfPeople(recipe, changeState.amount)
-            editRecipe.setRecipePicture(recipe, changeState.imageURI)
-
-            changeState.getAddedIngredients().forEach { (group, ingredients) ->
-                editRecipe.addIngredientGroup(
-                    recipe,
-                    IngredientGroup(group, ingredients)
-                )
-            }
-
-            val deleted = changeState.getDeletedIngredientsAndGroups()
-
-            deleted.first.forEach { group ->
-                editRecipe.deleteIngredientGroup(recipe, IngredientGroup(group))
-            }
-            deleted.second.forEach { (group, ingredientList) ->
-                ingredientList.forEach { ingredient ->
-                    editRecipe.deleteIngredient(
-                        recipe,
-                        IngredientGroup(group), ingredient
-                    )
-                }
-
-            }
-
-            changeState.instructionChanges.forEach { (index, step, added) ->
-                if (added) {
-                    editRecipe.addInstructionStep(recipe, step, index)
-                } else {
-                    editRecipe.deleteInstructionStep(recipe, index)
-                }
-            }
-
-            changeState.getDeletedSpecialities().forEach { speciality -> editRecipe.deleteDietarySpeciality(recipe,speciality) }
-            changeState.getAddedSpecialities().forEach { dietarySpeciality -> editRecipe.addDietarySpeciality(recipe,dietarySpeciality) }
-            changeState = EditRecipeState()
+            commandList.forEach { it.applyOnRecipe(editRecipe, recipe) }
+            state = EditRecipeState()
         }
+    }
+
+    fun setRecipeName(name: String) {
+        val nameCommand = UpdateNameCommand(name)
+        commandList.add(nameCommand)
+        nameCommand.applyOnState(state)
+    }
+
+    fun setRecipeDescription(description: String) {
+        val command = UpdateDescriptionCommand(description)
+        commandList.add(command)
+        command.applyOnState(state)
+    }
+
+    fun setAmountOfPeople(amount: Int) {
+        val command = UpdateAmountOfPeopleCommand(amount)
+        commandList.add(command)
+        command.applyOnState(state)
     }
 
     /**
      * Updates the recipe's picture
      *
-     * @param recipe The recipe to change
      * @param uri The new URI for the new picture
      */
-    fun setRecipePicture(recipe: Recipe, uri: Uri) {
-        viewModelScope.launch {
-            editRecipe.setRecipePicture(recipe, uri)
-        }
+    fun setRecipePicture(uri: Uri) {
+        val command = UpdateImageURICommand(uri)
+        commandList.add(command)
+        command.applyOnState(state)
     }
 
 
     /**
      * Adds a dietary speciality to the recipe
      *
-     * @param recipe The recipe to change
      * @param speciality The speciality to add
      */
-    fun addDietarySpeciality(recipe: Recipe, speciality: DietarySpeciality) {
-        viewModelScope.launch {
-            editRecipe.addDietarySpeciality(recipe, speciality)
-        }
+    fun addDietarySpeciality(speciality: DietarySpeciality) {
+       val command = AddDietarySpecialityCommand(speciality)
+        command.applyOnState(state)
+        commandList.add(command)
     }
 
     /**
      * Deletes a speciality from the recipe
      *
-     * @param recipe The recipe to change
      * @param speciality The speciality to delete
      */
-    fun deleteDietarySpeciality(recipe: Recipe, speciality: DietarySpeciality) {
-        viewModelScope.launch { editRecipe.deleteDietarySpeciality(recipe, speciality) }
+    fun deleteDietarySpeciality( speciality: DietarySpeciality) {
+        val command = DeleteSpecialityCommand(speciality)
+        command.applyOnState(state)
+        commandList.add(command)
     }
 
     /**
      * Adds an ingredient to the given ingredient group, or the whole ingredient group if no ingredient is provided
      *
      * @param recipe The recipe to change
-     * @param group The ingredient which should be added, or to which the ingredient is added to
+     * @param group The ingredient group which should be added, or to which the ingredient is added to
      * @param ingredient The ingredient to be added ( or null if the ingredient group should be added)
      */
-    fun addIngredient(recipe: Recipe, group: IngredientGroup, ingredient: Ingredient? = null) {
-        viewModelScope.launch {
+    fun addIngredient(recipe: Recipe, group: String, ingredient: Ingredient? = null) {
+        val command =
             if (ingredient == null) {
-                editRecipe.addIngredientGroup(recipe, group)
+                 AddIngredientGroupCommand(group)
             } else {
-                editRecipe.addIngredient(recipe, group, ingredient)
+                AddIngredientCommand(group, ingredient)
             }
-        }
+        command.applyOnState(state)
+        commandList.add(command)
     }
 
     /**
@@ -176,7 +158,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      */
     fun editIngredient(
         recipe: Recipe,
-        group: IngredientGroup,
+        group: IngredientGroup, //TODO
         ingredient: Ingredient,
         newName: String? = null,
         newAmount: Float? = null,
@@ -189,41 +171,51 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         }
     }
 
+    fun deleteIngredient(group: String, ingredient: Ingredient? = null){
+        val command =
+            if (ingredient == null) {
+                DeleteIngredientGroupCommand(group)
+            } else {
+                DeleteIngredientCommand(group, ingredient)
+            }
+        command.applyOnState(state)
+        commandList.add(command)
+    }
+
+
     /**
      * Adds an instruction step before the step with the given index
      *
-     * @param recipe The recipe to which to add the instruction step
      * @param step The step to be added
      * @param index The index of the step in front of which the step should be added
      */
-    fun addInstructionStep(recipe: Recipe, step: String, index: Int) {
-        viewModelScope.launch {
-            editRecipe.addInstructionStep(recipe, step, index)
-        }
+    fun addInstructionStep(step: String, index: Int) {
+        val command = AddInstructionStepCommand(index, step)
+        command.applyOnState(state)
+        commandList.add(command)
     }
 
     /**
      * Removes the instruction step on the given index.
      *
-     * @param recipe The recipe where the step should be removed
      * @param index Index of the step that should be removed
      */
-    fun removeInstructionStep(recipe: Recipe, index: Int) {
-        viewModelScope.launch {
-            editRecipe.deleteInstructionStep(recipe, index)
-        }
+    fun removeInstructionStep(index: Int) {
+        val command = DeleteInstructionStepCommand(index)
+        command.applyOnState(state)
+        commandList.add(command)
+
     }
 
     /**
      * Updates the content of a instruction step
      *
-     * @param recipe The recipe to which the step belongs to
      * @param index The index of the instruction step to change
      * @param instruction The new content of the instruction step
      */
-    fun updateInstructionStep(recipe: Recipe, index: Int, instruction: String) {
-        viewModelScope.launch {
-            editRecipe.updateInstructionStep(recipe, index, instruction)
-        }
+    fun updateInstructionStep( index: Int, instruction: String) {
+        val command = EditInstructionStepCommand(index, instruction)
+        command.applyOnState(state)
+        commandList.add(command)
     }
 }
