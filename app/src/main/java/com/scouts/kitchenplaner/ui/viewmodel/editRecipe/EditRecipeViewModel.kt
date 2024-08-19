@@ -60,19 +60,25 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
         return editMode;
     }
 
-    fun toggleEditMode(recipe: Recipe) {
-        if (!editMode) {
-            state.init(recipe = recipe)
-        } else {
-            updateRecipe(recipe)
-        }
-        editMode = !editMode
+    fun activateEditMode(recipe: Recipe){
+        editMode = true
+        state.init(recipe)
     }
+    fun deactivateEditMode() {
+        editMode = false
+        state = EditRecipeState()
+    }
+
+    fun saveChangesAndDeactivateEditMode(recipe: Recipe){
+        updateRecipe(recipe)
+        deactivateEditMode()
+
+    }
+
 
     private fun updateRecipe(recipe: Recipe) {
         viewModelScope.launch {
             commandList.forEach { it.applyOnRecipe(editRecipe, recipe) }
-            state = EditRecipeState()
         }
     }
 
