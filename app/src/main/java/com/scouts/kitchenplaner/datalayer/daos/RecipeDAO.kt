@@ -31,6 +31,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +44,7 @@ interface RecipeDAO {
         recipe: RecipeEntity,
         speciality: List<DietarySpecialityEntity>,
         ingredients: List<IngredientEntity>,
-        instructions: List<InstructionEntity>
+        instructions: List<InstructionStepDTO>
     ): Long {
         val rowIdRecipe = insertRecipe(recipe)
         val recipeId = rowIdToRecipeID(rowIdRecipe)
@@ -76,33 +77,29 @@ interface RecipeDAO {
     @Query("UPDATE recipeEntity SET numberOfPeople = :newPeople WHERE id = :id")
     suspend fun updateNumberOfPeople(id: Long, newPeople: Int)
 
-    @Insert
-    suspend fun insertInstructionStep(entity: InstructionEntity): Long
+    @Insert(InstructionEntity::class)
+    suspend fun insertInstructionStep(entity: InstructionStepDTO): Long
 
     @Delete(InstructionEntity::class)
     suspend fun deleteInstructionStep(entity: InstructionStepIdentifierDTO)
 
-    @Update
-    suspend fun updateInstructionStep(entity: InstructionEntity)
+    @Query("UPDATE instructionentity SET `instruction` = :instruction WHERE `recipe` = :recipeID AND `order` = :order ")
+    suspend fun updateInstructionStep(recipeID: Long, instruction: String, order: Int)
 
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` + 1 " +
                 "WHERE recipe = :recipeID " +
-                "AND `order` == :index"
+                "AND `order` >= :index"
     )
     suspend fun increaseInstructionStepOrder(recipeID: Long, index: Int)
 
-    @Query(
-        "SELECT MAX(`order`) FROM instructionentity WHERE recipe = :recipeID"
-    )
-    suspend fun getHighestOrder(recipeID: Long) : Int
 
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` - 1 " +
                 "WHERE recipe = :recipeID " +
-                "AND `order` == :index"
+                "AND `order` >= :index"
     )
     suspend fun decreaseInstructionStepOrder(recipeID: Long, index: Int)
 

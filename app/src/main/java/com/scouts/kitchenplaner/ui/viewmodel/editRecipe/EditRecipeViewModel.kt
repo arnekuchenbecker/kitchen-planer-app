@@ -79,6 +79,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     private fun updateRecipe() {
         viewModelScope.launch {
             commandList.forEach { it.applyOnRecipe(editRecipe) }
+            commandList.clear()
         }
     }
 
@@ -225,6 +226,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     fun updateInstructionStep(index: Int, instruction: String, recipe: Recipe) {
         val command = EditInstructionStepCommand(index, instruction, recipe = recipe)
         command.applyOnState(state)
+        println("update "+index);
         commandList.add(command)
     }
 }

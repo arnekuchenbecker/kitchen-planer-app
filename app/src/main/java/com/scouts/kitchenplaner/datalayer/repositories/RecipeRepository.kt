@@ -24,7 +24,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.RecipeImageDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
-import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import com.scouts.kitchenplaner.datalayer.toDataLayerEntity
 import com.scouts.kitchenplaner.datalayer.toModelEntity
@@ -105,8 +105,8 @@ class RecipeRepository @Inject constructor(
             speciality = dataLayerEntity.second,
             ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
-                InstructionEntity(
-                    order = index, recipe = 0, instruction = instruction
+                InstructionStepDTO(
+                    order = index, recipe = -1, instruction = instruction
                 )
             })
 
@@ -155,19 +155,21 @@ class RecipeRepository @Inject constructor(
     }
 
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
-        val highestOrder = recipeDAO.getHighestOrder(recipeID)
-        for (i in highestOrder downTo index) recipeDAO.increaseInstructionStepOrder(recipeID, i)
-        recipeDAO.insertInstructionStep(InstructionEntity(index, recipeID, instruction))
+        recipeDAO.increaseInstructionStepOrder(recipeID,index)
+        recipeDAO.insertInstructionStep(InstructionStepDTO(index, recipeID, instruction))
     }
 
     suspend fun deleteInstructionStep(recipeID: Long, index: Int) {
         recipeDAO.deleteInstructionStep(InstructionStepIdentifierDTO(recipeID, index))
-        val highestOrder = recipeDAO.getHighestOrder(recipeID)
-        for (i in index..highestOrder) recipeDAO.decreaseInstructionStepOrder(recipeID, i)
+        recipeDAO.decreaseInstructionStepOrder(recipeID, index)
     }
 
     suspend fun updateInstructionStep(recipeID: Long, index: Int, newInstruction: String) {
-        recipeDAO.updateInstructionStep(InstructionEntity(index, recipeID, newInstruction))
+        recipeDAO.updateInstructionStep(
+            recipeID = recipeID,
+            instruction = newInstruction,
+            order = index
+        )
     }
 
     suspend fun deleteDietarySpeciality(recipeID: Long, speciality: String) {
