@@ -62,12 +62,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
 
     fun activateEditMode(recipe: Recipe) {
         editMode = true
-        state.init(recipe)
+        state = EditRecipeState(recipe)
     }
 
     fun deactivateEditMode() {
         editMode = false
-        state = EditRecipeState()
     }
 
     fun saveChangesAndDeactivateEditMode() {
@@ -226,7 +225,6 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     fun updateInstructionStep(index: Int, instruction: String, recipe: Recipe) {
         val command = EditInstructionStepCommand(index, instruction, recipe = recipe)
         command.applyOnState(state)
-        println("update "+index);
         commandList.add(command)
     }
 }

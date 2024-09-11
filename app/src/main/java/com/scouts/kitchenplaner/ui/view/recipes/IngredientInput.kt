@@ -62,7 +62,10 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
  *                        IngredientGroup with the specified name (first argument)
  * @param onIngredientDelete Callback function for deleting an Ingredient (second argument) from the
  *                           IngredientGroup with the specified name (first argument)
+ * @param onAlterIngredient Callback function to alter an Ingredient (second argument) in
+ * an ingredient group (first argument) to set new values: name (third argument), amount (fourth argument) and unit (fifth argument)
  * @param onDeleteIngredientGroup Callback function for deleting an entire IngredientGroup
+ * @param editable Whether the ingredients are editable
  */
 @Composable
 fun IngredientsInput(
@@ -82,8 +85,7 @@ fun IngredientsInput(
 
 
     ContentBox(
-        title = "Zutaten",
-        modifier = modifier
+        title = "Zutaten", modifier = modifier
     ) {
         ingredientGroups.forEach { (name, ingredients) ->
             Row(
@@ -92,25 +94,20 @@ fun IngredientsInput(
                 Text(text = name, fontWeight = FontWeight.Black)
                 if (editable) {
                     Spacer(modifier = Modifier.weight(1.0f))
-                    IconButton(
-                        onClick = {
-                            addIngredientToGroup = name
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        addIngredientToGroup = name
+                    }) {
                         Icon(Icons.Filled.Add, "Add ingredient to group")
                     }
-                    IconButton(
-                        onClick = {
-                            onDeleteIngredientGroup(name)
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        onDeleteIngredientGroup(name)
+                    }) {
                         Icon(Icons.Filled.Delete, "Delete ingredient group")
                     }
                 }
             }
             ingredients.forEachIndexed { index, ingredient ->
-                DisplayIngredient(
-                    onDeleteClick = { onIngredientDelete(name, ingredient) },
+                DisplayIngredient(onDeleteClick = { onIngredientDelete(name, ingredient) },
                     ingredient = ingredient,
                     editable = editable,
                     onChangeIngredient = {
@@ -119,54 +116,41 @@ fun IngredientsInput(
                         showIngredientChangeGroup = name
                     })
                 if (index == showIngredientChangeIndex && showIngredientChangeGroup == name) {
-                    DisplayIngredientChangeDialog(
-                        ingredient = ingredient,
-                        onDismissRequest = {
-                            showIngredientChangeIndex = -1
-                            showIngredientChangeGroup = ""
-                        },
-                        onSaveChanges = { newName, newAmount, newUnit ->
-                            onAlterIngredient(
-                                name,
-                                ingredient,
-                                newName,
-                                newAmount,
-                                newUnit
-                            )
-                        })
+                    DisplayIngredientChangeDialog(ingredient = ingredient, onDismissRequest = {
+                        showIngredientChangeIndex = -1
+                        showIngredientChangeGroup = ""
+                    }, onSaveChanges = { newName, newAmount, newUnit ->
+                        onAlterIngredient(
+                            name, ingredient, newName, newAmount, newUnit
+                        )
+                    })
                 }
             }
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
 
         if (editable) {
-            OutlinedTextField(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+            OutlinedTextField(modifier = Modifier.align(Alignment.CenterHorizontally),
                 value = newGroupName,
                 onValueChange = { newGroupName = it },
                 trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            onGroupAdd(newGroupName)
-                            newGroupName = ""
-                        }
-                    ) {
+                    IconButton(onClick = {
+                        onGroupAdd(newGroupName)
+                        newGroupName = ""
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Create new ingredient group"
                         )
                     }
                 },
-                label = { Text("Gruppe hinzufügen") }
-            )
+                label = { Text("Gruppe hinzufügen") })
         }
     }
 
     if (addIngredientToGroup.isNotEmpty()) {
-        IngredientAdderDialog(
-            onDismissRequest = { addIngredientToGroup = "" },
-            onIngredientAdd = { onIngredientAdd(addIngredientToGroup, it) }
-        )
+        IngredientAdderDialog(onDismissRequest = { addIngredientToGroup = "" },
+            onIngredientAdd = { onIngredientAdd(addIngredientToGroup, it) })
     }
 }
 
@@ -176,6 +160,8 @@ fun IngredientsInput(
  *
  * @param onDeleteClick Callback function for deleting the ingredient
  * @param ingredient The ingredient to be displayed
+ * @param editable Whether the ingredient is editable
+ * @param onChangeIngredient Callback function to signal that the ingredient should be edited
  */
 @Composable
 fun DisplayIngredient(
@@ -184,8 +170,6 @@ fun DisplayIngredient(
     editable: Boolean,
     onChangeIngredient: () -> Unit = {}
 ) {
-
-
     Row(
         modifier = Modifier.clickable(enabled = editable) { onChangeIngredient() },
         verticalAlignment = Alignment.CenterVertically
@@ -202,8 +186,7 @@ fun DisplayIngredient(
                 onClick = onDeleteClick
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Delete ingredient"
+                    imageVector = Icons.Filled.Close, contentDescription = "Delete ingredient"
                 )
             }
         }
@@ -219,8 +202,7 @@ fun DisplayIngredient(
  */
 @Composable
 fun IngredientAdderDialog(
-    onDismissRequest: () -> Unit,
-    onIngredientAdd: (Ingredient) -> Unit
+    onDismissRequest: () -> Unit, onIngredientAdd: (Ingredient) -> Unit
 ) {
     DisplayIngredientChangeDialog(
         ingredient = Ingredient("", 0.0, ""),
@@ -228,9 +210,7 @@ fun IngredientAdderDialog(
         onSaveChanges = { ingredientName, amount, unit ->
             if (ingredientName == null || amount == null || unit == null) return@DisplayIngredientChangeDialog else onIngredientAdd(
                 Ingredient(
-                    ingredientName,
-                    amount,
-                    unit
+                    ingredientName, amount, unit
                 )
             )
         },
@@ -238,6 +218,15 @@ fun IngredientAdderDialog(
     )
 }
 
+/**
+ * Dialog to change values of the  ingredient
+ *
+ * @param ingredient The ingredient to be changed
+ * @param onDismissRequest  Callback function to close the dialog when requested by the user
+ * @param onSaveChanges Callback function to save the new values. Return null if the value should not be changed.
+ *  the arguments are the following: name, amount, unit
+ * @param text The text displayed on the save button
+ */
 @Composable
 fun DisplayIngredientChangeDialog(
     ingredient: Ingredient,
@@ -255,8 +244,7 @@ fun DisplayIngredientChangeDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(shape = RoundedCornerShape(15.dp)) {
             Column(modifier = Modifier.padding(20.dp)) {
-                OutlinedTextField(
-                    value = name,
+                OutlinedTextField(value = name,
                     onValueChange = {
                         name = it
                         nameChange = true
@@ -265,8 +253,7 @@ fun DisplayIngredientChangeDialog(
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
 
-                OutlinedNumberField(
-                    value = amount,
+                OutlinedNumberField(value = amount,
                     onValueChange = {
                         amount = it
                         amountChange = true
@@ -276,8 +263,7 @@ fun DisplayIngredientChangeDialog(
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
 
-                OutlinedTextField(
-                    value = unit,
+                OutlinedTextField(value = unit,
                     onValueChange = {
                         unit = it
                         unitChange = true
@@ -286,32 +272,29 @@ fun DisplayIngredientChangeDialog(
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
 
-                OutlinedButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(vertical = 5.dp),
-                    onClick = {
-                        onSaveChanges(
-                            if (nameChange) {
-                                name
-                            } else {
-                                null
-                            }, if (amountChange) {
-                                amount.toDoubleOrNull()
-                            } else {
-                                null
-                            }, if (unitChange) {
-                                unit
-                            } else {
-                                null
-                            }
-                        )
-                        name = ""
-                        amount = ""
-                        unit = ""
-                        onDismissRequest()
-                    }
-                ) {
+                OutlinedButton(modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp), onClick = {
+                    onSaveChanges(
+                        if (nameChange) {
+                            name
+                        } else {
+                            null
+                        }, if (amountChange) {
+                            amount.toDoubleOrNull()
+                        } else {
+                            null
+                        }, if (unitChange) {
+                            unit
+                        } else {
+                            null
+                        }
+                    )
+                    name = ""
+                    amount = ""
+                    unit = ""
+                    onDismissRequest()
+                }) {
                     Text(text = text)
                 }
             }

@@ -86,6 +86,12 @@ interface RecipeDAO {
     @Query("UPDATE instructionentity SET `instruction` = :instruction WHERE `recipe` = :recipeID AND `order` = :order ")
     suspend fun updateInstructionStep(recipeID: Long, instruction: String, order: Int)
 
+    /**
+     * Increases the index of all instructions which have a lower or equal index than the given index by one
+     *
+     * @param recipeID The ID of the recipe where the instructions belong to
+     * @param index The lower bound to which all indices should be increased
+     */
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` + 1 " +
@@ -95,6 +101,12 @@ interface RecipeDAO {
     suspend fun increaseInstructionStepOrder(recipeID: Long, index: Int)
 
 
+    /**
+     * Reduces the index of all instructions which have a lower or equal index than the given index by one
+     *
+     * @param recipeID The ID of the recipe where the instructions belong to
+     * @param index The lower bound to which all indices should be reduced
+     */
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` - 1 " +
@@ -123,13 +135,13 @@ interface RecipeDAO {
 
     @Query(
         "UPDATE ingrediententity SET name = :newName " +
-            "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
+                "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
     )
     suspend fun updateIngredientName(newName: String, oldName: String, recipeID: Long, group: String)
 
     @Query(
         "UPDATE ingrediententity SET amount = :newAmount " +
-            "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
+                "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
     )
     suspend fun updateIngredientAmount(newAmount: Double, name: String, recipeID: Long, group: String)
 
@@ -176,7 +188,7 @@ interface RecipeDAO {
     fun getAllergensByRecipeId(id: Long): Flow<List<DietarySpecialityEntity>>
 
     @Query("SELECT * FROM recipeEntity WHERE title LIKE :query")
-    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeEntity>>
+    fun getRecipesForQueryByName(query: String): Flow<List<RecipeEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long

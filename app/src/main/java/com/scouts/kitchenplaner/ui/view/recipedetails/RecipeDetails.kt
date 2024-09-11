@@ -71,6 +71,14 @@ import com.scouts.kitchenplaner.ui.view.recipes.InstructionInput
 import com.scouts.kitchenplaner.ui.viewmodel.editRecipe.EditRecipeViewModel
 
 
+/**
+ * Screen that shows a recipe and provide options to edit this.
+ * Note that the changes have to be saved by a click on the respective button and
+ * they also can be depraved.
+ *
+ * @param recipeID The recipe to be displayed
+ * @param viewModel The view model that provides data and saves the changes
+ */
 @Composable
 fun RecipeDetails(
     recipeID: Long, viewModel: EditRecipeViewModel = hiltViewModel()
@@ -119,7 +127,7 @@ fun RecipeDetails(
             if (viewModel.isEditable()) {
                 ExtendedFloatingActionButton(onClick = {
                     viewModel.saveChangesAndDeactivateEditMode()
-                },text = {Text("Speichern")}, icon =  {
+                }, text = { Text("Speichern") }, icon = {
                     Icon(imageVector = Icons.Filled.Check, contentDescription = "save changes")
                 })
             }
@@ -166,7 +174,7 @@ fun RecipeDetails(
                                             viewModel.setAmountOfPeople(it.toInt(), recipe = recipe)
                                         }
                                     },
-                                    label = { },
+                                    label = { Text("Anzahl") },
                                     type = NumberFieldType.POSITIVE
                                 )
                                 Text("Person(en)")
@@ -222,7 +230,8 @@ fun RecipeDetails(
                             toBeDeleted = false,
                             contentModifier = Modifier.heightIn(max = 500.dp)
                         ) {
-                            DisplayAllergenLists(editable = { viewModel.isEditable() },
+                            DisplayDietarySpecialityList(
+                                editable = { viewModel.isEditable() },
                                 allergenList = if (viewModel.isEditable()) {
                                     viewModel.state.freeOf
                                 } else {
@@ -252,7 +261,8 @@ fun RecipeDetails(
                             contentModifier = Modifier.heightIn(max = 500.dp)
 
                         ) {
-                            DisplayAllergenLists(editable = viewModel::isEditable,
+                            DisplayDietarySpecialityList(
+                                editable = viewModel::isEditable,
                                 allergenList = if (viewModel.isEditable()) {
                                     viewModel.state.allergens
                                 } else {
@@ -282,7 +292,8 @@ fun RecipeDetails(
                             contentModifier = Modifier.heightIn(max = 500.dp)
 
                         ) {
-                            DisplayAllergenLists(editable = { viewModel.isEditable() },
+                            DisplayDietarySpecialityList(
+                                editable = { viewModel.isEditable() },
                                 allergenList = if (viewModel.isEditable()) {
                                     viewModel.state.traces
                                 } else {
@@ -380,20 +391,32 @@ fun RecipeDetails(
     }
 }
 
+/**
+ *  This composable provides a representation of all current dietary specialities (within one category).
+ *  If the edit mode is activated specialities can be added or deleted
+ *
+ *  @param editable  A function that indicates whether the list is editable
+ *  @param allergenList The list which contains all dietary specialities
+ *  @param add A function that adds a new speciality to the list
+ *  @param delete A function that deletes a speciality from the list
+ *
+ */
 @Composable
-fun DisplayAllergenLists(
+fun DisplayDietarySpecialityList(
     editable: () -> Boolean,
     allergenList: List<String>,
     add: (String) -> Unit,
     delete: (String) -> Unit,
 ) {
 
-    var text by remember { mutableStateOf("new ingredient") };
+    var text by remember { mutableStateOf("") };
     Column() {
         if (editable()) {
             TextField(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                value = text, onValueChange = { text = it },
+                value = text,
+                label = { Text("neue Ernährungsbesonderheit") },
+                onValueChange = { text = it },
                 trailingIcon = {
                     IconButton(onClick = {
                         add(text);

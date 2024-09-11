@@ -16,6 +16,14 @@
 
 package com.scouts.kitchenplaner.datalayer.dtos
 
+/**
+ * This class represents an instruction step without its id.
+ * Each the order of an instruction step should be unique within a recipe
+ *
+ * @param order The relative order of the instructions
+ * @param recipe The id of the recipe, the instruction step belongs to
+ * @param instruction The content of the instruction
+ */
 data class InstructionStepDTO(
     val order: Int,
     var recipe: Long,
