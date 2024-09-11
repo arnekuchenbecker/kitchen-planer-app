@@ -119,9 +119,9 @@ fun RecipeDetails(
             if (viewModel.isEditable()) {
                 ExtendedFloatingActionButton(onClick = {
                     viewModel.saveChangesAndDeactivateEditMode()
-                }) {
+                },text = {Text("Speichern")}, icon =  {
                     Icon(imageVector = Icons.Filled.Check, contentDescription = "save changes")
-                }
+                })
             }
         }) { paddingValues ->
 
