@@ -20,7 +20,12 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class UpdateAmountOfPeopleCommand(private val numberOfPeople: Int, override val recipe: Recipe) :
+/**
+ * Command to update the amount of people the recipe is calculated for
+ *
+ * @param numberOfPeople The new number of people
+ */
+class UpdateAmountOfPeopleCommand(private val numberOfPeople: Int, recipe: Recipe) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.amount = numberOfPeople

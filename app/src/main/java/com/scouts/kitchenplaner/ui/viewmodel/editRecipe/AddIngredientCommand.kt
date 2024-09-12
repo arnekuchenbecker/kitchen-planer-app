@@ -22,10 +22,15 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
+/**
+ * Command for adding a new ingredient to an ingredient group
+ * @param group The ingredient group where the ingredient is added to
+ * @param ingredient The ingredient to add
+ */
 class AddIngredientCommand(
     private val group: String,
     private val ingredient: Ingredient,
-    override val recipe: Recipe
+    recipe: Recipe
 ) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {

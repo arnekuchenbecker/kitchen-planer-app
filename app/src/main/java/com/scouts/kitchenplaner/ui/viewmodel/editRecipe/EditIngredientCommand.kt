@@ -22,13 +22,23 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
+/**
+ * Command to edit a ingredient. If one of the values should
+ * not be changed they can be left (and set null automatically)
+ *
+ * @param group The ingredient group where the ingredient to change belongs to
+ * @param ingredient The ingredient to change
+ * @param newName The new name for the ingredient (or null if the name stays the same)
+ * @param newAmount The new amount of the ingredient (or null if it stays the same)
+ * @param newUnit The new unit of the ingredient (or null if it stays the same)
+ */
 class EditIngredientCommand(
     private val group: String,
     private val ingredient: Ingredient,
     private val newName: String? = null,
     private val newAmount: Double? = null,
     private val newUnit: String? = null,
-    override val recipe: Recipe
+    recipe: Recipe
 ) : ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         val name = newName ?: ingredient.name

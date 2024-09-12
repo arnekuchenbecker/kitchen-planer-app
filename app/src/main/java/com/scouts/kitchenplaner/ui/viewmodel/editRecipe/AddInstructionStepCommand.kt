@@ -20,10 +20,16 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
+/**
+ * Command to add a new instruction step
+ * @param index The index where to add the
+ * new instruction step
+ * @param instruction The content of the new instruction step
+ **/
 class AddInstructionStepCommand(
     private val index: Int = 0,
     private val instruction: String,
-    override val recipe: Recipe
+    recipe: Recipe
 ) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {

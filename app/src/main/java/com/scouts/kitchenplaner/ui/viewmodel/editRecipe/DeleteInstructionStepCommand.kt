@@ -20,7 +20,12 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class DeleteInstructionStepCommand(private val index: Int, override val recipe: Recipe) :
+/**
+ * Command to delete the instruction step on the given index
+ *
+ * @param index Index to delete the instruction step
+ */
+class DeleteInstructionStepCommand(private val index: Int, recipe: Recipe) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.deleteInstructionStep(index)

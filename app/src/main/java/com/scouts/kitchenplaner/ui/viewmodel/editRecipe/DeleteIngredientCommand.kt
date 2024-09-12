@@ -22,10 +22,16 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
+/**
+ * Command to delete an ingredient
+ *
+ * @param group The ingredient group from which the ingredient should be deleted
+ * @param ingredient The ingredient to be deleted
+ */
 class DeleteIngredientCommand(
     private val group: String,
     private val ingredient: Ingredient,
-    override val recipe: Recipe
+    recipe: Recipe
 ) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {

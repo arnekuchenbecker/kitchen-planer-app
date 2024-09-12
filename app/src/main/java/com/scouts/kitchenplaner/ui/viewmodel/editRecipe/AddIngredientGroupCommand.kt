@@ -20,7 +20,13 @@ import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.usecases.EditRecipe
 import com.scouts.kitchenplaner.ui.state.EditRecipeState
 
-class AddIngredientGroupCommand(private val groupName: String, override val recipe: Recipe) :
+/**
+ * Command to add a new ingredient group
+ * Note that in a consistent state of a recipe, an ingredient group cannot be empty
+ *
+ * @param groupName The name of the new ingredient group
+ */
+class AddIngredientGroupCommand(private val groupName: String, recipe: Recipe) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.addIngredientGroup(groupName)
