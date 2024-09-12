@@ -19,9 +19,18 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
+/**
+ * Data base representation of an instruction step.
+ * To refer to an instruction use [com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO].
+ * The combination [order] and [recipe] should be unique in a consistent state of the data base.
+ *
+ * @param order The relative order of the instruction step
+ * @param recipe The recipe Id to which the instruction step belongs
+ *@param instruction The content of the instruction
+ */
 @Entity(
-    primaryKeys = ["order", "recipe"],
     foreignKeys = [ForeignKey(
         entity = RecipeEntity::class,
         parentColumns = ["id"],
@@ -30,7 +39,9 @@ import androidx.room.Index
     )],
     indices = [Index("recipe")]
 )
+
 data class InstructionEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val order: Int,
     var recipe: Long,
     val instruction: String
