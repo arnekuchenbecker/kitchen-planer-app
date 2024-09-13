@@ -19,6 +19,15 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
+/**
+ * Data base entity of an allergen of a participant of a project.
+ * The allergen is identified by its name, the project and the participant
+ *
+ * @param projectId The project's id to which the participant belongs
+ * @param name The name of the participant who has the allergen
+ * @param allergen The content of the allergen
+ * @param traces Whether traces are relevant
+ */
 @Entity(
     tableName = "allergens",
     foreignKeys = [

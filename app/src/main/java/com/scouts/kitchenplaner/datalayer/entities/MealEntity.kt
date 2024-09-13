@@ -20,6 +20,14 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+/**
+ * Data base entity of a meal in a project.
+ * The order of the meal in combination with the project id should be unique too.
+ *
+ * @param name The name if the meal
+ * @param order The order of the meal for a day
+ * @param projectId The project the meal belongs to
+ */
 @Entity(
     tableName = "meals",
     primaryKeys = ["name", "projectId"],

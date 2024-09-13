@@ -21,6 +21,14 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import java.util.Date
 
+/**
+ * Data base representation for mapping a main recipe to a meal slot.
+ *
+ * @param projectId The project the mapping belongs to
+ * @param meal The meal that identifies the meal slot the recipe is the main recipe
+ * @param date The date on which the recipe is the main recipe
+ * @param recipeId The id of the recipe that is the main recipe
+ */
 @Entity(
     tableName = "recipeProjectMeal",
     primaryKeys = ["projectId", "meal", "date"],
