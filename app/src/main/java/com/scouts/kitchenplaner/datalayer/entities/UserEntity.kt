@@ -19,6 +19,10 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ *  Data base entity for representing a user
+ *  @param username The unique user name
+ */
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey val username: String
