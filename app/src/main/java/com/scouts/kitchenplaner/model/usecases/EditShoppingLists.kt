@@ -21,9 +21,20 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
 import javax.inject.Inject
 
+/**
+ * Use case to edit shopping list
+ *
+ * @param shoppingListRepository The repository for accessing the data base for shopping lists
+ */
 class EditShoppingLists @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository
 ) {
+    /**
+     * Deletes the given shopping list
+     *
+     * @param project The project the list is deleted from
+     * @param list The shopping list to be deleted
+     */
     suspend fun deleteShoppingList(project: Project, list: ShoppingListStub) {
         shoppingListRepository.deleteShoppingList(list, project.id)
     }

@@ -33,6 +33,9 @@ import javax.inject.Inject
 private const val AMOUNT_PROJECTS = 3
 private const val AMOUNT_RECIPES = 3
 
+/**
+ *
+ */
 class ShowPersonalStartScreen @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val recipeRepository: RecipeRepository,
