@@ -26,6 +26,7 @@ import androidx.room.Update
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectDataVersionDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectDatesDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
@@ -57,6 +58,9 @@ interface ProjectDAO {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertProject(entity: ProjectEntity): Long
+
+    @Query("DELETE FROM projects WHERE id = :id")
+    suspend fun deleteProject(id: Long)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMealEntity(entity: MealEntity): Long
@@ -91,11 +95,29 @@ interface ProjectDAO {
     @Query("SELECT * FROM projects WHERE projects.id = :id")
     fun getProjectById(id: Long): Flow<ProjectEntity>
 
+    @Query("SELECT EXISTS(SELECT id FROM projects WHERE onlineID = :onlineID)")
+    suspend fun existsProjectByOnlineID(onlineID: Long) : Boolean
+
+    /**
+     * Get a project entity from the data base. Does not push any further updates.
+     *
+     * @param id The id of the queried project
+     * @return The project with the given id
+     */
+    @Query("SELECT * FROM projects WHERE projects.id = :id")
+    suspend fun getCurrentProjectById(id: Long): ProjectEntity
+
     @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
     fun getMealsByProjectID(id: Long): Flow<List<String>>
 
+    @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
+    suspend fun getCurrentMealsByProjectID(id: Long): List<String>
+
     @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
     fun getPersonNumberChangesByProjectID(id: Long): Flow<List<PersonNumberChangeEntity>>
+
+    @Query("SELECT * FROM personNumberChanges WHERE projectId = :id")
+    suspend fun getCurrentPersonNumberChangesByProjectID(id: Long) : List<PersonNumberChangeEntity>
 
     @Query("SELECT id FROM projects WHERE rowId = :rowId")
     suspend fun getProjectIdByRowId(rowId: Long): Long
@@ -146,6 +168,25 @@ interface ProjectDAO {
     @Query("SELECT * FROM userprojects WHERE username = :user ORDER BY lastShown DESC LIMIT :limit")
     fun getLatestShownProjectsForUser(user: String, limit: Int): Flow<List<UserProjectEntity>>
 
+    // Methods for data management with the server
+    @Query("SELECT dataVersion FROM projects WHERE id = :id")
+    suspend fun getCurrentProjectVersionNumberByID(id: Long) : Long
+
+    @Query("SELECT imageVersion FROM projects WHERE id = :id")
+    suspend fun getCurrentImageVersionNumberByID(id: Long) : Long
+
+    @Update(ProjectEntity::class)
+    suspend fun updateVersionNumber(dto: ProjectDataVersionDTO)
+
+    @Query("SELECT imageURI FROM projects WHERE id = :id")
+    suspend fun getCurrentImageURIByID(id: Long) : String
+
+    @Query("SELECT id FROM projects WHERE onlineID = :onlineID")
+    suspend fun getCurrentProjectIDByOnlineID(onlineID: Long) : Long
+
+    @Query("SELECT onlineID FROM projects WHERE id = :id")
+    suspend fun getCurrentOnlineIDByProjectID(id: Long) : Long
+
     // Methods for archiving projects
 
     @Delete(MealEntity::class)
@@ -153,4 +194,7 @@ interface ProjectDAO {
 
     @Update(ProjectEntity::class)
     suspend fun setProjectArchivedStatus(projectArchived: ProjectArchivedDTO)
+
+    @Query("SELECT isArchived FROM projects WHERE id = :id")
+    suspend fun isProjectArchived(id: Long) : Boolean
 }
