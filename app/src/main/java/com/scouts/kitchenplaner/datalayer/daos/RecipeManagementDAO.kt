@@ -113,8 +113,14 @@ interface RecipeManagementDAO {
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     fun getMainRecipesForProject(projectId: Long) : Flow<List<MainRecipeProjectMealEntity>>
 
+    @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
+    suspend fun getCurrentMainRecipesForProject(projectId: Long) : List<MainRecipeProjectMealEntity>
+
     @Query("SELECT * FROM alternativeRecipeProjectMeal WHERE projectId = :projectId")
     fun getAlternativeRecipesForProject(projectId: Long) : Flow<List<AlternativeRecipeProjectMealEntity>>
+
+    @Query("SELECT * FROM alternativeRecipeProjectMeal WHERE projectId = :projectId")
+    suspend fun getCurrentAlternativeRecipesForProject(projectId: Long) : List<AlternativeRecipeProjectMealEntity>
 
     // Methods for archiving projects
     @Delete(AlternativeRecipeProjectMealEntity::class)
