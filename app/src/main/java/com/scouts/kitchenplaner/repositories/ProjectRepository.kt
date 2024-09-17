@@ -19,11 +19,13 @@ package com.scouts.kitchenplaner.repositories
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.AllergenDAO
 import com.scouts.kitchenplaner.datalayer.daos.ProjectDAO
+import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.dtos.MealIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.PersonNumberChangeIdentifierDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectArchivedDTO
+import com.scouts.kitchenplaner.datalayer.dtos.ProjectDataVersionDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectDatesDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectIdDTO
 import com.scouts.kitchenplaner.datalayer.dtos.ProjectImageDTO
@@ -38,7 +40,12 @@ import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
+import com.scouts.kitchenplaner.model.entities.RecipeStub
 import com.scouts.kitchenplaner.model.entities.User
+import com.scouts.kitchenplaner.model.utilities.ProjectBuilder
+import com.scouts.kitchenplaner.networklayer.kitchenplaner.services.ProjectAPIService
+import com.scouts.kitchenplaner.networklayer.toModelEntity
+import com.scouts.kitchenplaner.networklayer.toNetworkLayerDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -49,7 +56,9 @@ class ProjectRepository @Inject constructor(
     private val projectDAO: ProjectDAO,
     private val allergenDAO: AllergenDAO,
     private val recipeManagementDAO: RecipeManagementDAO,
-    private val shoppingListDAO: ShoppingListDAO
+    private val shoppingListDAO: ShoppingListDAO,
+    private val recipeDAO: RecipeDAO,
+    private val projectAPIService: ProjectAPIService
 ) {
     suspend fun insertProject(project: Project, creator: User): Long {
         val projectId = projectDAO.createProject(
@@ -71,8 +80,9 @@ class ProjectRepository @Inject constructor(
         return projectDAO.getProjectById(id).map { it.toModelEntity() }
     }
 
-    fun getProjectStubByID(id: Long) : Flow<ProjectStub> {
-        return projectDAO.getProjectById(id).map { ProjectStub(it.name, it.id, Uri.parse(it.imageUri)) }
+    fun getProjectStubByID(id: Long): Flow<ProjectStub> {
+        return projectDAO.getProjectById(id)
+            .map { ProjectStub(it.name, it.id, Uri.parse(it.imageUri)) }
     }
 
     fun getMealsByProjectID(id: Long): Flow<List<String>> {
@@ -181,15 +191,91 @@ class ProjectRepository @Inject constructor(
         projectDAO.updateLastShownProjectForUser(UserProjectEntity(projectId, user.username, time))
     }
 
-    fun getLastShownProjectIds(user: User, limit: Int): Flow<List<Long>>{
+    fun getLastShownProjectIds(user: User, limit: Int): Flow<List<Long>> {
         val projects = projectDAO.getLatestShownProjectsForUser(user.username, limit)
-            .map { it.map{ project ->
-                project.projectId}
+            .map {
+                it.map { project ->
+                    project.projectId
+                }
             }
         return projects
     }
 
+    suspend fun publishProject(projectID: Long) : Long {
+        val project = getCurrentProject(projectID)
+        val onlineID = projectDAO.getCurrentOnlineIDByProjectID(projectID)
+        return projectAPIService.createNewProject(project.toNetworkLayerDTO(onlineID))
+    }
+
+    suspend fun pushProjectUpdate(projectID: Long) {
+        val project = getCurrentProject(projectID)
+        if (!project.isOnline) {
+            return
+        }
+        val onlineID = projectDAO.getCurrentOnlineIDByProjectID(projectID)
+        val newVersion = projectAPIService.updateProject(onlineID, project.toNetworkLayerDTO(onlineID))
+        projectDAO.updateVersionNumber(ProjectDataVersionDTO(projectID, newVersion))
+    }
+
+    suspend fun getUpdatedProjects(user: User) {
+        val stubs = projectAPIService.getProjectStubsByUsername(user.username)
+
+        stubs.forEach { stub ->
+            if (projectDAO.existsProjectByOnlineID(stub.id) && !projectDAO.isProjectArchived(stub.id)) {
+                if (stub.imageVersion > projectDAO.getCurrentImageVersionNumberByID(stub.id)) {
+                    //TODO update image
+                }
+                if (stub.projectVersion > projectDAO.getCurrentProjectVersionNumberByID(stub.id)) {
+                    val project = projectAPIService.getProject(stub.id)
+                    val id = projectDAO.getCurrentProjectIDByOnlineID(stub.id)
+                    val imageUri = Uri.parse(projectDAO.getCurrentImageURIByID(stub.id))
+                    val recipeStubs = /*TODO get recipe stubs for project from server*/ listOf<RecipeStub>()
+                    projectDAO.deleteProject(id)
+                    insertProject(project.toModelEntity(imageUri, recipeStubs), user)
+                }
+            }
+        }
+    }
+
     private suspend fun existsUser(user: User): Boolean {
         return projectDAO.getExistsUserByName(user.username) == 1
+    }
+
+    private suspend fun getCurrentProject(id: Long) : Project {
+        val projectEntity = projectDAO.getCurrentProjectById(id)
+
+        val allergenPersons = allergenDAO.getCurrentAllergenPersonsByProjectID(id)
+        val allergens = allergenDAO.getCurrentAllergensByProjectID(id)
+
+        val meals = projectDAO.getCurrentMealsByProjectID(id)
+        val mainRecipes = recipeManagementDAO.getCurrentMainRecipesForProject(id)
+        val alternativeRecipes = recipeManagementDAO.getCurrentAlternativeRecipesForProject(id)
+        val recipeIDs = mainRecipes.map { it.recipeId } + alternativeRecipes.map { it.recipeId }
+        val recipes = recipeDAO.getCurrentRecipeStubsByIDs(recipeIDs).map {
+            RecipeStub(
+                it.id,
+                it.title,
+                Uri.parse(it.imageURI)
+            )
+        }
+        val numberChanges = projectDAO.getCurrentPersonNumberChangesByProjectID(id)
+
+        val mainRecipeMappings = mainRecipes.map { entity ->
+            Pair(MealSlot(entity.date, entity.meal), recipes.find { it.id == entity.recipeId }!!)
+        }
+
+        val alternativeRecipeMappings = alternativeRecipes.map { entity ->
+            Pair(MealSlot(entity.date, entity.meal), recipes.find { it.id == entity.recipeId }!!)
+        }
+
+        return ProjectBuilder(projectEntity)
+            .setAllergenPersonsFromEntities(allergenPersons, allergens)
+            .setMealPlan(
+                meals,
+                mainRecipeMappings,
+                alternativeRecipeMappings,
+                numberChanges.associate { MealSlot(it.date, it.meal) to it.differenceBefore }
+            )
+            .build()
     }
 }
