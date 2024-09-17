@@ -28,9 +28,6 @@ import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO
 import com.scouts.kitchenplaner.datalayer.daos.RecipeManagementDAO
 import com.scouts.kitchenplaner.datalayer.daos.ShoppingListDAO
 import com.scouts.kitchenplaner.datalayer.entities.MainRecipeProjectMealEntity
-import com.scouts.kitchenplaner.repositories.ProjectRepository
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.repositories.ShoppingListRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
@@ -42,6 +39,11 @@ import com.scouts.kitchenplaner.model.entities.User
 import com.scouts.kitchenplaner.model.entities.shoppinglists.DynamicShoppingListEntry
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
 import com.scouts.kitchenplaner.model.entities.shoppinglists.StaticShoppingListEntry
+import com.scouts.kitchenplaner.networklayer.kitchenplaner.services.ProjectAPIService
+import com.scouts.kitchenplaner.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.ShoppingListRepository
+import io.mockk.mockk
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -66,6 +68,7 @@ class ProjectDatabaseTest {
     private lateinit var recipeManagementDAO: RecipeManagementDAO
     private lateinit var shoppingListDAO: ShoppingListDAO
     private lateinit var recipeDAO: RecipeDAO
+    private lateinit var projectAPIService: ProjectAPIService
     private lateinit var db: KitchenAppDatabase
 
     @Before
@@ -79,8 +82,9 @@ class ProjectDatabaseTest {
         recipeManagementDAO = db.recipeManagementDao()
         shoppingListDAO = db.shoppingListDao()
         recipeDAO = db.recipeDao()
+        projectAPIService = mockk<ProjectAPIService>(relaxed = true)
         projectRepository =
-            ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO)
+            ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO, recipeDAO, projectAPIService)
         shoppingListRepository = ShoppingListRepository(shoppingListDAO)
         recipeRepository = RecipeRepository(recipeDAO)
     }
