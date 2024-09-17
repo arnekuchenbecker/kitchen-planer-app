@@ -28,5 +28,7 @@ data class ProjectEntity (
     val endDate: Date,
     val imageUri: String,
     val isArchived: Boolean,
-    val isOnline: Boolean
+    val onlineID: Long?,
+    val dataVersion: Long,
+    val imageVersion: Long
 )
