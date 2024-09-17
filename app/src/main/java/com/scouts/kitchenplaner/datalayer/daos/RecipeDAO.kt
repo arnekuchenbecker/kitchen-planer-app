@@ -146,6 +146,16 @@ interface RecipeDAO {
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
     fun getRecipeById(id: Long): Flow<RecipeEntity>
 
+    @Query(
+        "SELECT " +
+            "recipeEntity.id AS id, " +
+            "recipeEntity.title AS title, " +
+            "recipeEntity.imageURI AS imageURI " +
+        "FROM recipeEntity " +
+        "WHERE id IN (:ids)"
+    )
+    suspend fun getCurrentRecipeStubsByIDs(ids: List<Long>) : List<RecipeStubDTO>
+
     @Query("SELECT * FROM ingrediententity WHERE recipe = :id")
     fun getIngredientsByRecipeId(id: Long): Flow<List<IngredientEntity>>
 
