@@ -45,7 +45,9 @@ fun Project.toDataLayerEntity(): ProjectEntity {
         endDate = endDate,
         imageUri = projectImage.toString(),
         isArchived = false,
-        isOnline = isOnline
+        onlineID = null,
+        dataVersion = dataVersion,
+        imageVersion = imageVersion
     )
 }
 
@@ -63,7 +65,7 @@ fun AllergenPerson.toDataLayerEntity(projectId: Long?): Pair<AllergenPersonEntit
 }
 
 fun ProjectEntity.toModelEntity(): ProjectMetaData {
-    return ProjectMetaData(ProjectStub(name, id, Uri.parse(imageUri)), startDate, endDate, isOnline)
+    return ProjectMetaData(ProjectStub(name, id, Uri.parse(imageUri)), startDate, endDate, onlineID)
 }
 
 fun Allergen.toDataLayerEntity(projectId: Long, name: String): AllergenEntity {

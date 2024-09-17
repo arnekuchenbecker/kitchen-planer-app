@@ -22,6 +22,5 @@ data class ProjectMetaData(
     val stub: ProjectStub,
     val startDate: Date,
     val endDate: Date,
-    val isOnline: Boolean
-) {
-}
+    val onlineID: Long?
+)

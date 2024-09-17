@@ -27,7 +27,9 @@ class Project(
     private var _allergenPersons: List<AllergenPerson> = listOf(),
     private var _mealPlan: MealPlan,
     private var _projectImage: Uri = Uri.EMPTY,
-    private var _isOnline: Boolean = false
+    private var _isOnline: Boolean = false,
+    private var _dataVersion: Long = 0,
+    private var _imageVersion: Long = 0
 ) {
     constructor(project: Project) : this(
         project.id,
@@ -67,6 +69,12 @@ class Project(
 
     val isOnline: Boolean
         get() = _isOnline
+
+    val dataVersion: Long
+        get() = _dataVersion
+
+    val imageVersion: Long
+        get() = _imageVersion
 
     @DomainLayerRestricted
     fun withMetaData(metaData: ProjectMetaData): Project {
