@@ -201,23 +201,46 @@ class ProjectRepository @Inject constructor(
         return projects
     }
 
-    suspend fun publishProject(projectID: Long) : Long {
+    /**
+     * Publishes a project to the server that has not yet been published
+     *
+     * @param projectID The ID of the project that should be published
+     */
+    suspend fun publishProject(projectID: Long) {
         val project = getCurrentProject(projectID)
+        if (project.isOnline) {
+            return
+        }
         val onlineID = projectAPIService.createNewProject(project.toNetworkLayerDTO(0))
         projectDAO.initializeOnlineProject(projectID, onlineID)
-        return onlineID
     }
 
+    /**
+     * Tries to update the project with the given ID. On success, the version number in the data
+     * base is updated.
+     *
+     * @param projectID The ID of the project to update
+     */
     suspend fun pushProjectUpdate(projectID: Long) {
         val project = getCurrentProject(projectID)
         if (!project.isOnline) {
             return
         }
         val onlineID = projectDAO.getCurrentOnlineIDByProjectID(projectID)
-        val newVersion = projectAPIService.updateProject(onlineID, project.toNetworkLayerDTO(onlineID))
-        projectDAO.updateVersionNumber(ProjectDataVersionDTO(projectID, newVersion))
+        val response = projectAPIService.updateProject(onlineID, project.toNetworkLayerDTO(onlineID))
+        if (response.isSuccessful) {
+            val newVersion = response.body()!!
+            projectDAO.updateVersionNumber(ProjectDataVersionDTO(projectID, newVersion))
+        } else {
+            println("Updating the project failed with error code ${response.code()}: ${response.message()}")
+        }
     }
 
+    /**
+     * Pulls updated data for all projects the given user is part of from the server
+     *
+     * @param user The user for who to update the projects
+     */
     suspend fun getUpdatedProjects(user: User) {
         val stubs = projectAPIService.getProjectStubsByUsername(user.username)
 

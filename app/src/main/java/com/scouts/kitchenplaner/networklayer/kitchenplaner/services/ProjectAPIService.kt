@@ -18,6 +18,7 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner.services
 
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerProjectDTO
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerProjectStubDTO
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -61,8 +62,8 @@ interface ProjectAPIService {
      *
      * @param id The id of the project that should be updated
      * @param project The project containing the updated data
-     * @return The current version number of the project
+     * @return A response object containing the new version number if the update was successful
      */
     @PUT("/projects/{id}")
-    suspend fun updateProject(@Path("id") id: Long, @Body project: ServerProjectDTO) : Long
+    suspend fun updateProject(@Path("id") id: Long, @Body project: ServerProjectDTO) : Response<Long>
 }
