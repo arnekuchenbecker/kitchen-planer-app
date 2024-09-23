@@ -203,8 +203,9 @@ class ProjectRepository @Inject constructor(
 
     suspend fun publishProject(projectID: Long) : Long {
         val project = getCurrentProject(projectID)
-        val onlineID = projectDAO.getCurrentOnlineIDByProjectID(projectID)
-        return projectAPIService.createNewProject(project.toNetworkLayerDTO(onlineID))
+        val onlineID = projectAPIService.createNewProject(project.toNetworkLayerDTO(0))
+        projectDAO.initializeOnlineProject(projectID, onlineID)
+        return onlineID
     }
 
     suspend fun pushProjectUpdate(projectID: Long) {
