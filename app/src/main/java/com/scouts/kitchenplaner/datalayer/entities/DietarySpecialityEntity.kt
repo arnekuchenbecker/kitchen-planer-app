@@ -21,18 +21,22 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import com.scouts.kitchenplaner.model.entities.DietaryTypes
 
+/**
+ * Data base entity of a dietary speciality of a recipe.
+ * It is uniquely defined by the speciality and the recipe they belong to.
+ *
+ * @param recipe The recipe the speciality belongs to (foreign key)
+ * @param type The type of the speciality
+ * @param speciality The content that describes the speciality
+ */
 @Entity(
-    primaryKeys = ["recipe", "speciality"],
-    foreignKeys = [ForeignKey(
+    primaryKeys = ["recipe", "speciality"], foreignKeys = [ForeignKey(
         entity = RecipeEntity::class,
         parentColumns = ["id"],
         childColumns = ["recipe"],
         onDelete = ForeignKey.CASCADE
-    )],
-    indices = [Index("recipe")]
+    )], indices = [Index("recipe")]
 )
 data class DietarySpecialityEntity(
-    var recipe: Long,
-    val type: DietaryTypes,
-    val speciality: String
+    var recipe: Long, val type: DietaryTypes, val speciality: String
 )

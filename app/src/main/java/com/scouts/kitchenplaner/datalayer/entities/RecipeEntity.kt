@@ -19,8 +19,17 @@ package com.scouts.kitchenplaner.datalayer.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Data base entity for a recipe. IT contains all relevant meta data.
+ *
+ * @param id The id of the recipe
+ * @param title The title of the recipe
+ * @param imageURI The URI of the picture for the recipe
+ * @param description The description for the recipe
+ * @param numberOfPeople For how many people the recipe is written
+ */
 @Entity(tableName = "recipeEntity")
-data class RecipeEntity (
+data class RecipeEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val title: String,
     val imageURI: String,

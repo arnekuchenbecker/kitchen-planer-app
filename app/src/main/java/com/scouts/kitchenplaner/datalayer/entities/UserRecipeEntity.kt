@@ -21,23 +21,20 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import java.util.Date
 
-
+/**
+ * Data base representation of mapping the recipe to a user for saving which recipe is the recipe last shown to the user.
+ *
+ * @param recipe The recipe the user has seen
+ * @param user The username of the user who has seen the recipe
+ * @param lastShown The recent point in time when the user has seen the recipe
+ */
 @Entity(
-    tableName = "userRecipe",
-    foreignKeys = [ForeignKey(
-        entity = UserEntity::class,
-        parentColumns = ["username"],
-        childColumns = ["user"]
+    tableName = "userRecipe", foreignKeys = [ForeignKey(
+        entity = UserEntity::class, parentColumns = ["username"], childColumns = ["user"]
     ), ForeignKey(
-        entity = RecipeEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["recipe"]
-    )],
-    primaryKeys = ["recipe", "user"],
-    indices = [Index("user")]
+        entity = RecipeEntity::class, parentColumns = ["id"], childColumns = ["recipe"]
+    )], primaryKeys = ["recipe", "user"], indices = [Index("user")]
 )
 data class UserRecipeEntity(
-    val recipe: Long,
-    val user: String,
-    val lastShown: Date
+    val recipe: Long, val user: String, val lastShown: Date
 )

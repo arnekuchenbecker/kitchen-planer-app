@@ -20,6 +20,16 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
+/**
+ * Data base entity for an instruction step. An instruction step is uniquely identified by the recipe it belongs to and its order.
+ * Because the order can change often, it has another key.
+ * To refer to this entity the DTO should be used.
+ *
+ * @param id The unique identifier of the instruction step
+ * @param order The order of the instruction step
+ * @param recipe The recipe the instruction step belongs to
+ * @param instruction The content of the instruction step
+ */
 @Entity(
     primaryKeys = ["order", "recipe"],
     foreignKeys = [ForeignKey(
