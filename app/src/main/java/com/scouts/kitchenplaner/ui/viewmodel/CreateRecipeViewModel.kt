@@ -49,6 +49,7 @@ class CreateRecipeViewModel @Inject constructor(
     private val createRecipe: CreateRecipe, private val importRecipe: ImportRecipe
 ) : ViewModel() {
     private val idRegex = Regex("^[0-9]+$")
+    private val urlRegex = Regex("^https://www\\.chefkoch\\.de/rezepte/[0-9]*/.*\\.html")
     var recipeName by mutableStateOf("")
     var uri by mutableStateOf<Uri?>(null)
     var description by mutableStateOf("")
@@ -131,18 +132,19 @@ class CreateRecipeViewModel @Inject constructor(
     /**
      * Imports a chefkoch recipe from the source
      * @param source Source can either be the full chefkoch URL or the recipe ID only
+     * @return whether the [source] String could successfully be parsed
      */
-    fun importRecipe(source: String) {
-        if (idRegex.matches(source)) {
+    fun importRecipe(source: String) : Boolean {
+        return if (idRegex.matches(source)) {
             importRecipeFromID(source.toLong())
-        } else {
+            true
+        } else if (urlRegex.matches(source)) {
             val urlParts = source.split("/")
             val id = urlParts[urlParts.size - 2]
-            if (idRegex.matches(id)) {
-                importRecipeFromID(id.toLong())
-            } else {
-                println("Could not parse source $source")
-            }
+            importRecipeFromID(id.toLong())
+            true
+        } else {
+            false
         }
     }
 
@@ -162,7 +164,7 @@ class CreateRecipeViewModel @Inject constructor(
         allergenState = RecipeAllergenState()
         _instructions = mutableStateListOf<String>().apply { addAll(recipe.instructions) }
         _ingredients = recipe.ingredientGroups.map { group ->
-                Pair(group.name, group.ingredients.toMutableStateList())
-            }.toMutableStateMap()
+            Pair(group.name, group.ingredients.toMutableStateList())
+        }.toMutableStateMap()
     }
 }

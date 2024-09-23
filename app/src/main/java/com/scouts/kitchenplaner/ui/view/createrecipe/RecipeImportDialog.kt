@@ -43,7 +43,7 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun RecipeImportDialog(
     onDismissRequest: () -> Unit,
-    importRecipe: (String) -> Unit
+    importRecipe: (String) -> Boolean
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(shape = RoundedCornerShape(15.dp)) {
@@ -51,17 +51,29 @@ fun RecipeImportDialog(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                var textFieldIsError by remember { mutableStateOf(false) }
                 var source by remember { mutableStateOf("") }
                 OutlinedTextField(
                     value = source,
                     onValueChange = { source = it },
                     label = { Text("Chefkoch-URL oder ID") },
-                    modifier = Modifier.padding(bottom = 10.dp)
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    singleLine = true,
+                    isError = textFieldIsError,
+                    supportingText = if (textFieldIsError) {
+                        { Text("Invalid Import Source") }
+                    } else {
+                        null
+                    }
                 )
                 Button(
                     onClick = {
-                        importRecipe(source)
-                        onDismissRequest()
+                        val success = importRecipe(source)
+                        if (success) {
+                            onDismissRequest()
+                        } else {
+                            textFieldIsError = true
+                        }
                     }
                 ) {
                     Text("Rezept Importieren")
