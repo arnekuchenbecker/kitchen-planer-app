@@ -187,6 +187,9 @@ interface ProjectDAO {
     @Query("SELECT onlineID FROM projects WHERE id = :id")
     suspend fun getCurrentOnlineIDByProjectID(id: Long) : Long
 
+    @Query("UPDATE projects SET onlineID = :onlineID, dataVersion = 0, imageVersion = 0 WHERE id = :projectID")
+    suspend fun initializeOnlineProject(projectID: Long, onlineID: Long)
+
     // Methods for archiving projects
 
     @Delete(MealEntity::class)
