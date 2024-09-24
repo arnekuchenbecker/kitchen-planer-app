@@ -21,7 +21,7 @@ import com.scouts.kitchenplaner.datalayer.entities.UnitConversionEntity
 /**
  * Entity representing a possible Unit Conversion. To apply a Unit Conversion to an ingredient, the
  * ingredient's name has to match [ingredientMatcher] and the ingredient's unit has to be the same
- * as [destinationUnit]
+ * as [sourceUnit]
  *
  * @param ingredientMatcher Regex identifying what ingredients this UnitConversion can be applied to
  * @param sourceUnit The unit this UnitConversion converts from
