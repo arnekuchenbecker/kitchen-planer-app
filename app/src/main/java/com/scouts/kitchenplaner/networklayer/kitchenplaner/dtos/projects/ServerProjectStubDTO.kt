@@ -14,16 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
-
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
-}
+/**
+ * DTO for communication with the server. Represents the meta data of a project.
+ *
+ * @param id The onlineID of the project
+ * @param name The name of the project
+ * @param imageVersion The version number of the project's image
+ * @param projectVersion The version number of the project's data
+ */
+data class ServerProjectStubDTO(
+    val id: Long,
+    val name: String,
+    val imageVersion: Long,
+    val projectVersion: Long
+)

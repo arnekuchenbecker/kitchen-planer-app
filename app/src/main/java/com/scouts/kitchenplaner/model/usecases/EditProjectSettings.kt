@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import android.net.Uri
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import java.util.Date

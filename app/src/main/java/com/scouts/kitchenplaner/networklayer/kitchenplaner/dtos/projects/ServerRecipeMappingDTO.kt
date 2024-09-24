@@ -14,16 +14,22 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
+import java.util.Date
 
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
-}
+/**
+ * DTO for communication with the server. Represents a recipe mapping (i.e. maps a recipe to a meal
+ * slot).
+ *
+ * @param date The date of the meal slot
+ * @param meal The meal of the meal slot
+ * @param recipeID The onlineID of the recipe
+ * @param mainRecipe Whether this recipe should be selected as the main recipe for the meal slot
+ */
+data class ServerRecipeMappingDTO(
+    val date: Date,
+    val meal: String,
+    val recipeID: Long,
+    val mainRecipe: Boolean
+)

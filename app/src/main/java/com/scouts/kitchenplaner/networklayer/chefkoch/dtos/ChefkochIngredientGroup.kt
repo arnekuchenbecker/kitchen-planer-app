@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
-
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
-}
+/**
+ * An ingredient group as used in request to chefkoch's API
+ *
+ * @param header The name of the ingredient group
+ * @param ingredients A list of all ingredients in this group
+ */
+data class ChefkochIngredientGroup(
+    val header: String,
+    val ingredients: List<ChefkochIngredient>
+)

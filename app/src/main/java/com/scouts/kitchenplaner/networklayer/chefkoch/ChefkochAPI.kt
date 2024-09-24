@@ -14,16 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.networklayer.chefkoch
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
-
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
-}
+/**
+ * Base URL for chefkoch's API
+ */
+const val CHEFKOCH_BASE_URL = "https://api.chefkoch.de/v2"

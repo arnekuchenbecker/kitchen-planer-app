@@ -16,9 +16,9 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.RecipeStub

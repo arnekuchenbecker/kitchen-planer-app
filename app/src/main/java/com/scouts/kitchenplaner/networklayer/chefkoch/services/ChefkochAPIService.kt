@@ -14,16 +14,17 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.networklayer.chefkoch.services
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
+import com.scouts.kitchenplaner.networklayer.chefkoch.dtos.ChefkochRecipe
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
 
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
+/**
+ * retrofit service for making requests to chefkoch's API
+ */
+interface ChefkochAPIService {
+    @GET("/recipes/{id}")
+    suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
 }

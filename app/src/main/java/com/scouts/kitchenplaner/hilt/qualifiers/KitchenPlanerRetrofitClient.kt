@@ -14,9 +14,14 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer.dtos
+package com.scouts.kitchenplaner.hilt.qualifiers
 
-data class ChefkochIngredientGroup(
-    val header: String,
-    val ingredients: List<ChefkochIngredient>
-)
+import javax.inject.Qualifier
+
+/**
+ * Qualifier annotation for dependency injection with hilt to mark a dependency as requiring a
+ * KitchenPlanner retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class KitchenPlanerRetrofitClient

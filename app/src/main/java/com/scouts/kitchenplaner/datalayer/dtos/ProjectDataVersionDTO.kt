@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.model.usecases
+package com.scouts.kitchenplaner.datalayer.dtos
 
-import com.scouts.kitchenplaner.repositories.RecipeRepository
-import com.scouts.kitchenplaner.model.entities.Recipe
-import javax.inject.Inject
-
-class CreateRecipe @Inject constructor(
-    private val recipeRepository: RecipeRepository
-) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
-        return recipeRepository.createRecipe(recipe)
-    }
-}
+/**
+ * Data transfer object for a project ID and a data version number
+ *
+ * @param id Local ID of the project
+ * @param dataVersion Data version number of the project
+ */
+data class ProjectDataVersionDTO (
+    val id: Long,
+    val dataVersion: Long
+)
