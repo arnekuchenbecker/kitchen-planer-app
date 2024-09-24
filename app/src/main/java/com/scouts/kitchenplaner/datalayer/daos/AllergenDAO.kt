@@ -82,9 +82,21 @@ interface AllergenDAO {
             "AND allergens.projectId = :projectId")
     suspend fun getAllergenCountByNameAndProjectId(name: String, projectId: Long) : Int
 
+    /**
+     * Gets all allergen persons currently part of the project with the given ID
+     *
+     * @param id The ID of the project
+     * @return A list of all AllergenPersonEntities relevant to the project
+     */
     @Query("SELECT * FROM allergenPersons WHERE allergenPersons.projectId = :id")
     suspend fun getCurrentAllergenPersonsByProjectID(id: Long) : List<AllergenPersonEntity>
 
+    /**
+     * Gets all allergens currently relevant to the project with the given ID
+     *
+     * @param id The ID of the project
+     * @return A list of all AllergenEntities relevant to the project
+     */
     @Query("SELECT * FROM allergens WHERE allergens.projectId = :id")
     suspend fun getCurrentAllergensByProjectID(id: Long) : List<AllergenEntity>
 

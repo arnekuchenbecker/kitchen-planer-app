@@ -18,6 +18,10 @@ package com.scouts.kitchenplaner.hilt.qualifiers
 
 import javax.inject.Qualifier
 
+/**
+ * Qualifier annotation for dependency injection with hilt to mark a dependency as requiring a
+ * Chefkoch retrofit client
+ */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ChefkochRetrofitClient()
+annotation class ChefkochRetrofitClient

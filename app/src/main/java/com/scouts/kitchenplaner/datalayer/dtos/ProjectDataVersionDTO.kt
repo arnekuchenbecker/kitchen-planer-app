@@ -16,6 +16,12 @@
 
 package com.scouts.kitchenplaner.datalayer.dtos
 
+/**
+ * Data transfer object for a project ID and a data version number
+ *
+ * @param id Local ID of the project
+ * @param dataVersion Data version number of the project
+ */
 data class ProjectDataVersionDTO (
     val id: Long,
     val dataVersion: Long

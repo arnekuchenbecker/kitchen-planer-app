@@ -30,6 +30,10 @@ import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerA
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerProjectDTO
 import java.util.Date
 
+/**
+ * Builder class to facilitate easier construction of [Project] objects from network or datalayer
+ * entities
+ */
 class ProjectBuilder {
     private val name: String
     private val id: Long?
@@ -40,6 +44,11 @@ class ProjectBuilder {
     private var allergenPersons: List<AllergenPerson> = listOf()
     private var mealPlan: MealPlan = MealPlan(Date(0), Date(0))
 
+    /**
+     * Initializes a [ProjectBuilder] from the given datalayer entity
+     *
+     * @param projectEntity The entity the created project should be based on
+     */
     constructor(projectEntity: ProjectEntity) {
         this.name = projectEntity.name
         this.id = projectEntity.id
@@ -49,6 +58,11 @@ class ProjectBuilder {
         this.isOnline = projectEntity.onlineID != null
     }
 
+    /**
+     * Initializes a [ProjectBuilder] from the given networklayer dto
+     *
+     * @param projectDTO The dto the created project should be based on
+     */
     constructor(projectDTO: ServerProjectDTO) {
         this.name = projectDTO.name
         this.id = null
@@ -57,6 +71,13 @@ class ProjectBuilder {
         this.isOnline = true
     }
 
+    /**
+     * Use the given data layer entities to set the allergens for the project being created
+     *
+     * @param allergenPersonEntities The persons that have allergies
+     * @param allergenEntities The allergens relevant to the project
+     * @return this object for further modification
+     */
     fun setAllergenPersonsFromEntities(
         allergenPersonEntities: List<AllergenPersonEntity>,
         allergenEntities: List<AllergenEntity>
@@ -78,6 +99,12 @@ class ProjectBuilder {
         return this
     }
 
+    /**
+     * Use the given network layer DTOs to set the allergens for the project being created
+     *
+     * @param allergenPersons The persons that have allergies
+     * @return this object for further modification
+     */
     fun setAllergenPersonsFromServerDTOs(allergenPersons: List<ServerAllergenPeopleDTO>) : ProjectBuilder {
         this.allergenPersons = allergenPersons.map { person ->
             AllergenPerson(
@@ -94,6 +121,16 @@ class ProjectBuilder {
         return this
     }
 
+    /**
+     * Sets the meal plan of the project being created from the given data
+     *
+     * @param meals The meals the project should have
+     * @param mainRecipes The main recipes associated to each meal slot
+     * @param alternativeRecipes The alternative recipes associated to each meal slot
+     * @param numberChanges The number changes at each meal slot
+     *
+     * @return this object for further modification
+     */
     fun setMealPlan(
         meals: List<String>,
         mainRecipes: List<Pair<MealSlot, RecipeStub>>,
@@ -129,11 +166,20 @@ class ProjectBuilder {
         return this
     }
 
+    /**
+     * Selects an image for the project being created
+     *
+     * @param uri The URI of the image
+     * @return this object for further modification
+     */
     fun setImageUri(uri: Uri) : ProjectBuilder {
         projectImage = uri
         return this
     }
 
+    /**
+     * @return The project that was constructed
+     */
     fun build() : Project {
         return Project(
             _id = this.id,

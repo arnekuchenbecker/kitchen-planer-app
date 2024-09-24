@@ -18,6 +18,13 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
 import java.util.Date
 
+/**
+ * DTO for communication with the server. Represents a person number change.
+ *
+ * @param date The date the change happens
+ * @param meal The meal the change happens before
+ * @param differenceBefore The amount of persons that arrives or departs before the meal
+ */
 data class ServerPersonNumberChangeDTO(
     val date: Date,
     val meal: String,

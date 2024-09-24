@@ -146,6 +146,12 @@ interface RecipeDAO {
     @Query("SELECT * FROM recipeEntity WHERE id = :id")
     fun getRecipeById(id: Long): Flow<RecipeEntity>
 
+    /**
+     * Gets recipe stubs for all recipes with the given IDs
+     *
+     * @param ids List of ids for which to retrieve recipe stubs
+     * @return A list of recipe stubs for the given ids
+     */
     @Query(
         "SELECT " +
             "recipeEntity.id AS id, " +

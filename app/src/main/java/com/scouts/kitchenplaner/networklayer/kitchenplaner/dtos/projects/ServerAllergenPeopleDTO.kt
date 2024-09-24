@@ -18,6 +18,17 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
 import java.util.Date
 
+/**
+ * DTO for communication with the server. Represents an allergic person.
+ *
+ * @param name The name of the person
+ * @param arrivalDate The date the person arrives
+ * @param departureDate The date the person departs
+ * @param arrivalMeal The first meal of the person
+ * @param departureMeal The last meal of the person
+ * @param allergen Everything the person is allergic to
+ * @param traces Everything the person is allergic to traces
+ */
 data class ServerAllergenPeopleDTO(
     val name: String,
     val arrivalDate: Date,

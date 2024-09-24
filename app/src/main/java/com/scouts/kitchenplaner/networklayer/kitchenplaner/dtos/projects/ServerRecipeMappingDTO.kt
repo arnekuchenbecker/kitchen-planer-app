@@ -18,6 +18,15 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
 import java.util.Date
 
+/**
+ * DTO for communication with the server. Represents a recipe mapping (i.e. maps a recipe to a meal
+ * slot).
+ *
+ * @param date The date of the meal slot
+ * @param meal The meal of the meal slot
+ * @param recipeID The onlineID of the recipe
+ * @param mainRecipe Whether this recipe should be selected as the main recipe for the meal slot
+ */
 data class ServerRecipeMappingDTO(
     val date: Date,
     val meal: String,

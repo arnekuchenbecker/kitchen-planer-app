@@ -18,6 +18,21 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
 import java.util.Date
 
+/**
+ * DTO for communication with the server. Represents a project.
+ *
+ * @param versionNumber The version number of the data of the project
+ * @param imageVersionNumber The version number of the image of the project
+ * @param name The name of the project
+ * @param id The onlineID of the project
+ * @param meals All meals of the project
+ * @param startDate The start date of the project
+ * @param endDate The end date of the project
+ * @param allergenPeople All allergic people relevant to the project
+ * @param recipes All (main and alternative) recipe mappings of the project
+ * @param unitConversions All unit conversions active for the project
+ * @param personNumberChange All person number changes of the project
+ */
 data class ServerProjectDTO(
     val versionNumber: Long,
     val imageVersionNumber: Long,

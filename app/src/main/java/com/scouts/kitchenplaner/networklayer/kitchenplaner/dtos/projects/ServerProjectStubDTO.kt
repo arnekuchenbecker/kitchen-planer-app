@@ -16,6 +16,14 @@
 
 package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
+/**
+ * DTO for communication with the server. Represents the meta data of a project.
+ *
+ * @param id The onlineID of the project
+ * @param name The name of the project
+ * @param imageVersion The version number of the project's image
+ * @param projectVersion The version number of the project's data
+ */
 data class ServerProjectStubDTO(
     val id: Long,
     val name: String,

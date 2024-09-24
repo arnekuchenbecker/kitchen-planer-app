@@ -16,6 +16,15 @@
 
 package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
+/**
+ * DTO for communication with the server. Represents a unit conversion
+ *
+ * @param startUnit The unit from which to convert
+ * @param endUnit The unit to which to convert
+ * @param ingredient Regex identifying the ingredients this unit conversion can be applied to.
+ * @param factor The factor by which to multiply the amount of an ingredient in order to convert
+ *               from startUnit to endUnit
+ */
 data class ServerUnitConversionDTO(
     val startUnit: String,
     val endUnit: String,

@@ -59,6 +59,11 @@ interface ProjectDAO {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertProject(entity: ProjectEntity): Long
 
+    /**
+     * Deletes the project with the given id
+     *
+     * @param id The ID of the project that should be deleted
+     */
     @Query("DELETE FROM projects WHERE id = :id")
     suspend fun deleteProject(id: Long)
 
@@ -95,6 +100,12 @@ interface ProjectDAO {
     @Query("SELECT * FROM projects WHERE projects.id = :id")
     fun getProjectById(id: Long): Flow<ProjectEntity>
 
+    /**
+     * Searches for a project with the given online ID
+     *
+     * @param onlineID The online ID to search for
+     * @return Whether a project with the given online ID exists
+     */
     @Query("SELECT EXISTS(SELECT id FROM projects WHERE onlineID = :onlineID)")
     suspend fun existsProjectByOnlineID(onlineID: Long) : Boolean
 
@@ -110,12 +121,24 @@ interface ProjectDAO {
     @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
     fun getMealsByProjectID(id: Long): Flow<List<String>>
 
+    /**
+     * Gets all meals currently in a project
+     *
+     * @param id The ID of the project
+     * @return The meals currently in the project with the given ID
+     */
     @Query("SELECT name FROM meals WHERE meals.projectId = :id ORDER BY meals.`order`")
     suspend fun getCurrentMealsByProjectID(id: Long): List<String>
 
     @Query("SELECT * FROM personNumberChanges WHERE personNumberChanges.projectId = :id")
     fun getPersonNumberChangesByProjectID(id: Long): Flow<List<PersonNumberChangeEntity>>
 
+    /**
+     * Gets all number changes relevant for a project
+     *
+     * @param id The ID of the project
+     * @return A list of the PersonNumberChangeEntities relevant for the project
+     */
     @Query("SELECT * FROM personNumberChanges WHERE projectId = :id")
     suspend fun getCurrentPersonNumberChangesByProjectID(id: Long) : List<PersonNumberChangeEntity>
 
@@ -169,24 +192,66 @@ interface ProjectDAO {
     fun getLatestShownProjectsForUser(user: String, limit: Int): Flow<List<UserProjectEntity>>
 
     // Methods for data management with the server
+    /**
+     * Gets the current data version number of the given project
+     *
+     * @param id The ID of the project
+     * @return The data version
+     */
     @Query("SELECT dataVersion FROM projects WHERE id = :id")
     suspend fun getCurrentProjectVersionNumberByID(id: Long) : Long
 
+    /**
+     * Gets the current image version number of the given project
+     *
+     * @param id The ID of the project
+     * @return The image version
+     */
     @Query("SELECT imageVersion FROM projects WHERE id = :id")
     suspend fun getCurrentImageVersionNumberByID(id: Long) : Long
 
+    /**
+     * Updates the data version number by applying the given DTO
+     *
+     * @param dto A DTO containing project ID and the updated version number
+     */
     @Update(ProjectEntity::class)
     suspend fun updateVersionNumber(dto: ProjectDataVersionDTO)
 
+    /**
+     * Gets the current image URI for the given project
+     *
+     * @param id The ID of the project
+     * @return The image URI
+     */
     @Query("SELECT imageURI FROM projects WHERE id = :id")
     suspend fun getCurrentImageURIByID(id: Long) : String
 
+    /**
+     * Converts the given onlineID to a local ID
+     *
+     * @param onlineID The onlineID that should be converted
+     * @return The local ID associated with the given onlineID
+     */
     @Query("SELECT id FROM projects WHERE onlineID = :onlineID")
     suspend fun getCurrentProjectIDByOnlineID(onlineID: Long) : Long
 
+    /**
+     * Converts the given local ID to an onlineID
+     *
+     * @param id The local ID that should be converted
+     * @return The onlineID associated with the given local ID
+     */
     @Query("SELECT onlineID FROM projects WHERE id = :id")
     suspend fun getCurrentOnlineIDByProjectID(id: Long) : Long
 
+    /**
+     * Initializes a project for online use by setting the onlineID and initializing image and data
+     * version numbers to 0
+     *
+     * @param projectID The local ID of the project that should be initialized
+     * @param onlineID The onlineID the project is known by on the server
+     */
     @Query("UPDATE projects SET onlineID = :onlineID, dataVersion = 0, imageVersion = 0 WHERE id = :projectID")
     suspend fun initializeOnlineProject(projectID: Long, onlineID: Long)
 
@@ -198,6 +263,12 @@ interface ProjectDAO {
     @Update(ProjectEntity::class)
     suspend fun setProjectArchivedStatus(projectArchived: ProjectArchivedDTO)
 
+    /**
+     * Checks whether a project is archived
+     *
+     * @param id The ID of the project
+     * @return Whether the project is archived
+     */
     @Query("SELECT isArchived FROM projects WHERE id = :id")
     suspend fun isProjectArchived(id: Long) : Boolean
 }

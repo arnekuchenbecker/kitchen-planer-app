@@ -26,6 +26,12 @@ import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerA
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerProjectDTO
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerRecipeMappingDTO
 
+/**
+ * Creates a network layer DTO with the given onlineID from this project
+ *
+ * @param onlineID The onlineID of the project
+ * @return A network layer DTO representing this project
+ */
 fun Project.toNetworkLayerDTO(onlineID: Long): ServerProjectDTO {
     return ServerProjectDTO(
         versionNumber = 0,
@@ -61,6 +67,13 @@ fun Project.toNetworkLayerDTO(onlineID: Long): ServerProjectDTO {
     )
 }
 
+/**
+ * Converts this network layer DTO to a model entity
+ *
+ * @param imageUri The location of the project image
+ * @param recipeStubs The recipe stubs used in the project
+ * @return The model representation of the project
+ */
 fun ServerProjectDTO.toModelEntity(imageUri: Uri, recipeStubs: List<RecipeStub>): Project {
     val mainRecipes = recipes
         .filter { it.mainRecipe }
@@ -91,6 +104,11 @@ fun ServerProjectDTO.toModelEntity(imageUri: Uri, recipeStubs: List<RecipeStub>)
         .build()
 }
 
+/**
+ * Converts this AllergenPerson to a network layer DTO
+ *
+ * @return The network layer representation of this AllergenPerson
+ */
 fun AllergenPerson.toNetworkLayerDTO(): ServerAllergenPeopleDTO {
     return ServerAllergenPeopleDTO(
         name = this.name,

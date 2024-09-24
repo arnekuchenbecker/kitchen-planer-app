@@ -113,12 +113,24 @@ interface RecipeManagementDAO {
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     fun getMainRecipesForProject(projectId: Long) : Flow<List<MainRecipeProjectMealEntity>>
 
+    /**
+     * Gets all main recipe mappings for a project
+     *
+     * @param projectId The ID of the project
+     * @return A list containing all main recipe mappings for that project
+     */
     @Query("SELECT * FROM recipeProjectMeal WHERE projectId = :projectId")
     suspend fun getCurrentMainRecipesForProject(projectId: Long) : List<MainRecipeProjectMealEntity>
 
     @Query("SELECT * FROM alternativeRecipeProjectMeal WHERE projectId = :projectId")
     fun getAlternativeRecipesForProject(projectId: Long) : Flow<List<AlternativeRecipeProjectMealEntity>>
 
+    /**
+     * Gets all alternative recipe mappings for a project
+     *
+     * @param projectId The ID of the project
+     * @return A list containing all alternative recipe mappings for that project
+     */
     @Query("SELECT * FROM alternativeRecipeProjectMeal WHERE projectId = :projectId")
     suspend fun getCurrentAlternativeRecipesForProject(projectId: Long) : List<AlternativeRecipeProjectMealEntity>
 
