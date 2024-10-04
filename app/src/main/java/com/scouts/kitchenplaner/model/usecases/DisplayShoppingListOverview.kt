@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 /**
  * Usecase for displaying an overview over a projects shopping lists
+ * @param shoppingListRepository Repository for retrieving information about shopping lists
  */
 class DisplayShoppingListOverview @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository

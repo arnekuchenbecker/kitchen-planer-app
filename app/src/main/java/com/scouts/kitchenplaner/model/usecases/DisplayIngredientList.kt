@@ -25,10 +25,22 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.Recipe
 import kotlinx.coroutines.flow.first
 
-class DisplayIngredientList (
+/**
+ * Use case for assembling all data to create an ingredient list over all ingredients needed in a project
+ *
+ * @param recipeRepository Repository for retrieving all needed recipes
+ */
+class DisplayIngredientList(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend fun getIngredientList(project: Project) : IngredientList {
+    /**
+     * Provides an ingredient list containing all ingredients need for the given project.
+     * The needed ingredients are grouped by their name.
+     *
+     * @param project The project for which the list is needed
+     * @return The ingredient list for the project
+     */
+    suspend fun getIngredientList(project: Project): IngredientList {
         val result = IngredientList()
         project.mealSlots.forEach { slot ->
             val mealPlanSlot = project.mealPlan[slot]
@@ -39,7 +51,12 @@ class DisplayIngredientList (
                 addIngredients(result, recipe, numberOfPeople, slot)
                 recipes.second.forEach {
                     val alternative = recipeRepository.getRecipeById(it.id).first()
-                    addIngredients(result, alternative, 1, slot) //TODO - figure out how many people are actually eating
+                    addIngredients(
+                        result,
+                        alternative,
+                        1,
+                        slot
+                    ) //TODO - figure out how many people are actually eating
                 }
             }
         }
@@ -47,14 +64,20 @@ class DisplayIngredientList (
     }
 
     @OptIn(DomainLayerRestricted::class)
-    private fun addIngredients(ingredientList: IngredientList, recipe: Recipe, numberOfPeople: Int, slot: MealSlot) {
+    private fun addIngredients(
+        ingredientList: IngredientList,
+        recipe: Recipe,
+        numberOfPeople: Int,
+        slot: MealSlot
+    ) {
         recipe.ingredientGroups.forEach {
             it.ingredients.forEach { ingredient ->
                 ingredientList.addIngredient(
                     Ingredient(
                         ingredient.name,
-                        ingredient.amount * (numberOfPeople.toFloat() / recipe.numberOfPeople),
-                        ingredient.unit),
+                        ingredient.amount * (numberOfPeople.toDouble() / recipe.numberOfPeople),
+                        ingredient.unit
+                    ),
                     slot
                 )
             }

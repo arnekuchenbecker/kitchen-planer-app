@@ -20,10 +20,22 @@ import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.Recipe
 import javax.inject.Inject
 
+/**
+ * Use case to create a new recipe
+ *
+ * @param recipeRepository Repository for storing the new recipe
+ */
 class CreateRecipe @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend fun createRecipe(recipe: Recipe) : Long {
+
+    /**
+     * Creates a new recipe
+     *
+     * @param recipe The recipe to be created in the data base
+     * @return The id of the newly created recipe
+     */
+    suspend fun createRecipe(recipe: Recipe): Long {
         return recipeRepository.createRecipe(recipe)
     }
 }

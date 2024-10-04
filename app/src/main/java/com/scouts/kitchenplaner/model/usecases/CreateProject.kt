@@ -21,11 +21,21 @@ import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import javax.inject.Inject
 
+/**
+ * Use case for creating a new project for a user
+ *
+ * @param projectRepository Repository for storing the project
+ * @param userRepository Repository for retrieving information about the current user
+ */
 class CreateProject @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val userRepository: KitchenAppDataStore
 ) {
     /**
+     * Creates a new project
+     *
+     * @param project The project to be created
+     *
      * @return The project id of the newly created project or null if project wasn't a valid project.
      */
     suspend fun createProject(
