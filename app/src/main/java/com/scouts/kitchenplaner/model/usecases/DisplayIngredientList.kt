@@ -75,7 +75,7 @@ class DisplayIngredientList(
                 ingredientList.addIngredient(
                     Ingredient(
                         ingredient.name,
-                        ingredient.amount * (numberOfPeople.toFloat() / recipe.numberOfPeople),
+                        ingredient.amount * (numberOfPeople.toDouble() / recipe.numberOfPeople),
                         ingredient.unit
                     ),
                     slot

@@ -33,7 +33,7 @@ class EditAllergens @Inject constructor(
     private val allergenRepository: AllergenRepository
 ) {
     /**
-     * Adds a new allergen to person who already has allergens
+     * Adds a new allergen to a person who already has allergens
      *
      * @param project The project in which the person is relevant
      * @param person The person who gets a new allergen

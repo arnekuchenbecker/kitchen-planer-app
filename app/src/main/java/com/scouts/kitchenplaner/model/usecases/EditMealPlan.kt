@@ -27,9 +27,9 @@ import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 /**
- * Use case for adding the meal plan of a project. This includes defining the main recipe and
- * alternatives for a it for each meal slot within a project.
- * It also provides functionality for convenient editing the meal plan.
+ * Use case for editing the meal plan of a project. This includes defining the main recipe and
+ * alternatives for it for each meal slot within a project.
+ * It also provides functionality for conveniently editing the meal plan.
  *
  * @param recipeManagementRepository Repository for managing the recipes within a project
  * @param recipeRepository Repository for receiving information about the recipes
@@ -124,7 +124,7 @@ class EditMealPlan @Inject constructor(
     }
 
     /**
-     * Removes a meal from a project.
+     * Removes a meal to the meal plan.
      *
      * @param project The project from which the meal gets deleted
      * @param meal The name of the meal to be deleted

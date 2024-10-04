@@ -114,7 +114,8 @@ class DisplayProjectOverview @Inject constructor(
     }
 
     /**
-     * Archives a project. Only the meta data is present on the device, if it  is a online project
+     * Archives a project. Only the meta data is present on the device, if it  is an online project.
+     * If it is an offline project it gets deleted.
      *
      * @param project The project to archive
      */

@@ -27,7 +27,7 @@ private const val FORMAT_STRING = "<format>"
 private const val FORMAT_INPUT = "crop-224x148"
 
 /**
- * Use case to import a recipe via chefkoch. Therefore the id or the link to the recipe is needed
+ * Use case to import a recipe via chefkoch. To do so, the Id or the link to the recipe is needed
  *
  * @param chefkochAPIService The service that provides access to the chefkoch API
  */

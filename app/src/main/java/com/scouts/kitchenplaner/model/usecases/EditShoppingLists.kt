@@ -22,7 +22,7 @@ import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
 import javax.inject.Inject
 
 /**
- * Use case to edit shopping list
+ * Use case to edit a shopping list
  *
  * @param shoppingListRepository The repository for accessing the data base for shopping lists
  */

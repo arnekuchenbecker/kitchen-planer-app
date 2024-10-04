@@ -49,7 +49,8 @@ class CheckAllergens @Inject constructor(
     private val allergenRepository: AllergenRepository
 ) {
     /**
-     * Provides an overview which allergens are covered in a meal slot, which not and which are not to be determent
+     * Provides an overview which allergens are covered in a meal slot, which not
+     * and for which it cannot automatically be determined
      *
      * @param project The project in which the allergen check is needed
      * @param mealSlot The meal slot for which the allergen check is needed

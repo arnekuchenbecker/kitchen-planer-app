@@ -56,7 +56,7 @@ class CreateShoppingList @Inject constructor(
      * entry is not yet persisted in the data base (create a shopping list via [createShoppingList]
      * to do so)
      *
-     * @param name The name of the needed thing
+     * @param name The name of the needed ingredient or article
      * @param amount The amount needed
      * @param unit The unit of the amount
      *
