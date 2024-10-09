@@ -26,13 +26,16 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
  *
  * @param imageURI The new image URI for the recipe
  */
-class UpdateImageURICommand(private val imageURI: Uri, recipe: Recipe) :
-    ChangeCommand(recipe = recipe) {
-    override fun applyOnState(state: EditRecipeState) {
+class UpdateImageURICommand(
+    private val imageURI: Uri, recipe: Recipe, state: EditRecipeState,
+    editRecipe: EditRecipe
+) :
+    ChangeCommand(recipe = recipe, state, editRecipe) {
+    override fun applyOnState() {
         state.imageURI = imageURI
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         editRecipe.setRecipePicture(recipe, imageURI)
     }
 }

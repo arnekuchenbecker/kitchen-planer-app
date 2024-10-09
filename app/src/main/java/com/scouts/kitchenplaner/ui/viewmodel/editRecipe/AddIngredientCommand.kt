@@ -30,14 +30,17 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
 class AddIngredientCommand(
     private val group: String,
     private val ingredient: Ingredient,
-    recipe: Recipe
+    recipe: Recipe,
+    state: EditRecipeState,
+    editRecipe: EditRecipe
 ) :
-    ChangeCommand(recipe = recipe) {
-    override fun applyOnState(state: EditRecipeState) {
+    ChangeCommand(recipe = recipe, state, editRecipe) {
+
+    override fun applyOnState() {
         state.addIngredient(group, ingredient)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         editRecipe.addIngredient(recipe, IngredientGroup(group, listOf()), ingredient)
     }
 }

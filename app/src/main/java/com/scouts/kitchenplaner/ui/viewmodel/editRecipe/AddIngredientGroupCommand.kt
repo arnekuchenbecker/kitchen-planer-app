@@ -26,13 +26,16 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
  *
  * @param groupName The name of the new ingredient group
  */
-class AddIngredientGroupCommand(private val groupName: String, recipe: Recipe) :
-    ChangeCommand(recipe = recipe) {
-    override fun applyOnState(state: EditRecipeState) {
+class AddIngredientGroupCommand(
+    private val groupName: String, recipe: Recipe, state: EditRecipeState,
+    editRecipe: EditRecipe
+) :
+    ChangeCommand(recipe = recipe, state, editRecipe) {
+    override fun applyOnState() {
         state.addIngredientGroup(groupName)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         // Nothing to do here
     }
 }

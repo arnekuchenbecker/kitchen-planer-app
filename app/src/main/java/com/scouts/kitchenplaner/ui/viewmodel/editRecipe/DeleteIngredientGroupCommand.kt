@@ -26,13 +26,16 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
  *
  * @param group The
  */
-class DeleteIngredientGroupCommand(private val group: String, recipe: Recipe) :
-    ChangeCommand(recipe = recipe) {
-    override fun applyOnState(state: EditRecipeState) {
+class DeleteIngredientGroupCommand(
+    private val group: String, recipe: Recipe, state: EditRecipeState,
+    editRecipe: EditRecipe
+) :
+    ChangeCommand(recipe = recipe, state, editRecipe) {
+    override fun applyOnState() {
         state.deleteIngredientGroup(group)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         editRecipe.deleteIngredientGroup(recipe, IngredientGroup(group, listOf()))
     }
 }

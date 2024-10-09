@@ -51,6 +51,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Whether the free of card is expanded
      */
     var expandedFreeOf by mutableStateOf(false)
+
     /**
      * Whether the traces card is expanded
      */
@@ -60,6 +61,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * The state for the currently made changes on the recipe
      */
     var state by mutableStateOf(EditRecipeState())
+    var factory: RecipeEditFactory? = null
     private var commandList: MutableList<ChangeCommand> = mutableListOf()
 
 
@@ -86,6 +88,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
     fun activateEditMode(recipe: Recipe) {
         editMode = true
         state = EditRecipeState(recipe)
+        factory = RecipeEditFactory(recipe = recipe, useCase = editRecipe, state = state)
     }
 
     /**
@@ -106,7 +109,7 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
 
     private fun updateRecipe() {
         viewModelScope.launch {
-            commandList.forEach { it.applyOnRecipe(editRecipe) }
+            commandList.forEach { it.applyOnRecipe() }
             commandList.clear()
         }
     }
@@ -116,12 +119,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Sets the name of the recipe to the new name
      *
      * @param name The new name of the recipe
-     * @param recipe The recipe to change the name
      */
-    fun setRecipeName(name: String, recipe: Recipe) {
-        val nameCommand = UpdateNameCommand(name, recipe)
+    fun setRecipeName(name: String) {
+        val nameCommand = factory?.createUpdateNameCommand(name)!!
         commandList.add(nameCommand)
-        nameCommand.applyOnState(state)
+        nameCommand.applyOnState()
     }
 
     /**
@@ -129,12 +131,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Sets a new description
      *
      * @param description The new content of the description
-     * @param recipe The recipe which contains the description
      */
-    fun setRecipeDescription(description: String, recipe: Recipe) {
-        val command = UpdateDescriptionCommand(description, recipe = recipe)
+    fun setRecipeDescription(description: String) {
+        val command = factory?.createUpdateDescriptionCommand(description)!!
         commandList.add(command)
-        command.applyOnState(state)
+        command.applyOnState()
     }
 
     /**
@@ -142,12 +143,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Updates the amount of people for whom the recipe is calculated
      *
      * @param amount New amount of people
-     * @param recipe The recipe which is calculated
      */
-    fun setAmountOfPeople(amount: Int, recipe: Recipe) {
-        val command = UpdateAmountOfPeopleCommand(amount, recipe)
+    fun setAmountOfPeople(amount: Int) {
+        val command = factory?.createUpdateAmountOfPeopleCommand(amount)!!
         commandList.add(command)
-        command.applyOnState(state)
+        command.applyOnState()
     }
 
     /**
@@ -155,12 +155,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Updates the recipe's picture
      *
      * @param uri The new URI for the new picture
-     * @param recipe The recipe which contains the picture
      */
-    fun setRecipePicture(uri: Uri, recipe: Recipe) {
-        val command = UpdateImageURICommand(uri, recipe)
+    fun setRecipePicture(uri: Uri) {
+        val command = factory?.createUpdateImageURICommand(uri)!!
         commandList.add(command)
-        command.applyOnState(state)
+        command.applyOnState()
     }
 
 
@@ -169,12 +168,11 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Adds a dietary speciality to the recipe
      *
      * @param speciality The speciality to add
-     * @param recipe The recipe which contains the specialities
      */
-    fun addDietarySpeciality(speciality: DietarySpeciality, recipe: Recipe) {
-        val command = AddDietarySpecialityCommand(speciality, recipe)
-        command.applyOnState(state)
+    fun addDietarySpeciality(speciality: DietarySpeciality) {
+        val command = factory?.createAddDietarySpecialityCommand(speciality)!!
         commandList.add(command)
+        command.applyOnState()
     }
 
     /**
@@ -182,11 +180,10 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Deletes a speciality from the recipe
      *
      * @param speciality The speciality to delete
-     * @param recipe The recipe from which the speciality gets deleted
      */
-    fun deleteDietarySpeciality(speciality: DietarySpeciality, recipe: Recipe) {
-        val command = DeleteSpecialityCommand(speciality, recipe)
-        command.applyOnState(state)
+    fun deleteDietarySpeciality(speciality: DietarySpeciality) {
+        val command = factory?.createDeleteSpecialityCommand(speciality)!!
+        command.applyOnState()
         commandList.add(command)
     }
 
@@ -194,18 +191,17 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Part of a command pattern:
      * Adds an ingredient to the given ingredient group, or the whole ingredient group if no ingredient is provided
      *
-     * @param recipe The recipe to change
      * @param group The ingredient group which should be added, or to which the ingredient is added to
      * @param ingredient The ingredient to be added (or null if the ingredient group should be added)
      */
 
-    fun addIngredient(recipe: Recipe, group: String, ingredient: Ingredient? = null) {
+    fun addIngredient(group: String, ingredient: Ingredient? = null) {
         val command = if (ingredient == null) {
-            AddIngredientGroupCommand(group, recipe)
+            factory?.createAddIngredientGroupCommand(group)!!
         } else {
-            AddIngredientCommand(group, ingredient, recipe = recipe)
+            factory?.createAddIngredientCommand(group, ingredient)!!
         }
-        command.applyOnState(state)
+        command.applyOnState()
         commandList.add(command)
     }
 
@@ -221,23 +217,21 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * @param newUnit The new unit if the ingredient (or null if the name should not be changed)
      */
     fun editIngredient(
-        recipe: Recipe,
         group: IngredientGroup,
         ingredient: Ingredient,
         newName: String? = null,
         newAmount: Double? = null,
         newUnit: String? = null
     ) {
-        val command = EditIngredientCommand(
+        val command = factory?.createEditIngredientCommand(
             group = group.name,
             ingredient,
             newName = newName,
             newAmount = newAmount,
-            newUnit = newUnit,
-            recipe = recipe
-        )
-        command.applyOnState(state)
+            newUnit = newUnit
+        )!!
         commandList.add(command)
+        command.applyOnState()
     }
 
     /**
@@ -246,15 +240,14 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      *
      * @param group The ingredient group the ingredient belongs to or which should be deleted
      * @param ingredient The ingredient to be delete (or null if the ingredient group should be deleted)
-     * @param recipe The recipe from which they should be deleted
      */
-    fun deleteIngredient(group: String, ingredient: Ingredient? = null, recipe: Recipe) {
+    fun deleteIngredient(group: String, ingredient: Ingredient? = null) {
         val command = if (ingredient == null) {
-            DeleteIngredientGroupCommand(group, recipe)
+            factory?.createDeleteIngredientGroupCommand(group)!!
         } else {
-            DeleteIngredientCommand(group, ingredient, recipe)
+            factory?.createDeleteIngredientCommand(group, ingredient)!!
         }
-        command.applyOnState(state)
+        command.applyOnState()
         commandList.add(command)
     }
 
@@ -265,11 +258,10 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      *
      * @param step The step to be added
      * @param index The index of the step at which the step should be added
-     * @param recipe The recipe to add the step
      */
-    fun addInstructionStep(step: String, index: Int, recipe: Recipe) {
-        val command = AddInstructionStepCommand(index, step, recipe)
-        command.applyOnState(state)
+    fun addInstructionStep(step: String, index: Int) {
+        val command = factory?.createAddInstructionStepCommand(index = index, step = step)!!
+        command.applyOnState()
         commandList.add(command)
     }
 
@@ -278,11 +270,10 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      * Removes the instruction step on the given index.
      *
      * @param index Index of the step that should be removed
-     * @param recipe Recipe to remove the step
      */
-    fun removeInstructionStep(index: Int, recipe: Recipe) {
-        val command = DeleteInstructionStepCommand(index, recipe)
-        command.applyOnState(state)
+    fun removeInstructionStep(index: Int) {
+        val command = factory?.createDeleteInstructionStepCommand(index)!!
+        command.applyOnState()
         commandList.add(command)
 
     }
@@ -293,11 +284,10 @@ class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe
      *
      * @param index The index of the instruction step to change
      * @param instruction The new content of the instruction step
-     * @param recipe  Recipe to update
      */
-    fun updateInstructionStep(index: Int, instruction: String, recipe: Recipe) {
-        val command = EditInstructionStepCommand(index, instruction, recipe = recipe)
-        command.applyOnState(state)
+    fun updateInstructionStep(index: Int, instruction: String) {
+        val command = factory?.createEditInstructionStepCommand(index, instruction)!!
+        command.applyOnState()
         commandList.add(command)
     }
 }

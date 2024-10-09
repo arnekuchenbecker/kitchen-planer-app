@@ -25,20 +25,22 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
  *
  * @param recipe The recipe to which the changes belong
  */
-abstract class ChangeCommand(protected open val recipe: Recipe) {
+abstract class ChangeCommand(
+    protected open val recipe: Recipe,
+    protected open val state: EditRecipeState,
+    protected open val editRecipe: EditRecipe
+) {
 
     /**
      * Applies the change on the state of the recipe.
      * Note that the state does not persist the change in a data base
      *
-     * @param state  The state which contains the data to change
      */
-    abstract fun applyOnState(state: EditRecipeState)
+    abstract fun applyOnState()
 
     /**
      * Applies the change on the recipe and persists it in the data base
      *
-     * @param editRecipe The use case to apply the change on the recipe
      */
-    abstract suspend fun applyOnRecipe(editRecipe: EditRecipe)
+    abstract suspend fun applyOnRecipe()
 }

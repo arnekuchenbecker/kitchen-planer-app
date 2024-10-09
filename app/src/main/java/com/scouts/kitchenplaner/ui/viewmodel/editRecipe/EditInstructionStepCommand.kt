@@ -29,14 +29,16 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
 class EditInstructionStepCommand(
     private val index: Int,
     private val instruction: String,
-    recipe: Recipe
+    recipe: Recipe,
+    state: EditRecipeState,
+    editRecipe: EditRecipe
 ) :
-    ChangeCommand(recipe = recipe) {
-    override fun applyOnState(state: EditRecipeState) {
+    ChangeCommand(recipe = recipe, state, editRecipe) {
+    override fun applyOnState() {
         state.alterInstructionStep(index, instruction)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         editRecipe.updateInstructionStep(recipe, index, instruction)
     }
 }

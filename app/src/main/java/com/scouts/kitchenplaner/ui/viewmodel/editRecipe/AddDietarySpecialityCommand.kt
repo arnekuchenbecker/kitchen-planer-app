@@ -27,14 +27,16 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
  */
 class AddDietarySpecialityCommand(
     private val speciality: DietarySpeciality,
-    recipe: Recipe
-) : ChangeCommand(recipe = recipe) {
+    recipe: Recipe,
+    state: EditRecipeState,
+    editRecipe: EditRecipe,
+) : ChangeCommand(recipe = recipe, state, editRecipe) {
 
-    override fun applyOnState(state: EditRecipeState) {
+    override fun applyOnState() {
         state.addDietarySpeciality(speciality.allergen, speciality.type)
     }
 
-    override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
+    override suspend fun applyOnRecipe() {
         editRecipe.addDietarySpeciality(recipe, speciality)
     }
 }
