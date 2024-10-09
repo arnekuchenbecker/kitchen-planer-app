@@ -57,7 +57,8 @@ fun OutlinedNumberField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = label,
-        modifier = modifier
+        modifier = modifier,
+        singleLine = true
     )
 }
 

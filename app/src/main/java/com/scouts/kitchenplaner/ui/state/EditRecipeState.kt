@@ -42,7 +42,7 @@ class EditRecipeState {
     constructor()
 
     /**
-     * This constructor creates a state with respect to the given recipe by coping all editable information from it
+     * This constructor creates a state with respect to the given recipe by copying all editable information from it
      * @param recipe The recipe that provides the data
      */
     constructor(recipe: Recipe) {

@@ -106,7 +106,7 @@ class RecipeRepository @Inject constructor(
             ingredients = ingredients,
             instructions = recipe.instructions.mapIndexed { index, instruction ->
                 InstructionStepDTO(
-                    order = index, recipe = -1, instruction = instruction
+                    order = index, recipe = 0, instruction = instruction
                 )
             })
 
@@ -155,7 +155,7 @@ class RecipeRepository @Inject constructor(
     }
 
     suspend fun insertInstructionStep(recipeID: Long, instruction: String, index: Int) {
-        recipeDAO.increaseInstructionStepOrder(recipeID,index)
+        recipeDAO.increaseInstructionStepOrder(recipeID, index)
         recipeDAO.insertInstructionStep(InstructionStepDTO(index, recipeID, instruction))
     }
 

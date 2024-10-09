@@ -41,9 +41,24 @@ import javax.inject.Inject
 class EditRecipeViewModel @Inject constructor(private val editRecipe: EditRecipe) : ViewModel() {
     lateinit var recipeFlow: StateFlow<Recipe>
     private var editMode by mutableStateOf(false)
+
+    /**
+     * Whether the allergen card is expanded
+     */
     var expandedAllergen by mutableStateOf(false)
+
+    /**
+     * Whether the free of card is expanded
+     */
     var expandedFreeOf by mutableStateOf(false)
+    /**
+     * Whether the traces card is expanded
+     */
     var expandedTraces by mutableStateOf(false)
+
+    /**
+     * The state for the currently made changes on the recipe
+     */
     var state by mutableStateOf(EditRecipeState())
     private var commandList: MutableList<ChangeCommand> = mutableListOf()
 

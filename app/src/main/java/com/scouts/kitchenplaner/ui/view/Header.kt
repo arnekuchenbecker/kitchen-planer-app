@@ -80,6 +80,4 @@ fun EditableHeader(
             )
         }
     })
-
-
 }

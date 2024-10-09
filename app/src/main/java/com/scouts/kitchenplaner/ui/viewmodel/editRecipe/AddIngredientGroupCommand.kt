@@ -30,10 +30,9 @@ class AddIngredientGroupCommand(private val groupName: String, recipe: Recipe) :
     ChangeCommand(recipe = recipe) {
     override fun applyOnState(state: EditRecipeState) {
         state.addIngredientGroup(groupName)
-
     }
 
     override suspend fun applyOnRecipe(editRecipe: EditRecipe) {
-        // Nothing
+        // Nothing to do here
     }
 }

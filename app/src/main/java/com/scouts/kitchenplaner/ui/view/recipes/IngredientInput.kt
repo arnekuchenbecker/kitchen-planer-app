@@ -87,6 +87,7 @@ fun IngredientsInput(
     ContentBox(
         title = "Zutaten", modifier = modifier
     ) {
+
         ingredientGroups.forEach { (name, ingredients) ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -111,7 +112,6 @@ fun IngredientsInput(
                     ingredient = ingredient,
                     editable = editable,
                     onChangeIngredient = {
-
                         showIngredientChangeIndex = index
                         showIngredientChangeGroup = name
                     })
@@ -126,13 +126,16 @@ fun IngredientsInput(
                     })
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(10.dp))
+            if(ingredientGroups.last().name != name){
+                HorizontalDivider(modifier = Modifier.padding(10.dp))
+            }
         }
 
         if (editable) {
             OutlinedTextField(modifier = Modifier.align(Alignment.CenterHorizontally),
                 value = newGroupName,
                 onValueChange = { newGroupName = it },
+                singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = {
                         onGroupAdd(newGroupName)
@@ -250,7 +253,8 @@ fun DisplayIngredientChangeDialog(
                         nameChange = true
                     },
                     label = { Text(text = "Zutat") },
-                    modifier = Modifier.padding(vertical = 5.dp)
+                    modifier = Modifier.padding(vertical = 5.dp),
+                    singleLine = true
                 )
 
                 OutlinedNumberField(value = amount,
@@ -260,7 +264,7 @@ fun DisplayIngredientChangeDialog(
                     },
                     label = { Text(text = "Menge") },
                     type = NumberFieldType.FLOAT,
-                    modifier = Modifier.padding(vertical = 5.dp)
+                    modifier = Modifier.padding(vertical = 5.dp),
                 )
 
                 OutlinedTextField(value = unit,
@@ -268,6 +272,7 @@ fun DisplayIngredientChangeDialog(
                         unit = it
                         unitChange = true
                     },
+                    singleLine = true,
                     label = { Text(text = "Einheit") },
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
@@ -283,7 +288,7 @@ fun DisplayIngredientChangeDialog(
                         }, if (amountChange) {
                             amount.toDoubleOrNull()
                         } else {
-                            null
+                            0.0
                         }, if (unitChange) {
                             unit
                         } else {
@@ -300,5 +305,4 @@ fun DisplayIngredientChangeDialog(
             }
         }
     }
-
 }

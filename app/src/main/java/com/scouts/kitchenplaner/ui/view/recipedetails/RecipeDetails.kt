@@ -101,6 +101,7 @@ fun RecipeDetails(
                     TextField(
                         value = viewModel.state.name,
                         onValueChange = { viewModel.setRecipeName(it, recipe) },
+                        singleLine = true
                     )
 
                 } else {
@@ -174,14 +175,17 @@ fun RecipeDetails(
                                             viewModel.setAmountOfPeople(it.toInt(), recipe = recipe)
                                         }
                                     },
-                                    label = { Text("Anzahl") },
+                                    label = { Text("") },
                                     type = NumberFieldType.POSITIVE
                                 )
-                                Text("Person(en)")
+                                if (viewModel.state.amount > 1){
+                                    Text(" Personen")
+
+                                }else { Text(" Person")}
                             }
                         } else {
                             Text(
-                                "Für " + recipe.numberOfPeople + " Person(en)",
+                                "Für " + recipe.numberOfPeople + if (viewModel.state.amount >1){ " Personen"}else{" Person"},
                                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
                             )
                         }
@@ -315,8 +319,6 @@ fun RecipeDetails(
                                 })
                         })
                     }
-
-
                 }
                 IngredientsInput(modifier = Modifier.padding(10.dp),
                     ingredientGroups = if (viewModel.isEditable()) {
@@ -349,8 +351,6 @@ fun RecipeDetails(
                             group = IngredientGroup(group)
                         )
                     }
-
-
                 )
                 InstructionInput(modifier = Modifier.padding(10.dp),
                     instructions = if (viewModel.isEditable()) {
@@ -385,71 +385,10 @@ fun RecipeDetails(
                     })
 
                 //To allow scrolling stuff from behind the FAB
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-        }
-    }
-}
-
-/**
- *  This composable provides a representation of all current dietary specialities (within one category).
- *  If the edit mode is activated specialities can be added or deleted
- *
- *  @param editable  A function that indicates whether the list is editable
- *  @param allergenList The list which contains all dietary specialities
- *  @param add A function that adds a new speciality to the list
- *  @param delete A function that deletes a speciality from the list
- *
- */
-@Composable
-fun DisplayDietarySpecialityList(
-    editable: () -> Boolean,
-    allergenList: List<String>,
-    add: (String) -> Unit,
-    delete: (String) -> Unit,
-) {
-
-    var text by remember { mutableStateOf("") };
-    Column() {
-        if (editable()) {
-            TextField(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                value = text,
-                label = { Text("neue Ernährungsbesonderheit") },
-                onValueChange = { text = it },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        add(text);
-                        text = "";
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Add, contentDescription = "Add new allergen"
-                        )
-                    }
-                },
-            )
-            HorizontalDivider()
-        }
-        LazyColumnWrapper(content = allergenList, DisplayContent = { allergen, _ ->
-            if (editable()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(allergen)
-                    IconButton(onClick = {
-                        delete(allergen)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Delete Allergen"
-                        )
-                    }
+                if(viewModel.isEditable()){
+                    Spacer(modifier = Modifier.height(70.dp))
                 }
-            } else {
-                Text(allergen)
             }
-        }, DisplayEmpty = { Text("Noch nichts eingetragen") })
+        }
     }
 }
