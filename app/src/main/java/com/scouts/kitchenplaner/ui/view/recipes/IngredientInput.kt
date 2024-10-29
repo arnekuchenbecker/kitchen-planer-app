@@ -138,7 +138,11 @@ fun IngredientsInput(
                 singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = {
-                        onGroupAdd(newGroupName)
+                        if(newGroupName.isNotEmpty()) {
+                            onGroupAdd(newGroupName)
+                        }else{
+                           // TODO("Error message")
+                        }
                         newGroupName = ""
                     }) {
                         Icon(
@@ -211,11 +215,12 @@ fun IngredientAdderDialog(
         ingredient = Ingredient("", 0.0, ""),
         onDismissRequest = onDismissRequest,
         onSaveChanges = { ingredientName, amount, unit ->
-            if (ingredientName == null || amount == null || unit == null) return@DisplayIngredientChangeDialog else onIngredientAdd(
+            if (ingredientName == null) return@DisplayIngredientChangeDialog else onIngredientAdd(
                 Ingredient(
-                    ingredientName, amount, unit
+                    ingredientName, amount ?: 0.0, unit ?: ""
                 )
             )
+            //TODO ("Error message)
         },
         text = "Zutat hinzufügen"
     )
