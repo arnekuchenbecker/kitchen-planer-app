@@ -16,6 +16,7 @@
 
 package com.scouts.kitchenplaner.ui.view.recipes
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,20 +26,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.view.ContentBox
@@ -52,15 +61,20 @@ import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
  * @param instructions The instructions added so far
  * @param onAddInstruction Callback function for adding a new instruction at the specified index (or
  *                         at the end if Null is passed)
+ * @param onDeleteInstruction Callback function for deleting an instruction at the specified index
  */
 @Composable
 fun InstructionInput(
     modifier: Modifier = Modifier,
     instructions: List<String>,
     onAddInstruction: (String, Int?) -> Unit = { _, _ -> },
+    onDeleteInstruction: (Int) -> Unit = { _ -> },
+    onAlterInstruction: (Int, String) -> Unit = {_,_ ->},
     editable: Boolean = true
+
 ) {
     var showAddInstructionDialog by remember { mutableStateOf(false) }
+    var showInstructionChangeDialog by remember { mutableIntStateOf(-1) }
     ContentBox(
         title = "Kochanweisungen",
         modifier = modifier
@@ -68,9 +82,13 @@ fun InstructionInput(
         if (editable) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "Weiteren Schritt hinzufügen...", modifier = Modifier.padding(end = 15.dp))
+                Text(
+                    text = "Weiteren Schritt hinzufügen...",
+                    modifier = Modifier.padding(end = 15.dp)
+                )
                 OutlinedIconButton(onClick = { showAddInstructionDialog = true }) {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -85,7 +103,24 @@ fun InstructionInput(
                 Box(modifier = Modifier.width(30.dp)) {
                     Text("${index + 1}.")
                 }
-                Text(instruction)
+                Text(instruction, modifier = Modifier.fillMaxWidth(0.75f))
+
+                if (editable) {
+                    IconButton(onClick = { onDeleteInstruction(index) }) {
+                        Icon(Icons.Filled.Delete, "Delete instruction step")
+
+                    }
+                    IconButton(onClick = { showInstructionChangeDialog = index }) {
+                        Icon(Icons.Filled.Edit, "Edit instruction step")
+                    }
+                }
+            }
+            if (showInstructionChangeDialog == index) {
+                EditInstructionStep(
+                    initValue = instruction,
+                    index = index,
+                    onDismissRequest = { showInstructionChangeDialog = -1 },
+                    onAlterInstruction = onAlterInstruction)
             }
         }
     }
@@ -96,6 +131,41 @@ fun InstructionInput(
             onAddInstruction = onAddInstruction
         )
     }
+}
+
+@Composable
+fun EditInstructionStep(
+    initValue: String,
+    index: Int,
+    onAlterInstruction: (Int, String) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+
+    Dialog(onDismissRequest = onDismissRequest) {
+        var instruction by remember { mutableStateOf(initValue) }
+        Surface(shape = RoundedCornerShape(15.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text("Schritt ${index +1} ändern")
+                TextField(value = instruction, onValueChange = { newValue -> instruction = newValue })
+                Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()){
+                    IconButton(onClick = {
+                        onAlterInstruction(index,instruction)
+                        onDismissRequest()
+                    }) {
+                        Icon(Icons.Filled.Check, "Change Description")
+                    }
+                    IconButton(onClick = onDismissRequest){
+                        Icon(Icons.Filled.Close, "Close Dialog without saving")
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
+
 }
 
 /**
@@ -149,4 +219,11 @@ fun InstructionAdderDialog(
             }
         }
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun instructionPreView() {
+    InstructionInput(instructions = listOf("erster Eintrag", "zweiter Eintrag", "dritter Eintrag"))
 }

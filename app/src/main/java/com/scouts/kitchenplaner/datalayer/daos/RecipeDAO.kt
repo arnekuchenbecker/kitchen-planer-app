@@ -31,6 +31,7 @@ import com.scouts.kitchenplaner.datalayer.dtos.RecipeStubDTO
 import com.scouts.kitchenplaner.datalayer.entities.DietarySpecialityEntity
 import com.scouts.kitchenplaner.datalayer.entities.IngredientEntity
 import com.scouts.kitchenplaner.datalayer.entities.InstructionEntity
+import com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.UserRecipeEntity
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +44,7 @@ interface RecipeDAO {
         recipe: RecipeEntity,
         speciality: List<DietarySpecialityEntity>,
         ingredients: List<IngredientEntity>,
-        instructions: List<InstructionEntity>
+        instructions: List<InstructionStepDTO>
     ): Long {
         val rowIdRecipe = insertRecipe(recipe)
         val recipeId = rowIdToRecipeID(rowIdRecipe)
@@ -76,15 +77,21 @@ interface RecipeDAO {
     @Query("UPDATE recipeEntity SET numberOfPeople = :newPeople WHERE id = :id")
     suspend fun updateNumberOfPeople(id: Long, newPeople: Int)
 
-    @Insert
-    suspend fun insertInstructionStep(entity: InstructionEntity): Long
+    @Insert(InstructionEntity::class)
+    suspend fun insertInstructionStep(entity: InstructionStepDTO): Long
 
     @Delete(InstructionEntity::class)
     suspend fun deleteInstructionStep(entity: InstructionStepIdentifierDTO)
 
-    @Update
-    suspend fun updateInstructionStep(entity: InstructionEntity)
+    @Query("UPDATE instructionentity SET `instruction` = :instruction WHERE `recipe` = :recipeID AND `order` = :order ")
+    suspend fun updateInstructionStep(recipeID: Long, instruction: String, order: Int)
 
+    /**
+     * Increases the index of all instructions which have a lower or equal index than the given index by one
+     *
+     * @param recipeID The ID of the recipe where the instructions belong to
+     * @param index The lower bound to which all indices should be increased
+     */
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` + 1 " +
@@ -93,6 +100,13 @@ interface RecipeDAO {
     )
     suspend fun increaseInstructionStepOrder(recipeID: Long, index: Int)
 
+
+    /**
+     * Reduces the index of all instructions which have a lower or equal index than the given index by one
+     *
+     * @param recipeID The ID of the recipe where the instructions belong to
+     * @param index The lower bound to which all indices should be reduced
+     */
     @Query(
         "UPDATE instructionentity " +
                 "SET `order` = `order` - 1 " +
@@ -121,15 +135,15 @@ interface RecipeDAO {
 
     @Query(
         "UPDATE ingrediententity SET name = :newName " +
-            "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
+                "WHERE name = :oldName AND recipe = :recipeID AND ingredientGroup = :group"
     )
     suspend fun updateIngredientName(newName: String, oldName: String, recipeID: Long, group: String)
 
     @Query(
         "UPDATE ingrediententity SET amount = :newAmount " +
-            "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
+                "WHERE name = :name AND recipe = :recipeID AND ingredientGroup = :group"
     )
-    suspend fun updateIngredientAmount(newAmount: Float, name: String, recipeID: Long, group: String)
+    suspend fun updateIngredientAmount(newAmount: Double, name: String, recipeID: Long, group: String)
 
     @Query(
         "UPDATE ingrediententity SET unit = :newUnit " +
@@ -174,7 +188,7 @@ interface RecipeDAO {
     fun getAllergensByRecipeId(id: Long): Flow<List<DietarySpecialityEntity>>
 
     @Query("SELECT * FROM recipeEntity WHERE title LIKE :query")
-    fun getRecipesForQueryByName(query: String) : Flow<List<RecipeEntity>>
+    fun getRecipesForQueryByName(query: String): Flow<List<RecipeEntity>>
 
     @Query("SELECT id FROM recipeEntity WHERE rowId = :rowId")
     suspend fun rowIdToRecipeID(rowId: Long): Long

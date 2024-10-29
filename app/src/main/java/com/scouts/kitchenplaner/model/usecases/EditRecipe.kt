@@ -177,7 +177,7 @@ class EditRecipe @Inject constructor(
         group: IngredientGroup,
         ingredient: Ingredient,
         newName: String? = null,
-        newAmount: Float? = null,
+        newAmount: Double? = null,
         newUnit: String? = null
     ) {
         if (newName != null) {
