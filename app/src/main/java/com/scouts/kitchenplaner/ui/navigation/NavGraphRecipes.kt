@@ -23,7 +23,12 @@ import androidx.navigation.navigation
 import com.scouts.kitchenplaner.ui.view.recipeoverview.RecipeOverview
 
 private const val RECIPE_OVERVIEW = "recipeOverview"
-
+/**
+ * The subgraph of the navigation graph concerning the recipe overview.
+ * It defines all navigation which is reachable from the recipeOverviewScreen.
+ *
+ * @param navController The controller which performs the navigation
+ */
 fun NavGraphBuilder.recipesNav(navController: NavHostController) {
     navigation(startDestination = RECIPE_OVERVIEW, route = Destinations.RecipesGraph) {
         composable(RECIPE_OVERVIEW) {

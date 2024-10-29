@@ -31,6 +31,14 @@ private const val SHOPPING_OVERVIEW: String = "OverviewShopping"
 private const val SHOPPING_CREATE: String = "CreateShopping"
 private const val SHOPPING_LIST_DETAIL: String = "ShoppingList"
 private const val SHOPPING_LIST_ID = "shoppingListId"
+
+/**
+ * The subgraph of the navigation graph concerning the shopping lists.
+ * It defines all navigation which is reachable from the ShoppingListOverview and the detailed shopping lists.
+ *
+ * @param navController The controller which performs the navigation
+ * @param projectId The id of the project the shopping lists belong to
+ */
 fun NavGraphBuilder.shoppingListGraph(
     navController: NavController,
     project: Project
@@ -61,6 +69,7 @@ fun NavGraphBuilder.shoppingListGraph(
         }
         composable(SHOPPING_CREATE) {
             ShoppingListCreation(
+                project = project,
                 onNavigateToShoppingList = { listID ->
                     navController.navigate("${SHOPPING_LIST_DETAIL}/$listID") {
                         popUpTo(SHOPPING_CREATE) {

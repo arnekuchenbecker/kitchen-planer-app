@@ -35,7 +35,16 @@ import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 import com.scouts.kitchenplaner.ui.view.ListEditHeader
 import kotlin.math.min
 
-
+/**
+ * Section for adding meals to the project.
+ * It contains the title and a button to add and delete meals.
+ * Under it there is a list with all already added meals.
+ *
+ * @param modifier customisable modifier
+ * @param onAdd Callback function for adding a new meal with the provided name
+ * @param onRemove Callback function for removing the meal on the given index
+ * @param meals All already created meals
+ */
 @Composable
 fun MealPicker(modifier: Modifier = Modifier, onAdd: (String) -> Unit, onRemove: (Int) -> Unit, meals: List<String>) {
     var displayDialog by remember { mutableStateOf(false) }
