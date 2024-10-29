@@ -60,6 +60,7 @@ import com.scouts.kitchenplaner.ui.view.ContentBox
 import com.scouts.kitchenplaner.ui.view.EditableHeader
 import com.scouts.kitchenplaner.ui.view.ExpandableCard
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
+import com.scouts.kitchenplaner.ui.view.NumberPicker
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.view.recipes.IngredientsInput
@@ -129,7 +130,6 @@ fun RecipeDetails(
                 })
             }
         }) { paddingValues ->
-
             Column(
                 modifier = Modifier
                     .verticalScroll(state = rememberScrollState())
@@ -156,8 +156,8 @@ fun RecipeDetails(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text("Für ")
-                                OutlinedNumberField(
-                                    modifier = Modifier.fillMaxWidth(0.3f),
+                                NumberPicker(
+                                    modifier = Modifier.fillMaxWidth(),
                                     value = if (viewModel.state.amount == 0) {
                                         ""
                                     } else {
@@ -172,7 +172,6 @@ fun RecipeDetails(
                                         }
                                     },
                                     label = { Text("") },
-                                    type = NumberFieldType.POSITIVE
                                 )
                                 if (viewModel.state.amount > 1) {
                                     Text(" Personen")
@@ -181,6 +180,8 @@ fun RecipeDetails(
                                     Text(" Person")
                                 }
                             }
+
+
                         } else {
                             Text(
                                 "Für " + recipe.numberOfPeople + if (recipe.numberOfPeople > 1) {

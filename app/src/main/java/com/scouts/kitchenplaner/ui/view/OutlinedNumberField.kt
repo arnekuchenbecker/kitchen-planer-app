@@ -38,7 +38,9 @@ fun OutlinedNumberField(
     value: String,
     onValueChange: (String) -> Unit,
     label: @Composable () -> Unit,
-    type: NumberFieldType
+    type: NumberFieldType,
+    trailingIcon: @Composable () -> Unit = {},
+    leadingIcon: @Composable () -> Unit = {}
 ) {
     val pattern = when(type) {
         NumberFieldType.POSITIVE -> remember { Regex("^\\d*$") }
@@ -58,7 +60,9 @@ fun OutlinedNumberField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = label,
         modifier = modifier,
-        singleLine = true
+        singleLine = true,
+        trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon
     )
 }
 
