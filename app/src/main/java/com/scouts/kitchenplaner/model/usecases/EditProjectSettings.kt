@@ -20,6 +20,7 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.UnitConversion
 import java.util.Date
 import javax.inject.Inject
 
@@ -51,5 +52,33 @@ class EditProjectSettings @Inject constructor(
                 projectRepository.setPersonNumberChange(project.id, slot.meal, slot.date, change)
             }
         }
+    }
+
+    suspend fun addUnitConversion(project: Project, unitConversion: UnitConversion) : Boolean {
+        if (isUnitConversionInsertionPossible(project, unitConversion)) {
+            projectRepository.createUnitConversion(unitConversion, project.id)
+        }
+        return true
+    }
+
+    suspend fun editUnitConversion(project: Project, unitConversion: UnitConversion) {
+
+    }
+
+    /**
+     * Removes the specified [unitConversion] from the given [project]
+     *
+     * @param unitConversion The unit conversion to be removed
+     * @param project The project the unit conversion should be removed from
+     */
+    suspend fun removeUnitConversion(project: Project, unitConversion: UnitConversion) {
+        projectRepository.deleteUnitConversion(unitConversion, project.id)
+    }
+
+    private fun isUnitConversionInsertionPossible(
+        project: Project,
+        unitConversion: UnitConversion
+    ) : Boolean {
+        return true
     }
 }
