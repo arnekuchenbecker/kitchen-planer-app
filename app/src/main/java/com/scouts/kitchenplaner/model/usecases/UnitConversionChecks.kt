@@ -16,7 +16,6 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import androidx.compose.ui.graphics.Vertices
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.UnitConversion
 
@@ -45,29 +44,31 @@ class UnitConversionForest(conversions: List<UnitConversion>) {
         }
         trees = treeContents.map { (_, contents) ->
             val edgeList = mutableListOf<Int>()
-            val vertices = Array(contents.size) { i ->
-                val edgeStart = edgeList.size
-                contents
-                    .filter { it.sourceUnit == contents[i].destinationUnit }
-                    .forEachIndexed { index, _ -> edgeList.add(index) }
-                edgeStart
+            val vertices = Array(contents.size) { i -> i + 1 }
+            val edgePointers = Array(contents.size + 1) { i ->
+                if (i < contents.size) {
+                    val edgeStart = edgeList.size
+                    contents.forEachIndexed { index, it ->
+                            if (it.sourceUnit == contents[i].destinationUnit) {
+                                edgeList.add(index + 1)
+                            }
+                        }
+                    edgeStart
+                } else {
+                    edgeList.size
+                }
             }
-
-            edgeList.add(edgeList.size)
 
             val edges = Array(edgeList.size) { i -> edgeList[i] }
 
             UnitConversionTree(
-                patterns = Array(contents.size) { i -> contents[i].pattern },
-                sourceUnits = Array(contents.size) { i -> contents[i].sourceUnit },
-                destinationUnits = Array(contents.size) { i -> contents[i].destinationUnit },
-                vertexArray = vertices,
-                edgeArray = edges
+                conversions = contents,
+                graph = Graph(vertices, edgePointers, edges)
             )
         }
     }
 
-    fun findCircles(): List<Circle> = trees.map { it.findCircles() }.flatten()
+    fun findCircles(): List<Circle<UnitConversion>> = trees.map { it.findCircles() }.flatten()
 
     private fun isRegexLiteral(pattern: String): Boolean {
         return literalMatcher.matches(pattern)
@@ -75,112 +76,293 @@ class UnitConversionForest(conversions: List<UnitConversion>) {
 }
 
 class UnitConversionTree(
-    val patterns: Array<String>,
-    val sourceUnits: Array<String>,
-    val destinationUnits: Array<String>,
-    val vertexArray: Array<Int>,
-    val edgeArray: Array<Int>
+    val conversions: List<UnitConversion>,
+    val graph: Graph
 ) {
-    fun findCircles(): List<Circle> {
-        val circles = mutableListOf<Circle>()
-        val predecessors = Array(vertexArray.size) { i -> i }
-        val dfs = DFS(
-            vertexArray = vertexArray,
-            edgeArray = edgeArray,
-            traverseBackwardsEdge = { v, w -> // There is a circle w -> v ->* w
-                circles.add(Circle(v, ))
-            },
-            traverseTreeEdge = { v, w ->
-                predecessors[w] = v
-            }
-        )
-        dfs.run()
-        return circles
+    fun findCircles(): List<Circle<UnitConversion>> {
+        val circleFinder = CircleSearch(graph)
+
+        return circleFinder.run().map { circle -> circle.map { v -> conversions[graph.convertVertexNames(v)] } }
     }
 
 
 }
 
-class DFS(
-    private val vertexArray: Array<Int>,
-    private val edgeArray: Array<Int>,
-    private val init: () -> Unit = {},
-    private val root: (Int) -> Unit = {},
-    private val traverseForwardEdge: (Int, Int) -> Unit = { _, _ -> },
-    private val traverseCrossEdge: (Int, Int) -> Unit = { _, _ -> },
-    private val traverseBackwardsEdge: (Int, Int) -> Unit = { _, _ -> },
-    private val traverseTreeEdge: (Int, Int) -> Unit = { _, _ -> },
-    private val backtrack: (Int, Int) -> Unit = { _, _ -> }
+class CircleSearch(
+    private val graph: Graph
 ) {
-    private val n = vertexArray.size
+    private val blocked = Array(graph.n) { false }
+    private val b = Array(graph.n) { mutableListOf<Int>() }
+    private val stack = Stack<Int>()
+    private var s = 1
+    private val circles = mutableListOf<Circle<Int>>()
+    private var g_k = Graph.empty()
 
-    private var marked = Array(n) { false }
+    private var hasRun = false
+    fun run(): List<Circle<Int>> {
+        if (!hasRun) {
+            while (s < graph.n) {
+                val comps: List<Graph> =
+                    findNonTrivialStrongComponents()
+                if (comps.isEmpty()) {
+                    s = graph.n
+                } else {
+                    g_k = comps.sortedBy { g -> g.vertices.min() }[0]
+                    s = g_k.vertices.min()
+                    for (i in g_k.vertices.map { graph.convertVertexNames(it) }) {
+                        blocked[i] = false
+                        b[i] = mutableListOf()
+                    }
+                    circuit(s)
+                    s++
+                }
+            }
+        }
+        return circles
+    }
 
-    private var currentDFSNumber = 0
-    private var currentFinishNumber = 0
+    private fun circuit(v: Int): Boolean {
+        var f = false
+        stack.push(v)
+        blocked[graph.convertVertexNames(v)] = true
 
-    private var dfsNumber = Array(n) { 0 }
-    private var finishNumber = Array(n) { 0 }
+        for (u in g_k.getOutwardNeighbours(v)) {
+            if (u == s) {
+                circles.add(Circle(stack.content))
+                f = true
+            } else if (!blocked[graph.convertVertexNames(u)]) {
+                if (circuit(u)) {
+                    f = true
+                }
+            }
+        }
+
+        if (f) {
+            unblock(v)
+        } else {
+            for (u in g_k.getOutwardNeighbours(v)) {
+                if (!(b[graph.convertVertexNames(u)].contains(v))) {
+                    b[graph.convertVertexNames(u)].add(v)
+                }
+            }
+        }
+        stack.pop()
+        return f
+    }
+
+    private fun unblock(v: Int) {
+        blocked[graph.convertVertexNames(v)] = false
+        for (i in 0..<b[graph.convertVertexNames(v)].size) {
+            val u = b[graph.convertVertexNames(v)].removeAt(0)
+            if (blocked[graph.convertVertexNames(u)]) {
+                unblock(u)
+            }
+        }
+    }
+
+    private fun findNonTrivialStrongComponents(): List<Graph> {
+        val subset = (s..graph.n).toList()
+        val subgraph = graph.inducedSubgraph(subset)
+        val sccFinder = SCCFinder(subgraph)
+        return sccFinder.run()
+    }
+}
+
+class SCCFinder(
+    private val graph: Graph
+) {
+    fun run(): List<Graph> {
+        val representatives = Stack<Int>()
+        val nodes = Stack<Int>()
+        val componentRepresentatives = mutableMapOf<Int, Int>()
+        val dfs = DFS(graph)
+        dfs.initialize(
+            root = { v ->
+                representatives.push(v)
+                nodes.push(v)
+            },
+            traverseTreeEdge = { _, w ->
+                representatives.push(w)
+                nodes.push(w)
+            },
+            traverseNonTreeEdge = { v, w ->
+                if (nodes.contains(w)) {
+                    while (dfs[w] < dfs[representatives.top()]) {
+                        representatives.pop()
+                    }
+                }
+            },
+            backtrack = { _, v ->
+                if (v == representatives.top()) {
+                    representatives.pop()
+                    do {
+                        val w = nodes.pop()
+                        componentRepresentatives[w] = v
+                    } while (w != v)
+                }
+            }
+        )
+        dfs.run()
+        val componentGraphs = componentRepresentatives
+            .map { (v, rep) -> Pair(v, rep) }
+            .groupBy { it.second }
+            .values
+            .filter { it.size > 1 }
+            .map { list -> list.map { it.first }.sorted() }
+            .map { vertices -> graph.inducedSubgraph(vertices) }
+        return componentGraphs
+    }
+}
+
+class Stack<T> {
+    private val _deque = ArrayDeque<T>()
+
+    fun push(e: T) = _deque.addLast(e)
+
+    fun pop() = _deque.removeLast()
+
+    fun top() = _deque.last()
+
+    fun contains(e: T) = _deque.contains(e)
+
+    val content: List<T>
+        get() = _deque.toList()
+}
+
+class Graph(
+    val vertices: Array<Int>,
+    val edgePointers: Array<Int>,
+    val edges: Array<Int>,
+    val convertVertexNames: (Int) -> Int = { i -> i - 1 }
+) {
+    companion object {
+        fun empty(): Graph {
+            return Graph(arrayOf(), arrayOf(1), arrayOf())
+        }
+    }
+
+    val n = vertices.size
+    val m = edges.size
+
+    fun getOutwardNeighbours(v: Int): List<Int> {
+        return edges.slice(edgePointers[convertVertexNames(v)]..<edgePointers[convertVertexNames(v) + 1])
+    }
+
+    fun inducedSubgraph(subset: List<Int>): Graph {
+        val conversion: (Int) -> Int = { i -> subset.indexOf(i) }
+        val edgeList = subset.map { v ->
+            getOutwardNeighbours(v).filter { subset.contains(it) }
+        }
+        val newEdges = edgeList.flatten().toTypedArray()
+        val newEdgePointers = edgeList.runningFold(0) { acc, es -> acc + es.size }.toTypedArray()
+
+        return Graph(subset.toTypedArray(), newEdgePointers, newEdges, conversion)
+    }
+}
+
+class DFS(
+    private val graph: Graph
+) {
+    private var init: () -> Unit = {}
+    private var root: (Int) -> Unit = { _ -> }
+    private var traverseNonTreeEdge: (Int, Int) -> Unit = { _, _ -> }
+    private var traverseTreeEdge: (Int, Int) -> Unit = { _, _ -> }
+    private var backtrack: (Int, Int) -> Unit = { _, _ -> }
+
+    private var dfsPos = -1
+    private val dfsNums = Array(graph.n) { graph.n + 1 }
+
+    private var marked = Array(graph.n) { false }
+    operator fun get(v: Int) = dfsNums[graph.convertVertexNames(v)]
+    fun initialize(
+        init: () -> Unit = {},
+        root: (Int) -> Unit = { _ -> },
+        traverseNonTreeEdge: (Int, Int) -> Unit = { _, _ -> },
+        traverseTreeEdge: (Int, Int) -> Unit = { _, _ -> },
+        backtrack: (Int, Int) -> Unit = { _, _ -> }
+    ) {
+        this.init = {
+            dfsPos = 1
+            init()
+        }
+        this.root = { s ->
+            dfsNums[graph.convertVertexNames(s)] = dfsPos++
+            root(s)
+        }
+        this.traverseNonTreeEdge = traverseNonTreeEdge
+        this.traverseTreeEdge = { v, w ->
+            dfsNums[graph.convertVertexNames(w)] = dfsPos++
+            traverseTreeEdge(v, w)
+        }
+        this.backtrack = backtrack
+    }
 
     fun run() {
-        marked = Array(n) { false }
-        dfsNumber = Array(n) { 0 }
-        finishNumber = Array(n) { 0 }
-        currentDFSNumber = 0
-        currentFinishNumber = 0
+        marked = Array(graph.n) { false }
         init()
-        for (i in 0..<n) {
-            if (!marked[i]) {
-                marked[i] = true
-                root(i)
-                dfs(i, i)
+        for (s in graph.vertices) {
+            if (!marked[graph.convertVertexNames(s)]) {
+                marked[graph.convertVertexNames(s)] = true
+                root(s)
+                dfs(s, s)
             }
         }
     }
 
     private fun dfs(u: Int, v: Int) {
-        currentDFSNumber++
-        dfsNumber[v] = currentDFSNumber
-        for (i in vertexArray[v]..<vertexArray[v + 1]) {
-            val w = edgeArray[i]
-            if (marked[w]) {
-                if (isForwardEdge(v, w)) {
-                    traverseForwardEdge(v, w)
-                } else if (isCrossEdge(v, w)) {
-                    traverseCrossEdge(v, w)
-                } else if (isBackwardsEdge(v, w)) {
-                    traverseBackwardsEdge(v, w)
-                }
+        for (w in graph.getOutwardNeighbours(v)) {
+            if (marked[graph.convertVertexNames(w)]) {
+                traverseNonTreeEdge(v, w)
             } else {
                 traverseTreeEdge(v, w)
-                marked[w] = true
+                marked[graph.convertVertexNames(w)] = true
                 dfs(v, w)
             }
         }
-        currentFinishNumber++
-        finishNumber[v] = currentFinishNumber
         backtrack(u, v)
-    }
-
-    private fun isForwardEdge(v: Int, w: Int): Boolean {
-        return marked[w]
-                && dfsNumber[v] < dfsNumber[w]
-                && finishNumber[w] != 0
-    }
-
-    private fun isCrossEdge(v: Int, w: Int): Boolean {
-        return marked[w]
-                && dfsNumber[v] > dfsNumber[w]
-                && finishNumber[w] != 0
-    }
-
-    private fun isBackwardsEdge(v: Int, w: Int): Boolean {
-        return marked[w]
-                && dfsNumber[v] > dfsNumber[w]
-                && finishNumber[w] == 0
     }
 }
 
-class Circle(vararg vertices: Vertices) {
+class Circle<T : Any>(private val vertices: List<T>) {
+    val length: Int
+        get() = vertices.size
 
+    constructor(vararg v: T) : this(v.toList())
+
+    fun <S : Any> map(transform: (T) -> S) : Circle<S> {
+        return Circle(vertices.map(transform))
+    }
+
+    override fun toString(): String {
+        return vertices.toString()
+    }
+
+    override fun hashCode(): Int {
+        return vertices.fold(0) { acc, t -> acc + t.hashCode() }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Circle<*>) {
+            if (vertices.isEmpty()) {
+                other.vertices.isEmpty()
+            } else if (vertices.size != other.vertices.size) {
+                false
+            } else {
+                val startIndex = vertices.indexOf(other.vertices[0])
+                if (startIndex == -1) {
+                    false
+                } else {
+                    var equal = true
+                    for (i in vertices.indices) {
+                        if (vertices[(startIndex + i) % vertices.size] != other.vertices[i]) {
+                            equal = false
+                        }
+                    }
+                    equal
+                }
+            }
+        } else {
+            false
+        }
+    }
 }
