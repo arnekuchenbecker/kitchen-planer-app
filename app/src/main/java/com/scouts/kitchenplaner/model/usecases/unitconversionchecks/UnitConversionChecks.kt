@@ -136,8 +136,23 @@ class UnitConversionCheckResult internal constructor(
     operator fun get(text: String, unit: String) = problemTextConversions[Pair(text, unit)]
 }
 
+/**
+ * Encodes the reason for a UnitConversionCheck to fail
+ */
 enum class UnitConversionCheckFailureCause {
+    /**
+     * The UnitConversionCheck was successful
+     */
     NONE,
+
+    /**
+     * The UnitConversionCheck failed because there was some ingredient for which there exist more
+     * than one unit conversion
+     */
     AMBIGUOUS,
+
+    /**
+     * The UnitConversionCheck failed because there were circular conversions
+     */
     CIRCLE
 }
