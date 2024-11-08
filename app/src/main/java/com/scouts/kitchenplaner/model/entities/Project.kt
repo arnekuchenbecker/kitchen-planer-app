@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.model.entities
 
 import android.net.Uri
-import com.scouts.kitchenplaner.listDatesUntil
+import com.scouts.kitchenplaner.utils.listDatesUntil
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import java.util.Date
 

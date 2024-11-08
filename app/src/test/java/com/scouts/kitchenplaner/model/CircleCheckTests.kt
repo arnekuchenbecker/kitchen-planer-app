@@ -18,11 +18,11 @@ package com.scouts.kitchenplaner.model
 
 import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.usecases.Circle
-import com.scouts.kitchenplaner.model.usecases.CircleSearch
-import com.scouts.kitchenplaner.model.usecases.Graph
-import com.scouts.kitchenplaner.model.usecases.SCCFinder
-import com.scouts.kitchenplaner.model.usecases.Stack
-import com.scouts.kitchenplaner.model.usecases.UnitConversionForest
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.CircleSearch
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Graph
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.SCCFinder
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Stack
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionGraph
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -300,22 +300,22 @@ class CircleCheckTest {
             UnitConversion.of("Mehl", "Pck", "kg", BigDecimal("1"))
         )
 
-        val forest1 = UnitConversionForest(conversions1)
+        val forest1 = UnitConversionGraph(conversions1)
 
-        Assertions.assertEquals(2, forest1.trees.size, "Found an incorrect number of trees")
+        Assertions.assertEquals(2, forest1.parts.size, "Found an incorrect number of trees")
         Assertions.assertArrayEquals(
             arrayOf(1, 2, 3),
-            forest1.trees[0].graph.vertices,
+            forest1.parts[0].graph.vertices,
             "Tree contained incorrect vertices"
         )
         Assertions.assertArrayEquals(
             arrayOf(0, 1, 2, 3),
-            forest1.trees[0].graph.edgePointers,
+            forest1.parts[0].graph.edgePointers,
             "Tree contained incorrect edge pointers"
         )
         Assertions.assertArrayEquals(
             arrayOf(2, 3, 1),
-            forest1.trees[0].graph.edges,
+            forest1.parts[0].graph.edges,
             "Tree contained incorrect edges"
         )
 
@@ -327,10 +327,10 @@ class CircleCheckTest {
             UnitConversion.of("Zucker", "g", "kg", BigDecimal("0.001"))
         )
 
-        val forest2 = UnitConversionForest(conversions2)
+        val forest2 = UnitConversionGraph(conversions2)
 
-        Assertions.assertEquals(3, forest2.trees.size, "Found an incorrect number of trees")
-        val mehlTree = forest2.trees.find {
+        Assertions.assertEquals(3, forest2.parts.size, "Found an incorrect number of trees")
+        val mehlTree = forest2.parts.find {
             it.conversions.any { conversion -> conversion.representation == "Mehl" }
         }
         if (mehlTree == null) {
@@ -354,7 +354,7 @@ class CircleCheckTest {
             }
         }
 
-        val zuckerTree = forest2.trees.find {
+        val zuckerTree = forest2.parts.find {
             it.conversions.any { conversion -> conversion.representation == "Zucker" }
         }
         if (zuckerTree == null) {
@@ -379,7 +379,7 @@ class CircleCheckTest {
             UnitConversion.of("Mehl", "Pck", "kg", BigDecimal("1.0"))
         )
 
-        val forest1 = UnitConversionForest(conversions1)
+        val forest1 = UnitConversionGraph(conversions1)
         val circles1 = forest1.findCircles()
 
         Assertions.assertEquals(1, circles1.size, "Found an incorrect number of circles")
@@ -391,7 +391,7 @@ class CircleCheckTest {
             UnitConversion.of("Mehl", "Pck", "kg", BigDecimal("1.0"))
         )
 
-        val forest2 = UnitConversionForest(conversions2)
+        val forest2 = UnitConversionGraph(conversions2)
         val circles2 = forest2.findCircles()
 
         Assertions.assertEquals(0, circles2.size, "Found an incorrect number of circles")
@@ -401,7 +401,7 @@ class CircleCheckTest {
             UnitConversion.of(Regex("[A-Z]"), "g", "kg", BigDecimal("0.001"))
         )
 
-        val forest3 = UnitConversionForest(conversions3)
+        val forest3 = UnitConversionGraph(conversions3)
         val circles3 = forest3.findCircles()
 
         Assertions.assertEquals(1, circles3.size, "Found an incorrect number of circles")
@@ -419,7 +419,7 @@ class CircleCheckTest {
             UnitConversion.of("Milch", "l", "g", BigDecimal("1000.0"))
         )
 
-        val forest = UnitConversionForest(conversions)
+        val forest = UnitConversionGraph(conversions)
         val circles = forest.findCircles()
 
         Assertions.assertEquals(2, circles.size)
