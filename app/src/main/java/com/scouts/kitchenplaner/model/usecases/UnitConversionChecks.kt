@@ -167,33 +167,36 @@ class UnitConversionForest(conversions: List<UnitConversion>) {
                 treeContents[pattern]?.add(conversion)
             }
         }
-        trees = treeContents.map { (_, contents) ->
-            val edgeList = mutableListOf<Int>()
-            val vertices = Array(contents.size) { i -> i + 1 }
-            val edgePointers = Array(contents.size + 1) { i ->
-                if (i < contents.size) {
-                    val edgeStart = edgeList.size
-                    contents.forEachIndexed { index, it ->
-                        if (it.sourceUnit == contents[i].destinationUnit) {
-                            edgeList.add(index + 1)
-                        }
-                    }
-                    edgeStart
-                } else {
-                    edgeList.size
-                }
-            }
-
-            val edges = Array(edgeList.size) { i -> edgeList[i] }
-
-            UnitConversionTree(
-                conversions = contents,
-                graph = Graph(vertices, edgePointers, edges)
-            )
-        }
+        trees = treeContents.map { (_, contents) -> createTree(contents) } +
+                listOf(createTree(regexConversions))
     }
 
     fun findCircles(): List<Circle<UnitConversion>> = trees.map { it.findCircles() }.flatten()
+
+    private fun createTree(conversions: List<UnitConversion>) : UnitConversionTree {
+        val edgeList = mutableListOf<Int>()
+        val vertices = Array(conversions.size) { i -> i + 1 }
+        val edgePointers = Array(conversions.size + 1) { i ->
+            if (i < conversions.size) {
+                val edgeStart = edgeList.size
+                conversions.forEachIndexed { index, it ->
+                    if (it.sourceUnit == conversions[i].destinationUnit) {
+                        edgeList.add(index + 1)
+                    }
+                }
+                edgeStart
+            } else {
+                edgeList.size
+            }
+        }
+
+        val edges = Array(edgeList.size) { i -> edgeList[i] }
+
+        return UnitConversionTree(
+            conversions = conversions,
+            graph = Graph(vertices, edgePointers, edges)
+        )
+    }
 }
 
 class UnitConversionTree(
