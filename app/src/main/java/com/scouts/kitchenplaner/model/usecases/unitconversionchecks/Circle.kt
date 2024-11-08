@@ -16,12 +16,31 @@
 
 package com.scouts.kitchenplaner.model.usecases.unitconversionchecks
 
+/**
+ * Represents a circular dependency of some items
+ *
+ * @param vertices The list of items to create the circle from
+ */
 class Circle<T : Any>(private val vertices: List<T>) {
+    /**
+     * The number of items in this circle
+     */
     val length: Int
         get() = vertices.size
 
+    /**
+     * Creates a Circle from the given items
+     *
+     * @param v One or multiple items to create a circle from
+     */
     constructor(vararg v: T) : this(v.toList())
 
+    /**
+     * Transforms the items of this Circle by applying [transform] to each item. Keeps the order of
+     * the items
+     *
+     * @param transform The function to be applied to each element of this circle
+     */
     fun <S : Any> map(transform: (T) -> S) : Circle<S> {
         return Circle(vertices.map(transform))
     }

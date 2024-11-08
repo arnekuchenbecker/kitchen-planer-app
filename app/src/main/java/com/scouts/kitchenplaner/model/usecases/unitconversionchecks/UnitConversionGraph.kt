@@ -21,8 +21,18 @@ import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.utils.CircleSearch
 import com.scouts.kitchenplaner.utils.Graph
 
+/**
+ * A graph for checking unit conversions on circular dependencies. Unit conversions for different
+ * ingredients are split into subgraphs, which are not connected to each other. Regex conversions
+ * are present in all subgraphs as checking if two regular expressions are equivalent is hard.
+ *
+ * @param conversions The conversions to be checked for circles
+ */
 @OptIn(DomainLayerRestricted::class)
 class UnitConversionGraph(conversions: List<UnitConversion>) {
+    /**
+     * The subgraphs for the different ingredients
+     */
     val parts: List<UnitConversionSubgraph>
 
     init {
@@ -50,6 +60,11 @@ class UnitConversionGraph(conversions: List<UnitConversion>) {
                 listOf(createSubgraph(regexConversions))
     }
 
+    /**
+     * Searches for circles in each subgraph
+     *
+     * @return A list of the found circles
+     */
     fun findCircles(): List<Circle<UnitConversion>> = parts.map { it.findCircles() }.flatten()
 
     private fun createSubgraph(conversions: List<UnitConversion>) : UnitConversionSubgraph {
@@ -78,10 +93,22 @@ class UnitConversionGraph(conversions: List<UnitConversion>) {
     }
 }
 
+/**
+ * A subgraph of a [UnitConversionGraph] containing vertices only for unit conversions with the same
+ * ingredient name and regex conversions
+ *
+ * @param conversions The unit conversions represented by the vertices of the graph
+ * @param graph The graph representing the dependencies between the unit conversions
+ */
 class UnitConversionSubgraph(
     val conversions: List<UnitConversion>,
     val graph: Graph
 ) {
+    /**
+     * Finds all circles in this subgraph
+     *
+     * @return All circles in this subgraph
+     */
     fun findCircles(): List<Circle<UnitConversion>> {
         val circleFinder = CircleSearch(graph)
 
