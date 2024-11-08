@@ -17,17 +17,17 @@
 package com.scouts.kitchenplaner.model
 
 import com.scouts.kitchenplaner.model.entities.UnitConversion
-import com.scouts.kitchenplaner.model.usecases.Circle
-import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.CircleSearch
-import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Graph
-import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.SCCFinder
-import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Stack
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Circle
 import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionGraph
+import com.scouts.kitchenplaner.utils.CircleSearch
+import com.scouts.kitchenplaner.utils.Graph
+import com.scouts.kitchenplaner.utils.SCCFinder
+import com.scouts.kitchenplaner.utils.Stack
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
-class CircleCheckTest {
+class CircleCheckTests {
     @Test
     fun testStackContent() {
         val stack = Stack<Int>()
