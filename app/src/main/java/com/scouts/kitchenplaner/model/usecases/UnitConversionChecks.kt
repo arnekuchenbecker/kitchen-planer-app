@@ -19,350 +19,120 @@ package com.scouts.kitchenplaner.model.usecases
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.UnitConversion
 
-@OptIn(DomainLayerRestricted::class)
-class UnitConversionForest(conversions: List<UnitConversion>) {
-    private val literalMatcher = Regex("^[a-zA-Z0-9]*$")
-    val trees: List<UnitConversionTree>
-
-    init {
-        val treeContents = mutableMapOf<String, MutableList<UnitConversion>>()
-        val regexConversions = mutableListOf<UnitConversion>()
-        conversions.forEach { conversion ->
-            if (isRegexLiteral(conversion.pattern)) {
-                if (treeContents[conversion.pattern] == null) {
-                    treeContents[conversion.pattern] = mutableListOf()
-                }
-                treeContents[conversion.pattern]?.add(conversion)
-            } else {
-                regexConversions.add(conversion)
-            }
-        }
-        regexConversions.forEach { conversion ->
-            treeContents.keys.forEach { pattern ->
-                treeContents[pattern]?.add(conversion)
-            }
-        }
-        trees = treeContents.map { (_, contents) ->
-            val edgeList = mutableListOf<Int>()
-            val vertices = Array(contents.size) { i -> i + 1 }
-            val edgePointers = Array(contents.size + 1) { i ->
-                if (i < contents.size) {
-                    val edgeStart = edgeList.size
-                    contents.forEachIndexed { index, it ->
-                            if (it.sourceUnit == contents[i].destinationUnit) {
-                                edgeList.add(index + 1)
-                            }
-                        }
-                    edgeStart
-                } else {
-                    edgeList.size
-                }
-            }
-
-            val edges = Array(edgeList.size) { i -> edgeList[i] }
-
-            UnitConversionTree(
-                conversions = contents,
-                graph = Graph(vertices, edgePointers, edges)
-            )
-        }
-    }
-
-    fun findCircles(): List<Circle<UnitConversion>> = trees.map { it.findCircles() }.flatten()
-
-    private fun isRegexLiteral(pattern: String): Boolean {
-        return literalMatcher.matches(pattern)
-    }
-}
-
-class UnitConversionTree(
-    val conversions: List<UnitConversion>,
-    val graph: Graph
-) {
-    fun findCircles(): List<Circle<UnitConversion>> {
-        val circleFinder = CircleSearch(graph)
-
-        return circleFinder.run().map { circle -> circle.map { v -> conversions[graph.convertVertexNames(v)] } }
-    }
-
-
-}
-
-class CircleSearch(
-    private val graph: Graph
-) {
-    private val blocked = Array(graph.n) { false }
-    private val b = Array(graph.n) { mutableListOf<Int>() }
-    private val stack = Stack<Int>()
-    private var s = 1
-    private val circles = mutableListOf<Circle<Int>>()
-    private var g_k = Graph.empty()
-
+/**
+ * Class for checking if a set of unit conversions is valid. A set of unit conversions is considered
+ * valid if and only if
+ *      a) for every source unit there is at most one regex conversion from that unit
+ *         and at most one regex conversion with any given text
+ *      b) no circles are present
+ *
+ * @param conversions The set of UnitConversions that should be checked
+ */
+class UnitConversionChecks(private val conversions: List<UnitConversion>) {
     private var hasRun = false
-    fun run(): List<Circle<Int>> {
+
+    private val handledTextConversions = mutableMapOf<Pair<String, String>, MutableList<UnitConversion>>()
+    private val handledRegexConversions = mutableMapOf<String, MutableList<UnitConversion>>()
+
+    private var failureCause = UnitConversionCheckFailureCause.NONE
+    private val problemTextConversions = mutableMapOf<Pair<String, String>, List<UnitConversion>>()
+    private val problemRegexConversions = mutableMapOf<String, List<UnitConversion>>()
+
+    /**
+     * Checks the [conversions] this object was created with.
+     *
+     * @return A [UnitConversionCheckResult] object representing the result of the check
+     */
+    fun run() : UnitConversionCheckResult {
         if (!hasRun) {
-            while (s < graph.n) {
-                val comps: List<Graph> =
-                    findNonTrivialStrongComponents()
-                if (comps.isEmpty()) {
-                    s = graph.n
-                } else {
-                    g_k = comps.sortedBy { g -> g.vertices.min() }[0]
-                    s = g_k.vertices.min()
-                    for (i in g_k.vertices.map { graph.convertVertexNames(it) }) {
-                        blocked[i] = false
-                        b[i] = mutableListOf()
-                    }
-                    circuit(s)
-                    s++
+            conversions.forEach {
+                when(it) {
+                    is UnitConversion.TextConversion -> handleTextConversion(it)
+                    is UnitConversion.RegexConversion -> handleRegexConversion(it)
                 }
             }
+            hasRun = true
+
+            if (failureCause == UnitConversionCheckFailureCause.NONE) {
+                TODO("check for circles")
+            }
         }
-        return circles
+
+        return UnitConversionCheckResult(problemTextConversions, problemRegexConversions, failureCause)
     }
 
-    private fun circuit(v: Int): Boolean {
-        var f = false
-        stack.push(v)
-        blocked[graph.convertVertexNames(v)] = true
-
-        for (u in g_k.getOutwardNeighbours(v)) {
-            if (u == s) {
-                circles.add(Circle(stack.content))
-                f = true
-            } else if (!blocked[graph.convertVertexNames(u)]) {
-                if (circuit(u)) {
-                    f = true
-                }
-            }
+    @OptIn(DomainLayerRestricted::class)
+    private fun handleTextConversion(conversion: UnitConversion) {
+        val id = Pair(conversion.representation, conversion.sourceUnit)
+        var handledList = handledTextConversions[id]
+        if (handledList == null) {
+            handledList = mutableListOf()
         }
-
-        if (f) {
-            unblock(v)
-        } else {
-            for (u in g_k.getOutwardNeighbours(v)) {
-                if (!(b[graph.convertVertexNames(u)].contains(v))) {
-                    b[graph.convertVertexNames(u)].add(v)
-                }
-            }
-        }
-        stack.pop()
-        return f
-    }
-
-    private fun unblock(v: Int) {
-        blocked[graph.convertVertexNames(v)] = false
-        for (i in 0..<b[graph.convertVertexNames(v)].size) {
-            val u = b[graph.convertVertexNames(v)].removeAt(0)
-            if (blocked[graph.convertVertexNames(u)]) {
-                unblock(u)
-            }
+        handledList.add(conversion)
+        if (handledList.size > 1) {
+            problemTextConversions[id] = handledList
+            failureCause = UnitConversionCheckFailureCause.AMBIGUOUS
         }
     }
 
-    private fun findNonTrivialStrongComponents(): List<Graph> {
-        val subset = (s..graph.n).toList()
-        val subgraph = graph.inducedSubgraph(subset)
-        val sccFinder = SCCFinder(subgraph)
-        return sccFinder.run()
+    @OptIn(DomainLayerRestricted::class)
+    private fun handleRegexConversion(conversion: UnitConversion) {
+        var handledList = handledRegexConversions[conversion.sourceUnit]
+        if (handledList == null) {
+            handledList = mutableListOf()
+        }
+        handledList.add(conversion)
+        if (handledList.size > 1) {
+            problemRegexConversions[conversion.sourceUnit] = handledList
+            failureCause = UnitConversionCheckFailureCause.AMBIGUOUS
+        }
     }
 }
 
-class SCCFinder(
-    private val graph: Graph
+/**
+ * Represents the result of a UnitConversionCheck. On unsuccessful check, problematic conversions
+ * can be identified by their name and unit (in case of text conversions) or just their unit (in
+ * case of regex conversions) and the iterated through by using the operator get() functions.
+ *
+ * @param problemTextConversions All problematic text conversions found by the check
+ * @param problemRegexConversion All problematic regex conversions found by the check
+ */
+class UnitConversionCheckResult internal constructor(
+    private val problemTextConversions: Map<Pair<String, String>, List<UnitConversion>>,
+    private val problemRegexConversion: Map<String, List<UnitConversion>>,
+    val failureCause: UnitConversionCheckFailureCause
 ) {
-    fun run(): List<Graph> {
-        val representatives = Stack<Int>()
-        val nodes = Stack<Int>()
-        val componentRepresentatives = mutableMapOf<Int, Int>()
-        val dfs = DFS(graph)
-        dfs.initialize(
-            root = { v ->
-                representatives.push(v)
-                nodes.push(v)
-            },
-            traverseTreeEdge = { _, w ->
-                representatives.push(w)
-                nodes.push(w)
-            },
-            traverseNonTreeEdge = { v, w ->
-                if (nodes.contains(w)) {
-                    while (dfs[w] < dfs[representatives.top()]) {
-                        representatives.pop()
-                    }
-                }
-            },
-            backtrack = { _, v ->
-                if (v == representatives.top()) {
-                    representatives.pop()
-                    do {
-                        val w = nodes.pop()
-                        componentRepresentatives[w] = v
-                    } while (w != v)
-                }
-            }
-        )
-        dfs.run()
-        val componentGraphs = componentRepresentatives
-            .map { (v, rep) -> Pair(v, rep) }
-            .groupBy { it.second }
-            .values
-            .filter { it.size > 1 }
-            .map { list -> list.map { it.first }.sorted() }
-            .map { vertices -> graph.inducedSubgraph(vertices) }
-        return componentGraphs
-    }
+    /**
+     * Whether the check was successful. A check is considered successful if and only if no
+     * problematic text conversions and no problematic regex conversions have been found.
+     */
+    val isSuccessful: Boolean
+        get() = problemRegexConversion.all { (_, list) -> list.isEmpty() }
+                && problemTextConversions.all { (_, list) -> list.isEmpty() }
+
+    /**
+     * Pair(name, sourceUnit) for all problematic text conversions
+     */
+    val textProblems = problemTextConversions.keys
+
+    /**
+     * sourceUnit for all problematic regex conversions
+     */
+    val regexProblems = problemRegexConversion.keys
+
+    /**
+     * Get the problematic regex conversions with the specified source unit
+     */
+    operator fun get(unit: String) = problemRegexConversion[unit]
+
+    /**
+     * Get the problematic text conversions with the specified name and source unit
+     */
+    operator fun get(text: String, unit: String) = problemTextConversions[Pair(text, unit)]
 }
 
-class Stack<T> {
-    private val _deque = ArrayDeque<T>()
-
-    fun push(e: T) = _deque.addLast(e)
-
-    fun pop() = _deque.removeLast()
-
-    fun top() = _deque.last()
-
-    fun contains(e: T) = _deque.contains(e)
-
-    val content: List<T>
-        get() = _deque.toList()
-}
-
-class Graph(
-    val vertices: Array<Int>,
-    val edgePointers: Array<Int>,
-    val edges: Array<Int>,
-    val convertVertexNames: (Int) -> Int = { i -> i - 1 }
-) {
-    companion object {
-        fun empty(): Graph {
-            return Graph(arrayOf(), arrayOf(1), arrayOf())
-        }
-    }
-
-    val n = vertices.size
-    val m = edges.size
-
-    fun getOutwardNeighbours(v: Int): List<Int> {
-        return edges.slice(edgePointers[convertVertexNames(v)]..<edgePointers[convertVertexNames(v) + 1])
-    }
-
-    fun inducedSubgraph(subset: List<Int>): Graph {
-        val conversion: (Int) -> Int = { i -> subset.indexOf(i) }
-        val edgeList = subset.map { v ->
-            getOutwardNeighbours(v).filter { subset.contains(it) }
-        }
-        val newEdges = edgeList.flatten().toTypedArray()
-        val newEdgePointers = edgeList.runningFold(0) { acc, es -> acc + es.size }.toTypedArray()
-
-        return Graph(subset.toTypedArray(), newEdgePointers, newEdges, conversion)
-    }
-}
-
-class DFS(
-    private val graph: Graph
-) {
-    private var init: () -> Unit = {}
-    private var root: (Int) -> Unit = { _ -> }
-    private var traverseNonTreeEdge: (Int, Int) -> Unit = { _, _ -> }
-    private var traverseTreeEdge: (Int, Int) -> Unit = { _, _ -> }
-    private var backtrack: (Int, Int) -> Unit = { _, _ -> }
-
-    private var dfsPos = -1
-    private val dfsNums = Array(graph.n) { graph.n + 1 }
-
-    private var marked = Array(graph.n) { false }
-    operator fun get(v: Int) = dfsNums[graph.convertVertexNames(v)]
-    fun initialize(
-        init: () -> Unit = {},
-        root: (Int) -> Unit = { _ -> },
-        traverseNonTreeEdge: (Int, Int) -> Unit = { _, _ -> },
-        traverseTreeEdge: (Int, Int) -> Unit = { _, _ -> },
-        backtrack: (Int, Int) -> Unit = { _, _ -> }
-    ) {
-        this.init = {
-            dfsPos = 1
-            init()
-        }
-        this.root = { s ->
-            dfsNums[graph.convertVertexNames(s)] = dfsPos++
-            root(s)
-        }
-        this.traverseNonTreeEdge = traverseNonTreeEdge
-        this.traverseTreeEdge = { v, w ->
-            dfsNums[graph.convertVertexNames(w)] = dfsPos++
-            traverseTreeEdge(v, w)
-        }
-        this.backtrack = backtrack
-    }
-
-    fun run() {
-        marked = Array(graph.n) { false }
-        init()
-        for (s in graph.vertices) {
-            if (!marked[graph.convertVertexNames(s)]) {
-                marked[graph.convertVertexNames(s)] = true
-                root(s)
-                dfs(s, s)
-            }
-        }
-    }
-
-    private fun dfs(u: Int, v: Int) {
-        for (w in graph.getOutwardNeighbours(v)) {
-            if (marked[graph.convertVertexNames(w)]) {
-                traverseNonTreeEdge(v, w)
-            } else {
-                traverseTreeEdge(v, w)
-                marked[graph.convertVertexNames(w)] = true
-                dfs(v, w)
-            }
-        }
-        backtrack(u, v)
-    }
-}
-
-class Circle<T : Any>(private val vertices: List<T>) {
-    val length: Int
-        get() = vertices.size
-
-    constructor(vararg v: T) : this(v.toList())
-
-    fun <S : Any> map(transform: (T) -> S) : Circle<S> {
-        return Circle(vertices.map(transform))
-    }
-
-    override fun toString(): String {
-        return vertices.toString()
-    }
-
-    override fun hashCode(): Int {
-        return vertices.fold(0) { acc, t -> acc + t.hashCode() }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is Circle<*>) {
-            if (vertices.isEmpty()) {
-                other.vertices.isEmpty()
-            } else if (vertices.size != other.vertices.size) {
-                false
-            } else {
-                val startIndex = vertices.indexOf(other.vertices[0])
-                if (startIndex == -1) {
-                    false
-                } else {
-                    var equal = true
-                    for (i in vertices.indices) {
-                        if (vertices[(startIndex + i) % vertices.size] != other.vertices[i]) {
-                            equal = false
-                        }
-                    }
-                    equal
-                }
-            }
-        } else {
-            false
-        }
-    }
+enum class UnitConversionCheckFailureCause {
+    NONE,
+    AMBIGUOUS,
+    CIRCLE
 }

@@ -38,6 +38,7 @@ import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.Recipe
 import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
+import java.math.BigDecimal
 
 fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
@@ -132,5 +133,13 @@ fun DietarySpecialityEntity.toModelEntity(): DietarySpeciality {
 }
 
 fun UnitConversionEntity.toModelEntity(): UnitConversion {
-    return UnitConversion(Regex(ingredient), sourceUnit, destinationUnit, factor)
+    return if (this.isRegex) {
+        UnitConversion.of(
+            Regex(this.ingredient), this.sourceUnit, this.destinationUnit, BigDecimal(this.factor)
+        )
+    } else {
+        UnitConversion.of(
+            this.ingredient, this.sourceUnit, this.destinationUnit, BigDecimal(this.factor)
+        )
+    }
 }

@@ -34,7 +34,8 @@ import androidx.room.ForeignKey
 data class UnitConversionEntity (
     val projectID: Long,
     val ingredient: String,
+    val isRegex: Boolean,
     val sourceUnit: String,
     val destinationUnit: String,
-    val factor: Double
+    val factor: String
 )
