@@ -118,26 +118,28 @@ class CircleCheckTests {
         val components = sccFinder.run()
 
         Assertions.assertEquals(
-            1,
+            5,
             components.size,
-            "Found an incorrect number of non-trivial strong components"
+            "Found an incorrect number of strong components"
         )
 
-        val comp = components[0]
+        val comp = components.find { it.n > 1 }
+
+        Assertions.assertNotNull(comp)
 
         Assertions.assertArrayEquals(
             arrayOf(3, 4, 6, 7, 8),
-            comp.vertices,
+            comp?.vertices,
             "Found incorrect vertices"
         )
         Assertions.assertArrayEquals(
             arrayOf(0, 2, 3, 4, 6, 7),
-            comp.edgePointers,
+            comp?.edgePointers,
             "Found incorrect edge pointers"
         )
         Assertions.assertArrayEquals(
             arrayOf(4, 6, 3, 7, 4, 8, 6),
-            comp.edges,
+            comp?.edges,
             "Found incorrect edges"
         )
     }
