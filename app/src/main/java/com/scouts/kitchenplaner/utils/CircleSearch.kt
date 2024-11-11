@@ -18,6 +18,12 @@ package com.scouts.kitchenplaner.utils
 
 import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Circle
 
+/**
+ * Algorithm for finding all elementary circles (i.e. all circles which do not contain any vertex
+ * twice) in a graph
+ *
+ * @param graph The graph in which to search the circles
+ */
 class CircleSearch(
     private val graph: Graph
 ) {
@@ -29,6 +35,12 @@ class CircleSearch(
     private var g_k = Graph.empty()
 
     private var hasRun = false
+
+    /**
+     * Run the circle search
+     *
+     * @return A list of all elementary circles in the given graph
+     */
     fun run(): List<Circle<Int>> {
         if (!hasRun) {
             while (s < graph.n) {
@@ -56,7 +68,7 @@ class CircleSearch(
         stack.push(v)
         blocked[graph.convertVertexNames(v)] = true
 
-        for (u in g_k.getOutwardNeighbours(v)) {
+        for (u in g_k.getOutwardNeighbors(v)) {
             if (u == s) {
                 circles.add(Circle(stack.content))
                 found = true
@@ -70,7 +82,7 @@ class CircleSearch(
         if (found) {
             unblock(v)
         } else {
-            for (u in g_k.getOutwardNeighbours(v)) {
+            for (u in g_k.getOutwardNeighbors(v)) {
                 if (!(b[graph.convertVertexNames(u)].contains(v))) {
                     b[graph.convertVertexNames(u)].add(v)
                 }
@@ -94,6 +106,6 @@ class CircleSearch(
         val subset = (s..graph.n).toList()
         val subgraph = graph.inducedSubgraph(subset)
         val sccFinder = SCCFinder(subgraph)
-        return sccFinder.run()
+        return sccFinder.run().filter { it.n > 1 }.sortedBy { it.vertices[0] }
     }
 }

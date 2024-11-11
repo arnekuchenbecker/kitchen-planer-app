@@ -16,8 +16,12 @@
 
 package com.scouts.kitchenplaner.utils
 
-import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Graph
-
+/**
+ * Generic DFS scheme. By supplying additional functions via [initialize], DFS-based algorithms can
+ * easily be implemented.
+ *
+ * @param graph The graph on which the DFS should be run
+ */
 class DFS(
     private val graph: Graph
 ) {
@@ -31,7 +35,26 @@ class DFS(
     private val dfsNums = Array(graph.n) { graph.n + 1 }
 
     private var marked = Array(graph.n) { false }
+
+    /**
+     * @return the DFS number of the given vertex
+     */
     operator fun get(v: Int) = dfsNums[graph.convertVertexNames(v)]
+
+    /**
+     * Method to supply functionality for implementing a DFS-based algorithm
+     *
+     * @param init Called once on startup of the DFS
+     * @param root Called whenever a new root is found (i.e. a subgraph that is not connected to
+     *             some other component). Parameter: The newly found root vertex
+     * @param traverseNonTreeEdge Called whenever the DFS finds a non-tree edge. Parameters: The
+     *                            start and end vertices of the edge
+     * @param traverseTreeEdge Called whenever the DFS finds a tree edge. Parameters: The start and
+     *                         end vertices of the edge
+     * @param backtrack Called whenever the DFS backtracks. Parameters: The start and end vertices
+     *                  of the edge via which the DFS backtracks (note that the DFS backtracks from
+     *                  v to u on the edge (u, v))
+     */
     fun initialize(
         init: () -> Unit = {},
         root: (Int) -> Unit = { _ -> },
@@ -55,6 +78,9 @@ class DFS(
         this.backtrack = backtrack
     }
 
+    /**
+     * Run the DFS
+     */
     fun run() {
         marked = Array(graph.n) { false }
         init()
@@ -68,7 +94,7 @@ class DFS(
     }
 
     private fun dfs(u: Int, v: Int) {
-        for (w in graph.getOutwardNeighbours(v)) {
+        for (w in graph.getOutwardNeighbors(v)) {
             if (marked[graph.convertVertexNames(w)]) {
                 traverseNonTreeEdge(v, w)
             } else {

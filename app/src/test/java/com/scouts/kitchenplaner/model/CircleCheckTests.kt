@@ -27,7 +27,13 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
+/**
+ * Contains unit tests for checking the circle search algorithm
+ */
 class CircleCheckTests {
+    /**
+     * Checks functionality of the [Stack] class
+     */
     @Test
     fun testStackContent() {
         val stack = Stack<Int>()
@@ -44,6 +50,9 @@ class CircleCheckTests {
         }
     }
 
+    /**
+     * Checks the inducedSubgraph method of [Graph] with a simple graph
+     */
     @Test
     fun testEasyInducedSubgraph() {
         val g = Graph(arrayOf(1, 2, 3, 4), arrayOf(0, 3, 5, 5, 6), arrayOf(2, 3, 4, 1, 3, 2))
@@ -67,6 +76,9 @@ class CircleCheckTests {
         )
     }
 
+    /**
+     * Checks the inducedSubgraph() method of [Graph] with a more complex graph
+     */
     @Test
     fun testComplexInducedSubgraph() {
         val g = Graph(arrayOf(1, 2, 3, 4), arrayOf(0, 3, 5, 5, 6), arrayOf(2, 3, 4, 1, 3, 2))
@@ -90,6 +102,9 @@ class CircleCheckTests {
         )
     }
 
+    /**
+     * Checks the functionality of the [SCCFinder] class
+     */
     @Test
     fun testStrongComponents() {
         val g = Graph(
@@ -127,6 +142,9 @@ class CircleCheckTests {
         )
     }
 
+    /**
+     * Checks the equals() and hashCode() methods of [Circle]
+     */
     @Test
     fun checkCircle() {
         val c1 = Circle(listOf(1, 2, 3))
@@ -152,6 +170,9 @@ class CircleCheckTests {
         Assertions.assertTrue { c2.hashCode() == c3.hashCode() }
     }
 
+    /**
+     * Checks the [CircleSearch] class on easy examples
+     */
     @Test
     fun findEasyCircles() {
         val g1 = Graph(
@@ -182,6 +203,9 @@ class CircleCheckTests {
         Assertions.assertTrue { circles2.contains(Circle(listOf(1, 2, 4))) }
     }
 
+    /**
+     * Checks the [CircleSearch] class on more complex examples
+     */
     @Test
     fun findComplexCircles() {
         val g1 = Graph(
@@ -291,9 +315,12 @@ class CircleCheckTests {
         Assertions.assertTrue { circles2.containsAll(lengthEightCircles) }
     }
 
+    /**
+     * Checks the creation of UnitConversionGraphs
+     */
     @OptIn(DomainLayerRestricted::class)
     @Test
-    fun checkForestCreation() {
+    fun checkGraphCreation() {
         val conversions1 = listOf(
             UnitConversion.of("Mehl", "kg", "g", BigDecimal("1000")),
             UnitConversion.of("Mehl", "g", "Pck", BigDecimal("0.001")),
@@ -371,6 +398,9 @@ class CircleCheckTests {
         }
     }
 
+    /**
+     * Checks the circle searching in [UnitConversionGraph] on easy examples
+     */
     @Test
     fun checkEasyUnitConversions() {
         val conversions1 = listOf(
@@ -408,6 +438,9 @@ class CircleCheckTests {
         Assertions.assertEquals(Circle(conversions3), circles3[0], "Found an incorrect circle")
     }
 
+    /**
+     * Checks the circle searching in [UnitConversionGraph] on a more complex example
+     */
     @Test
     fun checkComplexUnitConversions() {
         val conversions = listOf(
@@ -423,6 +456,5 @@ class CircleCheckTests {
         val circles = forest.findCircles()
 
         Assertions.assertEquals(2, circles.size)
-        print(circles)
     }
 }

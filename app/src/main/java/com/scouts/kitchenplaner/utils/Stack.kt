@@ -16,17 +16,42 @@
 
 package com.scouts.kitchenplaner.utils
 
+/**
+ * A Stack is a mutable data structures which allows adding objects and removing them in a FILO
+ * manner. Also grants access to the last element that was added to the stack
+ */
 class Stack<T> {
     private val _deque = ArrayDeque<T>()
 
+    /**
+     * Adds an element to the top of the stack
+     *
+     * @param e The element to be added
+     */
     fun push(e: T) = _deque.addLast(e)
 
+    /**
+     * Removes and returns the topmost element of the stack
+     *
+     * @return The popped element
+     */
     fun pop() = _deque.removeLast()
 
+    /**
+     * Returns the topmost element of the stack with out removing it
+     *
+     * @return The topmost element of the stack
+     */
     fun top() = _deque.last()
 
+    /**
+     * @return True iff e is contained in the stack at any position
+     */
     fun contains(e: T) = _deque.contains(e)
 
+    /**
+     * All elements currently contained in the stack
+     */
     val content: List<T>
         get() = _deque.toList()
 }
