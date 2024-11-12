@@ -42,6 +42,7 @@ import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.entities.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
@@ -182,6 +183,12 @@ class ProjectRepository @Inject constructor(
             it.map { conversion ->
                 conversion.toModelEntity()
             }
+        }
+    }
+
+    suspend fun getCurrentUnitConversionsForProject(projectID: Long) : List<UnitConversion> {
+        return projectDAO.getUnitConversionsByProjectID(projectID).first().map {
+            it.toModelEntity()
         }
     }
 
