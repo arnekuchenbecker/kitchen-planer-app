@@ -18,6 +18,15 @@ package com.scouts.kitchenplaner.datalayer.entities
 
 import androidx.room.Entity
 
+/**
+ * Data base entity for an ingredient of a recipe. The ingredient group is saved implicitly in the ingredient entity and not in an own entity.
+ *
+ * @param recipe The recipe this ingredient belongs to
+ * @param ingredientGroup The ingredient group the ingredient belongs to
+ * @param name The name of the ingredient
+ * @param amount The amount of the ingredient needed in the recipe
+ * @param unit The unit af the amount
+ */
 @Entity(
     primaryKeys = ["ingredientGroup", "recipe", "name"]
 )
