@@ -75,9 +75,10 @@ class UnitConversionChecks(private val conversions: List<UnitConversion>) {
         }
         handledList.add(conversion)
         if (handledList.size > 1) {
-            problemTextConversions[id] = handledList
             failureCause = UnitConversionCheckFailureCause.AMBIGUOUS
+            problemTextConversions[id] = handledList
         }
+        handledTextConversions[id] = handledList
     }
 
     @OptIn(DomainLayerRestricted::class)
@@ -88,9 +89,10 @@ class UnitConversionChecks(private val conversions: List<UnitConversion>) {
         }
         handledList.add(conversion)
         if (handledList.size > 1) {
-            problemRegexConversions[conversion.sourceUnit] = handledList
             failureCause = UnitConversionCheckFailureCause.AMBIGUOUS
+            problemRegexConversions[conversion.sourceUnit] = handledList
         }
+        handledRegexConversions[conversion.sourceUnit] = handledList
     }
 }
 
@@ -101,11 +103,14 @@ class UnitConversionChecks(private val conversions: List<UnitConversion>) {
  *
  * @param problemTextConversions All problematic text conversions found by the check
  * @param problemRegexConversion All problematic regex conversions found by the check
+ * @param circles All circles found
+ * @param failureCause The result of the check (either NONE if it was successful or the reason for
+ *                     it to fail if it was not)
  */
 class UnitConversionCheckResult internal constructor(
     private val problemTextConversions: Map<Pair<String, String>, List<UnitConversion>>,
     private val problemRegexConversion: Map<String, List<UnitConversion>>,
-    private val circles: List<Circle<UnitConversion>>,
+    val circles: List<Circle<UnitConversion>>,
     val failureCause: UnitConversionCheckFailureCause
 ) {
     /**

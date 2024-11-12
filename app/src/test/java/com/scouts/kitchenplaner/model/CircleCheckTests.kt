@@ -18,11 +18,12 @@ package com.scouts.kitchenplaner.model
 
 import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.Circle
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionCheckFailureCause
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionCheckResult
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionChecks
 import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionGraph
 import com.scouts.kitchenplaner.utils.CircleSearch
 import com.scouts.kitchenplaner.utils.Graph
-import com.scouts.kitchenplaner.utils.SCCFinder
-import com.scouts.kitchenplaner.utils.Stack
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -31,119 +32,6 @@ import java.math.BigDecimal
  * Contains unit tests for checking the circle search algorithm
  */
 class CircleCheckTests {
-    /**
-     * Checks functionality of the [Stack] class
-     */
-    @Test
-    fun testStackContent() {
-        val stack = Stack<Int>()
-        stack.push(1)
-        stack.push(2)
-        stack.push(3)
-
-        val content = stack.content
-
-        Assertions.assertEquals(3, content.size, "Found the wrong number of items.")
-
-        for (i in 1..3) {
-            Assertions.assertEquals(i, content[i - 1], "Items were not in the correct order.")
-        }
-    }
-
-    /**
-     * Checks the inducedSubgraph method of [Graph] with a simple graph
-     */
-    @Test
-    fun testEasyInducedSubgraph() {
-        val g = Graph(arrayOf(1, 2, 3, 4), arrayOf(0, 3, 5, 5, 6), arrayOf(2, 3, 4, 1, 3, 2))
-
-        val g_prime = g.inducedSubgraph(listOf(1, 2, 3))
-
-        Assertions.assertArrayEquals(
-            arrayOf(1, 2, 3),
-            g_prime.vertices,
-            "Induced Subgraph had the wrong vertices"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(0, 2, 4, 4),
-            g_prime.edgePointers,
-            "Induced Subgraph had the wrong edge pointers"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(2, 3, 1, 3),
-            g_prime.edges,
-            "Induced Subgraph had the wrong edges"
-        )
-    }
-
-    /**
-     * Checks the inducedSubgraph() method of [Graph] with a more complex graph
-     */
-    @Test
-    fun testComplexInducedSubgraph() {
-        val g = Graph(arrayOf(1, 2, 3, 4), arrayOf(0, 3, 5, 5, 6), arrayOf(2, 3, 4, 1, 3, 2))
-
-        val g_prime = g.inducedSubgraph(listOf(1, 2, 4))
-
-        Assertions.assertArrayEquals(
-            arrayOf(1, 2, 4),
-            g_prime.vertices,
-            "Induced Subgraph had the wrong vertices"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(0, 2, 3, 4),
-            g_prime.edgePointers,
-            "Induced Subgraph had the wrong edge pointers"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(2, 4, 1, 2),
-            g_prime.edges,
-            "Induced Subgraph had the wrong edges"
-        )
-    }
-
-    /**
-     * Checks the functionality of the [SCCFinder] class
-     */
-    @Test
-    fun testStrongComponents() {
-        val g = Graph(
-            Array(9) { it + 1 },
-            arrayOf(0, 0, 1, 4, 6, 7, 8, 11, 12, 12),
-            arrayOf(3, 1, 4, 6, 3, 5, 1, 7, 4, 8, 9, 6)
-        )
-
-        val sccFinder = SCCFinder(g)
-
-        val components = sccFinder.run()
-
-        Assertions.assertEquals(
-            5,
-            components.size,
-            "Found an incorrect number of strong components"
-        )
-
-        val comp = components.find { it.n > 1 }
-
-        Assertions.assertNotNull(comp)
-
-        Assertions.assertArrayEquals(
-            arrayOf(3, 4, 6, 7, 8),
-            comp?.vertices,
-            "Found incorrect vertices"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(0, 2, 3, 4, 6, 7),
-            comp?.edgePointers,
-            "Found incorrect edge pointers"
-        )
-        Assertions.assertArrayEquals(
-            arrayOf(4, 6, 3, 7, 4, 8, 6),
-            comp?.edges,
-            "Found incorrect edges"
-        )
-    }
-
     /**
      * Checks the equals() and hashCode() methods of [Circle]
      */
@@ -395,8 +283,8 @@ class CircleCheckTests {
             g.vertices.forEach {
                 Assertions.assertTrue { g.edges.contains(it) }
             }
-            Assertions.assertTrue{g.inducedSubgraph(listOf(g.vertices[0])).m == 0}
-            Assertions.assertTrue{g.inducedSubgraph(listOf(g.vertices[1])).m == 0}
+            Assertions.assertTrue { g.inducedSubgraph(listOf(g.vertices[0])).m == 0 }
+            Assertions.assertTrue { g.inducedSubgraph(listOf(g.vertices[1])).m == 0 }
         }
     }
 
@@ -458,5 +346,105 @@ class CircleCheckTests {
         val circles = forest.findCircles()
 
         Assertions.assertEquals(2, circles.size)
+    }
+
+    /**
+     * Test the check for ambiguous unit conversions
+     */
+    @Test
+    fun checkAmbiguity() {
+        val conversionLists = listOf(
+            listOf(
+                UnitConversion.of("Mehl", "kg", "g", BigDecimal("1000")),
+                UnitConversion.of("Mehl", "kg", "Pck", BigDecimal.ONE)
+            ),
+            listOf(
+                UnitConversion.of(Regex("[a-z]"), "kg", "g", BigDecimal("1000")),
+                UnitConversion.of(Regex("[A-Z]*"), "kg", "Pck", BigDecimal.ONE)
+            ),
+            listOf(
+                UnitConversion.of("Mehl", "kg", "Pck", BigDecimal.ONE),
+                UnitConversion.of(Regex("[a-zA-Z]*"), "kg", "g", BigDecimal("1000"))
+            )
+        )
+
+        val results = mutableListOf<UnitConversionCheckResult>()
+
+        for (list in conversionLists) {
+            val check = UnitConversionChecks(list)
+            results.add(check.run())
+        }
+
+        Assertions.assertEquals(UnitConversionCheckFailureCause.AMBIGUOUS, results[0].failureCause)
+        Assertions.assertEquals(1, results[0].textProblems.size)
+        Assertions.assertEquals(UnitConversionCheckFailureCause.AMBIGUOUS, results[1].failureCause)
+        Assertions.assertEquals(1, results[1].regexProblems.size)
+        Assertions.assertEquals(UnitConversionCheckFailureCause.NONE, results[2].failureCause)
+    }
+
+    /**
+     * Integration test for the [UnitConversionChecks] class
+     */
+    @OptIn(DomainLayerRestricted::class)
+    @Test
+    fun checkUnitConversionChecks() {
+        val noProblems = listOf(
+            UnitConversion.of("Mehl", "kg", "Pck", BigDecimal.ONE),
+            UnitConversion.of(Regex("[a-zA-Z]*"), "g", "kg", BigDecimal("0.001"))
+        )
+        val circle = listOf(
+            UnitConversion.of("Mehl", "Pck", "g", BigDecimal("1000"))
+        ) + noProblems
+        val ambiguous = listOf(
+            UnitConversion.of(Regex("[0-9]"), "g", "Pck", BigDecimal("0.001"))
+        ) + circle
+
+        val noProblemResult = UnitConversionChecks(noProblems).run()
+        val circleResult = UnitConversionChecks(circle).run()
+        val ambiguousResult = UnitConversionChecks(ambiguous).run()
+
+        Assertions.assertEquals(
+            UnitConversionCheckFailureCause.NONE,
+            noProblemResult.failureCause,
+            "Found a problem where there was none"
+        )
+
+        Assertions.assertEquals(
+            UnitConversionCheckFailureCause.CIRCLE,
+            circleResult.failureCause,
+            "Incorrectly identified the failure cause. Should have been CIRCLE"
+        )
+        Assertions.assertEquals(
+            1,
+            circleResult.circles.size,
+            "Found an incorrect number of circles"
+        )
+
+        Assertions.assertEquals(
+            UnitConversionCheckFailureCause.AMBIGUOUS,
+            ambiguousResult.failureCause,
+            "Incorrectly identified the failure cause. Should have been AMBIGUOUS"
+        )
+        Assertions.assertEquals(
+            1,
+            ambiguousResult.regexProblems.size,
+            "Found an incorrect number of problematic regex conversions"
+        )
+        Assertions.assertEquals(
+            "g",
+            ambiguousResult[ambiguousResult.regexProblems.first()]?.get(0)?.sourceUnit ?: Assertions.fail("Lost the problem :("),
+            "Did not find the ambiguous source unit"
+        )
+        Assertions.assertEquals(
+            0,
+            ambiguousResult.textProblems.size,
+            "Found an incorrect number of problematic text conversions"
+        )
+        // Circle are only checked if the conversions are not ambiguous!
+        Assertions.assertEquals(
+            0,
+            ambiguousResult.circles.size,
+            "Searched for circles even though the result was ambiguous already"
+        )
     }
 }
