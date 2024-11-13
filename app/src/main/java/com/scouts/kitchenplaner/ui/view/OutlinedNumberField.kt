@@ -17,11 +17,13 @@
 package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 
 /**
  * A number field which supports adding integer, non negative integers and float values
@@ -40,7 +42,8 @@ fun OutlinedNumberField(
     label: @Composable () -> Unit,
     type: NumberFieldType,
     trailingIcon: @Composable () -> Unit = {},
-    leadingIcon: @Composable () -> Unit = {}
+    leadingIcon: @Composable () -> Unit = {},
+    textAlign: TextAlign = LocalTextStyle.current.textAlign
 ) {
     val pattern = when(type) {
         NumberFieldType.POSITIVE -> remember { Regex("^\\d*$") }
@@ -62,7 +65,8 @@ fun OutlinedNumberField(
         modifier = modifier,
         singleLine = true,
         trailingIcon = trailingIcon,
-        leadingIcon = leadingIcon
+        leadingIcon = leadingIcon,
+        textStyle = LocalTextStyle.current.copy(textAlign = textAlign)
     )
 }
 
