@@ -41,8 +41,8 @@ fun OutlinedNumberField(
     onValueChange: (String) -> Unit,
     label: @Composable () -> Unit,
     type: NumberFieldType,
-    trailingIcon: @Composable () -> Unit = {},
-    leadingIcon: @Composable () -> Unit = {},
+    trailingIcon: (@Composable () -> Unit)? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
     textAlign: TextAlign = LocalTextStyle.current.textAlign
 ) {
     val pattern = when(type) {
