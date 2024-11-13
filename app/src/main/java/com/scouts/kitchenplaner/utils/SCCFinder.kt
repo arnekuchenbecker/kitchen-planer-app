@@ -45,7 +45,7 @@ class SCCFinder(
                 representatives.push(w)
                 nodes.push(w)
             },
-            traverseNonTreeEdge = { v, w ->
+            traverseNonTreeEdge = { _, w ->
                 if (nodes.contains(w)) {
                     while (dfs[w] < dfs[representatives.top()]) {
                         representatives.pop()
