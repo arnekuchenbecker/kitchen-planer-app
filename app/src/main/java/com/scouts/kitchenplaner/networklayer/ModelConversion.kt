@@ -34,8 +34,8 @@ import com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects.ServerR
  */
 fun Project.toNetworkLayerDTO(onlineID: Long): ServerProjectDTO {
     return ServerProjectDTO(
-        versionNumber = 0,
-        imageVersionNumber = 0,
+        versionNumber = this.dataVersion,
+        imageVersionNumber = this.imageVersion,
         name = this.name,
         id = onlineID,
         meals = this.meals,
@@ -62,8 +62,8 @@ fun Project.toNetworkLayerDTO(onlineID: Long): ServerProjectDTO {
                     mainRecipe = isMain
                 )
             },
-        unitConversions = listOf(),
-        personNumberChange = listOf()
+        unitConversions = listOf(), // TODO -> insert unit conversions once they are on the main branch
+        personNumberChange = listOf() // TODO -> figure out a sensible way to represent number changes such that A) in the ui, only actual people can be read and B) the number changes can be easily transferred to the server (this might entail changing the representation on the server, the app or both)
     )
 }
 

@@ -51,7 +51,7 @@ interface ProjectAPIService {
     /**
      * Gets a project from the server
      *
-     * @param id The id of the requested project
+     * @param id The online id of the requested project
      * @return The requested project
      */
     @GET("/projects/{id}")
@@ -60,7 +60,7 @@ interface ProjectAPIService {
     /**
      * Updates a project
      *
-     * @param id The id of the project that should be updated
+     * @param id The online id of the project that should be updated
      * @param project The project containing the updated data
      * @return A response object containing the new version number if the update was successful
      */

@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
 
 /**
- * An ingredient group as used in request to chefkoch's API
+ * An ingredient group as used in requests to chefkoch's API
  *
  * @param header The name of the ingredient group
  * @param ingredients A list of all ingredients in this group
