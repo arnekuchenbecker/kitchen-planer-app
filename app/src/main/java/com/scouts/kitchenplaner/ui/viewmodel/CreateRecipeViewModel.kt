@@ -49,7 +49,7 @@ class CreateRecipeViewModel @Inject constructor(
     private val createRecipe: CreateRecipe, private val importRecipe: ImportRecipe
 ) : ViewModel() {
     private val idRegex = Regex("^[0-9]+$")
-    private val urlRegex = Regex("^https://www\\.chefkoch\\.de/rezepte/[0-9]*/.*\\.html")
+    private val urlRegex = Regex("^((https|http)://)?www\\.chefkoch\\.de/rezepte/[0-9]*/.*\\.html")
     var recipeName by mutableStateOf("")
     var uri by mutableStateOf<Uri?>(null)
     var description by mutableStateOf("")
