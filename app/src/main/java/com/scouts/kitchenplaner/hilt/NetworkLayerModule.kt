@@ -16,8 +16,10 @@
 
 package com.scouts.kitchenplaner.hilt
 
+import com.scouts.kitchenplaner.networklayer.AuthService
 import com.scouts.kitchenplaner.networklayer.CHEFKOCH_BASE_URL
 import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
+import com.scouts.kitchenplaner.networklayer.SERVER_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +44,17 @@ class NetworkLayerModule {
     @Singleton
     fun provideChefkochAPIService(retrofit: Retrofit) : ChefkochAPIService {
         return retrofit.create(ChefkochAPIService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesServerRetrofitClient(): Retrofit{
+        return Retrofit.Builder().baseUrl(SERVER_BASE_URL).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthService(retrofit: Retrofit) : AuthService{
+        return  retrofit.create(AuthService::class.java)
     }
 }
