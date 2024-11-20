@@ -21,6 +21,14 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import java.util.Date
 
+/**
+ * Data base entity for mapping an recipe as alternative to a meal slot
+ *
+ * @param projectId The id of the project the relation belongs to
+ * @param meal The meal that defines the meal slot for the alternative recipe
+ * @param date The date when the alternative recipe is assigned
+ * @param recipeId The id of the recipe which is the alternative recipe
+ */
 @Entity(
     tableName = "alternativeRecipeProjectMeal",
     primaryKeys = ["projectId", "meal", "date", "recipeId"],
@@ -34,6 +42,11 @@ import java.util.Date
             entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"]
+        ),
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"]
         )
     ],
     indices = [

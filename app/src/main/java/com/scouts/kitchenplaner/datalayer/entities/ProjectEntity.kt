@@ -20,6 +20,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
+/**
+ * Data base entity for a project. It contains all meta data of a project.
+ *
+ * @param id The  offline id of the project
+ * @param name The name of the project
+ * @param startDate The date when the project starts
+ * @param endDate The date when the project ends
+ * @param imageUri The URI leading to the picture for the project
+ * @param isArchived Whether the project is currently archived (and thus only meta data is currently available
+ */
 @Entity(tableName = "projects")
 data class ProjectEntity (
     @PrimaryKey(autoGenerate = true) val id: Long,
