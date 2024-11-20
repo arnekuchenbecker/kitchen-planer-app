@@ -21,6 +21,13 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import java.util.Date
 
+/**
+ * Data base representation for mapping which projects belong to which user
+ *
+ * @param projectId The id of the project the user is part in
+ * @param username The user who is part in the given project
+ * @param lastShown Recent point in time the user has opened the project
+ */
 @Entity(
     tableName = "userprojects",
     foreignKeys = [

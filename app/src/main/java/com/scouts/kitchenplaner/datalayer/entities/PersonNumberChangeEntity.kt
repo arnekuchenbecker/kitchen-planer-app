@@ -22,7 +22,13 @@ import androidx.room.Index
 import java.util.Date
 
 /**
- * Models the Arrival or departure of persons
+ * Data base entity that models the arrival or departure of people.
+ * Note that differences are applied before the specified meal slot (which is identified by the meal and the date)
+ *
+ * @param projectId The id of the project this entity belongs to
+ * @param date On which the meal slot is, before the change happens
+ * @param meal The meal before the change happens
+ * @param differenceBefore The number of people who leave or arrive before the meal slot
  */
 @Entity(
     tableName = "personNumberChanges",
@@ -40,8 +46,5 @@ data class PersonNumberChangeEntity(
     val projectId: Long,
     val date: Date,
     val meal: String,
-    /**
-     * differences are applied before the specified meal slot
-     */
     val differenceBefore: Int
 )

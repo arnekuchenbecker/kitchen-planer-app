@@ -21,6 +21,16 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import java.util.Date
 
+/**
+ * Data base entity of a participant of a project who has allergens.
+ *
+ * @param name The name of the participant
+ * @param projectId The id of the project to which the person belongs
+ * @param arrivalMeal The first meal the person is present
+ * @param departureMeal The first meal the person is not more present
+ * @param arrivalDate The date on which the person arrives
+ * @param departureDate The date on which the person leaves
+ */
 @Entity(
     tableName = "allergenPersons",
     foreignKeys = [
