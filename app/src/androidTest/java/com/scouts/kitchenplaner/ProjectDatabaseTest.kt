@@ -84,7 +84,14 @@ class ProjectDatabaseTest {
         recipeDAO = db.recipeDao()
         projectAPIService = mockk<ProjectAPIService>(relaxed = true)
         projectRepository =
-            ProjectRepository(projectDAO, allergenDAO, recipeManagementDAO, shoppingListDAO, recipeDAO, projectAPIService)
+            ProjectRepository(
+                projectDAO,
+                allergenDAO,
+                recipeManagementDAO,
+                shoppingListDAO,
+                recipeDAO,
+                projectAPIService
+            )
         shoppingListRepository = ShoppingListRepository(shoppingListDAO)
         recipeRepository = RecipeRepository(recipeDAO)
     }
@@ -176,7 +183,12 @@ class ProjectDatabaseTest {
         )
 
         val recipe = Recipe(
-            ingredientGroups = listOf(IngredientGroup("Test", listOf(Ingredient("Nudeln", 0.5, "kg"))))
+            ingredientGroups = listOf(
+                IngredientGroup(
+                    "Test",
+                    listOf(Ingredient("Nudeln", 0.5, "kg"))
+                )
+            )
         )
 
         val shoppingList = ShoppingList(
@@ -191,7 +203,14 @@ class ProjectDatabaseTest {
         launch {
             val projectID = projectRepository.insertProject(project, User("Arne"))
             val recipeID = recipeRepository.createRecipe(recipe)
-            recipeManagementDAO.addMainRecipeToProjectMeal(MainRecipeProjectMealEntity(projectID, "Frühstück", Date(0), recipeID))
+            recipeManagementDAO.addMainRecipeToProjectMeal(
+                MainRecipeProjectMealEntity(
+                    projectID,
+                    "Frühstück",
+                    Date(0),
+                    recipeID
+                )
+            )
             val shoppingListID = shoppingListRepository.createShoppingList(shoppingList, projectID)
 
             shoppingListRepository.getShoppingList(shoppingListID).test {
