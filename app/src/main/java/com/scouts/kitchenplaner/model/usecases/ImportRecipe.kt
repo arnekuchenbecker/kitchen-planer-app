@@ -26,9 +26,22 @@ import javax.inject.Inject
 private const val FORMAT_STRING = "<format>"
 private const val FORMAT_INPUT = "crop-224x148"
 
+/**
+ * Use case to import a recipe via chefkoch. To do so, the Id or the link to the recipe is needed
+ *
+ * @param chefkochAPIService The service that provides access to the chefkoch API
+ */
 class ImportRecipe @Inject constructor(
     private val chefkochAPIService: ChefkochAPIService
 ) {
+    /**
+     * Imports a recipe with help of its chefkoch id from chefkoch
+     *
+     * @param id The chefkoch id of the recipe or a link to the recipe
+     * @param onFailure Callback function if the recipe cannot be imported.
+     * It provides the error code and message.
+     * @param onSuccess Callback function to return the imported recipe
+     */
     suspend fun import(
         id: Long,
         onFailure: (Int, String) -> Unit,

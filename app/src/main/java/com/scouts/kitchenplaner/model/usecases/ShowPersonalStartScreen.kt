@@ -33,6 +33,14 @@ import javax.inject.Inject
 private const val AMOUNT_PROJECTS = 3
 private const val AMOUNT_RECIPES = 3
 
+/**
+ * Use case for displaying a personal start screen consisting of short cuts to the most recently
+ * seen recipes and projects by the current user
+ *
+ * @param projectRepository Repository for retrieving data about the last shown projects
+ * @param recipeRepository Repository for retrieving data about the last shown recipes
+ * @param dataStore Access for getting the current user
+ */
 class ShowPersonalStartScreen @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val recipeRepository: RecipeRepository,
@@ -40,6 +48,12 @@ class ShowPersonalStartScreen @Inject constructor(
 ) {
 
 
+    /**
+     * Provides the latest used projects for the current user.
+     * The amount of projects is determent by [AMOUNT_PROJECTS]
+     *
+     * @return A flow containing stubs for the requested projects
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getLatestProjectsForCurrentUser(): Flow<List<ProjectStub>> {
         var currentUser: User
@@ -57,6 +71,10 @@ class ShowPersonalStartScreen @Inject constructor(
             }
     }
 
+    /**
+     * Provides the latest used recipes for the current user.
+     * The amount of recipes is determent by [AMOUNT_RECIPES]
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getLatestRecipesForCurrentUser(): Flow<List<RecipeStub>> {
         var currentUser: User;
