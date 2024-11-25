@@ -36,7 +36,7 @@ interface ProjectAPIService {
      * @param username The user for which to query the project stubs
      * @return A list of all project stubs the user is participating in
      */
-    @GET("/projects")
+    @GET("projects")
     suspend fun getProjectStubsByUsername(@Query("username") username: String) : List<ServerProjectStubDTO>
 
     /**
@@ -45,7 +45,7 @@ interface ProjectAPIService {
      * @param project The project that is to be created on the server
      * @return The id of the newly created project
      */
-    @POST("/projects/create")
+    @POST("projects/create")
     suspend fun createNewProject(@Body project: ServerProjectDTO) : Long
 
     /**
@@ -54,7 +54,7 @@ interface ProjectAPIService {
      * @param id The online id of the requested project
      * @return The requested project
      */
-    @GET("/projects/{id}")
+    @GET("projects/{id}")
     suspend fun getProject(@Path("id") id: Long) : ServerProjectDTO
 
     /**
@@ -64,6 +64,6 @@ interface ProjectAPIService {
      * @param project The project containing the updated data
      * @return A response object containing the new version number if the update was successful
      */
-    @PUT("/projects/{id}")
+    @PUT("projects/{id}")
     suspend fun updateProject(@Path("id") id: Long, @Body project: ServerProjectDTO) : Response<Long>
 }

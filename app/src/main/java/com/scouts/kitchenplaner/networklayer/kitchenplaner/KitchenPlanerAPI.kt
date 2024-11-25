@@ -19,4 +19,4 @@ package com.scouts.kitchenplaner.networklayer.kitchenplaner
 /**
  * Base URL for the KitchenPlanerBackend
  */
-const val KITCHEN_PLANER_BASE_URL = "http://localhost:8080"
+const val KITCHEN_PLANER_BASE_URL = "http://localhost:8080/"
