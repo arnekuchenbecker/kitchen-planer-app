@@ -33,6 +33,7 @@ import javax.inject.Inject
  * Use case for creating new shopping lists
  *
  * @param shoppingListsRepository Repository via which to access the Data Layer
+ * @param recipeRepository Repository for retrieving information about needed recipes
  */
 class CreateShoppingList @Inject constructor(
     private val shoppingListsRepository: ShoppingListRepository,
@@ -54,6 +55,12 @@ class CreateShoppingList @Inject constructor(
      * Creates a Shopping List Entry with the specified name, amount and unit. Note that the created
      * entry is not yet persisted in the data base (create a shopping list via [createShoppingList]
      * to do so)
+     *
+     * @param name The name of the needed ingredient or article
+     * @param amount The amount needed
+     * @param unit The unit of the amount
+     *
+     * @return A static shopping list entry which contains all the given data
      */
     @OptIn(DomainLayerRestricted::class)
     fun createShoppingListEntry(name: String, amount: Double, unit: String): ShoppingListEntry {
@@ -64,6 +71,10 @@ class CreateShoppingList @Inject constructor(
      * Creates Shopping List Entries for cooking the specified recipe at the specified meal slot.
      * Note that the created entries are not yet persisted in the data base (create a shopping list
      * via [createShoppingList] to do so)
+     *
+     * @param recipeStub The recipe from which the ingredients should be added to the shopping list
+     * @param mealSlot The meal slot in which the recipe is used
+     * @return All created shopping list entries from the given recipe
      */
     @OptIn(DomainLayerRestricted::class)
     suspend fun createShoppingListEntriesFromRecipe(

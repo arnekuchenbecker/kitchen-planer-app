@@ -24,10 +24,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * Use case to display all projects from a user
+ * @param projectRepository Repository providing information about the projects
+ * @param userRepository Repository providing information about the current user
+ */
 class ProjectSelection @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val userRepository: KitchenAppDataStore
 ) {
+
+    /**
+     * Provides all projects in which the current user is part in
+     *
+     * @return A flow containing all project stubs of the requested projects
+     */
     fun getProjectsForCurrentUser(): Flow<List<ProjectStub>> {
         val currentUser: User
         runBlocking {
