@@ -26,12 +26,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * View model for joining a project
+ *
+ * @param joinProject Use case for performing the joining process
+ */
 @HiltViewModel
 class JoinProjectViewModel @Inject constructor(
     private val joinProject: JoinProject
 ) : ViewModel() {
+    /**
+     * Whether the join was completed
+     */
     var done by mutableStateOf(false)
 
+    /**
+     * Have the current user join the project with the given ID
+     *
+     * @param projectID The online ID of the project to be joined
+     */
     fun joinProject(projectID: Long) {
         viewModelScope.launch {
             joinProject.joinProject(projectID)

@@ -23,6 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.viewmodel.JoinProjectViewModel
 
+/**
+ * Test screen for the viewmodel. Should be replaced in the relevant issue.
+ *
+ * @param projectID The online ID of the project to be joined
+ * @param viewModel The view model to interact with the rest of the app
+ */
 @Composable
 fun JoinProjectScreen(
     projectID: Long,
