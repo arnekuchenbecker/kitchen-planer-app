@@ -14,28 +14,24 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.viewmodel
+package com.scouts.kitchenplaner.ui.view.joinproject
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.scouts.kitchenplaner.model.usecases.JoinProject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.scouts.kitchenplaner.ui.viewmodel.JoinProjectViewModel
 
-@HiltViewModel
-class JoinProjectViewModel @Inject constructor(
-    private val joinProject: JoinProject
-) : ViewModel() {
-    var done by mutableStateOf(false)
-
-    fun joinProject(projectID: Long) {
-        viewModelScope.launch {
-            joinProject.joinProject(projectID)
-            done = true
+@Composable
+fun JoinProjectScreen(
+    projectID: Long,
+    viewModel: JoinProjectViewModel = hiltViewModel()
+) {
+    Column {
+        Text("${viewModel.done}")
+        if (!viewModel.done) {
+            Button(onClick = { viewModel.joinProject(projectID) }) { Text("Click Me!") }
         }
     }
 }

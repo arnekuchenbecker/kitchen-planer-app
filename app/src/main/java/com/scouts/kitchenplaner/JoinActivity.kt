@@ -22,9 +22,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
+import com.scouts.kitchenplaner.ui.view.joinproject.JoinProjectScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -44,8 +44,7 @@ class JoinActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //TODO Join Screen with the found projectI
-                    Text("YOU DID IT! $projectId")
+                    JoinProjectScreen(projectId?.toLong()!!)
                 }
             }
         }
