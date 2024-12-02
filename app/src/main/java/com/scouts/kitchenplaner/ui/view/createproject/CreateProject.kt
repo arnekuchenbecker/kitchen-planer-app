@@ -73,26 +73,38 @@ fun CreateProject(
         onNavigateToInvitePeople(it)
     }
 
-    Scaffold (topBar = {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            title = {
-                Text("Create a New Project")
-            }
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                title = {
+                    Text("Create a New Project")
+                }
+            )
 
-    }, floatingActionButton = {
-        ExtendedFloatingActionButton(onClick = { createProjectViewModel.onProjectCreate() }, icon = {
-            Icon(imageVector = Icons.Filled.Check, contentDescription = "Create project")
-        }, text = { Text("Fertig") })
-    }) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(it)) {
-            CreateProjectInput(state = createProjectViewModel.inputState, modifier = Modifier.align(Alignment.TopCenter))
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { createProjectViewModel.onProjectCreate() },
+                icon = {
+                    Icon(imageVector = Icons.Filled.Check, contentDescription = "Create project")
+                },
+                text = { Text("Fertig") }
+            )
+        }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(it)
+        ) {
+            CreateProjectInput(
+                state = createProjectViewModel.inputState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 }
@@ -106,10 +118,12 @@ fun CreateProject(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modifier) {
-    Column(modifier = modifier
-        .padding(10.dp)
-        .fillMaxWidth()
-        .verticalScroll(state = rememberScrollState())) {
+    Column(
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .verticalScroll(state = rememberScrollState())
+    ) {
         val columnItemModifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 10.dp)
@@ -121,7 +135,10 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
                     .fillMaxWidth(0.5f)
                     .aspectRatio(1.0f),
                 onPathSelected = {
-                    context.contentResolver.takePersistableUriPermission(it!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    context.contentResolver.takePersistableUriPermission(
+                        it!!,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
                     state.image = it
                 },
                 path = state.image
@@ -187,7 +204,12 @@ fun PreviewCreateProject() {
 @Preview(showBackground = true)
 fun PreviewMealPicker() {
     Surface(modifier = Modifier.height(500.dp)) {
-        EditMealsDialog(onDismissRequest = {}, onAdd = {}, onRemove = {}, meals = listOf("Pizza", "Flammkuchen"))
+        EditMealsDialog(
+            onDismissRequest = {},
+            onAdd = {},
+            onRemove = {},
+            meals = listOf("Pizza", "Flammkuchen")
+        )
     }
 }
 
