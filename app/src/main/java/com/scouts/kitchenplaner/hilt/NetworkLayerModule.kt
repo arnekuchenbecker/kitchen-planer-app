@@ -16,6 +16,7 @@
 
 package com.scouts.kitchenplaner.hilt
 
+import com.scouts.kitchenplaner.TestImageService
 import com.scouts.kitchenplaner.networklayer.CHEFKOCH_BASE_URL
 import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
 import dagger.Module
@@ -42,5 +43,14 @@ class NetworkLayerModule {
     @Singleton
     fun provideChefkochAPIService(retrofit: Retrofit) : ChefkochAPIService {
         return retrofit.create(ChefkochAPIService::class.java)
+    }
+
+    @Provides
+    fun provideTestService() : TestImageService {
+        return Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TestImageService::class.java)
     }
 }
