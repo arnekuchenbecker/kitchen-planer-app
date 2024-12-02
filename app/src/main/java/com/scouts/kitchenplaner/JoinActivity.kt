@@ -82,7 +82,7 @@ fun TestImage(projectID: Long, vm: TestVM = hiltViewModel()) {
         Button(onClick = { vm.loadImage(projectID) }) { Text("Load Image") }
 
         if (vm.loaded) {
-            Image(vm.image.asImageBitmap(), "TestImage")
+            Image(vm.image!!.asImageBitmap(), "TestImage")
         } else {
             Text("Loading image...")
         }
@@ -93,7 +93,7 @@ fun TestImage(projectID: Long, vm: TestVM = hiltViewModel()) {
 class TestVM @Inject constructor(
     private val testService: TestImageService
 ) : ViewModel() {
-    lateinit var image: Bitmap
+    var image by mutableStateOf<Bitmap?>(null)
     var loaded by mutableStateOf(false)
 
     fun loadImage(projectID: Long) {
