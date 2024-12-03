@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner
+package com.scouts.kitchenplaner.utils
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

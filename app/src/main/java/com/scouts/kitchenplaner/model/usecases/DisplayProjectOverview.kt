@@ -67,6 +67,7 @@ class DisplayProjectOverview @Inject constructor(
                     it.stub.id,
                     it.stub.name,
                     mutableListOf(),
+                    mutableListOf(),
                     MealPlan(it.startDate, it.endDate, mutableListOf()),
                     it.stub.imageUri
                 )
@@ -75,6 +76,7 @@ class DisplayProjectOverview @Inject constructor(
         val metaDataFlow = projectRepository.getProjectMetaDataByID(projectId)
         val mealFlow = projectRepository.getMealsByProjectID(projectId)
         val allergenPersonFlow = allergenRepository.getAllergenPersonsByProjectID(projectId)
+        val unitConversionFlow = projectRepository.getUnitConversionsForProject(projectId)
         val mealSlotFlow = recipeManagementRepository.getRecipeMealSlotsForProject(projectId)
         val recipeFlow = recipeRepository.getRecipeStubsByProjectId(projectId)
         val mealPlanFlow = mealSlotFlow.combine(recipeFlow) { meals, recipes ->
@@ -96,6 +98,9 @@ class DisplayProjectOverview @Inject constructor(
             }
             .combine(allergenPersonFlow) { project, allergenPersons ->
                 project.withAllergenPersons(allergenPersons)
+            }
+            .combine(unitConversionFlow) { project, unitConversions ->
+                project.withUnitConversions(unitConversions)
             }
             .combine(mealFlow) { project, meals ->
                 project.withMeals(meals)

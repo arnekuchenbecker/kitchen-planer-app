@@ -23,7 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.scouts.kitchenplaner.toDateString
+import com.scouts.kitchenplaner.utils.toDateString
 import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 import java.util.Date
 import java.util.Locale

@@ -26,6 +26,7 @@ import com.scouts.kitchenplaner.datalayer.entities.ProjectEntity
 import com.scouts.kitchenplaner.datalayer.entities.RecipeEntity
 import com.scouts.kitchenplaner.datalayer.entities.ShoppingListEntity
 import com.scouts.kitchenplaner.datalayer.entities.StaticShoppingListEntryEntity
+import com.scouts.kitchenplaner.datalayer.entities.UnitConversionEntity
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
@@ -35,7 +36,9 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.Recipe
+import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingList
+import java.math.BigDecimal
 
 fun Project.toDataLayerEntity(): ProjectEntity {
     return ProjectEntity(
@@ -127,4 +130,16 @@ fun ShoppingList.toDataLayerEntity(projectId: Long): Triple<ShoppingListEntity, 
 
 fun DietarySpecialityEntity.toModelEntity(): DietarySpeciality {
     return DietarySpeciality(speciality, type)
+}
+
+fun UnitConversionEntity.toModelEntity(): UnitConversion {
+    return if (this.isRegex) {
+        UnitConversion.of(
+            Regex(this.ingredient), this.sourceUnit, this.destinationUnit, BigDecimal(this.factor)
+        )
+    } else {
+        UnitConversion.of(
+            this.ingredient, this.sourceUnit, this.destinationUnit, BigDecimal(this.factor)
+        )
+    }
 }

@@ -20,6 +20,9 @@ import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.Project
+import com.scouts.kitchenplaner.model.entities.UnitConversion
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionCheckResult
+import com.scouts.kitchenplaner.model.usecases.unitconversionchecks.UnitConversionChecks
 import java.util.Date
 import javax.inject.Inject
 
@@ -82,5 +85,32 @@ class EditProjectSettings @Inject constructor(
                 projectRepository.setPersonNumberChange(project.id, slot.meal, slot.date, change)
             }
         }
+    }
+
+    /**
+     * Adds a new unit conversion to a project if possible
+     *
+     * @param project The project to which to add the unit conversion
+     * @param unitConversion The unit conversion to be added
+     *
+     * @return The result of the unit conversion check
+     */
+    suspend fun addUnitConversion(project: Project, unitConversion: UnitConversion) : UnitConversionCheckResult {
+        val currentConversions = projectRepository.getCurrentUnitConversionsForProject(project.id)
+        val result = UnitConversionChecks(currentConversions + listOf(unitConversion)).run()
+        if (result.isSuccessful) {
+            projectRepository.createUnitConversion(unitConversion, project.id)
+        }
+        return result
+    }
+
+    /**
+     * Removes the specified [unitConversion] from the given [project]
+     *
+     * @param unitConversion The unit conversion to be removed
+     * @param project The project the unit conversion should be removed from
+     */
+    suspend fun removeUnitConversion(project: Project, unitConversion: UnitConversion) {
+        projectRepository.deleteUnitConversion(unitConversion, project.id)
     }
 }

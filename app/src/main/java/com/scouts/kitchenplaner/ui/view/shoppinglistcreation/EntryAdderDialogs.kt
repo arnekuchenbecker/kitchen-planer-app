@@ -38,14 +38,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.scouts.kitchenplaner.listDatesUntil
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.toDateString
 import com.scouts.kitchenplaner.ui.view.DockedDatePicker
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
+import com.scouts.kitchenplaner.utils.listDatesUntil
+import com.scouts.kitchenplaner.utils.toDateString
 import java.util.Date
 
 /**
