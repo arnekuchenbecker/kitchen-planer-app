@@ -67,11 +67,15 @@ fun CreateRecipe(
     viewModel: CreateRecipeViewModel = hiltViewModel()
 ) {
     val navigateID by viewModel.navigateFlow.collectAsState()
+    var navigated by remember { mutableStateOf(false) }
     var showImportDialog by remember { mutableStateOf(false) }
     val pattern = remember { Regex("^\\d*\$") }
 
     navigateID?.let {
-        onNavigationToRecipeDetails(it)
+        if (!navigated) {
+            navigated = true
+            onNavigationToRecipeDetails(it)
+        }
     }
 
     Scaffold(

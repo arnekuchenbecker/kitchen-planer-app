@@ -14,8 +14,14 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer.dtos
+package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
 
+/**
+ * An ingredient group as used in requests to chefkoch's API
+ *
+ * @param header The name of the ingredient group
+ * @param ingredients A list of all ingredients in this group
+ */
 data class ChefkochIngredientGroup(
     val header: String,
     val ingredients: List<ChefkochIngredient>

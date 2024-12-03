@@ -20,7 +20,7 @@ import android.net.Uri
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
-import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
+import com.scouts.kitchenplaner.networklayer.chefkoch.services.ChefkochAPIService
 import javax.inject.Inject
 
 private const val FORMAT_STRING = "<format>"

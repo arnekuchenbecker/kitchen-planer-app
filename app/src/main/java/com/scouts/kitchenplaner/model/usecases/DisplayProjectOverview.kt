@@ -17,10 +17,10 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
-import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.AllergenRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot

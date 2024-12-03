@@ -17,7 +17,7 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import javax.inject.Inject
 
