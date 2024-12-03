@@ -154,6 +154,8 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             singleLine = true
         )
 
+
+
         DockedDatePicker(
             modifier = columnItemModifier
                 .height(70.dp),
