@@ -14,17 +14,19 @@
  * GNU General Public License for more details.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id("com.android.application") version "8.7.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
-    id("com.google.dagger.hilt.android") version "2.49" apply false
-    kotlin("jvm") version "1.9.21" apply false
-}
+package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
-buildscript {
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.9.21"))
-    }
-}
+/**
+ * DTO for communication with the server. Represents the meta data of a project.
+ *
+ * @param id The onlineID of the project
+ * @param name The name of the project
+ * @param imageVersion The version number of the project's image
+ * @param projectVersion The version number of the project's data
+ */
+data class ServerProjectStubDTO(
+    val id: Long,
+    val name: String,
+    val imageVersion: Long,
+    val projectVersion: Long
+)

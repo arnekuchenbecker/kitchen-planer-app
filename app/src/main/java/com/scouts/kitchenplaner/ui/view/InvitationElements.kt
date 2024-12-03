@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 
 /**
  * Screen content for displaying and sharing a link to join a project.
@@ -53,16 +52,17 @@ fun InvitationElements(
     val context = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
 
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(vertical = 10.dp)
     ) {
         Text(
             modifier = Modifier.padding(10.dp),
             fontSize = 20.sp,
-            text = "Share this link with other people you want to invite to the project:")
+            text = "Share this link with other people you want to invite to the project:"
+        )
 
-        Box (
+        Box(
             modifier = Modifier
                 .padding(10.dp)
                 .border(3.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(5.dp))
@@ -77,15 +77,15 @@ fun InvitationElements(
             )
         }
 
-        Button(onClick = {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, link)
+        Button(
+            onClick = {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, link)
+                }
+                context.startActivity(Intent.createChooser(intent, "Share link"))
             }
-            ContextCompat.startActivity(context, Intent.createChooser(intent, "Share link"), null)
-
-
-        }) {
+        ) {
             Icon(
                 imageVector = Icons.Filled.Share,
                 contentDescription = "Invite other people",

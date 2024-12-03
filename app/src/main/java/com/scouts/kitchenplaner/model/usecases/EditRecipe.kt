@@ -18,7 +18,7 @@ package com.scouts.kitchenplaner.model.usecases
 
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality
 import com.scouts.kitchenplaner.model.entities.Ingredient
 import com.scouts.kitchenplaner.model.entities.IngredientGroup

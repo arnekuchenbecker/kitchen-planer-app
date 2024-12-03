@@ -14,17 +14,17 @@
  * GNU General Public License for more details.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id("com.android.application") version "8.7.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
-    id("com.google.dagger.hilt.android") version "2.49" apply false
-    kotlin("jvm") version "1.9.21" apply false
-}
+package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
 
-buildscript {
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.9.21"))
-    }
-}
+/**
+ * Represents a recipe ingredient as received from a request to chefkoch's API
+ *
+ * @param name The name of the recipe
+ * @param unit The unit of measure
+ * @param amount The amount of the ingredient used in the recipe
+ */
+data class ChefkochIngredient(
+    val name: String,
+    val unit: String,
+    val amount: Double
+)

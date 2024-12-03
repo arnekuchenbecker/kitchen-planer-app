@@ -14,17 +14,20 @@
  * GNU General Public License for more details.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id("com.android.application") version "8.7.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15" apply false
-    id("com.google.dagger.hilt.android") version "2.49" apply false
-    kotlin("jvm") version "1.9.21" apply false
-}
+package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
-buildscript {
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.9.21"))
-    }
-}
+/**
+ * DTO for communication with the server. Represents a unit conversion
+ *
+ * @param startUnit The unit from which to convert
+ * @param endUnit The unit to which to convert
+ * @param ingredient Regex identifying the ingredients this unit conversion can be applied to.
+ * @param factor The factor by which to multiply the amount of an ingredient in order to convert
+ *               from startUnit to endUnit
+ */
+data class ServerUnitConversionDTO(
+    val startUnit: String,
+    val endUnit: String,
+    val ingredient: String,
+    val factor: Double
+)
