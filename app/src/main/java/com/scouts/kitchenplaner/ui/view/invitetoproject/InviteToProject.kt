@@ -53,7 +53,7 @@ import com.scouts.kitchenplaner.ui.view.InvitationElements
 fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
     var invitePeople by remember { mutableStateOf(false) }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -75,7 +75,7 @@ fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
             }
         }
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(it)
         ) {
@@ -84,7 +84,8 @@ fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
             } else {
                 Text(
                     modifier = Modifier.padding(5.dp),
-                    text = "Dein Projekt wurde erstellt. Möchtest du andere Personen zu dem Projekt einladen?")
+                    text = "Dein Projekt wurde erstellt. Möchtest du andere Personen zu dem Projekt einladen?"
+                )
 
                 Button(
                     modifier = Modifier.padding(5.dp),
@@ -112,7 +113,7 @@ fun InviteToProject(projectId: Long, onNavigateToProject: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun previewInviteScreen() {
-    KitchenPlanerTheme (dynamicColor = false) {
+    KitchenPlanerTheme(dynamicColor = false) {
         InviteToProject(projectId = 5, onNavigateToProject = {})
     }
 }

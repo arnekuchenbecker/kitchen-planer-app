@@ -14,13 +14,16 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.exceptions
+package com.scouts.kitchenplaner.model.usecases
 
-private const val DUPLICATE_MESSAGE =
-    "Could not insert a new %s into the database: An entry with the same primary key already exists."
+import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
+import javax.inject.Inject
 
-/**
- * This exception is used to signal that there was already an entity with the given primary key and thus the entity could not be added to the database.
- */
-class DuplicatePrimaryKeyException(insertionTarget: String) :
-    Exception(DUPLICATE_MESSAGE.format(insertionTarget))
+class JoinProject @Inject constructor(
+    private val userRepository: KitchenAppDataStore
+) {
+    suspend fun joinProject(onlineID: Long) {
+        val currentUser = userRepository.getCurrentUser()
+        TODO("Network Layer for joining a project is not yet supported")
+    }
+}
