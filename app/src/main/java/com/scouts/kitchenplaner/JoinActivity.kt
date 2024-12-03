@@ -44,7 +44,7 @@ class JoinActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    JoinProjectScreen(projectId?.toLong()!!)
+                    JoinProjectScreen(projectId?.toLong() ?: 1)
                 }
             }
         }
