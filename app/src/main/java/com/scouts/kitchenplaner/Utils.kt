@@ -59,6 +59,15 @@ fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
     return result
 }
 
+class DateUtils {
+    companion object {
+        /**
+         * Returns a Date Formatter formatting dates to dd.MM.yyyy format
+         */
+        fun getDateFormatter() = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    }
+}
+
 /**
  * Adds one day to the given date
  *
