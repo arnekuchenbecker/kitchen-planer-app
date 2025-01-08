@@ -59,6 +59,7 @@ fun AllergenPicker(
     onRemoveItem: (String, String, Boolean) -> Unit,
     onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
+    meals: List<String>,
     dialogState: AllergenPersonAdderState
 ) {
     var displayDialog by remember { mutableStateOf(false) }
@@ -106,6 +107,7 @@ fun AllergenPicker(
             onRemoveItem = onRemoveItem,
             onResetAdderState = onResetAdderState,
             allergens = allergens,
+            meals = meals,
             adderState = dialogState
         )
     }

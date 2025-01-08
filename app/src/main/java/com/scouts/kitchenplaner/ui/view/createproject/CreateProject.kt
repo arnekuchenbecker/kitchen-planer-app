@@ -54,7 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
-import com.scouts.kitchenplaner.ui.view.DockedDatePicker
+import com.scouts.kitchenplaner.ui.view.ModalDateRangePicker
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 
@@ -161,22 +161,9 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             singleLine = true
         )
 
-
-
-        DockedDatePicker(
-            modifier = columnItemModifier
-                .height(70.dp),
-            dateState = state.startDate,
-            label = "Start-Datum:",
-            displayText = state.startDateString
-        )
-
-        DockedDatePicker(
-            modifier = columnItemModifier
-                .height(70.dp),
-            dateState = state.endDate,
-            label = "End-Datum:",
-            displayText = state.endDateString
+        ModalDateRangePicker(
+            modifier = columnItemModifier,
+            state = state.dates
         )
 
         MealPicker(
@@ -193,6 +180,7 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             onRemoveItem = state::removeIntolerancy,
             onResetAdderState = state::resetAllergenPersonAdderState,
             allergens = state.allergens,
+            meals = state.meals,
             dialogState = state.allergenAdderState
         )
 

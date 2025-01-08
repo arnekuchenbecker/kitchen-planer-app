@@ -17,19 +17,18 @@
 package com.scouts.kitchenplaner.ui.state
 
 import android.net.Uri
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.scouts.kitchenplaner.toDateString
 import java.util.Locale
 
 /**
- * State object for the CreateProject Composable. Contains information about a project that is being created
+ * State object for the CreateProject Composable. Contains information about a project that is being
+ * created
  */
 class CreateProjectInputState {
     /**
@@ -42,31 +41,8 @@ class CreateProjectInputState {
      */
     var image by mutableStateOf<Uri?>(null)
 
-    /**
-     * DatePickerState for the start date of the project
-     */
     @OptIn(ExperimentalMaterial3Api::class)
-    var startDate: DatePickerState = DatePickerState(Locale.GERMAN)
-
-    /**
-     * Textual representation of the start date of the project
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    val startDateString: String
-        get() = (startDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
-
-    /**
-     * DatePickerState for the end date of the project
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    var endDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
-
-    /**
-     * Textual representation of the end date of the project
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    val endDateString: String
-        get() = (endDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
+    var dates: DateRangePickerState = DateRangePickerState(Locale.GERMAN)
 
     private val mealList: SnapshotStateList<String> = mutableStateListOf()
     private val allergenList: SnapshotStateList<AllergenPersonState> = mutableStateListOf()

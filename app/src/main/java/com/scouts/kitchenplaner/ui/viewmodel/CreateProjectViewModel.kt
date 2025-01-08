@@ -57,8 +57,8 @@ class CreateProjectViewModel @Inject constructor(
     @OptIn(ExperimentalMaterial3Api::class)
     fun onProjectCreate() {
         viewModelScope.launch {
-            val startDate = inputState.startDate.selectedDateMillis?.let { Date(it) }
-            val endDate = inputState.endDate.selectedDateMillis?.let { Date(it) }
+            val startDate = inputState.dates.selectedStartDateMillis?.let { Date(it) }
+            val endDate = inputState.dates.selectedStartDateMillis?.let { Date(it) }
 
             if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isEmpty()) {
                 return@launch

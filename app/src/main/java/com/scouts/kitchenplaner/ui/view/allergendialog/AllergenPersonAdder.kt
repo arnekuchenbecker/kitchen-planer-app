@@ -49,7 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.scouts.kitchenplaner.ui.state.AllergenPersonAdderState
-import com.scouts.kitchenplaner.ui.view.DockedDatePicker
+import com.scouts.kitchenplaner.ui.view.ModalMealSlotPicker
 
 /**
  * Dialog for adding a new allergen person. It defines the layout of the dialog and checks if all relevant information are added.
@@ -61,7 +61,12 @@ import com.scouts.kitchenplaner.ui.view.DockedDatePicker
  *  @param onDismiss Callback function when the dialog is closed without adding the allergen person (This function should close the dialog)
  */
 @Composable
-fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDismiss: () -> Unit) {
+fun AllergenPersonAdder(
+    state: AllergenPersonAdderState,
+    meals: List<String>,
+    onAdd: () -> Unit,
+    onDismiss: () -> Unit
+) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier.fillMaxHeight(0.5f),
@@ -75,7 +80,7 @@ fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDi
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
             ) {
-                AllergenPersonInputs(state, columnItemModifier)
+                AllergenPersonInputs(state, meals, columnItemModifier)
 
                 HorizontalDivider()
 
@@ -128,18 +133,20 @@ fun AllergenPersonAdder(state: AllergenPersonAdderState, onAdd: () -> Unit, onDi
 
 /**
  * Represents all input field for adding the meta data for a new allergen person.
- * These meta data contain the name, the arrival and departure date of the person and their start and departure meal.
+ * These meta data contain the name, the arrival and departure date of the person and their start
+ * and departure meal.
  *
  * @param state The state which saves all already added inputs
  * @param modifier customisable modifier
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllergenPersonInputs (
+fun AllergenPersonInputs(
     state: AllergenPersonAdderState,
+    meals: List<String>,
     modifier: Modifier = Modifier
 ) {
-    Column (horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TextField(
             modifier = Modifier.padding(10.dp),
             label = { Text("Name") },
@@ -148,38 +155,26 @@ fun AllergenPersonInputs (
             singleLine = true
         )
 
-        DockedDatePicker(
+        ModalMealSlotPicker(
             modifier = modifier
                 .padding(10.dp)
                 .fillMaxWidth(),
-            dateState = state.arrivalDate,
-            displayText = state.arrivalDateString,
-            label = "Ankunfts-Datum"
+            meals = meals,
+            selectedMeal = state.arrivalMeal,
+            onSelectMeal = { state.arrivalMeal = it },
+            datePlaceHolder = { Text("Ankunfts-Datum") },
+            state = state.arrivalDate
         )
 
-        TextField(
-            modifier = Modifier.padding(10.dp),
-            label = { Text("Anwesend ab Mahlzeit...") },
-            value = state.arrivalMeal,
-            onValueChange = { state.arrivalMeal = it },
-            singleLine = true
-        )
-
-        DockedDatePicker(
+        ModalMealSlotPicker(
             modifier = modifier
                 .padding(10.dp)
                 .fillMaxWidth(),
-            dateState = state.departureDate,
-            displayText = state.departureDateString,
-            label = "Abreise-Datum"
-        )
-
-        TextField(
-            modifier = Modifier.padding(10.dp),
-            label = { Text("Anwesend bis Mahlzeit...") },
-            value = state.departureMeal,
-            onValueChange = { state.departureMeal = it },
-            singleLine = true
+            meals = meals,
+            selectedMeal = state.departureMeal,
+            onSelectMeal = { state.departureMeal = it },
+            datePlaceHolder = { Text("Abreise-Datum") },
+            state = state.departureDate
         )
     }
 }
@@ -197,7 +192,9 @@ fun AllergenAddInputs(onAdd: (String, Boolean) -> Unit, modifier: Modifier = Mod
     var traces by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier.fillMaxWidth().padding(10.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -209,7 +206,7 @@ fun AllergenAddInputs(onAdd: (String, Boolean) -> Unit, modifier: Modifier = Mod
                 onValueChange = { allergen = it }
             )
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically

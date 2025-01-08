@@ -64,41 +64,50 @@ fun ProjectSettingsDialogs(
             onDismissRequest = onDismissRequest,
             onNameChange = onNameChange
         )
+
         ProjectDialogValues.IMAGE_CHANGE -> ImageChangeDialog(
             onDismissRequest = onDismissRequest,
             onImageChange = onPictureChange,
             currentImage = project.projectImage
         )
+
         ProjectDialogValues.DATE_CHANGE -> DateChangeDialog(
             onDismissRequest = onDismissRequest,
             onDateChange = onDateChange,
             startDate = project.startDate,
             endDate = project.endDate
         )
+
         ProjectDialogValues.NUMBER_CHANGE -> NumberChangeDialog(
             onDismissRequest = onDismissRequest,
             onConfirm = onNumbersChange,
-            presentPersons = project.mealSlots.map { Pair(it, project.mealPlan[it].second) }.toMutableStateMap(),
+            presentPersons = project.mealSlots.map { Pair(it, project.mealPlan[it].second) }
+                .toMutableStateMap(),
             mealSlots = project.mealSlots
         )
+
         ProjectDialogValues.INVITE -> InvitationDialog(
             onDismissRequest = onDismissRequest,
             projectPublished = false, // TODO - replace with actual value
             projectId = project.id
         )
-        ProjectDialogValues.ALLERGENS -> EditAllergenPersonsDialog (
+
+        ProjectDialogValues.ALLERGENS -> EditAllergenPersonsDialog(
             onDismissRequest = onDismissRequest,
             onRemovePerson = onRemovePerson,
             onRemoveAllergen = onRemoveAllergen,
             allergenPersons = project.allergenPersons,
-            onAddAllergenPerson = onAddAllergenPerson
+            onAddAllergenPerson = onAddAllergenPerson,
+            meals = project.meals
         )
+
         ProjectDialogValues.MEALS -> MealChangeDialog(
             onDismissRequest = onDismissRequest,
             meals = project.meals,
             onMealAdd = onMealAdd,
             onMealRemove = onMealRemove
         )
+
         ProjectDialogValues.NONE -> Unit // Nothing to display here
     }
 }

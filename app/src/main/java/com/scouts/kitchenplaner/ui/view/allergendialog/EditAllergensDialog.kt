@@ -63,6 +63,7 @@ fun EditAllergensDialog(
     onRemoveItem: (String, String, Boolean) -> Unit,
     onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
+    meals: List<String>,
     adderState: AllergenPersonAdderState
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
@@ -72,7 +73,7 @@ fun EditAllergensDialog(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(20.dp)
@@ -88,6 +89,7 @@ fun EditAllergensDialog(
                 if (displayDialog) {
                     AllergenPersonAdder(
                         state = adderState,
+                        meals = meals,
                         onAdd = onAdd,
                         onDismiss = {
                             displayDialog = false
@@ -114,7 +116,7 @@ fun EditAllergensDialog(
                                 }
                             },
                             onDelete = { onRemove(person.name) },
-                            onItemDelete = {(allergen, traces) ->
+                            onItemDelete = { (allergen, traces) ->
                                 onRemoveItem(person.name, allergen, traces)
                             },
                             toBeDeleted = removingIndex == index,

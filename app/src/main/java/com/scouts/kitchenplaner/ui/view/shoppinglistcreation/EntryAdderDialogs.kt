@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.ui.view.shoppinglistcreation
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -42,8 +41,7 @@ import com.scouts.kitchenplaner.listDatesUntil
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.toDateString
-import com.scouts.kitchenplaner.ui.view.DockedDatePicker
+import com.scouts.kitchenplaner.ui.view.ModalMealSlotPicker
 import com.scouts.kitchenplaner.ui.view.NumberFieldType
 import com.scouts.kitchenplaner.ui.view.OutlinedNumberField
 import java.util.Date
@@ -135,50 +133,31 @@ fun DynamicEntryAdderDialog(
                 val startDate = rememberDatePickerState()
                 val endDate = rememberDatePickerState()
 
-                var expandStartMeal by remember { mutableStateOf(false) }
-                var expandEndMeal by remember { mutableStateOf(false) }
-
                 var startMeal by remember { mutableStateOf("Mahlzeit auswählen...") }
                 var endMeal by remember { mutableStateOf("Mahlzeit auswählen...") }
 
-                DockedDatePicker(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .height(70.dp),
-                    dateState = startDate,
-                    displayText = startDate.selectedDateMillis?.toDateString() ?: "Kein Start-Datum ausgewählt",
-                    label = "Start"
-                )
-
-                MealSelectionMenu(
+                ModalMealSlotPicker(
+                    modifier = Modifier.padding(5.dp),
                     meals = mealPlan.meals,
-                    selectedText = startMeal,
-                    expanded = expandStartMeal,
-                    onExpandedChange = { expandStartMeal = it },
-                    onSelectMeal = { startMeal = it }
+                    selectedMeal = startMeal,
+                    onSelectMeal = { startMeal = it },
+                    datePlaceHolder = { Text("Start") },
+                    state = startDate
                 )
 
-                DockedDatePicker(
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .height(70.dp),
-                    dateState = endDate,
-                    displayText = endDate.selectedDateMillis?.toDateString() ?: "Kein End-Datum ausgewählt",
-                    label = "Ende"
-                )
-
-                MealSelectionMenu(
+                ModalMealSlotPicker(
+                    modifier = Modifier.padding(5.dp),
                     meals = mealPlan.meals,
-                    selectedText = endMeal,
-                    expanded = expandEndMeal,
-                    onExpandedChange = { expandEndMeal = it },
-                    onSelectMeal = { endMeal = it }
+                    selectedMeal = endMeal,
+                    onSelectMeal = { endMeal = it },
+                    datePlaceHolder = { Text("Ende") },
+                    state = endDate
                 )
 
                 Button(
                     onClick = {
-                        val start = startDate.selectedDateMillis?.let {  Date(it) }
-                        val end = endDate.selectedDateMillis?.let {  Date(it) }
+                        val start = startDate.selectedDateMillis?.let { Date(it) }
+                        val end = endDate.selectedDateMillis?.let { Date(it) }
                         if (mealPlan.meals.contains(startMeal)
                             && mealPlan.meals.contains(endMeal)
                             && start != null && end != null
