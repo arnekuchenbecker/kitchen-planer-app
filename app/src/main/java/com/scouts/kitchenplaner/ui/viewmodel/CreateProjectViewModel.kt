@@ -58,7 +58,7 @@ class CreateProjectViewModel @Inject constructor(
     fun onProjectCreate() {
         viewModelScope.launch {
             val startDate = inputState.dates.selectedStartDateMillis?.let { Date(it) }
-            val endDate = inputState.dates.selectedStartDateMillis?.let { Date(it) }
+            val endDate = inputState.dates.selectedEndDateMillis?.let { Date(it) }
 
             if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isEmpty()) {
                 return@launch
