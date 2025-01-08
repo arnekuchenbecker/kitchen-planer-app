@@ -25,6 +25,7 @@ package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
  */
 data class ChefkochIngredient(
     val name: String,
+    val usageInfo: String,
     val unit: String,
     val amount: Double
 )
