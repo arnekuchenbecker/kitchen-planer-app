@@ -59,6 +59,9 @@ fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
     return result
 }
 
+/**
+ * Contains static utility functions for working with dates
+ */
 class DateUtils {
     companion object {
         /**
