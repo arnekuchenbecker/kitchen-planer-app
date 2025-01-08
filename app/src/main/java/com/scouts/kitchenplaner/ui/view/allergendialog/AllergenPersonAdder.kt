@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +74,6 @@ fun AllergenPersonAdder(
         ) {
             val columnItemModifier = Modifier
                 .padding(5.dp)
-                .height(70.dp)
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
