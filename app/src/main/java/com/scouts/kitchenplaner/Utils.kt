@@ -24,7 +24,7 @@ import java.util.Locale
 /**
  * Formats this Long to represent a date in dd.MM.yyyy format
  */
-fun Long.toDateString() : String {
+fun Long.toDateString(): String {
     val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
     return dateFormat.format(this)
 }
@@ -33,7 +33,7 @@ fun Long.toDateString() : String {
  * Checks if this Date is between start and end (both inclusive)
  */
 @Throws(IllegalArgumentException::class)
-fun Date.between(start: Date, end: Date) : Boolean {
+fun Date.between(start: Date, end: Date): Boolean {
     if (end.before(start)) {
         throw IllegalArgumentException("End date must not be before start date!")
     } else {
@@ -48,7 +48,7 @@ fun Date.between(start: Date, end: Date) : Boolean {
  *
  * @return A list containing all dates between this Date and endInclusive (inclusive)
  */
-fun Date.listDatesUntil(endInclusive: Date) : List<Date> {
+fun Date.listDatesUntil(endInclusive: Date): List<Date> {
     var date = this
     val result = mutableListOf<Date>()
     while (date.before(endInclusive)) {
@@ -78,7 +78,7 @@ class DateUtils {
  *
  * @return A date object representing the point in Time exactly one day after date
  */
-private fun incrementDate(date: Date) : Date {
+private fun incrementDate(date: Date): Date {
     val cal = Calendar.getInstance()
     cal.time = date
     cal.add(Calendar.DATE, 1)
