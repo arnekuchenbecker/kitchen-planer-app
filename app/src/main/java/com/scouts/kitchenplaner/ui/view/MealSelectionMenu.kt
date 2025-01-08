@@ -14,13 +14,14 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.ui.view.shoppinglistcreation
+package com.scouts.kitchenplaner.ui.view
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealSelectionMenu(
+    modifier: Modifier = Modifier,
     meals: List<String>,
     selectedText: String,
     expanded: Boolean,
@@ -45,6 +47,7 @@ fun MealSelectionMenu(
     onSelectMeal: (String) -> Unit
 ) {
     ExposedDropdownMenuBox(
+        modifier = modifier,
         expanded = expanded,
         onExpandedChange = onExpandedChange
     ) {
@@ -53,7 +56,9 @@ fun MealSelectionMenu(
             onValueChange = {},
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, true)
+                .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
