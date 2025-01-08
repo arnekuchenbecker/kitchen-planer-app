@@ -106,7 +106,6 @@ fun ModalDateRangePicker(
                         DateRangePicker(
                             state = state,
                             dateFormatter = dateFormatter,
-                            title = null,
                             modifier = Modifier.fillMaxHeight(0.6f),
                             showModeToggle = false
                         )
@@ -128,6 +127,8 @@ fun ModalDateRangePicker(
                             }
 
                             IconButton(
+                                enabled = state.selectedStartDateMillis != null
+                                        && state.selectedEndDateMillis != null,
                                 onClick = { showDatePicker = false }
                             ) {
                                 Icon(Icons.Filled.Check, "Confirm")
@@ -140,6 +141,8 @@ fun ModalDateRangePicker(
                     onDismissRequest = { showDatePicker = false },
                     confirmButton = {
                         IconButton(
+                            enabled = state.selectedStartDateMillis != null
+                                    && state.selectedEndDateMillis != null,
                             onClick = { showDatePicker = false }
                         ) {
                             Icon(Icons.Filled.Check, "Confirm")
@@ -160,7 +163,6 @@ fun ModalDateRangePicker(
                         modifier = Modifier.padding(vertical = 20.dp),
                         state = state,
                         dateFormatter = dateFormatter,
-                        title = null,
                         showModeToggle = false
                     )
                 }
