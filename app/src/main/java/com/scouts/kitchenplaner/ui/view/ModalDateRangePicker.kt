@@ -17,7 +17,6 @@
 package com.scouts.kitchenplaner.ui.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,15 +24,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,10 +50,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import java.text.SimpleDateFormat
+import com.scouts.kitchenplaner.DateUtils
 import java.util.Date
-import java.util.Locale
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,21 +169,10 @@ fun ModalDateRangePicker(
     }
 }
 
-internal fun printDate(dateMillis: Long?): String {
-    val formatter = getDateFormatter()
-    return if (dateMillis == null) {
-        ""
-    } else {
-        formatter.format(Date(dateMillis))
-    }
-}
-
-internal fun printDateRange(startMillis: Long?, endMillis: Long?): String {
-    val formatter = getDateFormatter()
+private fun printDateRange(startMillis: Long?, endMillis: Long?): String {
+    val formatter = DateUtils.getDateFormatter()
     if (startMillis == null || endMillis == null) {
         return ""
     }
     return "${formatter.format(Date(startMillis))} - ${formatter.format(Date(endMillis))}"
 }
-
-internal fun getDateFormatter() = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
