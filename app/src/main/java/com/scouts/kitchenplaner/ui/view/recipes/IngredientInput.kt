@@ -126,7 +126,7 @@ fun IngredientsInput(
                     })
                 }
             }
-            if(ingredientGroups.last().name != name){
+            if (ingredientGroups.last().name != name) {
                 HorizontalDivider(modifier = Modifier.padding(10.dp))
             }
         }
@@ -138,10 +138,10 @@ fun IngredientsInput(
                 singleLine = true,
                 trailingIcon = {
                     IconButton(onClick = {
-                        if(newGroupName.isNotEmpty()) {
+                        if (newGroupName.isNotEmpty()) {
                             onGroupAdd(newGroupName)
-                        }else{
-                           // TODO("Error message")
+                        } else {
+                            // TODO("Error message")
                         }
                         newGroupName = ""
                     }) {
@@ -252,7 +252,8 @@ fun DisplayIngredientChangeDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(shape = RoundedCornerShape(15.dp)) {
             Column(modifier = Modifier.padding(20.dp)) {
-                OutlinedTextField(value = name,
+                OutlinedTextField(
+                    value = name,
                     onValueChange = {
                         name = it
                         nameChange = true
@@ -262,7 +263,8 @@ fun DisplayIngredientChangeDialog(
                     singleLine = true
                 )
 
-                OutlinedNumberField(value = amount,
+                OutlinedNumberField(
+                    value = amount,
                     onValueChange = {
                         amount = it
                         amountChange = true
@@ -272,7 +274,8 @@ fun DisplayIngredientChangeDialog(
                     modifier = Modifier.padding(vertical = 5.dp),
                 )
 
-                OutlinedTextField(value = unit,
+                OutlinedTextField(
+                    value = unit,
                     onValueChange = {
                         unit = it
                         unitChange = true
@@ -286,19 +289,9 @@ fun DisplayIngredientChangeDialog(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp), onClick = {
                     onSaveChanges(
-                        if (nameChange) {
-                            name
-                        } else {
-                            null
-                        }, if (amountChange) {
-                            amount.toDoubleOrNull()
-                        } else {
-                            0.0
-                        }, if (unitChange) {
-                            unit
-                        } else {
-                            null
-                        }
+                        if (nameChange) name else null,
+                        amount.toDoubleOrNull(),
+                        if (unitChange) unit else null
                     )
                     name = ""
                     amount = ""

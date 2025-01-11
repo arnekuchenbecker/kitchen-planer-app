@@ -30,7 +30,7 @@ class AddDietarySpecialityCommand(
     recipe: Recipe,
     state: EditRecipeState,
     editRecipe: EditRecipe,
-) : ChangeCommand(recipe = recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
 
     override fun applyOnState() {
         state.addDietarySpeciality(speciality.allergen, speciality.type)

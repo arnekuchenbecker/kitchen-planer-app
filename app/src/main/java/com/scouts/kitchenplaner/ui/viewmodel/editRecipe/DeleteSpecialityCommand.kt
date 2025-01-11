@@ -30,7 +30,7 @@ class DeleteSpecialityCommand(
     private val speciality: DietarySpeciality,
     recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
-) : ChangeCommand(recipe = recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
     override fun applyOnState() {
         state.deleteDietarySpeciality(speciality.allergen, speciality.type)
     }

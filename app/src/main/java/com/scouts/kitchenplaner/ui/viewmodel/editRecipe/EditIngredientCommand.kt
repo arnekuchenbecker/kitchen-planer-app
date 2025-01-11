@@ -41,7 +41,7 @@ class EditIngredientCommand(
     recipe: Recipe,
     state: EditRecipeState,
     editRecipe: EditRecipe
-) : ChangeCommand(recipe = recipe, state = state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
 
     override fun applyOnState() {
         val name = newName ?: ingredient.name

@@ -45,9 +45,7 @@ fun HeaderWithButton(
     title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
 ) {
     EditableHeader(
-        titleField = { Text(title) },
-        buttonClick = buttonClick,
-        buttonImage = buttonImage
+        titleField = { Text(title) }, buttonClick = buttonClick, buttonImage = buttonImage
     )
 }
 

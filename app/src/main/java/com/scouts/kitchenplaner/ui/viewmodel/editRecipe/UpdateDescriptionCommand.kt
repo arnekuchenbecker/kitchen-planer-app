@@ -29,7 +29,7 @@ class UpdateDescriptionCommand(
     private val description: String, recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
 ) :
-    ChangeCommand(recipe = recipe, state, editRecipe) {
+    ChangeCommand(recipe, state, editRecipe) {
     override fun applyOnState() {
         state.description = description
     }

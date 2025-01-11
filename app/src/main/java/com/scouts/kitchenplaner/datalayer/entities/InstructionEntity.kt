@@ -23,7 +23,7 @@ import androidx.room.PrimaryKey
 
 /**
  * Data base representation of an instruction step.
- * To refer to an instruction use [com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO].
+ * To refer to an instruction step use [com.scouts.kitchenplaner.datalayer.dtos.InstructionStepDTO].
  * The combination [order] and [recipe] should be unique in a consistent state of the data base.
  *
  * @param id The unique identifier of the instruction step 

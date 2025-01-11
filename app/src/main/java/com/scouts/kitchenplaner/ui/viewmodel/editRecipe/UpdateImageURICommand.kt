@@ -30,7 +30,7 @@ class UpdateImageURICommand(
     private val imageURI: Uri, recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
 ) :
-    ChangeCommand(recipe = recipe, state, editRecipe) {
+    ChangeCommand(recipe, state, editRecipe) {
     override fun applyOnState() {
         state.imageURI = imageURI
     }
