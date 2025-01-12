@@ -224,6 +224,6 @@ fun InstructionAdderDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun instructionPreView() {
+fun InstructionPreView() {
     InstructionInput(instructions = listOf("erster Eintrag", "zweiter Eintrag", "dritter Eintrag"))
 }
