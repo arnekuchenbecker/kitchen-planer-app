@@ -41,7 +41,8 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun NumberPicker(
-    value: String = "0", modifier: Modifier,
+    value: String = "0",
+    modifier: Modifier,
     onValueChange: (String) -> Unit,
     label: @Composable () -> Unit,
 ) {
@@ -52,12 +53,12 @@ fun NumberPicker(
         value = currentNumber.toString(),
         onValueChange = { currentNumber = it.toInt(); onValueChange(it) },
         leadingIcon = {
-            Icon(Icons.Outlined.ArrowUpward,
+            Icon(imageVector = Icons.Outlined.ArrowUpward,
                 contentDescription = null,
                 modifier = Modifier.clickable { currentNumber++; onValueChange(currentNumber.toString()) })
         },
         trailingIcon = {
-            Icon(Icons.Outlined.ArrowDownward,
+            Icon(imageVector = Icons.Outlined.ArrowDownward,
                 contentDescription = null,
                 modifier = Modifier.clickable { currentNumber--; onValueChange(currentNumber.toString()) })
         },

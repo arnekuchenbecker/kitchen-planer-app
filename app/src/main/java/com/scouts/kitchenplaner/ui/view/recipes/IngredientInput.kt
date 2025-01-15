@@ -36,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -211,18 +212,32 @@ fun DisplayIngredient(
 fun IngredientAdderDialog(
     onDismissRequest: () -> Unit, onIngredientAdd: (Ingredient) -> Unit
 ) {
-    DisplayIngredientChangeDialog(
-        ingredient = Ingredient("", 0.0, ""),
+    var name by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+    var unit by remember { mutableStateOf("") }
+
+
+    IngredientInputDialog(
+        name = name,
+        onNameChange = {
+            name = it
+        },
+        unit = unit,
+        onUnitChange = {
+            unit = it
+        },
+        amount = amount,
+        onAmountChange = { amount = it },
         onDismissRequest = onDismissRequest,
-        onSaveChanges = { ingredientName, amount, unit ->
-            if (ingredientName == null) return@DisplayIngredientChangeDialog else onIngredientAdd(
+        onConfirm = {
+            if (name.isEmpty()) return@IngredientInputDialog else onIngredientAdd(
                 Ingredient(
-                    ingredientName, amount ?: 0.0, unit ?: ""
+                    name, amount.toDoubleOrNull() ?: 0.0, unit
                 )
             )
             //TODO ("Error message)
         },
-        text = "Zutat hinzufügen"
+        buttonText = "Zutat hinzufügen",
     )
 }
 
@@ -233,14 +248,12 @@ fun IngredientAdderDialog(
  * @param onDismissRequest  Callback function to close the dialog when requested by the user
  * @param onSaveChanges Callback function to save the new values. Return null if the value should not be changed.
  *  the arguments are the following: name, amount, unit
- * @param text The text displayed on the save button
  */
 @Composable
 fun DisplayIngredientChangeDialog(
     ingredient: Ingredient,
     onDismissRequest: () -> Unit,
     onSaveChanges: (String?, Double?, String?) -> Unit,
-    text: String = "Änderung speichern"
 ) {
     var name by remember { mutableStateOf(ingredient.name) }
     var nameChange by remember { mutableStateOf(false) }
@@ -249,15 +262,64 @@ fun DisplayIngredientChangeDialog(
     var unit by remember { mutableStateOf(ingredient.unit) }
     var unitChange by remember { mutableStateOf(false) }
 
+    IngredientInputDialog(
+        name = name,
+        onNameChange = {
+            name = it
+            nameChange = true
+        },
+        unit = unit,
+        onUnitChange = {
+            unit = it
+            unitChange = true
+        },
+        amount = amount,
+        onAmountChange = {
+            amount = it
+            amountChange = true
+        },
+        onDismissRequest = onDismissRequest,
+        onConfirm = {
+            if (name.isEmpty()) return@IngredientInputDialog else onSaveChanges(
+                if (nameChange) name else null,
+                if (amountChange) amount.toDoubleOrNull() ?: 0.0 else null,
+                if (unitChange) unit else null
+            )
+        },
+        buttonText = "Änderung speichern",
+    )
+}
+
+/**
+ * Dialog for changing properties of an ingredient.
+ * @param name The name that is displayed
+ * @param onNameChange Callback function when the name changes
+ * @param unit The unit that is displayed
+ * @param onUnitChange Callback function when the unit changes
+ * @param amount The amount of the ingredient that is displayed
+ * @param onAmountChange Callback function when the amount of the ingredient changes
+ * @param onDismissRequest Callback function when dialog is dismissed
+ * @param onConfirm Callback function for applying the changes
+ * @param buttonText Text for the button when confirming the changes
+ */
+@Composable
+fun IngredientInputDialog(
+    name: String,
+    onNameChange: (String) -> Unit,
+    unit: String,
+    onUnitChange: (String) -> Unit,
+    amount: String,
+    onAmountChange: (String) -> Unit,
+    onDismissRequest: () -> Unit,
+    onConfirm: () -> Unit,
+    buttonText: String
+) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(shape = RoundedCornerShape(15.dp)) {
             Column(modifier = Modifier.padding(20.dp)) {
                 OutlinedTextField(
                     value = name,
-                    onValueChange = {
-                        name = it
-                        nameChange = true
-                    },
+                    onValueChange = onNameChange,
                     label = { Text(text = "Zutat") },
                     modifier = Modifier.padding(vertical = 5.dp),
                     singleLine = true
@@ -265,10 +327,7 @@ fun DisplayIngredientChangeDialog(
 
                 OutlinedNumberField(
                     value = amount,
-                    onValueChange = {
-                        amount = it
-                        amountChange = true
-                    },
+                    onValueChange = onAmountChange,
                     label = { Text(text = "Menge") },
                     type = NumberFieldType.FLOAT,
                     modifier = Modifier.padding(vertical = 5.dp),
@@ -276,10 +335,7 @@ fun DisplayIngredientChangeDialog(
 
                 OutlinedTextField(
                     value = unit,
-                    onValueChange = {
-                        unit = it
-                        unitChange = true
-                    },
+                    onValueChange = onUnitChange,
                     singleLine = true,
                     label = { Text(text = "Einheit") },
                     modifier = Modifier.padding(vertical = 5.dp)
@@ -288,17 +344,10 @@ fun DisplayIngredientChangeDialog(
                 OutlinedButton(modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp), onClick = {
-                    onSaveChanges(
-                        if (nameChange) name else null,
-                        amount.toDoubleOrNull(),
-                        if (unitChange) unit else null
-                    )
-                    name = ""
-                    amount = ""
-                    unit = ""
+                    onConfirm()
                     onDismissRequest()
                 }) {
-                    Text(text = text)
+                    Text(text = buttonText)
                 }
             }
         }
