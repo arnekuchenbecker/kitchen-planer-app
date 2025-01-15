@@ -17,10 +17,10 @@
 package com.scouts.kitchenplaner.model.usecases
 
 import com.scouts.kitchenplaner.datalayer.KitchenAppDataStore
-import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
-import com.scouts.kitchenplaner.datalayer.repositories.ProjectRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.AllergenRepository
+import com.scouts.kitchenplaner.repositories.ProjectRepository
+import com.scouts.kitchenplaner.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
@@ -36,6 +36,15 @@ import kotlinx.coroutines.runBlocking
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Use case to display a project from a given user and leave it.
+ *
+ * @param projectRepository Repository for accessing information about the project
+ * @param allergenRepository Repository for accessing information about all allergens present in the project
+ * @param recipeRepository Repository that provides information about the management of recipes within the project
+ * @param recipeManagementRepository Repository for retrieving data of recipes
+ * @param userRepository Repository for retrieving the current user
+ */
 class DisplayProjectOverview @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val allergenRepository: AllergenRepository,
@@ -43,6 +52,13 @@ class DisplayProjectOverview @Inject constructor(
     private val recipeRepository: RecipeRepository,
     private val userRepository: KitchenAppDataStore
 ) {
+
+    /**
+     * Provides the requested project
+     *
+     * @param projectId The id of the project
+     * @return A flow of the requested project
+     */
     @OptIn(DomainLayerRestricted::class)
     fun getProject(projectId: Long): Flow<Project> {
         val initialProject = runBlocking {
@@ -97,10 +113,21 @@ class DisplayProjectOverview @Inject constructor(
             }
     }
 
+    /**
+     * Archives a project. Only the meta data is present on the device, if it  is an online project.
+     * If it is an offline project it gets deleted.
+     *
+     * @param project The project to archive
+     */
     suspend fun archiveProject(project: Project) {
         projectRepository.archiveProject(project.id)
     }
 
+    /**
+     * The current user leaves the online project. If the project is offline, the project gets deleted
+     *
+     * @param project The project to leave
+     */
     suspend fun leaveProject(project: Project) {
         val currentUser = userRepository.getCurrentUser()
         projectRepository.leaveProject(currentUser, project.id)

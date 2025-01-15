@@ -16,9 +16,9 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeManagementRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.AllergenRepository
+import com.scouts.kitchenplaner.repositories.RecipeManagementRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import com.scouts.kitchenplaner.model.entities.AllergenCheck
 import com.scouts.kitchenplaner.model.entities.AllergenMealCover
@@ -35,11 +35,27 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Use case for checking which allergens are convert in a meal slot by the assigned recipes.
+ * It makes sure that every person present on a meal slot is able to eat something.
+ *
+ * @param recipeRepository Repository for accessing recipes
+ * @param recipeManagementRepository Repository for accessing the recipe management within a project
+ * @param allergenRepository Repository for all allergens and allergen Person present in a project
+ */
 class CheckAllergens @Inject constructor(
     private val recipeRepository: RecipeRepository,
     private val recipeManagementRepository: RecipeManagementRepository,
     private val allergenRepository: AllergenRepository
 ) {
+    /**
+     * Provides an overview which allergens are covered in a meal slot, which not
+     * and for which it cannot automatically be determined
+     *
+     * @param project The project in which the allergen check is needed
+     * @param mealSlot The meal slot for which the allergen check is needed
+     * @return The requested allergen check
+     */
     @OptIn(DomainLayerRestricted::class, ExperimentalCoroutinesApi::class)
     fun getAllergenCheck(project: Project, mealSlot: MealSlot): Flow<AllergenCheck> {
         val recipesFlow = recipeManagementRepository.getRecipesForMealSlot(project.id, mealSlot)
@@ -50,8 +66,8 @@ class CheckAllergens @Inject constructor(
                         filteredIds.map {
                             recipeRepository.getRecipeStubById(it)
                         }
-                    ) {
-                        stubs -> stubs.toList()
+                    ) { stubs ->
+                        stubs.toList()
                     }
                 } else {
                     flowOf(listOf())

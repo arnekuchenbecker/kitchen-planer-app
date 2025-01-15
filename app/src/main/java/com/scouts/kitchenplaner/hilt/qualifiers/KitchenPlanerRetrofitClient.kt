@@ -14,14 +14,14 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer
+package com.scouts.kitchenplaner.hilt.qualifiers
 
-import com.scouts.kitchenplaner.networklayer.dtos.ChefkochRecipe
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import javax.inject.Qualifier
 
-interface ChefkochAPIService {
-    @GET("recipes/{id}")
-    suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
-}
+/**
+ * Qualifier annotation for dependency injection with hilt to mark a dependency as requiring a
+ * KitchenPlanner retrofit client
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class KitchenPlanerRetrofitClient

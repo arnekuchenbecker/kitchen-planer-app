@@ -18,8 +18,8 @@ package com.scouts.kitchenplaner.model
 
 import android.net.Uri
 import app.cash.turbine.test
-import com.scouts.kitchenplaner.datalayer.repositories.AllergenRepository
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.AllergenRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.Allergen
 import com.scouts.kitchenplaner.model.entities.AllergenPerson
 import com.scouts.kitchenplaner.model.entities.DietarySpeciality

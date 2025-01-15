@@ -21,6 +21,6 @@ import java.util.Date
 data class ProjectMetaData(
     val stub: ProjectStub,
     val startDate: Date,
-    val endDate: Date
-) {
-}
+    val endDate: Date,
+    val onlineID: Long?
+)

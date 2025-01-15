@@ -14,10 +14,9 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer.dtos
+package com.scouts.kitchenplaner.networklayer.kitchenplaner
 
-data class ChefkochIngredient(
-    val name: String,
-    val unit: String,
-    val amount: Double
-)
+/**
+ * Base URL for the KitchenPlanerBackend
+ */
+const val KITCHEN_PLANER_BASE_URL = "http://localhost:8080/"

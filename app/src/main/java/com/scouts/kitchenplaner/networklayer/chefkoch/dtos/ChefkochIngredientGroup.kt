@@ -14,8 +14,15 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer
+package com.scouts.kitchenplaner.networklayer.chefkoch.dtos
 
-const val CHEFKOCH_BASE_URL = "https://api.chefkoch.de/v2/"
-
-const val SERVER_BASE_URL = ""
+/**
+ * An ingredient group as used in requests to chefkoch's API
+ *
+ * @param header The name of the ingredient group
+ * @param ingredients A list of all ingredients in this group
+ */
+data class ChefkochIngredientGroup(
+    val header: String,
+    val ingredients: List<ChefkochIngredient>
+)
