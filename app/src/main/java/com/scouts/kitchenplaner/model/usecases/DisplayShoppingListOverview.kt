@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.ShoppingListRepository
+import com.scouts.kitchenplaner.repositories.ShoppingListRepository
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.shoppinglists.ShoppingListStub
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 /**
  * Usecase for displaying an overview over a projects shopping lists
+ * @param shoppingListRepository Repository for retrieving information about shopping lists
  */
 class DisplayShoppingListOverview @Inject constructor(
     private val shoppingListRepository: ShoppingListRepository

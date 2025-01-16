@@ -17,14 +17,20 @@
 package com.scouts.kitchenplaner.ui.view.recipedetails
 
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.scouts.kitchenplaner.model.entities.IngredientGroup
 import com.scouts.kitchenplaner.model.entities.Recipe
@@ -75,7 +81,7 @@ class StaticScreen(val recipe: Recipe) : EditRecipeStrategy {
 
     @Composable
     override fun Description(modifier: Modifier) {
-        Text(recipe.description, modifier = modifier)
+        Text(recipe.description, modifier = modifier.padding(start = 10.dp))
     }
 
     override fun getFreeOfList(): List<String> {

@@ -16,8 +16,12 @@
 
 package com.scouts.kitchenplaner.hilt
 
-import com.scouts.kitchenplaner.networklayer.CHEFKOCH_BASE_URL
-import com.scouts.kitchenplaner.networklayer.ChefkochAPIService
+import com.scouts.kitchenplaner.hilt.qualifiers.ChefkochRetrofitClient
+import com.scouts.kitchenplaner.hilt.qualifiers.KitchenPlanerRetrofitClient
+import com.scouts.kitchenplaner.networklayer.chefkoch.CHEFKOCH_BASE_URL
+import com.scouts.kitchenplaner.networklayer.chefkoch.services.ChefkochAPIService
+import com.scouts.kitchenplaner.networklayer.kitchenplaner.KITCHEN_PLANER_BASE_URL
+import com.scouts.kitchenplaner.networklayer.kitchenplaner.services.ProjectAPIService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +33,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class NetworkLayerModule {
+    @ChefkochRetrofitClient
     @Provides
     @Singleton
     fun provideChefkochRetrofitClient() : Retrofit {
@@ -40,7 +45,38 @@ class NetworkLayerModule {
 
     @Provides
     @Singleton
-    fun provideChefkochAPIService(retrofit: Retrofit) : ChefkochAPIService {
+    fun provideChefkochAPIService(
+        @ChefkochRetrofitClient retrofit: Retrofit
+    ) : ChefkochAPIService {
         return retrofit.create(ChefkochAPIService::class.java)
+    }
+
+    /**
+     * Provider method for hilt to have access to a Retrofit client for the KitchenPlanerBackend
+     *
+     * @return A Retrofit client configured for the KitchenPlanerBackend
+     */
+    @KitchenPlanerRetrofitClient
+    @Provides
+    @Singleton
+    fun provideServerRetrofitClient() : Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(KITCHEN_PLANER_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * Provider method for hilt to have access to a ProjectAPIService
+     *
+     * @param retrofit Retrofit client for interacting with KitchenPlanerBackend
+     * @return A ProjectAPIService instance for use with the specified retrofit client
+     */
+    @Provides
+    @Singleton
+    fun provideServerProjectAPIService(
+        @KitchenPlanerRetrofitClient retrofit: Retrofit
+    ) : ProjectAPIService {
+        return retrofit.create(ProjectAPIService::class.java)
     }
 }
