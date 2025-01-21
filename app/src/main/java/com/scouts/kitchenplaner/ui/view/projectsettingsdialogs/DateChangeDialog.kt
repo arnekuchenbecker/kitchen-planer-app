@@ -16,17 +16,11 @@
 
 package com.scouts.kitchenplaner.ui.view.projectsettingsdialogs
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.scouts.kitchenplaner.toDateString
-import com.scouts.kitchenplaner.ui.view.DockedDatePicker
+import com.scouts.kitchenplaner.ui.view.ModalDateRangePicker
 import java.util.Date
-import java.util.Locale
 
 /**
  * Dialog for changing the start and end date of a project
@@ -44,24 +38,19 @@ fun DateChangeDialog(
     startDate: Date,
     endDate: Date
 ) {
-    val startState = remember { DatePickerState(Locale.GERMAN, initialSelectedDateMillis = startDate.time) }
-    val endState = remember { DatePickerState(Locale.GERMAN, initialSelectedDateMillis = endDate.time) }
+    val dates = rememberDateRangePickerState(startDate.time, endDate.time)
     SettingDialog(
         onDismissRequest = onDismissRequest,
         title = "Daten ändern",
-        onConfirm = { onDateChange(Date(startState.selectedDateMillis ?: 0), Date(endState.selectedDateMillis ?: 0)) }
+        onConfirm = {
+            onDateChange(
+                Date(dates.selectedStartDateMillis ?: 0),
+                Date(dates.selectedEndDateMillis ?: 0)
+            )
+        }
     ) {
-        DockedDatePicker(
-            dateState = startState,
-            displayText = startState.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt",
-            label = "Start-Datum",
-            modifier = Modifier.height(70.dp)
-        )
-        DockedDatePicker(
-            dateState = endState,
-            displayText = endState.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt",
-            label = "End-Datum",
-            modifier = Modifier.height(70.dp)
+        ModalDateRangePicker(
+            state = dates
         )
     }
 }

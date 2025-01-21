@@ -17,19 +17,18 @@
 package com.scouts.kitchenplaner.ui.state
 
 import android.net.Uri
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.scouts.kitchenplaner.toDateString
 import java.util.Locale
 
 /**
- * State object for the CreateProject Composable. Contains information about a project that is being created
+ * State object for the CreateProject Composable. Contains information about a project that is being
+ * created
  */
 class CreateProjectInputState {
     /**
@@ -38,35 +37,34 @@ class CreateProjectInputState {
     var name by mutableStateOf("")
 
     /**
+     * False if [name] contains a valid project name
+     */
+    var nameIsError by mutableStateOf(false)
+
+    /**
      * The URI of the project's image
      */
     var image by mutableStateOf<Uri?>(null)
 
     /**
-     * DatePickerState for the start date of the project
+     * The date range picker's state for picking start and end date
      */
     @OptIn(ExperimentalMaterial3Api::class)
-    var startDate: DatePickerState = DatePickerState(Locale.GERMAN)
+    var dates: DateRangePickerState = DateRangePickerState(Locale.GERMAN)
 
     /**
-     * Textual representation of the start date of the project
+     * False if [dates] contains a valid date range for the project
      */
-    @OptIn(ExperimentalMaterial3Api::class)
-    val startDateString: String
-        get() = (startDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
+    val datesIsError: Boolean
+        get() = _datesIsError
+    private var _datesIsError by mutableStateOf(false)
 
     /**
-     * DatePickerState for the end date of the project
+     * Error message detailing the reason for the date if [datesIsError] is true, otherwise null
      */
-    @OptIn(ExperimentalMaterial3Api::class)
-    var endDate: DatePickerState = DatePickerState(Locale.GERMAN, null, null, IntRange(2000, 2100), DisplayMode.Picker)
-
-    /**
-     * Textual representation of the end date of the project
-     */
-    @OptIn(ExperimentalMaterial3Api::class)
-    val endDateString: String
-        get() = (endDate.selectedDateMillis?.toDateString() ?: "Kein Datum ausgewählt.")
+    val datesErrorMessage: String?
+        get() = _datesErrorMessage
+    private var _datesErrorMessage by mutableStateOf<String?>(null)
 
     private val mealList: SnapshotStateList<String> = mutableStateListOf()
     private val allergenList: SnapshotStateList<AllergenPersonState> = mutableStateListOf()
@@ -86,10 +84,20 @@ class CreateProjectInputState {
         get() = mealList
 
     /**
+     * False if [meals] contains a valid list of meals
+     */
+    var mealsIsError by mutableStateOf(false)
+
+    /**
      * List of all allergens persons added to the project so far
      */
     val allergens: List<AllergenPersonState>
         get() = allergenList
+
+    /**
+     * False if [allergens] contains a valid list of meals
+     */
+    var allergensIsError by mutableStateOf(false)
 
     /**
      * Adds the given meal to the project
@@ -159,5 +167,15 @@ class CreateProjectInputState {
         if (person?.allergens?.isEmpty() == true) {
             allergenList.remove(person)
         }
+    }
+
+    fun setDatesError(reason: String) {
+        _datesIsError = true
+        _datesErrorMessage = reason
+    }
+
+    fun setDatesNotError() {
+        _datesIsError = false
+        _datesErrorMessage = null
     }
 }

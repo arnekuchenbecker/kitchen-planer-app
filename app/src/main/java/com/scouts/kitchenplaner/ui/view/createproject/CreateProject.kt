@@ -54,7 +54,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
-import com.scouts.kitchenplaner.ui.view.DockedDatePicker
+import com.scouts.kitchenplaner.ui.state.ProjectValidator
+import com.scouts.kitchenplaner.ui.view.ModalDateRangePicker
 import com.scouts.kitchenplaner.ui.view.PicturePicker
 import com.scouts.kitchenplaner.ui.viewmodel.CreateProjectViewModel
 
@@ -80,26 +81,53 @@ fun CreateProject(
         }
     }
 
-    Scaffold (topBar = {
-        TopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ),
-            title = {
-                Text("Create a New Project")
-            }
-        )
+    CreateProjectContent(
+        onProjectCreate = createProjectViewModel::onProjectCreate,
+        state = createProjectViewModel.inputState,
+        validator = createProjectViewModel.validator
+    )
+}
 
-    }, floatingActionButton = {
-        ExtendedFloatingActionButton(onClick = { createProjectViewModel.onProjectCreate() }, icon = {
-            Icon(imageVector = Icons.Filled.Check, contentDescription = "Create project")
-        }, text = { Text("Fertig") })
-    }) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(it)) {
-            CreateProjectInput(state = createProjectViewModel.inputState, modifier = Modifier.align(Alignment.TopCenter))
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateProjectContent(
+    onProjectCreate: () -> Unit,
+    state: CreateProjectInputState,
+    validator: ProjectValidator = object : ProjectValidator {}
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                title = {
+                    Text("Create a New Project")
+                }
+            )
+
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onProjectCreate,
+                icon = {
+                    Icon(imageVector = Icons.Filled.Check, contentDescription = "Create project")
+                },
+                text = { Text("Fertig") }
+            )
+        }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(it)
+        ) {
+            CreateProjectInput(
+                state = state,
+                modifier = Modifier.align(Alignment.TopCenter),
+                validator = validator
+            )
         }
     }
 }
@@ -112,14 +140,20 @@ fun CreateProject(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modifier) {
-    Column(modifier = modifier
-        .padding(10.dp)
-        .fillMaxWidth()
-        .verticalScroll(state = rememberScrollState())) {
+fun CreateProjectInput(
+    state: CreateProjectInputState,
+    validator: ProjectValidator,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .verticalScroll(state = rememberScrollState())
+    ) {
         val columnItemModifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 10.dp)
+            .padding(vertical = 3.dp)
 
         Row(horizontalArrangement = Arrangement.Center, modifier = columnItemModifier) {
             val context = LocalContext.current
@@ -128,7 +162,10 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
                     .fillMaxWidth(0.5f)
                     .aspectRatio(1.0f),
                 onPathSelected = {
-                    context.contentResolver.takePersistableUriPermission(it!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    context.contentResolver.takePersistableUriPermission(
+                        it!!,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
                     state.image = it
                 },
                 path = state.image
@@ -137,34 +174,32 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
 
         TextField(
             value = state.name,
-            onValueChange = { state.name = it },
-            modifier = columnItemModifier
-                .height(70.dp),
+            onValueChange = {
+                state.name = it
+                validator.validateName()
+            },
+            modifier = columnItemModifier,
             label = { Text("Project Name") },
-            singleLine = true
+            singleLine = true,
+            isError = state.nameIsError,
+            supportingText = { Text(if (state.nameIsError) "Projekt Name darf nicht leer sein!" else "") }
         )
 
-        DockedDatePicker(
-            modifier = columnItemModifier
-                .height(70.dp),
-            dateState = state.startDate,
-            label = "Start-Datum:",
-            displayText = state.startDateString
-        )
-
-        DockedDatePicker(
-            modifier = columnItemModifier
-                .height(70.dp),
-            dateState = state.endDate,
-            label = "End-Datum:",
-            displayText = state.endDateString
+        ModalDateRangePicker(
+            modifier = columnItemModifier,
+            state = state.dates,
+            validateSelection = validator::validateDates,
+            isError = state.datesIsError,
+            supportingText = { Text(state.datesErrorMessage ?: "") }
         )
 
         MealPicker(
             modifier = columnItemModifier,
             onAdd = state::addMeal,
             onRemove = state::removeMeal,
-            meals = state.meals
+            meals = state.meals,
+            isError = state.mealsIsError,
+            validate = validator::validateMeals
         )
 
         AllergenPicker(
@@ -174,7 +209,10 @@ fun CreateProjectInput(state: CreateProjectInputState, modifier: Modifier = Modi
             onRemoveItem = state::removeIntolerancy,
             onResetAdderState = state::resetAllergenPersonAdderState,
             allergens = state.allergens,
-            dialogState = state.allergenAdderState
+            meals = state.meals,
+            dialogState = state.allergenAdderState,
+            isError = state.allergensIsError,
+            validate = validator::validateAllergens
         )
 
         //To allow scrolling stuff from behind the FAB
@@ -194,12 +232,11 @@ fun PreviewCreateProject() {
 @Preview(showBackground = true)
 fun PreviewMealPicker() {
     Surface(modifier = Modifier.height(500.dp)) {
-        EditMealsDialog(onDismissRequest = {}, onAdd = {}, onRemove = {}, meals = listOf("Pizza", "Flammkuchen"))
+        EditMealsDialog(
+            onDismissRequest = {},
+            onAdd = {},
+            onRemove = {},
+            meals = listOf("Pizza", "Flammkuchen")
+        )
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun Test() {
-    Text("Test")
 }

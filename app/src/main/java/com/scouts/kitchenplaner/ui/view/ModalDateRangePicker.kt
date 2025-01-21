@@ -1,0 +1,193 @@
+/*
+ * KitchenPlanerApp is the android app frontend for the KitchenPlaner, a tool
+ * to cooperatively plan a meal plan for a campout.
+ * Copyright (C) 2023-2024 Arne Kuchenbecker, Antonia Heiming, Anton Kadelbach, Sandra Lanz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+package com.scouts.kitchenplaner.ui.view
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DateRangePickerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
+import com.scouts.kitchenplaner.DateUtils
+import java.util.Date
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalDateRangePicker(
+    modifier: Modifier = Modifier,
+    state: DateRangePickerState,
+    label: @Composable (() -> Unit)? = { Text("Start- / Enddatum") },
+    validateSelection: () -> Unit = { },
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
+) {
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    val dateFormatter =
+        remember { DatePickerDefaults.dateFormatter(selectedDateSkeleton = "ddMMy") }
+    val fullscreen = LocalConfiguration.current.screenWidthDp.dp < 400.dp
+
+    fun closePicker() {
+        validateSelection()
+        showDatePicker = false
+    }
+
+    Box(
+        modifier = modifier
+    ) {
+        ClickableOutlinedTextField(
+            value = printDateRange(
+                state.selectedStartDateMillis,
+                state.selectedEndDateMillis
+            ),
+            onClick = { showDatePicker = !showDatePicker },
+            placeholder = label,
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = "Select dates"
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            isError = isError,
+            supportingText = supportingText
+        )
+
+        if (showDatePicker) {
+            if (fullscreen) {
+                Popup(
+                    properties = PopupProperties(focusable = true, dismissOnBackPress = true),
+                    onDismissRequest = {
+                        state.setSelection(null, null)
+                        closePicker()
+                    }
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .padding(top = 20.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        DateRangePicker(
+                            state = state,
+                            dateFormatter = dateFormatter,
+                            modifier = Modifier.fillMaxHeight(0.6f),
+                            showModeToggle = false
+                        )
+
+                        HorizontalDivider()
+
+                        Row(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .align(Alignment.End)
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    state.setSelection(null, null)
+                                    closePicker()
+                                }
+                            ) {
+                                Icon(Icons.Filled.Close, "Cancel")
+                            }
+
+                            IconButton(
+                                enabled = state.selectedStartDateMillis != null
+                                        && state.selectedEndDateMillis != null,
+                                onClick = { closePicker() }
+                            ) {
+                                Icon(Icons.Filled.Check, "Confirm")
+                            }
+                        }
+                    }
+                }
+            } else {
+                DatePickerDialog(
+                    onDismissRequest = {
+                        state.setSelection(null, null)
+                        closePicker()
+                    },
+                    confirmButton = {
+                        IconButton(
+                            enabled = state.selectedStartDateMillis != null
+                                    && state.selectedEndDateMillis != null,
+                            onClick = { closePicker() }
+                        ) {
+                            Icon(Icons.Filled.Check, "Confirm")
+                        }
+                    },
+                    dismissButton = {
+                        IconButton(
+                            onClick = {
+                                state.setSelection(null, null)
+                                closePicker()
+                            }
+                        ) {
+                            Icon(Icons.Filled.Close, "Cancel")
+                        }
+                    }
+                ) {
+                    DateRangePicker(
+                        modifier = Modifier.padding(vertical = 20.dp),
+                        state = state,
+                        dateFormatter = dateFormatter,
+                        showModeToggle = false
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun printDateRange(startMillis: Long?, endMillis: Long?): String {
+    val formatter = DateUtils.getDateFormatter()
+    if (startMillis == null || endMillis == null) {
+        return ""
+    }
+    return "${formatter.format(Date(startMillis))} - ${formatter.format(Date(endMillis))}"
+}

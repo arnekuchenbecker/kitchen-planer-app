@@ -51,15 +51,23 @@ class ImportRecipe @Inject constructor(
         if (response.isSuccessful) {
             val chefkochRecipe = response.body()
             if (chefkochRecipe != null) {
-                val uri = Uri.parse(chefkochRecipe.previewImageUrlTemplate.replace(FORMAT_STRING, FORMAT_INPUT))
+                val uri = Uri.parse(
+                    chefkochRecipe.previewImageUrlTemplate.replace(
+                        FORMAT_STRING,
+                        FORMAT_INPUT
+                    )
+                )
                 val recipe = Recipe(
                     name = chefkochRecipe.title,
                     description = chefkochRecipe.subtitle,
                     imageURI = uri,
                     numberOfPeople = chefkochRecipe.servings,
-                    instructions = chefkochRecipe.instructions.split("\n").filter { it.isNotBlank() },
+                    instructions = chefkochRecipe.instructions.split("\n")
+                        .filter { it.isNotBlank() },
                     ingredientGroups = chefkochRecipe.ingredientGroups.map { group ->
-                        val ingredients = group.ingredients.map { Ingredient(it.name, it.amount, it.unit) }
+                        val ingredients = group.ingredients.map {
+                            Ingredient("${it.name}${it.usageInfo}", it.amount, it.unit)
+                        }
                         IngredientGroup(group.header, ingredients)
                     }
                 )

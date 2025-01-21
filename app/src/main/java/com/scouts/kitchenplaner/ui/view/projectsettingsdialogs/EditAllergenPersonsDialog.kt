@@ -49,7 +49,8 @@ fun EditAllergenPersonsDialog(
     onRemovePerson: (AllergenPerson) -> Unit,
     onRemoveAllergen: (AllergenPerson, Allergen) -> Unit,
     onAddAllergenPerson: (AllergenPerson) -> Unit,
-    allergenPersons: List<AllergenPerson>
+    allergenPersons: List<AllergenPerson>,
+    meals: List<String>
 ) {
     SettingDialog(
         onDismissRequest = onDismissRequest,
@@ -96,6 +97,7 @@ fun EditAllergenPersonsDialog(
         if (showAdderDialog) {
             AllergenPersonAdder(
                 state = adderState,
+                meals = meals,
                 onAdd = {
                     onAddAllergenPerson(
                         AllergenPerson(

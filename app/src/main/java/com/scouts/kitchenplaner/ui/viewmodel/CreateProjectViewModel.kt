@@ -29,6 +29,8 @@ import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.usecases.CreateProject
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
+import com.scouts.kitchenplaner.ui.state.ProjectValidator
+import com.scouts.kitchenplaner.ui.state.StateProjectValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +52,9 @@ class CreateProjectViewModel @Inject constructor(
     val navigateTo: StateFlow<Long?>
         get() = navigateFlow
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    val validator: ProjectValidator = StateProjectValidator(inputState)
+
     /**
      * Method that creates a new project, hands it to the domain layer and navigates further to the project.
      * It also makes some sanity checks e.g. whether the dates could be reasonable.
@@ -57,24 +62,18 @@ class CreateProjectViewModel @Inject constructor(
     @OptIn(ExperimentalMaterial3Api::class)
     fun onProjectCreate() {
         viewModelScope.launch {
-            val startDate = inputState.startDate.selectedDateMillis?.let { Date(it) }
-            val endDate = inputState.endDate.selectedDateMillis?.let { Date(it) }
+            val startDate = inputState.dates.selectedStartDateMillis?.let { Date(it) }
+            val endDate = inputState.dates.selectedEndDateMillis?.let { Date(it) }
 
-            if (startDate == null || endDate == null || inputState.name == "" || inputState.meals.isEmpty()) {
-                return@launch
-            }
-
-            if (inputState.allergens.any {
-                    it.arrivalDateMillis == null || it.departureDateMillis == null || it.departureMeal == "" || it.arrivalMeal == ""
-                }) {
+            if (validateInputState()) {
                 return@launch
             }
 
             val project = Project(
                 _name = inputState.name,
                 _mealPlan = MealPlan(
-                    startDate,
-                    endDate,
+                    startDate!!,
+                    endDate!!,
                     mutableListOf<String>().apply { addAll(inputState.meals) }),
                 _allergenPersons = mutableListOf<AllergenPerson>().apply {
                     addAll(inputState.allergens.map { person ->
@@ -97,5 +96,12 @@ class CreateProjectViewModel @Inject constructor(
 
             navigateFlow.emit(projectId)
         }
+    }
+
+    private fun validateInputState(): Boolean {
+        validator.validateAll()
+
+        return !(inputState.nameIsError || inputState.datesIsError
+                || inputState.mealsIsError || inputState.allergensIsError)
     }
 }
