@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,19 +43,31 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ListEditHeader(
     onClick: () -> Unit,
-    title: String
+    title: String,
+    isError: Boolean = false
 ) {
-    Row (modifier = Modifier
-        .fillMaxWidth()
-        .height(70.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        Box(contentAlignment = Alignment.CenterStart, modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.4f)
-            .padding(0.dp, 0.dp, 5.dp, 0.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp), horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(
+            contentAlignment = Alignment.CenterStart, modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.4f)
+                .padding(0.dp, 0.dp, 5.dp, 0.dp)
+        ) {
             Text(title)
         }
         Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxHeight()) {
-            Button(onClick = onClick) {
+            var buttonColors = ButtonDefaults.buttonColors()
+            if (isError) {
+                buttonColors = buttonColors.copy(containerColor = MaterialTheme.colorScheme.error)
+            }
+            Button(
+                onClick = onClick,
+                colors = buttonColors
+            ) {
                 Text("Bearbeiten")
             }
         }

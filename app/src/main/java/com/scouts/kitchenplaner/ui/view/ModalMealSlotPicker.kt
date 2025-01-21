@@ -48,6 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -78,7 +79,7 @@ fun ModalMealSlotPicker(
         Column(
             modifier = Modifier
                 .border(
-                    width = 1.dp,
+                    width = 2.dp,
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(5.dp)
                 )
@@ -97,12 +98,14 @@ fun ModalMealSlotPicker(
                     }
                 },
                 modifier = Modifier
+                    .focusProperties { canFocus = false }
                     .fillMaxWidth()
                     .padding(5.dp)
             )
 
             MealSelectionMenu(
                 modifier = Modifier
+                    .focusProperties { canFocus = false }
                     .fillMaxWidth()
                     .padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
                 meals = meals,

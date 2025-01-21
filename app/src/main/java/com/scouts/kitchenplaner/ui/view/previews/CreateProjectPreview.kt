@@ -16,25 +16,28 @@
 
 package com.scouts.kitchenplaner.ui.view.previews
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.scouts.kitchenplaner.ui.state.CreateProjectInputState
+import com.scouts.kitchenplaner.ui.state.StateProjectValidator
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.view.createproject.CreateProjectContent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun ProjectCreationPreview() {
     val state = CreateProjectInputState()
+    val validator = StateProjectValidator(state)
 
     KitchenPlanerTheme(dynamicColor = false) {
         CreateProjectContent(
             onProjectCreate = {
-                if (state.name.isBlank()) {
-                    state.nameIsError = true
-                }
+                validator.validateAll()
             },
-            state = state
+            state = state,
+            validator = validator
         )
     }
 }

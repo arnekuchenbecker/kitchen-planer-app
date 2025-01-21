@@ -19,9 +19,10 @@ package com.scouts.kitchenplaner.ui.view.createproject
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,16 +61,19 @@ fun AllergenPicker(
     onResetAdderState: () -> Unit,
     allergens: List<AllergenPersonState>,
     meals: List<String>,
-    dialogState: AllergenPersonAdderState
+    dialogState: AllergenPersonAdderState,
+    isError: Boolean = false,
+    validate: () -> Unit = {}
 ) {
     var displayDialog by remember { mutableStateOf(false) }
     Column(
-        modifier = modifier.height((90 + 20 * (1 + min(allergens.size, 4))).dp),
+        modifier = modifier.heightIn(max = (200 + 20 * (1 + min(allergens.size, 4))).dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ListEditHeader(
             onClick = { displayDialog = true },
-            title = "Ernährungsbesonderheiten"
+            title = "Ernährungsbesonderheiten",
+            isError = isError
         )
 
         LazyColumnWrapper(
@@ -94,12 +98,21 @@ fun AllergenPicker(
                 }
             }
         )
+
+        if (isError) {
+            Text(
+                color = MaterialTheme.colorScheme.error,
+                text = "Bei einer oder mehreren Personen mit Ernährungsbesonderheiten liegt ein " +
+                        "Fehler vor. Stimmen alle Ankunfts- und Abreisedaten?"
+            )
+        }
     }
 
     if (displayDialog) {
         EditAllergensDialog(
             onDismissRequest = {
                 displayDialog = false
+                validate()
                 onResetAdderState()
             },
             onAdd = onAdd,

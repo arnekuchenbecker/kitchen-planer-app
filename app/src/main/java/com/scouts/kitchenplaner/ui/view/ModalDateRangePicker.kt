@@ -59,13 +59,20 @@ import java.util.Date
 fun ModalDateRangePicker(
     modifier: Modifier = Modifier,
     state: DateRangePickerState,
-    label: @Composable (() -> Unit)? = { Text("Start- / Enddatum") }
+    label: @Composable (() -> Unit)? = { Text("Start- / Enddatum") },
+    validateSelection: () -> Unit = { },
+    isError: Boolean = false,
+    supportingText: @Composable (() -> Unit)? = null
 ) {
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val dateFormatter =
         remember { DatePickerDefaults.dateFormatter(selectedDateSkeleton = "ddMMy") }
-
     val fullscreen = LocalConfiguration.current.screenWidthDp.dp < 400.dp
+
+    fun closePicker() {
+        validateSelection()
+        showDatePicker = false
+    }
 
     Box(
         modifier = modifier
@@ -85,16 +92,19 @@ fun ModalDateRangePicker(
                     )
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
+            modifier = Modifier.fillMaxWidth(),
+            isError = isError,
+            supportingText = supportingText
         )
 
         if (showDatePicker) {
             if (fullscreen) {
                 Popup(
                     properties = PopupProperties(focusable = true, dismissOnBackPress = true),
-                    onDismissRequest = { showDatePicker = false }
+                    onDismissRequest = {
+                        state.setSelection(null, null)
+                        closePicker()
+                    }
                 ) {
                     Column(
                         modifier = Modifier
@@ -120,7 +130,7 @@ fun ModalDateRangePicker(
                             IconButton(
                                 onClick = {
                                     state.setSelection(null, null)
-                                    showDatePicker = false
+                                    closePicker()
                                 }
                             ) {
                                 Icon(Icons.Filled.Close, "Cancel")
@@ -129,7 +139,7 @@ fun ModalDateRangePicker(
                             IconButton(
                                 enabled = state.selectedStartDateMillis != null
                                         && state.selectedEndDateMillis != null,
-                                onClick = { showDatePicker = false }
+                                onClick = { closePicker() }
                             ) {
                                 Icon(Icons.Filled.Check, "Confirm")
                             }
@@ -138,12 +148,15 @@ fun ModalDateRangePicker(
                 }
             } else {
                 DatePickerDialog(
-                    onDismissRequest = { showDatePicker = false },
+                    onDismissRequest = {
+                        state.setSelection(null, null)
+                        closePicker()
+                    },
                     confirmButton = {
                         IconButton(
                             enabled = state.selectedStartDateMillis != null
                                     && state.selectedEndDateMillis != null,
-                            onClick = { showDatePicker = false }
+                            onClick = { closePicker() }
                         ) {
                             Icon(Icons.Filled.Check, "Confirm")
                         }
@@ -152,7 +165,7 @@ fun ModalDateRangePicker(
                         IconButton(
                             onClick = {
                                 state.setSelection(null, null)
-                                showDatePicker = false
+                                closePicker()
                             }
                         ) {
                             Icon(Icons.Filled.Close, "Cancel")
