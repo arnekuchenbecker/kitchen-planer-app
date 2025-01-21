@@ -37,12 +37,34 @@ class CreateProjectInputState {
     var name by mutableStateOf("")
 
     /**
+     * False if [name] contains a valid project name
+     */
+    var nameIsError by mutableStateOf(false)
+
+    /**
      * The URI of the project's image
      */
     var image by mutableStateOf<Uri?>(null)
 
+    /**
+     * The date range picker's state for picking start and end date
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     var dates: DateRangePickerState = DateRangePickerState(Locale.GERMAN)
+
+    /**
+     * False if [dates] contains a valid date range for the project
+     */
+    val datesIsError: Boolean
+        get() = _datesIsError
+    private var _datesIsError by mutableStateOf(false)
+
+    /**
+     * Error message detailing the reason for the date if [datesIsError] is true, otherwise null
+     */
+    val datesErrorMessage: String?
+        get() = _datesErrorMessage
+    private var _datesErrorMessage by mutableStateOf<String?>(null)
 
     private val mealList: SnapshotStateList<String> = mutableStateListOf()
     private val allergenList: SnapshotStateList<AllergenPersonState> = mutableStateListOf()
@@ -62,10 +84,20 @@ class CreateProjectInputState {
         get() = mealList
 
     /**
+     * False if [meals] contains a valid list of meals
+     */
+    var mealsIsError by mutableStateOf(false)
+
+    /**
      * List of all allergens persons added to the project so far
      */
     val allergens: List<AllergenPersonState>
         get() = allergenList
+
+    /**
+     * False if [allergens] contains a valid list of meals
+     */
+    var allergensIsError by mutableStateOf(false)
 
     /**
      * Adds the given meal to the project
@@ -135,5 +167,15 @@ class CreateProjectInputState {
         if (person?.allergens?.isEmpty() == true) {
             allergenList.remove(person)
         }
+    }
+
+    fun setDatesError(reason: String) {
+        _datesIsError = true
+        _datesErrorMessage = reason
+    }
+
+    fun setDatesNotError() {
+        _datesIsError = false
+        _datesErrorMessage = null
     }
 }
