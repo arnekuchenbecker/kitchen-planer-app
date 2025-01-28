@@ -31,6 +31,7 @@ class DeleteSpecialityCommand(
     recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
 ) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
         state.deleteDietarySpeciality(speciality.allergen, speciality.type)
     }

@@ -28,8 +28,8 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
 class DeleteInstructionStepCommand(
     private val index: Int, recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
-) :
-    ChangeCommand(recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
         state.deleteInstructionStep(index)
     }

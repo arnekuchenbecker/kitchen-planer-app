@@ -29,8 +29,8 @@ import com.scouts.kitchenplaner.ui.state.EditRecipeState
 class DeleteIngredientGroupCommand(
     private val group: String, recipe: Recipe, state: EditRecipeState,
     editRecipe: EditRecipe
-) :
-    ChangeCommand(recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
         state.deleteIngredientGroup(group)
     }

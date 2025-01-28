@@ -34,15 +34,17 @@ class DeleteIngredientCommand(
     recipe: Recipe,
     state: EditRecipeState,
     editRecipe: EditRecipe
-) :
-    ChangeCommand(recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
         state.deleteIngredient(group, ingredient)
     }
 
     override suspend fun applyOnRecipe() {
         editRecipe.deleteIngredient(
-            recipe, ingredient = ingredient, group = IngredientGroup(
+            recipe= recipe,
+            ingredient = ingredient,
+            group = IngredientGroup(
                 group,
                 listOf()
             )

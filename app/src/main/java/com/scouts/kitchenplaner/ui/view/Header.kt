@@ -63,10 +63,13 @@ fun EditableHeader(
     buttonClick: () -> Unit,
     buttonImage: @Composable (() -> Unit)
 ) {
-    TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ), title = titleField, actions = {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
+        title = titleField,
+        actions = {
         if (buttonClick != {}) {
             IconButton(
                 colors = IconButtonColors(
@@ -74,7 +77,8 @@ fun EditableHeader(
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ), onClick = buttonClick, content = buttonImage
+                ),
+                onClick = buttonClick, content = buttonImage
             )
         }
     })

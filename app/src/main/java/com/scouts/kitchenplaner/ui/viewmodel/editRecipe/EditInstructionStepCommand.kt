@@ -32,8 +32,8 @@ class EditInstructionStepCommand(
     recipe: Recipe,
     state: EditRecipeState,
     editRecipe: EditRecipe
-) :
-    ChangeCommand(recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
         state.alterInstructionStep(index, instruction)
     }

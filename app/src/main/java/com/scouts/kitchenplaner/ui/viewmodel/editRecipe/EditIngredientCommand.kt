@@ -53,10 +53,12 @@ class EditIngredientCommand(
 
     override suspend fun applyOnRecipe() {
         editRecipe.editIngredient(
-            recipe,
+            recipe= recipe,
             group = IngredientGroup(group, listOf()),
             ingredient = ingredient,
-            newName = newName, newAmount = newAmount, newUnit = newUnit
+            newName = newName,
+            newAmount = newAmount,
+            newUnit = newUnit
         )
     }
 }

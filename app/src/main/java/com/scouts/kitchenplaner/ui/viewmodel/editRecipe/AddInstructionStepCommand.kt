@@ -32,10 +32,10 @@ class AddInstructionStepCommand(
     recipe: Recipe,
     state: EditRecipeState,
     editRecipe: EditRecipe
-) :
-    ChangeCommand(recipe, state, editRecipe) {
+) : ChangeCommand(recipe, state, editRecipe) {
+
     override fun applyOnState() {
-        state.addInstructionStep(index, instruction = instruction)
+        state.addInstructionStep(index = index, instruction = instruction)
     }
 
     override suspend fun applyOnRecipe() {

@@ -86,7 +86,8 @@ fun IngredientsInput(
 
 
     ContentBox(
-        title = "Zutaten", modifier = modifier
+        title = "Zutaten",
+        modifier = modifier
     ) {
 
         ingredientGroups.forEach { (name, ingredients) ->
@@ -96,35 +97,46 @@ fun IngredientsInput(
                 Text(text = name, fontWeight = FontWeight.Black)
                 if (editable) {
                     Spacer(modifier = Modifier.weight(1.0f))
-                    IconButton(onClick = {
+                    IconButton(
+                        onClick = {
                         addIngredientToGroup = name
-                    }) {
+                    }
+                    ) {
                         Icon(Icons.Filled.Add, "Add ingredient to group")
                     }
-                    IconButton(onClick = {
+                    IconButton(
+                        onClick = {
                         onDeleteIngredientGroup(name)
-                    }) {
+                    }
+                    ) {
                         Icon(Icons.Filled.Delete, "Delete ingredient group")
                     }
                 }
             }
             ingredients.forEachIndexed { index, ingredient ->
-                DisplayIngredient(onDeleteClick = { onIngredientDelete(name, ingredient) },
+                DisplayIngredient(
+                    onDeleteClick = { onIngredientDelete(name, ingredient) },
                     ingredient = ingredient,
                     editable = editable,
                     onChangeIngredient = {
                         showIngredientChangeIndex = index
                         showIngredientChangeGroup = name
-                    })
+                    }
+
+                )
                 if (index == showIngredientChangeIndex && showIngredientChangeGroup == name) {
-                    DisplayIngredientChangeDialog(ingredient = ingredient, onDismissRequest = {
+                    DisplayIngredientChangeDialog(
+                        ingredient = ingredient,
+                        onDismissRequest = {
                         showIngredientChangeIndex = -1
                         showIngredientChangeGroup = ""
-                    }, onSaveChanges = { newName, newAmount, newUnit ->
+                         },
+                        onSaveChanges = { newName, newAmount, newUnit ->
                         onAlterIngredient(
                             name, ingredient, newName, newAmount, newUnit
                         )
-                    })
+                    }
+                    )
                 }
             }
             if (ingredientGroups.last().name != name) {
@@ -133,7 +145,8 @@ fun IngredientsInput(
         }
 
         if (editable) {
-            OutlinedTextField(modifier = Modifier.align(Alignment.CenterHorizontally),
+            OutlinedTextField(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 value = newGroupName,
                 onValueChange = { newGroupName = it },
                 singleLine = true,
@@ -145,20 +158,24 @@ fun IngredientsInput(
                             // TODO("Error message")
                         }
                         newGroupName = ""
-                    }) {
+                    }
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = "Create new ingredient group"
                         )
                     }
                 },
-                label = { Text("Gruppe hinzufügen") })
+                label = { Text("Gruppe hinzufügen") }
+            )
         }
     }
 
     if (addIngredientToGroup.isNotEmpty()) {
-        IngredientAdderDialog(onDismissRequest = { addIngredientToGroup = "" },
-            onIngredientAdd = { onIngredientAdd(addIngredientToGroup, it) })
+        IngredientAdderDialog(
+            onDismissRequest = { addIngredientToGroup = "" },
+            onIngredientAdd = { onIngredientAdd(addIngredientToGroup, it) }
+        )
     }
 }
 
@@ -194,7 +211,8 @@ fun DisplayIngredient(
                 onClick = onDeleteClick
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Close, contentDescription = "Delete ingredient"
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Delete ingredient"
                 )
             }
         }
@@ -210,7 +228,8 @@ fun DisplayIngredient(
  */
 @Composable
 fun IngredientAdderDialog(
-    onDismissRequest: () -> Unit, onIngredientAdd: (Ingredient) -> Unit
+    onDismissRequest: () -> Unit,
+    onIngredientAdd: (Ingredient) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
@@ -219,23 +238,22 @@ fun IngredientAdderDialog(
 
     IngredientInputDialog(
         name = name,
-        onNameChange = {
-            name = it
-        },
+        onNameChange = { name = it },
         unit = unit,
-        onUnitChange = {
-            unit = it
-        },
+        onUnitChange = { unit = it },
         amount = amount,
         onAmountChange = { amount = it },
         onDismissRequest = onDismissRequest,
         onConfirm = {
-            if (name.isEmpty()) return@IngredientInputDialog else onIngredientAdd(
-                Ingredient(
-                    name, amount.toDoubleOrNull() ?: 0.0, unit
+            if (name.isNotEmpty()){
+                onIngredientAdd(
+                    Ingredient(
+                        name, amount.toDoubleOrNull() ?: 0.0, unit
+                    )
                 )
-            )
-            //TODO ("Error message)
+            }else {
+                //TODO ("Error message)
+            }
         },
         buttonText = "Zutat hinzufügen",
     )
@@ -280,11 +298,15 @@ fun DisplayIngredientChangeDialog(
         },
         onDismissRequest = onDismissRequest,
         onConfirm = {
-            if (name.isEmpty()) return@IngredientInputDialog else onSaveChanges(
-                if (nameChange) name else null,
-                if (amountChange) amount.toDoubleOrNull() ?: 0.0 else null,
-                if (unitChange) unit else null
-            )
+            if (name.isNotEmpty()) {
+                onSaveChanges(
+                    if (nameChange) name else null,
+                    if (amountChange) amount.toDoubleOrNull() ?: 0.0 else null,
+                    if (unitChange) unit else null
+                )
+            } else {
+                //TODO Error message
+            }
         },
         buttonText = "Änderung speichern",
     )
@@ -341,12 +363,14 @@ fun IngredientInputDialog(
                     modifier = Modifier.padding(vertical = 5.dp)
                 )
 
-                OutlinedButton(modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 5.dp), onClick = {
-                    onConfirm()
-                    onDismissRequest()
-                }) {
+                OutlinedButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 5.dp), onClick = {
+                        onConfirm()
+                        onDismissRequest()
+                    }
+                ) {
                     Text(text = buttonText)
                 }
             }

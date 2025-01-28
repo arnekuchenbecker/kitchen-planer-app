@@ -51,16 +51,26 @@ fun NumberPicker(
     OutlinedNumberField(
         modifier = modifier.padding(3.dp),
         value = currentNumber.toString(),
-        onValueChange = { currentNumber = it.toInt(); onValueChange(it) },
+        onValueChange = {
+            currentNumber = it.toInt(); onValueChange(it)
+                        },
         leadingIcon = {
-            Icon(imageVector = Icons.Outlined.ArrowUpward,
-                contentDescription = null,
-                modifier = Modifier.clickable { currentNumber++; onValueChange(currentNumber.toString()) })
+            Icon(
+                imageVector = Icons.Outlined.ArrowUpward,
+                contentDescription = "increase by one",
+                modifier = Modifier.clickable {
+                    currentNumber++; onValueChange(currentNumber.toString())
+                }
+            )
         },
         trailingIcon = {
-            Icon(imageVector = Icons.Outlined.ArrowDownward,
-                contentDescription = null,
-                modifier = Modifier.clickable { currentNumber--; onValueChange(currentNumber.toString()) })
+            Icon(
+                imageVector = Icons.Outlined.ArrowDownward,
+                contentDescription = "decrease by one",
+                modifier = Modifier.clickable {
+                    currentNumber--; onValueChange(currentNumber.toString())
+                }
+            )
         },
         type = NumberFieldType.POSITIVE,
         label = label,
