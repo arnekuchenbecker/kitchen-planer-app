@@ -24,7 +24,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import com.scouts.kitchenplaner.toDateString
+import com.scouts.kitchenplaner.utils.toDateString
 import java.util.Locale
 
 /**

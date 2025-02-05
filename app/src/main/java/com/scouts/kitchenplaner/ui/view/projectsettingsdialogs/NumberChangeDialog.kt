@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scouts.kitchenplaner.model.entities.MealSlot
-import com.scouts.kitchenplaner.toDateString
+import com.scouts.kitchenplaner.utils.toDateString
 import com.scouts.kitchenplaner.ui.view.LazyColumnWrapper
 
 /**

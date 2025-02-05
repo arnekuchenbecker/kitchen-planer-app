@@ -16,7 +16,7 @@
 
 package com.scouts.kitchenplaner.model.entities
 
-import com.scouts.kitchenplaner.between
+import com.scouts.kitchenplaner.utils.between
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
 import java.util.Date
 

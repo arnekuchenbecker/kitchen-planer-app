@@ -65,7 +65,7 @@ import com.scouts.kitchenplaner.model.entities.AllergenMealCover
 import com.scouts.kitchenplaner.model.entities.MealPlan
 import com.scouts.kitchenplaner.model.entities.MealSlot
 import com.scouts.kitchenplaner.model.entities.RecipeStub
-import com.scouts.kitchenplaner.toDateString
+import com.scouts.kitchenplaner.utils.toDateString
 import com.scouts.kitchenplaner.ui.theme.KitchenPlanerTheme
 import com.scouts.kitchenplaner.ui.view.CardState
 import com.scouts.kitchenplaner.ui.view.DeleteButton

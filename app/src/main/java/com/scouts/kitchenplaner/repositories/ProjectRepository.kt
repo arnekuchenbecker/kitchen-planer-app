@@ -41,6 +41,7 @@ import com.scouts.kitchenplaner.model.entities.Project
 import com.scouts.kitchenplaner.model.entities.ProjectMetaData
 import com.scouts.kitchenplaner.model.entities.ProjectStub
 import com.scouts.kitchenplaner.model.entities.RecipeStub
+import com.scouts.kitchenplaner.model.entities.UnitConversion
 import com.scouts.kitchenplaner.model.entities.User
 import com.scouts.kitchenplaner.model.utilities.ProjectBuilder
 import com.scouts.kitchenplaner.networklayer.kitchenplaner.services.ProjectAPIService
@@ -48,6 +49,7 @@ import com.scouts.kitchenplaner.networklayer.toModelEntity
 import com.scouts.kitchenplaner.networklayer.toNetworkLayerDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
@@ -176,6 +178,28 @@ class ProjectRepository @Inject constructor(
 
     suspend fun leaveProject(user: User, projectId: Long) {
         projectDAO.removeUserFromProject(UserProjectEntity(projectId, user.username, Date()))
+    }
+
+    suspend fun createUnitConversion(conversion: UnitConversion, projectID: Long) {
+        projectDAO.insertUnitConversion(conversion.toDataLayerEntity(projectID))
+    }
+
+    suspend fun deleteUnitConversion(conversion: UnitConversion, projectID: Long) {
+        projectDAO.deleteUnitConversion(conversion.toDataLayerEntity(projectID))
+    }
+
+    fun getUnitConversionsForProject(projectID: Long) : Flow<List<UnitConversion>> {
+        return projectDAO.getUnitConversionsByProjectID(projectID).map {
+            it.map { conversion ->
+                conversion.toModelEntity()
+            }
+        }
+    }
+
+    suspend fun getCurrentUnitConversionsForProject(projectID: Long) : List<UnitConversion> {
+        return projectDAO.getUnitConversionsByProjectID(projectID).first().map {
+            it.toModelEntity()
+        }
     }
 
     suspend fun archiveProject(projectId: Long) {
