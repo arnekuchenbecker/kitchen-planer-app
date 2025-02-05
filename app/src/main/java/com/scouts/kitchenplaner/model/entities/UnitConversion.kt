@@ -18,19 +18,25 @@ package com.scouts.kitchenplaner.model.entities
 
 import com.scouts.kitchenplaner.datalayer.entities.UnitConversionEntity
 import com.scouts.kitchenplaner.model.DomainLayerRestricted
+import com.scouts.kitchenplaner.model.entities.UnitConversion.RegexConversion
+import com.scouts.kitchenplaner.model.entities.UnitConversion.TextConversion
 import java.math.BigDecimal
 
 /**
  * Entity representing a possible Unit Conversion. To apply a Unit Conversion to an ingredient, the
- * ingredient's name can be checked against some condition and the ingredient's unit has to be the same
- * as [_sourceUnit]
+ * ingredient's name can be checked against some condition and the ingredient's unit has to be the
+ * same as [_sourceUnit].
+ *
+ * There are two options for checking the ingredient's name: [RegexConversion] checks whether a
+ * Regex matches the name while [TextConversion] checks whethere the name is equal to some
+ * comparison String. Instances of these classes can be constructed by using [UnitConversion.of]
  *
  * @param _sourceUnit The unit this UnitConversion converts from
  * @param _destinationUnit The unit this UnitConversion converts to
  * @param factor The factor to apply to an ingredient to convert from [_sourceUnit] to
  * [_destinationUnit]
  */
-sealed class UnitConversion(
+sealed class UnitConversion private constructor(
     protected val _sourceUnit: String,
     protected val _destinationUnit: String,
     protected val factor: BigDecimal
@@ -42,7 +48,8 @@ sealed class UnitConversion(
          * @param ingredientMatcher The regex for matching ingredient names
          * @param sourceUnit The unit the new UnitConversion converts from
          * @param destinationUnit The unit the new UnitConversion converts to
-         * @param factor The factor to apply to an ingredient to convert from [sourceUnit] to [destinationUnit]
+         * @param factor The factor to apply to an ingredient to convert from [sourceUnit] to
+         * [destinationUnit]
          */
         fun of(
             ingredientMatcher: Regex,
@@ -60,7 +67,8 @@ sealed class UnitConversion(
          * @param text The String for matching ingredient names
          * @param sourceUnit The unit the new UnitConversion converts from
          * @param destinationUnit The unit the new UnitConversion converts to
-         * @param factor The factor to apply to an ingredient to convert from [sourceUnit] to [destinationUnit]
+         * @param factor The factor to apply to an ingredient to convert from [sourceUnit] to
+         * [destinationUnit]
          */
         fun of(
             text: String,
@@ -99,11 +107,11 @@ sealed class UnitConversion(
      *
      * @return Whether this UnitConversion is applicable to the given Ingredient
      */
-    fun isApplicable(ingredient: Ingredient) : Boolean {
+    fun isApplicable(ingredient: Ingredient): Boolean {
         return ingredient.unit == _sourceUnit && matches(ingredient)
     }
 
-    protected abstract fun matches(ingredient: Ingredient) : Boolean
+    protected abstract fun matches(ingredient: Ingredient): Boolean
 
     /**
      * Converts this UnitConversion to a DataLayer Entity
@@ -120,6 +128,13 @@ sealed class UnitConversion(
      */
     @DomainLayerRestricted
     abstract val representation: String
+
+    /**
+     * Whether this unit conversion is a text conversion, i.e. whether applicability is checked by
+     * comparing the ingredient's name for String equality to some comparison String
+     */
+    @DomainLayerRestricted
+    abstract val isTextConversion: Boolean
 
     /**
      * The unit this UnitConversion converts from
@@ -161,7 +176,15 @@ sealed class UnitConversion(
         return result
     }
 
-    class RegexConversion internal constructor(
+    /**
+     * A unit conversion using regular expressions for validating if it can be applied
+     * @param regex The Regex to be used for applicability checks
+     * @param sourceUnit The unit this UnitConversion converts from
+     * @param destinationUnit The unit this UnitConversion converts to
+     * @param factor The factor to apply to an ingredient to convert from [_sourceUnit] to
+     *  * [_destinationUnit]
+     */
+    private class RegexConversion(
         private val regex: Regex,
         sourceUnit: String,
         destinationUnit: String,
@@ -170,6 +193,10 @@ sealed class UnitConversion(
         @DomainLayerRestricted
         override val representation: String
             get() = regex.pattern
+
+        @DomainLayerRestricted
+        override val isTextConversion: Boolean
+            get() = false
 
         override fun toDataLayerEntity(projectID: Long): UnitConversionEntity {
             return UnitConversionEntity(
@@ -187,7 +214,16 @@ sealed class UnitConversion(
         }
     }
 
-     class TextConversion internal constructor(
+    /**
+     * A unit conversion using String equality to check if it can be applied
+     * @param _text The String the target ingredient's name needs to be equal to for this unit
+     *              conversion to be applicable
+     * @param sourceUnit The unit this UnitConversion converts from
+     * @param destinationUnit The unit this UnitConversion converts to
+     * @param factor The factor to apply to an ingredient to convert from [_sourceUnit] to
+     *  * [_destinationUnit]
+     */
+    private class TextConversion(
         private val _text: String,
         sourceUnit: String,
         destinationUnit: String,
@@ -196,6 +232,10 @@ sealed class UnitConversion(
         @DomainLayerRestricted
         override val representation: String
             get() = _text
+
+        @DomainLayerRestricted
+        override val isTextConversion: Boolean
+            get() = true
 
         override fun matches(ingredient: Ingredient): Boolean {
             return ingredient.name == _text

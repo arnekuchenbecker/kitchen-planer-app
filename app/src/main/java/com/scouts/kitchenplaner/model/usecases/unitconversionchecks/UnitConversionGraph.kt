@@ -39,21 +39,18 @@ class UnitConversionGraph(conversions: List<UnitConversion>) {
         val treeContents = mutableMapOf<String, MutableList<UnitConversion>>()
         val regexConversions = mutableListOf<UnitConversion>()
         conversions.forEach { conversion ->
-            when (conversion) {
-                is UnitConversion.TextConversion -> {
-                    if (treeContents[conversion.representation] == null) {
-                        treeContents[conversion.representation] = mutableListOf()
-                    }
-                    treeContents[conversion.representation]?.add(conversion)
+            if (conversion.isTextConversion) {
+                if (treeContents[conversion.representation] == null) {
+                    treeContents[conversion.representation] = mutableListOf()
                 }
-                is UnitConversion.RegexConversion -> {
-                    regexConversions.add(conversion)
-                }
+                treeContents[conversion.representation]?.add(conversion)
+            } else {
+                regexConversions.add(conversion)
             }
         }
         regexConversions.forEach { conversion ->
-            treeContents.keys.forEach { pattern ->
-                treeContents[pattern]?.add(conversion)
+            treeContents.keys.forEach { text ->
+                treeContents[text]?.add(conversion)
             }
         }
         parts = treeContents.map { (_, contents) -> createSubgraph(contents) } +
@@ -67,7 +64,7 @@ class UnitConversionGraph(conversions: List<UnitConversion>) {
      */
     fun findCircles(): List<Circle<UnitConversion>> = parts.map { it.findCircles() }.flatten()
 
-    private fun createSubgraph(conversions: List<UnitConversion>) : UnitConversionSubgraph {
+    private fun createSubgraph(conversions: List<UnitConversion>): UnitConversionSubgraph {
         val edgeList = mutableListOf<Int>()
         val vertices = Array(conversions.size) { i -> i + 1 }
         val edgePointers = Array(conversions.size + 1) { i ->
@@ -112,6 +109,7 @@ class UnitConversionSubgraph(
     fun findCircles(): List<Circle<UnitConversion>> {
         val circleFinder = CircleSearch(graph)
 
-        return circleFinder.run().map { circle -> circle.map { v -> conversions[graph.convertVertexNames(v)] } }
+        return circleFinder.run()
+            .map { circle -> circle.map { v -> conversions[graph.convertVertexNames(v)] } }
     }
 }

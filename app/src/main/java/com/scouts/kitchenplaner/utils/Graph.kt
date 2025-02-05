@@ -24,7 +24,7 @@ package com.scouts.kitchenplaner.utils
  * @param edgePointers For each vertex contains the starting index of outgoing edges in [edges] and
  *                     an additional entry of edges.size as a sentinel value
  * @param edges The destination vertex of the edges
- * @param convertVertexNames A function mapping each vertex name to an index in [0..n] where n is
+ * @param convertVertexNames A function mapping each vertex name to a unique index in [0..n] where n is
  *                           the size of this graph
  */
 class Graph(

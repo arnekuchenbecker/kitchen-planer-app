@@ -23,7 +23,7 @@ import com.scouts.kitchenplaner.model.entities.UnitConversion
  * Class for checking if a set of unit conversions is valid. A set of unit conversions is considered
  * valid if and only if
  *      a) for every source unit there is at most one regex conversion from that unit
- *         and at most one regex conversion with any given text
+ *         and at most one text conversion with any given text
  *      b) no circles are present
  *
  * @param conversions The set of UnitConversions that should be checked
@@ -31,7 +31,8 @@ import com.scouts.kitchenplaner.model.entities.UnitConversion
 class UnitConversionChecks(private val conversions: List<UnitConversion>) {
     private var hasRun = false
 
-    private val handledTextConversions = mutableMapOf<Pair<String, String>, MutableList<UnitConversion>>()
+    private val handledTextConversions =
+        mutableMapOf<Pair<String, String>, MutableList<UnitConversion>>()
     private val handledRegexConversions = mutableMapOf<String, MutableList<UnitConversion>>()
 
     private var failureCause = UnitConversionCheckFailureCause.NONE
@@ -44,12 +45,14 @@ class UnitConversionChecks(private val conversions: List<UnitConversion>) {
      *
      * @return A [UnitConversionCheckResult] object representing the result of the check
      */
-    fun run() : UnitConversionCheckResult {
+    @OptIn(DomainLayerRestricted::class)
+    fun run(): UnitConversionCheckResult {
         if (!hasRun) {
             conversions.forEach {
-                when(it) {
-                    is UnitConversion.TextConversion -> handleTextConversion(it)
-                    is UnitConversion.RegexConversion -> handleRegexConversion(it)
+                if (it.isTextConversion) {
+                    handleTextConversion(it)
+                } else {
+                    handleRegexConversion(it)
                 }
             }
             hasRun = true
@@ -63,7 +66,12 @@ class UnitConversionChecks(private val conversions: List<UnitConversion>) {
             }
         }
 
-        return UnitConversionCheckResult(problemTextConversions, problemRegexConversions, circles, failureCause)
+        return UnitConversionCheckResult(
+            problemTextConversions,
+            problemRegexConversions,
+            circles,
+            failureCause
+        )
     }
 
     @OptIn(DomainLayerRestricted::class)
