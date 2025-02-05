@@ -14,14 +14,19 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.networklayer
+package com.scouts.kitchenplaner.networklayer.kitchenplaner.dtos.projects
 
-import com.scouts.kitchenplaner.networklayer.dtos.ChefkochRecipe
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import java.util.Date
 
-interface ChefkochAPIService {
-    @GET("recipes/{id}")
-    suspend fun getRecipe(@Path("id") recipeId: Long) : Response<ChefkochRecipe>
-}
+/**
+ * DTO for communication with the server. Represents a person number change.
+ *
+ * @param date The date the change happens
+ * @param meal The meal the change happens before
+ * @param differenceBefore The amount of persons that arrives or departs before the meal
+ */
+data class ServerPersonNumberChangeDTO(
+    val date: Date,
+    val meal: String,
+    val differenceBefore: Int
+)

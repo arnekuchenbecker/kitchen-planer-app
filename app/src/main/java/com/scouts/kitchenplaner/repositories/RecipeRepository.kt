@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  */
 
-package com.scouts.kitchenplaner.datalayer.repositories
+package com.scouts.kitchenplaner.repositories
 
 import android.net.Uri
 import com.scouts.kitchenplaner.datalayer.daos.RecipeDAO

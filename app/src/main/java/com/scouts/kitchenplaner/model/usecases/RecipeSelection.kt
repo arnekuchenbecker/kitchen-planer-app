@@ -16,13 +16,21 @@
 
 package com.scouts.kitchenplaner.model.usecases
 
-import com.scouts.kitchenplaner.datalayer.repositories.RecipeRepository
+import com.scouts.kitchenplaner.repositories.RecipeRepository
 import com.scouts.kitchenplaner.model.entities.RecipeStub
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Use case for displaying all recipes
+ * @param repository Repository for receiving all information about recipes
+ */
 class RecipeSelection @Inject constructor(private val repository: RecipeRepository) {
 
+    /**
+     * Provides all recipe stubs
+     * @return A flow containing all recipe stubs
+     */
     fun getAllRecipeStubs(): Flow<List<RecipeStub>>{
         return repository.getAllRecipeStubs();
     }

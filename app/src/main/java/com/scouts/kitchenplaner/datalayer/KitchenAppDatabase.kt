@@ -66,7 +66,7 @@ import com.scouts.kitchenplaner.datalayer.typeconverters.DietaryTypeConverter
         UserRecipeEntity::class,
         UnitConversionEntity::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, DietaryTypeConverter::class)
