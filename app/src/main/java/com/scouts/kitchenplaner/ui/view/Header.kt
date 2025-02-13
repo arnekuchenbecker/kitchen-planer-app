@@ -41,23 +41,48 @@ fun Header(title: String) {
  * @param buttonImage image/icon which represents the button.
  */
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun HeaderWithButton(
-    title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
+        title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
 ) {
-    TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-    ), title = { Text(title) }, actions = {
-        if (buttonClick != {}) {
-            IconButton(
-                colors = IconButtonColors(
+    EditableHeader(
+            titleField = { Text(title) },
+            button = { colors ->
+                IconButton(
+                        onClick = buttonClick,
+                        content = buttonImage,
+                        colors = colors
+                )
+            }
+    )
+}
+
+
+/**
+ *
+ * @param titleField A field that is displayed as the title of the section
+ * @param button A button that is displayed next to the title
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditableHeader(
+        titleField: @Composable () -> Unit,
+        button: @Composable (IconButtonColors) -> Unit
+) {
+    TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ), onClick = buttonClick, content = buttonImage
-            )
-        }
-    })
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            title = titleField,
+            actions = {
+                button(
+                        IconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                )
+            }
+    )
 }
