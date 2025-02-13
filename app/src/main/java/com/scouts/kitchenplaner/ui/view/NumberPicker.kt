@@ -41,39 +41,42 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun NumberPicker(
-    value: String = "0",
-    modifier: Modifier,
-    onValueChange: (String) -> Unit,
-    label: @Composable () -> Unit,
+        value: String = "0",
+        modifier: Modifier,
+        onValueChange: (String) -> Unit,
+        label: @Composable () -> Unit,
 ) {
     var currentNumber by remember { mutableIntStateOf(value.toInt()) }
 
     OutlinedNumberField(
-        modifier = modifier.padding(3.dp),
-        value = currentNumber.toString(),
-        onValueChange = {
-            currentNumber = it.toInt(); onValueChange(it)
-                        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.ArrowUpward,
-                contentDescription = "increase by one",
-                modifier = Modifier.clickable {
-                    currentNumber++; onValueChange(currentNumber.toString())
-                }
-            )
-        },
-        trailingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.ArrowDownward,
-                contentDescription = "decrease by one",
-                modifier = Modifier.clickable {
-                    currentNumber--; onValueChange(currentNumber.toString())
-                }
-            )
-        },
-        type = NumberFieldType.POSITIVE,
-        label = label,
-        textAlign = TextAlign.Center
+            modifier = modifier.padding(3.dp),
+            value = currentNumber.toString(),
+            onValueChange = {
+                currentNumber = it.toInt()
+                onValueChange(it)
+            },
+            leadingIcon = {
+                Icon(
+                        imageVector = Icons.Outlined.ArrowUpward,
+                        contentDescription = "increase by one",
+                        modifier = Modifier.clickable {
+                            currentNumber++
+                            onValueChange(currentNumber.toString())
+                        }
+                )
+            },
+            trailingIcon = {
+                Icon(
+                        imageVector = Icons.Outlined.ArrowDownward,
+                        contentDescription = "decrease by one",
+                        modifier = Modifier.clickable {
+                            currentNumber--
+                            onValueChange(currentNumber.toString())
+                        }
+                )
+            },
+            type = NumberFieldType.POSITIVE,
+            label = label,
+            textAlign = TextAlign.Center
     )
 }

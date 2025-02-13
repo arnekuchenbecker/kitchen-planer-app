@@ -42,10 +42,17 @@ fun Header(title: String) {
  */
 @Composable
 fun HeaderWithButton(
-    title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
+        title: String, buttonClick: () -> Unit, buttonImage: @Composable (() -> Unit)
 ) {
     EditableHeader(
-        titleField = { Text(title) }, buttonClick = buttonClick, buttonImage = buttonImage
+            titleField = { Text(title) },
+            button = { colors ->
+                IconButton(
+                        onClick = buttonClick,
+                        content = buttonImage,
+                        colors = colors
+                )
+            }
     )
 }
 
@@ -53,33 +60,29 @@ fun HeaderWithButton(
 /**
  *
  * @param titleField A field that is displayed as the title of the section
- * @param buttonClick Action, what happens when clicking the button
- * @param buttonImage Image/Icon which represents the button
+ * @param button A button that is displayed next to the title
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditableHeader(
-    titleField: @Composable () -> Unit,
-    buttonClick: () -> Unit,
-    buttonImage: @Composable (() -> Unit)
+        titleField: @Composable () -> Unit,
+        button: @Composable (IconButtonColors) -> Unit
 ) {
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        title = titleField,
-        actions = {
-        if (buttonClick != {}) {
-            IconButton(
-                colors = IconButtonColors(
+            colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                onClick = buttonClick, content = buttonImage
-            )
-        }
-    })
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            title = titleField,
+            actions = {
+                button(
+                        IconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                )
+            }
+    )
 }
